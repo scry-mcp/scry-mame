@@ -114,8 +114,8 @@ site can list them:
 1. `## \`name\``, then what it does for a person: one sentence (`docs/reference/asks.json`,
    `what`), and the signature in a `text` block.
 2. `### Try it`: where it can be tried (`on`), then the example in the shape below.
-3. `### Modes`, for a tool whose first choice is a `mode` or a `method`: a table of at most 3
-   columns, one row a mode.
+3. `### The <count> <values>` ("The five modes", "The three methods"), for a tool whose first
+   choice is an argument with named values: a table of at most 3 columns, one row a value.
 4. `### Arguments`: a list in the signature's order, each `name` (type, `required` or its
    default) and one sentence.
 5. `### What comes back`: the fields a reader acts on, at most 6, each with one sentence; every
@@ -129,7 +129,9 @@ site can list them:
 
 Every part is generated: the registry gives the signature, the types, the fields and the
 contract; `asks.json` gives each sentence, and a sentence over its limit is refused. A tool
-with nothing to say under a heading has no such heading. A reply field table of every field
+with nothing to say under a heading has no such heading, but for two every entry keeps:
+`### Arguments`, where a tool that takes none says so, and `### What comes back`. A reader
+looking for either finds the answer in the same place. A reply field table of every field
 showing, an example placed last, and a tool name in a tinted box are what this order replaces.
 
 ## An example: its shape
@@ -153,6 +155,8 @@ The same shape in the front door, the reference and the demo guides:
   none of those reaches says which program its example ran on and what that program needs.
 - An example has at most two calls, the second only when the first call's point is what a
   later call of the same run answers.
+- A sentence that says where an example can be tried calls the run it comes from "the example
+  session", and `REFERENCE.md` says once what that is and how its paths are spelled.
 - A reference example is a run's own: its call and its reply are copied from the committed
   transcript of the tour (`docs/reference/tour/TRANSCRIPT.md`, one checked session on Gridlee
   that calls each tool once) or of a demo, where a step of a `perform` counts as that tool's
