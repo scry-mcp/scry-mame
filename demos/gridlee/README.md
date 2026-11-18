@@ -361,9 +361,9 @@ Reply, 1 of 6 fields:
 
 Each group is a page of the reference. Four of the names need a word:
 
-- Advance: the tools that let the program run and stop it again.
-- Declarations: breakpoints and watches.
-- Lists: the tools that run several calls as one.
+- Run: the tools that let the program run and stop it again.
+- Breakpoints: breakpoints and watches.
+- Sequences: the tools that run several calls as one.
 - Lua: the tools that reach MAME's own scripting, `input` among them.
 
 ## The transcript

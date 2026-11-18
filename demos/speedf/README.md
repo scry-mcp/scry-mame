@@ -297,7 +297,7 @@ Reply, 3 of 8 fields:
 | [Captures](../../docs/reference/captures.md) | `record` |
 | [Screen](../../docs/reference/screen.md) | `screen_view` |
 
-Each group is a page of the reference. Advance holds the tools that let the program run and
+Each group is a page of the reference. Run holds the tools that let the program run and
 stop it again.
 
 ## The transcript
