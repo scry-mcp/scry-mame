@@ -674,7 +674,7 @@ TRANSCRIPT = HERE / "TRANSCRIPT.md"
 def keep_transcript(code: int, argv: list[str]) -> int:
     """After a run where every step passed, copy its normalised transcript beside this file;
     a run sent elsewhere with `--transcript` is somebody's own and leaves the copy alone."""
-    if code == 0 and "--transcript" not in argv:
+    if code == 0 and not any(a.split("=", 1)[0] == "--transcript" for a in argv):
         shutil.copyfile(ROOT / "tmp" / "demos" / DEMO.name / "transcript-normalised.md",
                         TRANSCRIPT)
         print(f"kept: {TRANSCRIPT}")
