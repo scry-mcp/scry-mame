@@ -49,9 +49,9 @@ START = {"port": ":SYSTEM", "field": "1 Player Start", "frames": 4, "seconds": R
 FUEL, FUEL_WAITING = "0x82ab", 1500
 #: The frames each moment of the loop records: a second and a half, and a second.
 COUNTED_FRAMES, BACK_FRAMES = 90, 60
-#: The frames recorded once START is pressed, and the three seconds of them the loop shows: the
-#: mission from where its first enemy closes in.
-MISSION_FRAMES, MISSION_SKIP, MISSION_SHOWN = 420, 228, 180
+#: The frames recorded once START is pressed, and the three seconds of them the loop shows (179
+#: frames: 180 at the board's rate run past three): the mission as its first enemy closes in.
+MISSION_FRAMES, MISSION_SKIP, MISSION_SHOWN = 420, 228, 179
 
 
 def attract(reply: Reply, run: Run) -> str:

@@ -7,7 +7,7 @@
 2. `state_write` loads the state saved at four coins, and FUEL is back at 1500.
 3. `input` presses START: the mission begins and its first enemy closes in.
 
-<!-- moments-ms: 1504,1003,3009 -->
+<!-- moments-ms: 1504,1003,2992 -->
 <!-- demo-motion:end -->
 
 Exidy's *Star Fire* (1979) is a space shooter on a Z80. This demo drops coins into it and finds

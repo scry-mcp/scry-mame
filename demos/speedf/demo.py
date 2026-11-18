@@ -100,9 +100,9 @@ STEPS = [
          title="Start from the game's own start profile",
          ask="Start Speed Fight from the start profile its repository keeps in `.scry/start/`.",
          shown=("rom_check", "symbols_total", "kept"),
-         reads=("A start profile is a saved set of `start` arguments: the call adds only what is "
-                "this run's own. `rom_check` says the ROM in memory is the build's own image, and "
-                "`kept` that a candidate was saved for `promote`.")),
+         reads=("A start profile is a saved set of `start` arguments; the call adds only this "
+                "run's own. `rom_check` says the ROM in memory is the build's, `symbols_total` "
+                "counts its map's names, and `kept` that a candidate was saved.")),
     Step("to the demo", "run_to", {"ref": TARGET, "control": CONTROL, "seconds": free_set.RUN_S},
          arrived(TARGET),
          title="Run to a routine by its name",

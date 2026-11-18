@@ -72,7 +72,7 @@ Reply, 3 of 36 fields:
 }
 ```
 
-A start profile is a saved set of `start` arguments: the call adds only what is this run's own. `rom_check` says the ROM in memory is the build's own image, and `kept` that a candidate was saved for `promote`.
+A start profile is a saved set of `start` arguments; the call adds only this run's own. `rom_check` says the ROM in memory is the build's, `symbols_total` counts its map's names, and `kept` that a candidate was saved.
 
 <details><summary>The whole reply</summary>
 
