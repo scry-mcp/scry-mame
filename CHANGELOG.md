@@ -20,213 +20,181 @@ What a client of the server notices.
   follow, each under its own heading.
 - The examples are calls of one session on Gridlee, a ROM mamedev.org distributes for free. The
   whole session is `docs/reference/tour/TRANSCRIPT.md`.
-- The groups of tools have names that say what they hold: Run (it was Advance), Breakpoints
-  (Declarations), Sequences (Lists), Project (Store) and Timeline (Film). The `instructions`,
-  the reference's pages and the sections of `REFERENCE.md` carry them.
+- The groups of tools have names that say what they hold: Run, Breakpoints, Sequences, Project
+  and Timeline. The `instructions`, the reference's pages and the sections of `REFERENCE.md`
+  carry them.
 - A scan's summary says how many candidates are left ("3 left"). `drive`'s says "reaction
   seen", "no reaction seen (TIMEOUT)" or "sent, reaction not checked".
 - A reply that saves a candidate for `promote` says "N saved for `promote`" in `kept`.
 - `series_capture` answers the stop the machine rests at, one step past its run's. It answered
   the run's stop, and the next call reported the step as a stop of the machine's own.
-- `start`'s description says what `front` means in its `window`: no other application's window
-  covers its centre. It does not mean the window has the keyboard.
+- The descriptions of `start` and `window` say what `front` means: on screen, with no other
+  application's window over its centre. It does not mean the window has the keyboard.
 - `palette`, `gfx_view`, `gfx_sweep`, `screen_signature`, the two screen-map tools and `trace`
   publish `watches`. Their replies carried it whenever a watch was declared, against their own
   schema.
 - On Windows a `start` behind (`background=true`, or left out on an unwatched start) leaves the
   foreground where it was: no program may take it while the start launches. The flag did
   nothing there, and MAME's window took the caller's keyboard.
-- `rompath` takes a `;`-separated list of directories, as `inipath` does, each judged on its own
-  (`rompath[i]` in a refusal); a list was refused as one missing directory.
-- A `start` profile's `rompath` and `inipath` resolve each of their `;`-separated folders against
-  the store's base; only the first was resolved, and `inipath` not at all.
-- `run_to`'s `cut_by_other_stop` refusal ends in the words scry-dosbox-x's now ends in too, with
-  `disarm_watches=true` spelled as a client sends it.
+- `rompath` takes a `;`-separated list of directories, as `inipath` does, each checked on its
+  own (`rompath[i]` in a refusal). A list was refused as one missing directory.
+- A `start` profile's `rompath` and `inipath` resolve each of their `;`-separated folders
+  against the base of the `.scry/` folder. Only the first was resolved, and `inipath` not at
+  all.
+- `run_to`'s `cut_by_other_stop` refusal spells `disarm_watches=true` as a client sends it.
 - `promote` refuses a `start` profile or a `perform` document holding a `${...}` that is no
-  placeholder, typed text included, where it wrote a store file `perform(path=)` refused.
-- The live tier reads its bench only from `MAME_LIVE_BENCH`: unset, every board on the bench is
-  BLOCKED naming the variable, where it fell back to a directory of the developer's home.
-- A `perform` document a store holds is replayed with its placeholders resolved, `${state}`
-  naming the session's scratch: its steps ran with `${root}` in their paths and were refused.
+  placeholder, typed text included. It used to write a file that `perform(path=)` refused.
+- A `perform` document the `.scry/` folder holds is replayed with its placeholders resolved,
+  `${state}` naming the session's temporary folder. Its steps ran with `${root}` in their paths
+  and were refused.
 - `perform` and `drive` end a list at a `screen_wait` that ran out, as at a `log_wait`: the
   steps after it were built on a screen that never came.
-- `close`, `run_for`, `disassemble` and `debug` carry the titles the same tools carry on
-  scry-dosbox-x (`run_for`'s now names the frames it takes), and `screen_wait`'s schema publishes
-  `every`'s bound of 0 to 600, which it refused before without saying so.
-- `screen_wait` is listed under Advance, where it runs the machine until its predicate holds;
-  its page moved from `docs/reference/screen.md` to `docs/reference/run.md`.
-- `start`'s description says that `throttle_from_frame` runs at real speed after its frame and
+- `close`, `run_for`, `disassemble` and `debug` carry the titles the tools of the same names
+  carry on the other server (`run_for`'s now names the frames it takes). `screen_wait`'s schema
+  publishes `every`'s bound of 0 to 600, which it refused before without saying so.
+- `screen_wait` is listed under Run, where it runs the machine until its predicate holds. Its
+  page moved from `docs/reference/screen.md` to `docs/reference/run.md`.
+- `start`'s description says that `throttle_from_frame` runs at real speed after its frame. It also says
   that `background` brings either window to the front, watched or not, so neither reads as a
   reason for `shared`.
 - On Windows, a `start` refused after it launched MAME (another process serving its
-  `stub_port`, say) answers once that MAME is gone, where it could answer while the process
+  `stub_port`, say) answers once that MAME is gone. It could answer while the process
   was still ending.
 - On Windows, `close` answers a killed MAME it could not see gone as not reaped and leaves
-  running the job that ends it, where it reported the MAME reaped and stopped that job.
-- On Windows, a `gfx_film` frame is judged even when a program holds the film's header open
-  while MAME replaces it: the failed publication is counted once in the reply's callback errors
-  and the header you read stays the last whole one until the next stop, where the frame's
-  judging was lost.
-- `patches/0003` and `0004` are made against mamedev `master` at `a7230f9f`; `0005` is gone,
-  since MAME carries that fix itself.
+  running the job that ends it. It reported the MAME reaped and stopped that job.
+- On Windows, a `gfx_film` frame is checked even when a program holds the film's header open
+  while MAME replaces it. The failed publication is counted once in the reply's callback errors
+  and the header you read stays the last whole one until the next stop. The frame used to go
+  unchecked.
 - `screen_wait` under `on_breakpoint` or `on_watch` that runs out after firings says where it
-  judged them: "was not found at the frame's end after any of N firings", where it said "was not
-  found after any of".
+  checked them. It says "was not found at the frame's end after any of N firings", where it
+  said "was not found after any of".
 - `start` refused for a `profile` no directory above holds carries `searched`, the directories
-  it walked, beside the message that already named them.
-- scry-core 0.115.0 pinned: the at-stop wait's refusals and note, its reply fields and their
-  sentence, and what a `start` or a map's `add` keeps for `promote` are the same code on both
-  servers.
+  it looked in, beside the message that already named them.
 - A reply that wrote a file under another name than the `dest` you gave (`Shot_1.PNG` as
   `shot-1.png`) says so in its `note`; its path already named the file written.
-- `comment_write(method="save")` names the file it replaced by the path it wrote, and a save
-  it refused over what is there names that path beside the `dest` you gave, where both quoted
+- `comment_write(method="save")` names the file it replaced by the path it wrote. A save it
+  refused over what is there names that path beside the `dest` you gave, where both quoted
   your spelling of a file that may not exist under it.
-- scry-core 0.114.0 pinned: it words the one sentence a reply's `note` gives when a file is
-  written under another name than the one given.
-- scry-core 0.113.0 pinned: on the Mac a window placed to fit a display's usable area sees a
-  Dock or menu bar that showed, hid or moved within a few seconds, where it kept the first area
-  it read for the life of the server.
-- scry-core 0.112.0 pinned: the probe resolves `{tmp}` and `{anchor}` in a task file, so a
-  task set spelled through them is judged the same on Windows as on the Mac.
-- The probe's task file and its captures spell a path through `{tmp}` and `{anchor}`, so
-  `probe --check`, the hook and the suite's task and capture checks judge the same tasks on
-  Windows, where `/tmp/x` is relative and every such task was refused.
-- scry-core 0.111.2 pinned: the pre-commit hook starts the `jscpd.cmd` npm installs on Windows,
-  so the hook's cases run there, and a FIFO the tests release is released for a reader that
-  opens late too.
-- A map `screen_map_write` loaded names the entry it was read from, so an `add` after the
-  load updates that map in the store it came from, as the `promote` description says,
-  where it was kept as a new map of the current `start`'s repository.
-- `window`'s `front` is said as it is computed: on screen, with no other application's
-  window over its centre.
-- On the pinned scry-core (`pyproject.toml`), `screen_wait`'s description gives `condition`
-  a register of the stopped cpu, never a register this server refuses.
-- On the pinned scry-core (`pyproject.toml`), `promote` writes an entry only into the store of
-  the repository it was learned in (the one whose store a call read it from, else the one whose
-  profile the current `start` read), so a session that ran programs of two repositories never
-  files one in the other's and the server's own directory never lends its store. A start that
-  read no profile names no repository, so what it keeps takes `root`. An entry with no store
-  of its own is `unwritable` in a review and refused in an approval, naming the `root` to pass;
-  the `kept` line names it; a call writes one store; with `root`, a candidate kept in another
-  repository says `from`.
-- On the pinned scry-core (`pyproject.toml`), which carries the window every demo asks of
-  its `start`.
-
-- On the pinned scry-core (`pyproject.toml`), whose demo runner takes `--display`, so a
-  demo can be recorded on one of the host's own displays.
-
-- On the pinned scry-core (`pyproject.toml`), which renders a repository's `.scry/README.md` from
-  one template and holds the `record` text both servers answer.
-- On the pinned scry-core (`pyproject.toml`), whose `record` words say what a bound does when its
-  release answers, so a server that answers `ended: false` over a capture it could not turn off
-  is not contradicted.
+- On the Mac a window positioned to fit a display's usable area sees a Dock or menu bar that
+  showed, hid or moved within a few seconds. It kept the first area it read for the life of the
+  server.
+- A map `screen_map_write` loaded names the entry it was read from. An `add` after the load
+  updates that map in the `.scry/` folder it came from, as the `promote` description says. It
+  was kept as a new map of the current `start`'s repository.
+- `screen_wait`'s description gives `condition` a register of the stopped cpu, never a register
+  this server refuses.
+- `promote` writes an entry only into the `.scry/` folder of the repository it was learned in.
+  That is the one a call read it from, else the one whose profile the current `start` read. A
+  session that ran programs of two repositories never files one in the other's.
+- A `start` that read no profile names no repository, so what it keeps takes `root`. An entry
+  with no `.scry/` folder of its own is `unwritable` in a review, with its reason, and refused
+  in an approval, naming the `root` to pass.
+- The `kept` line of a `promote` names that `.scry/` folder. A call writes one folder; with
+  `root`, a candidate kept in another repository says `from`.
 - `record` whose run reaches its `seconds` bound releases the recording there and, when the
-  release answers, answers its file (`ended: true`, `bytes`, `avi_frames`), where it used to
-  refuse `not_settled` and leave the file open. That reply now also carries the console's
-  account (`thread_errors`, `console_reruns`, `resent`), as a run that settled says it.
+  release answers, answers its file (`ended: true`, `bytes`, `avi_frames`). It used to refuse
+  `not_settled` and leave the file open.
+- That `record` reply also carries the console's account (`thread_errors`, `console_reruns`,
+  `resent`), as a run that settled says it. The description says what a bound does when its
+  release answers.
 - A `promote` that names `root` no longer fails when the working directory is gone.
 - An approved `promote` into a repository with no `.scry/` also writes its `about.json` and
-  `README.md`: `dry_run` lists what it would create in `would_create`, the approval says what it
+  `README.md`. `dry_run` lists what it would create in `would_create`, the approval says what it
   created in `created`. A reply that kept something for `promote` says when there is no `.scry/`
   above the project, and how to see what an approval would create.
 - Offsets read as addresses do, in `0x` hex: `read_block`'s `offset`, the graphics tools' source
   `offset`, `machine_map`'s `region_offset` and ROM `offset`, `write`'s `region_offset`, and
   the offset of each operand `disassemble` resolves.
-- On macOS the server reads the screens from a child process when it places a window, so it is
-  no longer held as an application and Activity Monitor cannot show it as not responding.
+- On macOS the server reads the screens from a child process when it positions a window. It is
+  no longer held as an application, so Activity Monitor cannot show it as not responding.
 - `screen_wait` on `on_breakpoint` or `on_watch` answers the clocks its reply promises
   (`frame_before`, `frame_after`, `emulated_before_s`, `emulated_after_s`, `cycles`), which it
   left out, so a client that validates the reply refused it. `emulated_before_s`, like the
   other clocks, may be `unavailable` when the console reads no time.
 - The demos arrive by the game's code: LineUp waits for each screen at the frame after the
   game's tick and reads each move once the game has taken it. A transcript hides what the
-  host decides (the window, the log's byte positions, a compressed state's size), and the
-  LineUp recording is held to `win32/music.wav` on Windows.
-- `screen_wait` takes `on_breakpoint` or `on_watch`: the screen is judged only at the frame's
-  end after a firing of that declared breakpoint or change watch, never by sampling, and a
-  `condition` filters the firings first. The reply counts `firings` and `frames_examined` in
-  place of `polls`; a row that never fires is `never_fired`, and `perform_export` keeps such a
-  wait as the same call. `changed` waits for a mapped screen other than the one shown
-  at the start.
-  MAME's Lua counts the firings and stops the machine only on a picture this wait has not
+  host decides (the window, the log's byte positions, a compressed state's size).
+- On Windows the LineUp recording matches `win32/music.wav`.
+- `screen_wait` takes `on_breakpoint` or `on_watch`: the screen is checked only at the frame's
+  end after a firing of that declared breakpoint or change watch, never by sampling. A
+  `condition` filters the firings first.
+- The reply of that `screen_wait` counts `firings` and `frames_examined` in place of `polls`;
+  a row that never fires is `never_fired`. `perform_export` keeps such a wait as the same call,
+  and `changed` waits for a mapped screen other than the one shown at the start.
+- MAME's Lua counts the firings and stops the machine only on a picture this wait has not
   already rejected, so a firing costs no round trip.
 - On Windows, `close` ends an emulator started through a launcher script together with the
-  launcher, and removes the session's scratch folder, which stayed behind.
-- The descriptions say that a start nobody watches has a small window run flat out (`start`),
-  that a `count` watch tallies writes by value and by writer (`watch_add`), and that a sweep's
-  `tag` is a memory region's or a share's (`gfx_sweep`).
+  launcher, and removes the session's temporary folder, which stayed behind.
+- The descriptions say that a start nobody watches has a small window run at full speed (`start`).
+  They say that a `count` watch tallies writes by value and by writer (`watch_add`). They say
+  that `gfx_sweep`'s `tag` is a memory region's or a share's.
 - The files the server writes follow
   [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md): lowercase
   words joined by hyphens and one extension. A file `dest` is written under its normalised name
-  (`Dump.BIN` as `dump.bin`) and the reply's path names that file; one with no extension is
-  refused, and a directory `dest` keeps its name. A state saved as `Boss_1` is `boss-1`, loaded
-  by either spelling. A state or a screen map kept under an earlier spelling (`Boss_1.sta`,
-  `<application>.screen-map.json`) is not found until its file is renamed; `state_list` says
-  so. A trace's set file
-  is `<name>-<extension>-set.jsonl`, a draft's report `<name>-report.json`, a screen map
-  `<application>-screen-map.json`, a batch's files `batch-<n>-ran.jsonl` and
+  (`Dump.BIN` as `dump.bin`) and the reply's path names that file. One with no extension is
+  refused, and a directory `dest` keeps its name.
+- A state saved as `Boss_1` is `boss-1`, loaded by either spelling. A state or a screen map
+  kept under an earlier spelling (`Boss_1.sta`, `<application>.screen-map.json`) is not found
+  until its file is renamed; `state_list` says so.
+- A trace's set file is `<name>-<extension>-set.jsonl`, a draft's report `<name>-report.json`.
+  A screen map `<application>-screen-map.json`, the files of a list of steps `batch-<n>-ran.jsonl` and
   `batch-<n>-replies.jsonl`, and a failed start's copy `<utc stamp>-<system>.log` in lowercase.
 - `record` refuses a `dest` that is not an `.avi` file: MAME adds `.avi` to any other name, and
   the reply named a file that was not the one written.
 - Two tally, capture or palette-log ids that differ only in punctuation no longer share one
-  file in the scratch: the file of an id on another cpu or in the I/O space carries a short
-  digest after its words.
-- A `promote` review lists apart, in `unwritable` with its reason, each entry it cannot write,
-  and shows the rest.
-- `close` no longer names an entry the store already holds as it is.
-- `promote` no longer looks for the store from the binary's folder.
+  file in the session's temporary folder. The file of an id on another cpu or in the I/O space carries a
+  short digest after its words.
+- `close` no longer names an entry the `.scry/` folder already holds as it is.
+- `promote` no longer looks for the `.scry/` folder from the binary's folder.
 - A count watch with `trigger_type` `r` or `rw` also counts reads, returned apart as `reads`.
-- `promote`: a map or a script learned from a loaded recipe looks for the store from that
-  recipe.
+- `promote`: a map or a script learned under a loaded start profile looks for the `.scry/`
+  folder from that profile.
 - `run_to` says when a condition the console rejects is why it never stopped.
-
-It needs the scry-core that serves `scry_core.window`, `recording.read_document` and
-`recording.steps_to_replay`, not an older one: the tag pinned in `pyproject.toml` is the
-floor.
-
 - `perform` takes `path`: a `perform` document (`.scry/perform/<name>.json`, or a file
-  `perform_export` wrote) whose steps are replayed on the session; `steps` and `path` are
-  refused together, and a document whose version this server does not read is refused by
-  name.
-- `start` has no `fullscreen` argument: no supported host shows a full-screen window for MAME (`-nowindow` opens a
-  window the display's work area holds, never the display), so it could only be refused.
-- `status` with no session says `no session is live, so there is no stop to report` for `last_stop`, not that the
-  session has not stopped yet.
-- A control on the instruction a stop lands on is counted by MAME alone: the server no longer adds a hit of its own
-  for each landing of a run by frames. That is exact on a MAME that evaluates the landing; on one that
-  does not, such a control misses the landing, as the Declarations page says.
-- `start`'s description names `session_live`, the code a second `start` gets while a session is up, and the README
-  says how to watch a machine.
-- `start` takes `size` (`WIDTHxHEIGHT` in the host's unit), which wins over the default: a watched window
-  is now the largest whole multiple of the machine's screen that fits the display's usable area
-  (menu bar, Dock and taskbar excluded), not a fixed bound, and `window` judges a stated size and
-  answers `size`. MAME draws the picture at its view's aspect inside that window and scales it by
-  whole pixels, never blurred, so the multiple is pixel-exact only where the view's aspect is the
+  `perform_export` wrote) whose steps are replayed on the session. `steps` and `path` are
+  refused together, and a document whose version this server does not read is refused by name.
+- `start` has no `fullscreen` argument, so it could only be refused. No supported host shows a
+  full-screen window for MAME: `-nowindow` opens a window the display's work area holds, never
+  the display.
+- `status` with no session says `no session is live, so there is no stop to report` for
+  `last_stop`, not that the session has not stopped yet.
+- A control on the instruction a stop lands on is counted by MAME alone. The server no longer
+  adds a hit of its own for each landing of a run by frames. That is exact on a MAME that
+  evaluates the landing; on one that does not, such a control misses it, as the Breakpoints
+  page says.
+- `start`'s description names `session_live`, the code a second `start` gets while a session is
+  up, and the README says how to watch a machine.
+- `start` takes `size` (`WIDTHxHEIGHT` in the host's unit), which wins over the default. A
+  watched window is now the largest whole multiple of the machine's screen that fits the
+  display's usable area, menu bar, Dock and taskbar excluded. `window` checks a stated
+  size and answers `size`.
+- MAME draws the picture at its view's aspect inside that window and scales it by whole
+  pixels, never blurred. The multiple is pixel-exact only where the view's aspect is the
   screen's. A size that is not a whole multiple is scaled by whole pixels, unevenly between the
   axes, and the `note` says so.
 - `start` takes `display` (the OS's index, the main display when omitted), and a watched start
-  answers `window`, proved in the host's window list; a window that never appears on the asked
+  answers `window`, proved in the host's window list. A window that never appears on the asked
   display is `window_not_visible`. `SCRY_EMULATOR_ARGS` is gone.
 - A new tool, `window`, answers where the window is at any time, and with `front=true` brings it
-  in front of what covers it. Without `front` it answers the window
-  wherever the owner put it, another display included. A `front` that fails on a session
-  started with `background=true` names that as what may keep it behind and what to do.
-- `focus` is now `cpu_focus`: it moved the debugger's visible cpu, never the window, and a caller
-  reading "focus" expected the window brought forward. The same name is the `op` of `perform` and
-  `drive`.
-- The cases that move the owner's Space carry the `window` marker and are out of every default run.
-- `start` takes `profile`: the name of a `.scry/start/<name>.json` a repository declares, or a
+  in front of what covers it. Without `front` it answers the window wherever you put it,
+  another display included. A `front` that fails on a session started with `background=true`
+  names that as what may keep it behind and what to do.
+- `focus` is now `cpu_focus`: it moved the debugger's visible cpu, never the window, and a
+  caller reading "focus" expected the window brought forward. The same name is the `op` of
+  `perform` and `drive`.
+- `start` takes `profile`: the name of a `.scry/start/<name>.json` a repository holds, or a
   path to one. Its keys are `start`'s own arguments and fill only what the call does not give,
-  every path resolved against the directory holding `.scry/`; the reply's `profile` block names
-  the file and what it filled, and an argument neither the call nor a profile gives is refused
-  by name. `system`, `rompath` and `reference_rom` are optional now, so a profile can carry them.
-- `machine_map` takes `dest`, as on scry-dosbox-x: every row of the sections read is written to
-  that new file as JSON and the reply names it in `path`; a cut list with no `dest` says how to
-  get every row.
+  every path resolved against the directory holding `.scry/`.
+- The reply's `profile` block names the file and what it filled, and an argument neither the
+  call nor a profile gives is refused by name. `system`, `rompath` and `reference_rom` are
+  optional now, so a profile can carry them.
+- `machine_map` takes `dest`: every row of the sections read is written to that new file as
+  JSON and the reply names it in `path`. A cut list with no `dest` says how to get every row.
 - `read_memory`, `disassemble`, `find`, `memdump`, `scan` (its `start`) and `write` echo the
-  caller's `ref` beside the `addr` it resolved to, as on scry-dosbox-x.
-- `close` declares the `exit_code` it always answered: an integer, or unavailable with its `why`.
+  caller's `ref` beside the `addr` it resolved to.
+- `close` lists in its schema the `exit_code` it always answered: an integer, or
+  unavailable with its `why`.
   `symbols_find`'s `linear`, `start`'s and `rom_check`'s `reference_addr` and `reference_base`,
   and the values of `bases` take an address as `0x` text or an integer, as every other address.
 - `screen_wait`'s reply no longer lists `disarmed_watches` and `not_rearmed`, which only `run_to`
