@@ -1569,11 +1569,11 @@ r = s.start(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve(
 # THE DRAFT IS THE SERVER'S AND OUTLIVES A SESSION: this run booted boards before, so the line
 # counts what it holds, not what this one call kept.
 check("a start keeps the recipe it ran and says so",
-      r.get("status") == "ok" and str(r.get("kept", "")).startswith("kept ")
-      and "(promote to review)" in str(r.get("kept", "")), str(r.get("kept")))
+      r.get("status") == "ok" and "saved for `promote`" in str(r.get("kept", "")),
+      str(r.get("kept")))
 added = s.screen_map_write("add", screen="learned", match=[[0, 0, 8, 8]])
 check("a map learned from the screen joins the draft",
-      added.get("status") == "ok" and "(promote to review)" in str(added.get("kept", "")),
+      added.get("status") == "ok" and "saved for `promote`" in str(added.get("kept", "")),
       str(added.get("kept")))
 reviewed = s.promote(dry_run=True, root=str(store))
 candidates = {c.get("entry"): c.get("change") for c in reviewed.get("candidates", [])}
