@@ -14,7 +14,7 @@ What a client of the server notices.
 - The README opens with what the server lets you ask, its lead demo moving at the page's width
   and one exchange of that demo's run. Its `## Install` section has the lines to paste for ten
   MCP clients and a first question to ask.
-- Takes scry-core 0.119.0.
+- Takes scry-core 0.120.0.
 - Each tool's reference entry opens with what the tool does and an example to try: what to
   ask, the call and the reply it got. Its arguments, what comes back, what it refuses and why
   follow, each under its own heading.
