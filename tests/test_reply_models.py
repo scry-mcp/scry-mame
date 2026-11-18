@@ -33,9 +33,11 @@ def test_a_reply_that_carries_the_stop_the_console_left_takes_its_watches() -> N
     """A read the console evaluates steps the machine, and the stop it leaves carries the
     readings of every watch declared: a model that does not name them refuses that reply."""
     stop = {"stop_seq", "regs", "instruction"}
-    lacking = sorted(name for name, model in replies.MODELS.items()
-                     if stop <= set(get_type_hints(model))
-                     and "watches" not in get_type_hints(model))
+    built_on_a_stop = [name for name, model in replies.MODELS.items()
+                       if stop <= set(get_type_hints(model))]
+    assert {"trace", "palette", "screen_view", "run_to"} <= set(built_on_a_stop), built_on_a_stop
+    lacking = sorted(name for name in built_on_a_stop
+                     if "watches" not in get_type_hints(replies.MODELS[name]))
     assert lacking == [], lacking
 
 

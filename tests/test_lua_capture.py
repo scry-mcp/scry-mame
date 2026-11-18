@@ -553,7 +553,7 @@ def test_the_drive_summary_reads_the_field_the_reply_actually_carries(
     seen = s.drive(act=[{"op": "step", "count": 1}], expect="DRIVE_MARK", seconds=0.5)
     monkeypatch.setattr(ses, "step", stepper)
     assert seen["status"] == "ok" and seen["verify"]["checked"] is True, seen
-    assert "reaction seen" in seen["summary"], seen["summary"]
+    assert seen["summary"] == "drive: reaction seen", seen["summary"]
 
 
 def test_a_record_refused_after_its_run_says_the_frames_it_advanced(
