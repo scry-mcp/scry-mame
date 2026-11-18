@@ -1,4 +1,4 @@
-# Speed Fight: the board starts from a file in the game's own repository
+# Speed Fight: the board starts from a file in the game's `.scry/` folder
 
 <!-- demo-motion:begin -->
 <p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Speed Fight&#x27;s attract demo playing on the arcade board"></picture></p>
@@ -9,8 +9,8 @@
 <!-- demo-motion:end -->
 
 *Speed Fight* (Eco-Games / GAMART, 1994) ran on the same NEC V30 arcade board as *LineUp*.
-This demo starts it from a start profile, a saved set of `start` arguments the game's own
-repository keeps in `.scry/start/speedf.json`. Then it runs to the routine that begins the
+This demo starts it from a start profile, a saved set of `start` arguments kept in the
+game's `.scry/start/speedf.json`. Then it runs to the routine that begins the
 attract demo and reads two variables by name.
 
 ## The program
@@ -53,7 +53,7 @@ game. Each of these is a step of the demo, in the order the demo makes them.
 
 Ask:
 
-> Start Speed Fight from the start profile its repository keeps in `.scry/start/`.
+> Start Speed Fight from the start profile in its `.scry/start/` folder.
 
 Call:
 

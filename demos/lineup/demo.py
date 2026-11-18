@@ -21,7 +21,7 @@ from demos import free_set  # noqa: E402
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "lineup"
-#: The game's own repository declares its screen map; `--cwd` is that checkout.
+#: The game's own `.scry/` folder declares its screen map; `--cwd` is that checkout.
 SCREEN_MAP = Path(".scry/maps/lineup-screen-map.json")
 
 
@@ -60,8 +60,8 @@ def precheck(run: Run) -> str:
         return (f"pass --cwd, the reader's checkout of the game: its {SCREEN_MAP.as_posix()} "
                 "is the map the script loads")
     if not at(run).is_file():
-        return (f"no {SCREEN_MAP.as_posix()} under --cwd {cwd}: the game's own repository "
-                "declares it")
+        return (f"no {SCREEN_MAP.as_posix()} under --cwd {cwd}: the game's own `.scry/` "
+                "folder declares it")
     return free_set.host_ready(run, SYSTEM, rompath)
 
 

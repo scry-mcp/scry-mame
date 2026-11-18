@@ -98,7 +98,7 @@ STEPS = [
          options=frozenset({"binary", "display"}),
          volatile=free_set.START_VOLATILE,
          title="Start from the game's own start profile",
-         ask="Start Speed Fight from the start profile its repository keeps in `.scry/start/`.",
+         ask="Start Speed Fight from the start profile in its `.scry/start/` folder.",
          shown=("rom_check", "symbols_total", "kept"),
          reads=("A start profile is a saved set of `start` arguments; the call adds only this "
                 "run's own. `rom_check` says the ROM in memory is the build's, `symbols_total` "

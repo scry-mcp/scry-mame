@@ -224,7 +224,7 @@ picture is the screen that run ended on, linked to its guide, where it moves.
 - [`demos/lineup/`](demos/lineup/): the arcade *LineUp*, from the game's own ROM set, played by
   its own routine and variable names.
 - [`demos/speedf/`](demos/speedf/): the arcade *Speed Fight*, from a checkout of the game,
-  started from a file in its own repository.
+  started from a file in its `.scry/` folder.
 
 These are steps of the two demos on free ROMs, written here by the demos themselves from their
 last run. Each step follows the ones before it in its demo, whose guide has the whole prompt.
