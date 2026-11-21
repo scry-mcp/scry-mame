@@ -469,8 +469,7 @@ says what is in it.
 
 ## Platforms
 
-macOS and Windows: the server and its tests run on both. Linux runs the unit tests
-(`.github/workflows/ci.yml`) and nothing else.
+macOS and Windows: the server and its tests run on both.
 
 - `start` runs the MAME its `binary` argument names, else `MAME_BINARY`, else the `mame` on your
   `PATH`.

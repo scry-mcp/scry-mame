@@ -240,7 +240,7 @@ A watched window is the largest whole multiple of the machine's first screen tha
 
 `size` wins over that fit, in the host's unit: points on macOS, real pixels on Windows. One that does not fit is refused, naming the usable size. One that is not a whole multiple of the screen is scaled unevenly, and the `note` says so.
 
-`start` waits until the host lists the window on that display. A watched window is not supported on Linux. Do not select `-video none` yourself: on macOS it takes over the display.
+`start` waits until the host lists the window on that display. Do not select `-video none` yourself: on macOS it takes over the display.
 
 `background` only chooses where the window opens. How the focus stays with you is the host's: on macOS the emulator starts as a background application, and on Windows no program may take the foreground while `start` launches. A click or ALT moves the focus as always.
 
