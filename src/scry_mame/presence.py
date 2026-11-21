@@ -59,6 +59,8 @@ def drawer(scratch: Path, look: presence.Look = presence.LOOK) -> str:
                              key_text_rgb=lua_source.Code(f"0x{look.keycap_text_rgb:06X}"),
                              key_alpha=look.keycap_alpha, cps=look.scroll_cps,
                              cap_fade=CAPTION_FADE_S, dwell=SCROLL_DWELL_S,
+                             rec_rgb=lua_source.Code(f"0x{look.record_rgb:06X}"),
+                             blink=look.record_blink_s,
                              placement=lua_source.Code(placement_lua()))
 
 
@@ -86,10 +88,13 @@ def _ascii(text: str) -> str:
 
 def encode(state: presence.State, payload: presence.Payload) -> str:
     """The state file's text: `state`, then one `name=value` line each (`layers` as MAME can
-    draw them, the caption as `serial`, `rgb`, `caption`) and one `key` per key down."""
+    draw them, `rec` while something is recorded, the caption as `serial`, `rgb`, `caption`)
+    and one `key` per key down."""
     drawn = [layer for layer in payload.layers if layer not in LACKING]
     lines = [state, f"paused={int(payload.paused)}", f"place={payload.place}",
              f"layers={','.join(drawn)}"]
+    if payload.recording != "none":
+        lines.append(f"rec={payload.recording}")
     if payload.caption is not None:
         lines += [f"serial={payload.caption.serial}", f"rgb={payload.caption.rgb:06X}",
                   f"caption={_ascii(payload.caption.text)}"]

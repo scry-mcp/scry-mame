@@ -16,8 +16,8 @@ start(system="", rompath="", reference_rom="", symbols="", reference_addr=0, ini
     boot_seconds=8.0, shared=false, display=null, size=null, background=null, boot_lua="", env=null,
     bases=null, reference_base=0, stub_port=0, state_dir="", throttle_from_frame=0, types="",
     cfg="", binary="", presence=true,
-    overlay={"calls": true, "keys": true, "pointer": true, "pause": true, "place": "auto"}, view="",
-    profile="")
+    overlay={"calls": true, "keys": true, "pointer": true, "pause": true, "record": true, "place": "auto"},
+    view="", profile="")
 ```
 
 ### Try it
@@ -139,7 +139,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `cfg` (string, default `""`): A `.cfg` file the server installs as the system's own before it boots. Left empty, MAME runs on its defaults.
 - `binary` (string, default `""`): The MAME to run: an executable, or a `.app` bundle holding one. Left empty, `MAME_BINARY`, else the `mame` on the PATH.
 - `presence` (boolean, default `true`): Draws a border around the emulator's window while the session is open, brighter while a call runs the machine. `false` leaves it off.
-- `overlay` (any, default `{"calls": true, "keys": true, "pointer": true, "pause": true, "place": "auto"}`): Marks over the border, each on by default: `calls` names each call, `keys` the input fields held, `pause` marks a stopped machine, and `place` is `top`, `bottom` or `auto`.
+- `overlay` (any, default `{"calls": true, "keys": true, "pointer": true, "pause": true, "record": true, "place": "auto"}`): Marks over the border, on by default: `calls` names each call, `keys` the fields held, `pause` a stopped machine, `record` a recording. `place` is `top`, `bottom` or `auto`.
 - `view` (string, default `""`): What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.
 - `profile` (string, default `""`): A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.
 
@@ -347,7 +347,7 @@ Reference: REFERENCE.md, The session.
 
 presence: Draw an edge around the emulator's window while this session is open: dim while idle, bright while a call runs the machine. No capture of this server carries it.
 
-overlay: Layers drawn over the presence edge, each on by default: `calls` a caption naming each call and its arguments, abbreviated (paths by their last name); `keys` the keys or fields held down; `pointer` the guest's mouse pointer; `pause` a mark while the session holds the machine stopped. `place`: where the captions go, `top`, `bottom`, or `auto`, the band of the picture that shows less. Ignored with `presence=false`.
+overlay: Layers drawn over the presence edge, each on by default: `calls` a caption naming each call and its arguments, abbreviated (paths by their last name); `keys` the keys or fields held down; `pointer` the guest's mouse pointer; `pause` a mark while the session holds the machine stopped; `record` a blinking mark while it records video or audio. `place`: where the captions go, `top`, `bottom`, or `auto`, the band of the picture that shows less. Ignored with `presence=false`.
 
 view: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
 ```

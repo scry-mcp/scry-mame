@@ -2,7 +2,7 @@
 -- and `screen:pixels()` do not.
 -- A drawer that raises writes why beside the state file, where `status` reads it.
 -- Written by the mame MCP server for ONE session: the presence edge and the layers over it. The
--- state file says what to draw (caption, keys, pause, where); this only animates it.
+-- state file says what to draw (caption, keys, pause, recording, where); this only animates it.
 local path, broke = __SCRY_path__, __SCRY_broke__
 local function stopped(err)
   local f = io.open(broke, "w")
@@ -18,17 +18,26 @@ local set_up, why = pcall(function()
   local TEXT_RGB, CAP_ALPHA, KEY_RGB = __SCRY_text_rgb__, __SCRY_cap_alpha__, __SCRY_key_rgb__
   local KEY_TEXT_RGB, KEY_ALPHA = __SCRY_key_text_rgb__, __SCRY_key_alpha__
   local CPS, CAP_FADE, DWELL = __SCRY_cps__, __SCRY_cap_fade__, __SCRY_dwell__
+  local REC_RGB, BLINK = __SCRY_rec_rgb__, __SCRY_blink__
   --- __SCRY_placement__
   local ui = manager.ui
   local cur, raw, since, read_at, broken = { state = "off" }, nil, -1e9, -1e9, false
   local cap, cap_up, gone_at = nil, 0, nil
+  local rec_since, rec_w = -1e9, nil
   local band, streak, sampled_at = START, 0, -1e9
   -- The repaints drawn in each state: what the live cells read back to see it drawn.
   _G.scry_presence_frames = { held = 0, acting = 0 }
 
   local function parse(text)
-    local out =
-      { state = "off", paused = false, place = "bottom", layers = {}, keys = {}, key_w = {} }
+    local out = {
+      state = "off",
+      paused = false,
+      place = "bottom",
+      rec = "none",
+      layers = {},
+      keys = {},
+      key_w = {},
+    }
     local first = true
     for line in text:gmatch("[^\n]+") do
       local k, v = line:match("^(%w+)=(.*)$")
@@ -42,6 +51,8 @@ local set_up, why = pcall(function()
         for layer in v:gmatch("[^,]+") do
           out.layers[layer] = true
         end
+      elseif k == "rec" then
+        out.rec = v
       elseif k == "serial" then
         out.serial = tonumber(v)
       elseif k == "rgb" then
@@ -131,6 +142,27 @@ local set_up, why = pcall(function()
     return (math.floor(255 * alpha + 0.5) << 24) | rgb
   end
 
+  -- A filled disc as stacked boxes: the UI container has no round primitive.
+  local function disc(c, cx, cy, d, ux, col)
+    local rows = 7
+    for i = 0, rows - 1 do
+      local y0 = cy - d / 2 + i * d / rows
+      local y1 = y0 + d / rows
+      local dy = (y0 + y1) / 2 - cy
+      local half = math.sqrt((d / 2) ^ 2 - dy ^ 2) * ux
+      c:draw_box(cx - half, y0, cx + half, y1, 0, col)
+    end
+  end
+
+  -- An eighth note from a disc, a stem and a flag: MAME's UI font is not asked for a glyph.
+  local function note(c, x, y, lh, ux, col)
+    local head, stem = lh * 0.36, lh * 0.07 * ux
+    disc(c, x + head * ux / 2, y + lh - head / 2, head, ux, col)
+    local sx = x + head * ux - stem
+    c:draw_box(sx, y, sx + stem, y + lh - head / 2, 0, col)
+    c:draw_box(sx, y, sx + lh * 0.2 * ux, y + lh * 0.12, 0, col)
+  end
+
   emu.register_frame_done(function()
     if broken then
       return
@@ -151,6 +183,9 @@ local set_up, why = pcall(function()
           raw, cur = text, parse(text)
           if cur.state ~= was.state then
             since = t
+          end
+          if cur.rec ~= was.rec then
+            rec_since = t
           end
           if cur.caption ~= was.caption or cur.serial ~= was.serial then
             if cur.caption then
@@ -188,16 +223,27 @@ local set_up, why = pcall(function()
         c:draw_box(x0, y1, x1, 1 - y1, 0, col)
         c:draw_box(1 - x1, y1, 1 - x0, 1 - y1, 0, col)
       end
+      local lh = ui.line_height
+      local ux = tg.height / tg.width
+      local pad, gap = lh * 0.2, lh * 0.25
+      local rowh = lh + 2 * pad
+      local rec = cur.layers.record and cur.rec or "none"
+      local video, audio = rec ~= "audio", rec ~= "video"
+      local mark_w = 0
+      if rec ~= "none" then
+        rec_w = rec_w or ui:get_string_width("REC")
+        local dot = lh * 0.7 * ux
+        mark_w = pad * ux * 2
+          + dot
+          + (video and pad * ux + rec_w or 0)
+          + (audio and pad * ux + lh * 0.49 * ux or 0)
+      end
       local wants_band = cur.layers.calls or cur.layers.keys
       if wants_band and cur.place == "auto" and t - sampled_at >= SAMPLE_S then
         sampled_at = t
         sample()
       end
       if wants_band or cur.layers.pause then
-        local lh = ui.line_height
-        local ux = tg.height / tg.width
-        local pad, gap = lh * 0.2, lh * 0.25
-        local rowh = lh + 2 * pad
         local where = cur.place == "auto" and band or cur.place
         local function row_y(n)
           if where == "top" then
@@ -206,6 +252,9 @@ local set_up, why = pcall(function()
           return 1 - ey - gap - rowh - n * (rowh + gap)
         end
         local left, right = ex + gap, 1 - ex - gap
+        if where == "top" and mark_w > 0 then
+          right = right - mark_w - gap
+        end
         if cur.layers.pause and cur.paused then
           local bar, y = lh * 0.3 * ux, row_y(0)
           local x = right - (2 * bar + bar * 0.8 + 2 * pad * ux)
@@ -252,6 +301,23 @@ local set_up, why = pcall(function()
             c:draw_text(x + pad * ux, y + pad, name, argb(1, KEY_TEXT_RGB), 0)
             x = x + widths[i] + gap * ux
           end
+        end
+      end
+      -- Top right whatever `place` says; a stopped machine repaints only on a console command,
+      -- so there it stays lit instead of blinking.
+      if mark_w > 0 and (not running or (t - rec_since) % BLINK < BLINK / 2) then
+        local y, right = ey + gap, 1 - ex - gap
+        local x = right - mark_w
+        c:draw_box(x, y, right, y + rowh, 0, argb(KEY_ALPHA, KEY_RGB))
+        x = x + pad * ux
+        disc(c, x + lh * 0.35 * ux, y + rowh / 2, lh * 0.7, ux, argb(1, REC_RGB))
+        x = x + lh * 0.7 * ux + pad * ux
+        if video then
+          c:draw_text(x, y + pad, "REC", argb(1, TEXT_RGB), 0)
+          x = x + rec_w + pad * ux
+        end
+        if audio then
+          note(c, x, y + pad, lh, ux, argb(1, TEXT_RGB))
         end
       end
       _G.scry_presence_frames[now] = _G.scry_presence_frames[now] + 1

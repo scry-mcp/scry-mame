@@ -33,12 +33,15 @@ def _lua() -> str:
 
 
 def state(lines: str, *, caption: str = "", keys: tuple[str, ...] = (), layers: str = "edge",
-          place: str = "top", paused: bool = False, serial: int = 1, held: str = "held") -> str:
+          place: str = "top", paused: bool = False, serial: int = 1, held: str = "held",
+          rec: str = "") -> str:
     """A state file as `mpresence.encode` writes it, by hand so the test names each line."""
     body = [held, f"paused={int(paused)}", f"place={place}", f"layers={layers}"]
     if caption:
         body += [f"serial={serial}", "rgb=FF8C00", f"caption={caption}"]
     body += [f"key={k}" for k in keys]
+    if rec:
+        body.append(f"rec={rec}")
     return "\n".join([*body, lines]).rstrip("\n") + "\n"
 
 
@@ -227,3 +230,95 @@ def test_a_screen_with_no_visible_area_leaves_the_drawer_running(tmp_path: Path)
     body = lit(state("", caption="log", layers="edge,calls", place="auto"))
     frames = run(tmp_path, f"resize(0, 0)\nput_state({body})\nshot(1.0)\nshot(2.0)\nshot(3.0)\n")
     assert all(not any(p[0] == "logerror" for p in f) and boxes(f) for f in frames)
+
+
+RED = presence.LOOK.record_rgb
+
+
+def red(frame: Frame) -> list[list[str]]:
+    """The boxes drawn in the recording mark's colour: the dot."""
+    return [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == RED]
+
+
+def extras(frame: Frame) -> int:
+    """The primitives drawn beyond the edge's own."""
+    return len(frame) - presence.LOOK.steps * 4
+
+
+def recording(rec: str, **kw: object) -> str:
+    return lit(state("", layers="edge,record", rec=rec, **kw))  # type: ignore[arg-type]
+
+
+def test_a_video_recording_draws_a_red_dot_and_rec_in_the_top_right_whatever_place_says(
+        tmp_path: Path) -> None:
+    for place in ("top", "bottom", "auto"):
+        (lit_frame,) = run(tmp_path, f"put_state({recording('video', place=place)})\nshot(0.0)\n")
+        assert texts(lit_frame) == ["REC"], place
+        assert red(lit_frame), place
+        assert all(float(p[1]) > 0.5 and float(p[2]) < 0.3 for p in red(lit_frame) + [
+            q for q in lit_frame if q[0] == "text"]), (place, red(lit_frame))
+
+
+def test_an_audio_recording_draws_a_red_dot_and_a_note_and_no_rec(tmp_path: Path) -> None:
+    (frame,) = run(tmp_path, f"put_state({recording('audio')})\nshot(0.0)\n")
+    (video,) = run(tmp_path, f"put_state({recording('video')})\nshot(0.0)\n")
+    assert texts(frame) == [] and red(frame)
+    assert extras(frame) > len(red(frame)) + 1, "the note is a drawn shape beside the dot"
+    assert len(red(frame)) == len(red(video)), "the same dot in both"
+
+
+def test_both_recordings_draw_the_dot_rec_and_the_note_in_one_mark(tmp_path: Path) -> None:
+    (both,) = run(tmp_path, f"put_state({recording('both')})\nshot(0.0)\n")
+    (audio,) = run(tmp_path, f"put_state({recording('audio')})\nshot(0.0)\n")
+    (video,) = run(tmp_path, f"put_state({recording('video')})\nshot(0.0)\n")
+    assert texts(both) == ["REC"] and len(red(both)) == len(red(video))
+    assert extras(both) == extras(video) + extras(audio) - len(red(video)) - 1
+
+
+def test_the_mark_is_shown_the_first_half_of_each_period_and_the_period_is_the_looks(
+        tmp_path: Path) -> None:
+    def lit_at(frames: list[Frame]) -> list[bool]:
+        return [bool(red(f)) for f in frames]
+
+    first = run(tmp_path, f"put_state({recording('video')})\nshot(0.0)\nshot(0.4)\nshot(0.6)\n"
+                "shot(0.9)\nshot(1.1)\nshot(1.6)\n")
+    assert lit_at(first) == [True, True, False, False, True, False]
+    slow = run(tmp_path, f"put_state({recording('video')})\nshot(0.0)\nshot(0.9)\nshot(1.1)\n"
+               "shot(2.1)\n", presence.Look(record_blink_s=2.0))
+    assert lit_at(slow) == [True, True, False, True]
+
+
+def test_a_stopped_machine_keeps_the_mark_lit_and_does_not_blink_it(tmp_path: Path) -> None:
+    frames = run(tmp_path, f"put_state({recording('video')})\nshot(0.0)\nhalt(true)\n"
+                 "shot(0.6)\nshot(1.6)\n")
+    assert [bool(red(f)) for f in frames] == [True, True, True]
+
+
+def test_no_mark_without_its_layer_or_with_nothing_recording(tmp_path: Path) -> None:
+    unasked = lit(state("", layers="edge", rec="video"))
+    none = lit(state("", layers="edge,record", rec="none"))
+    quiet = lit(state("", layers="edge,record"))
+    frames = run(tmp_path, f"put_state({unasked})\nshot(0.0)\nput_state({none})\nshot(0.1)\n"
+                 f"put_state({quiet})\nshot(0.2)\n")
+    assert all(red(f) == [] and texts(f) == [] for f in frames)
+
+
+def test_the_mark_leaves_the_pause_mark_and_a_top_caption_clear_of_it(tmp_path: Path) -> None:
+    body = lit(state("", caption="log", layers="edge,calls,pause,record", rec="video",
+                     paused=True))
+    frame = run(tmp_path, f"put_state({body})\nshot(0.0)\nshot(0.1)\n")[1]
+    dot = min(float(p[1]) for p in red(frame))
+    (caption_box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == 0
+                      and int(p[6]) > 0 and float(p[2]) < 0.3]
+    assert float(caption_box[3]) <= dot, "the caption's box ends where the mark begins"
+
+
+def test_a_bottom_caption_keeps_its_whole_width_while_the_mark_is_shown(tmp_path: Path) -> None:
+    def caption_right(rec: str) -> float:
+        body = lit(state("", caption="log", layers="edge,calls,record", place="bottom", rec=rec))
+        frame = run(tmp_path, f"put_state({body})\nshot(0.0)\nshot(0.1)\n")[1]
+        (box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == 0
+                  and int(p[6]) > 0]
+        return float(box[3])
+
+    assert caption_right("video") == caption_right("none")

@@ -74,6 +74,20 @@ def test_the_state_file_carries_the_extended_state_one_line_each() -> None:
     assert bare.splitlines() == ["held", "paused=0", "place=auto", "layers=edge"]
 
 
+@pytest.mark.parametrize("recording", ["video", "audio", "both"])
+def test_the_state_file_says_what_is_being_recorded(recording: presence.Recording) -> None:
+    text = mpresence.encode("held", presence.Payload(layers=("edge", "record"),
+                                                     recording=recording))
+    assert text.splitlines() == ["held", "paused=0", "place=auto", "layers=edge,record",
+                                 f"rec={recording}"]
+
+
+def test_the_drawer_takes_the_recording_mark_s_colour_and_period_from_the_look(
+        tmp_path: Path) -> None:
+    look = presence.Look(record_rgb=0x123456, record_blink_s=2.5)
+    assert has(mpresence.drawer(tmp_path, look), "local REC_RGB, BLINK = 0x123456, 2.5")
+
+
 def test_a_line_of_the_state_file_is_printable_ascii_whatever_it_was_given() -> None:
     caption = tl.Caption("a\nb\u00e9\x00", "read", 0x5AC8FA, 1)
     text = mpresence.encode("held", presence.Payload(caption=caption, keys=("\r\u20ac",)))
@@ -83,10 +97,10 @@ def test_a_line_of_the_state_file_is_printable_ascii_whatever_it_was_given() -> 
 
 def test_the_reply_names_the_layers_drawn_and_says_why_mame_has_no_pointer() -> None:
     assert mpresence.overlay_reply(overlay.OVERLAY) == {
-        "layers": ["edge", "keys", "calls", "pause"], "place": "auto",
+        "layers": ["edge", "keys", "calls", "pause", "record"], "place": "auto",
         "lacking": {"pointer": mpresence.LACKING["pointer"]}}
     off = overlay.Overlay(pointer=False, keys=False, place="bottom")
-    assert mpresence.overlay_reply(off) == {"layers": ["edge", "calls", "pause"],
+    assert mpresence.overlay_reply(off) == {"layers": ["edge", "calls", "pause", "record"],
                                             "place": "bottom"}
 
 
@@ -337,7 +351,7 @@ def test_overlay_is_in_the_reply_only_with_a_presence_that_is_on() -> None:
     state.presence = presence.Shown(refused={"available": False, "why": "x"})
     assert state.overlay_field() == {}
     state.presence = presence.Shown(held=_Drawn())  # type: ignore[arg-type]
-    assert state.overlay_field() == {"overlay": {"layers": ["edge", "calls", "pause"],
+    assert state.overlay_field() == {"overlay": {"layers": ["edge", "calls", "pause", "record"],
                                                  "place": "auto", "lacking": {
                                                      "pointer": mpresence.LACKING["pointer"]}}}
 

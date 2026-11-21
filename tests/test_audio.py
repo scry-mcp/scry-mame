@@ -16,9 +16,9 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from lua_support import AVI_HEAD, _captured, _channel, _marks_of  # noqa: E402
+from lua_support import AVI_HEAD, RecordingTold, _captured, _channel, _marks_of  # noqa: E402
 from lua_text import has, squash
-from scry_core import roster, wav
+from scry_core import presence, roster, wav
 from scry_core.file_names import written_as
 from session_doubles import refused, run_host_lua  # noqa: E402
 
@@ -238,6 +238,21 @@ def test_audio_record_checks_the_wav_and_answers_its_fields_in_order(
     assert keys[-1] == "session" and out["session"]["altered"] is False
     assert out["summary"] == f"audio_record: 28800 samples at 48000 Hz x 1 at {path}"
     assert mstate.STATE.captures[-1] == ("wav", str(path))
+
+
+def test_audio_record_tells_the_presence_an_audio_recording_began_and_ended(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    told = RecordingTold()
+    monkeypatch.setattr(mstate.STATE, "presence", presence.Shown(held=told))  # type: ignore[arg-type]
+    _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", AY, _marks("v30-ay-tone", 1))
+    assert s.audio_record(frames=30)["status"] == "ok"
+    _put(ses, 2, ses.scratch / "snap" / "audio-2.wav", None, _marks("v30-ay-tone", 2)[:1])
+    assert s.audio_record(frames=30)["ended"] is False
+    ses.answers[3] = ses.sentinel(3, False, "mcp:5: this machine has no screen to record")
+    refused("no screen", s.audio_record(frames=30))
+    assert told.calls == [("audio", True), ("audio", False)] * 3
 
 
 def test_audio_record_writes_where_it_is_told_and_counts_its_default_with_record(

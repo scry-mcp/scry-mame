@@ -24,6 +24,25 @@ from scry_mame import state as mstate  # noqa: E402
 
 R_ABS = "must be an absolute path"
 
+
+class RecordingTold:
+    """A presence that keeps what the session told it about recordings, in order."""
+
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, bool]] = []
+
+    def recording(self, kind: str, on: bool) -> None:
+        self.calls.append((kind, on))
+
+    def began(self, call: object) -> None:
+        pass
+
+    def ended(self, call: object, outcome: object) -> None:
+        pass
+
+    def paused(self, stopped: bool) -> None:
+        pass
+
 FIXTURES = Path(__file__).parent / "fixtures"
 CONSOLE = (FIXTURES / "console.stdout").read_bytes()
 #: The same session on MAME 0.288, whose console printed a raised chunk's sentinel twice.

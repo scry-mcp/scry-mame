@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, NamedTuple
+from typing import Any, Literal, NamedTuple
 
 from scry_core import avi, wav
 from scry_core import progress as mprogress
@@ -20,6 +20,8 @@ from scry_mame.state import STATE
 
 RECORD_MARK = "MAME_MCP_RECORD"
 NO_SCREEN = "this machine has no screen"
+#: What each recording tool records, as the presence's record mark names it.
+KINDS: dict[str, Literal["video", "audio"]] = {"record": "video", "audio_record": "audio"}
 
 
 def armed(mark: str) -> str:
@@ -93,6 +95,18 @@ def _unsettled(ran: dict[str, Any], what: str, path: Path, ahead: int, drain_ste
                           drain_steps, answer, resent, path=str(path))
 
 
+@contextmanager
+def _marked(what: str) -> Iterator[None]:
+    """The presence's record mark, lit while the recording script runs the machine and dark once
+    that run settles, however it ends: a recording a stop left open is not drawn after it."""
+    kind = KINDS[what]
+    STATE.presence.recording(kind, True)
+    try:
+        yield
+    finally:
+        STATE.presence.recording(kind, False)
+
+
 def recording_run(ses: gs.Session, scratch: Path, *, what: str, script: str, tag: str,
                   run_frames: int, seconds: float, progress: mprogress.Progress, path: Path,
                   frames: int, ends_after: int, file_keys: tuple[str, ...],
@@ -119,8 +133,9 @@ def recording_run(ses: gs.Session, scratch: Path, *, what: str, script: str, tag
         before = read.frame_or_none(ses)
     ahead, drain_steps = mlua.drain_ahead(ses, scratch)
     with mlua.drain_said(ahead, drain_steps), _frames_said(before):
-        ran, answer, resent, moved = mlua.queued_then_ran(
-            ses, scratch, script, run_frames, seconds, progress)
+        with _marked(what):
+            ran, answer, resent, moved = mlua.queued_then_ran(
+                ses, scratch, script, run_frames, seconds, progress)
         if ran.get("status") != "ok":
             if on_bound is not None:
                 seen = mlua.marks_since(scratch, mark, tag)

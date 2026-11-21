@@ -13,13 +13,14 @@ from lua_support import (  # noqa: E402
     R_ABS,
     STA_HEAD,
     TRIO,
+    RecordingTold,
     _captured,
     _channel,
     _logging_stateload,
     _marks_of,
     _whole,
 )
-from scry_core import roster  # noqa: E402
+from scry_core import presence, roster  # noqa: E402
 from scry_core.file_names import written_as  # noqa: E402
 from session_doubles import blank_session, documented, refused  # noqa: E402
 
@@ -129,6 +130,33 @@ def test_record_checks_the_avi_header_and_runs_two_frames_past_the_recording(
     assert keys.index("lines_ahead") < keys.index("path") < keys.index("cause"), (
         "the wrapper's own fields come before the stop survey, as the docstring lists them")
     assert out["session"]["altered"] is False
+
+
+def test_record_tells_the_presence_a_video_recording_began_and_ended(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    told = RecordingTold()
+    monkeypatch.setattr(mstate.STATE, "presence", presence.Shown(held=told))  # type: ignore[arg-type]
+    ses.answers[1] = _captured(5)
+    ses.marks[1] = [m.replace("#5", "#1") for m in _marks_of("MAME_MCP_RECORD#5")]
+    ses.files[1] = (ses.scratch / "snap" / "record-1.avi", AVI_HEAD)
+    assert s.record(frames=30)["status"] == "ok"
+    assert told.calls == [("video", True), ("video", False)]
+
+
+def test_a_record_that_is_refused_or_left_open_still_ends_its_mark(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    told = RecordingTold()
+    monkeypatch.setattr(mstate.STATE, "presence", presence.Shown(held=told))  # type: ignore[arg-type]
+    ses.answers[1] = ses.sentinel(1, False, "mcp:5: this machine has no screen to record")
+    refused("no screen to record", s.record(frames=2))
+    ses.answers[2] = ses.sentinel(2)
+    ses.marks[2] = ["[luaengine] MAME_MCP_RECORD#2 begin frame=10 recording=true"]
+    assert s.record(frames=5)["ended"] is False
+    assert told.calls == [("video", True), ("video", False)] * 2
 
 
 def test_record_writes_to_the_dest_it_is_given_and_names_it(
