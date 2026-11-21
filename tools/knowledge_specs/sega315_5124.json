@@ -1,0 +1,160 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp DEFINE_DEVICE_TYPE sega315_5124",
+      "find": "^DEFINE_DEVICE_TYPE\\(SEGA315_5124,",
+      "key": "sega315_5124"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp DEFINE_DEVICE_TYPE sega315_5246",
+      "find": "^DEFINE_DEVICE_TYPE\\(SEGA315_5246,",
+      "key": "sega315_5246"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp DEFINE_DEVICE_TYPE sega315_5377",
+      "find": "^DEFINE_DEVICE_TYPE\\(SEGA315_5377,",
+      "key": "sega315_5377"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_read",
+      "find": "^u8 sega315_5124_device::data_read\\(\\)$",
+      "key": "0x00",
+      "inside": "sega315_5124_device::data_read"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_write",
+      "find": "^void sega315_5124_device::data_write\\(u8 data\\)$",
+      "key": "0x00",
+      "inside": "sega315_5124_device::data_write"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_read",
+      "find": "^u8 sega315_5124_device::control_read\\(\\)$",
+      "key": "0x01",
+      "inside": "sega315_5124_device::control_read"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write",
+      "find": "^void sega315_5124_device::control_write\\(u8 data\\)$",
+      "key": "0x01",
+      "inside": "sega315_5124_device::control_write"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::vcount_read",
+      "find": "^u8 sega315_5124_device::vcount_read\\(\\)$",
+      "key": "0x02",
+      "inside": "sega315_5124_device::vcount_read"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::hcount_read",
+      "find": "^u8 sega315_5124_device::hcount_read\\(\\)$",
+      "key": "0x03",
+      "inside": "sega315_5124_device::hcount_read"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_display_mode register 0x00",
+      "find": "const bool M4 = BIT\\(m_reg\\[0x00\\], 2\\);",
+      "key": "0x100",
+      "inside": "sega315_5124_device::select_display_mode"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_display_mode register 0x01",
+      "find": "const bool M1 = BIT\\(m_reg\\[0x01\\], 4\\);",
+      "key": "0x101",
+      "inside": "sega315_5124_device::select_display_mode"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::draw_scanline_mode4 register 0x02",
+      "find": "name_base = \\(m_reg\\[0x02\\] << 10\\) & 0x3800;",
+      "key": "0x102",
+      "inside": "sega315_5124_device::draw_scanline_mode4"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::tile1_select_mode4 register 0x03",
+      "find": "return tile_number & \\(\\(m_reg\\[0x03\\] << 1\\) \\| 1\\);",
+      "key": "0x103",
+      "inside": "sega315_5124_device::tile1_select_mode4"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::tile2_select_mode4 register 0x04",
+      "find": "return tile_number & \\(\\(\\(m_reg\\[0x04\\] & 0x07\\) << 6\\) \\| 0x03f\\);",
+      "key": "0x104",
+      "inside": "sega315_5124_device::tile2_select_mode4"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_sprites register 0x05",
+      "find": "m_sprite_attribute_base = \\(m_reg\\[0x05\\] << 7\\) & 0x3f00;",
+      "key": "0x105",
+      "inside": "sega315_5124_device::select_sprites"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_sprites register 0x06",
+      "find": "sprite_tile_selected \\+= 256; /\\* pattern table select \\*/",
+      "key": "0x106",
+      "inside": "sega315_5124_device::select_sprites"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp header register 0x07",
+      "find": "^#define BACKDROP_COLOR",
+      "key": "0x107"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x08",
+      "find": "m_reg8copy = m_reg\\[0x08\\];",
+      "key": "0x108",
+      "inside": "sega315_5124_device::process_line_timer"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x09",
+      "find": "m_reg9copy = m_reg\\[0x09\\];",
+      "key": "0x109",
+      "inside": "sega315_5124_device::process_line_timer"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x0A",
+      "find": "if \\(m_line_counter == 0x00\\)",
+      "key": "0x10A",
+      "inside": "sega315_5124_device::process_line_timer",
+      "which": 1,
+      "of": 2
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write register 0x0B",
+      "find": "reg_num = data & m_reg_num_mask;",
+      "key": "0x10B..0x10F",
+      "inside": "sega315_5124_device::control_write"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/video/315_5124.cpp"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::direct ports",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03"
+      ]
+    },
+    {
+      "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write register file",
+      "keys": [
+        "0x100",
+        "0x101",
+        "0x102",
+        "0x103",
+        "0x104",
+        "0x105",
+        "0x106",
+        "0x107",
+        "0x108",
+        "0x109",
+        "0x10A",
+        "0x10B..0x10F"
+      ]
+    }
+  ]
+}

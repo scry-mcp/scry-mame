@@ -1,0 +1,66 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "z80sio-ports",
+  "kind": "register",
+  "scope": "z80sio",
+  "covers": "The data and control ports of the two channels as the combined handlers decode them: keys 0x100 to 0x103 are the offsets of cd_ba_r and cd_ba_w and keys 0x110 to 0x113 those of ba_cd_r and ba_cd_w, kept above the register numbers of the z80sio dictionary; the direct handlers (da, db, ca, cb) are one port each and are named in the device entry",
+  "complete_against": "mame:src/devices/machine/z80sio.cpp z80sio_device ports",
+  "entries": [
+    {
+      "key": "0x100..0x103",
+      "name": "cd_ba port read",
+      "access": "read",
+      "description": "Combined read: offset bit 1 picks control or data, bit 0 picks channel B or A.",
+      "behaviour": "Offset 0 reads data A, 1 data B, 2 control A, 3 control B. A data read returns the oldest received character and advances the FIFO, unless first-character mode holds a framing or overrun error; an empty FIFO repeats the last one. A control read returns RR0 to RR2 as the pointer says.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::cd_ba_r port 0x100..0x103",
+          "cites": "\treturn cd ? channel->control_read() : channel->data_read();"
+        }
+      ]
+    },
+    {
+      "key": "0x100..0x103",
+      "name": "cd_ba port write",
+      "access": "write",
+      "description": "Combined write: offset bit 1 picks control or data, bit 0 picks channel B or A.",
+      "behaviour": "Offset 0 writes data A, 1 data B, 2 control A, 3 control B. A data write loads the transmit buffer (an unsent byte is lost), clears the transmit interrupt and, in async mode with the transmitter enabled and idle, starts sending. A control write goes to the register the pointer names, then clears it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::cd_ba_w port 0x100..0x103",
+          "cites": "\tif (cd)"
+        }
+      ]
+    },
+    {
+      "key": "0x110..0x113",
+      "name": "ba_cd port read",
+      "access": "read",
+      "description": "Combined read: offset bit 0 picks control or data, bit 1 picks channel B or A.",
+      "behaviour": "Offset 0 reads data A, 1 control A, 2 data B, 3 control B. A data read returns the oldest received character and advances the FIFO, unless first-character mode holds a framing or overrun error; an empty FIFO repeats the last one. A control read returns RR0 to RR2 as the pointer says.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::ba_cd_r port 0x110..0x113",
+          "cites": "\treturn cd ? channel->control_read() : channel->data_read();"
+        }
+      ]
+    },
+    {
+      "key": "0x110..0x113",
+      "name": "ba_cd port write",
+      "access": "write",
+      "description": "Combined write: offset bit 0 picks control or data, bit 1 picks channel B or A.",
+      "behaviour": "Offset 0 writes data A, 1 control A, 2 data B, 3 control B. A data write loads the transmit buffer (an unsent byte is lost), clears the transmit interrupt and, in async mode with the transmitter enabled and idle, starts sending. A control write goes to the register the pointer names, then clears it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::ba_cd_w port 0x110..0x113",
+          "cites": "\tif (cd)"
+        }
+      ]
+    }
+  ]
+}

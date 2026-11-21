@@ -1,0 +1,162 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "msm5205",
+  "kind": "register",
+  "scope": "msm5205",
+  "covers": "The handlers and callbacks of the OKI MSM5205, a chip with no register file, numbered in the order the header declares them",
+  "complete_against": "mame:src/devices/sound/msm5205.h msm5205_device public handlers",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "set_prescaler_selector",
+      "aliases": [
+        "prescaler selector"
+      ],
+      "description": "Machine-configuration call that presets the rate selectors and the data width from one of eight constants.",
+      "behaviour": "Bit 0 sets S1, bit 1 sets S2 and bit 2 chooses 4-bit data when set, 3-bit when clear, so S96_3B is 0 and SEX_4B is 7. It only stores the three values, without updating the stream or restarting the VCK timer as playmode_w does. A chip never configured starts as S96_4B.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.h msm5205_device::set_prescaler_selector",
+          "cites": "\tvoid set_prescaler_selector(int select)"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "vck_callback",
+      "aliases": [
+        "VCK output",
+        "data request"
+      ],
+      "description": "Output callback bound by the driver: it receives every level of the VCK pin, the cue to supply the next nibble with data_w.",
+      "behaviour": "In a master mode a timer toggles VCK every prescaler/2 clocks and calls this with the new level, so each sample has a rising and a falling edge. In slave mode (S1 and S2 both set) the timer is stopped and it is never called. The nibble is captured 6 clocks after the falling edge.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_callback",
+          "cites": "\tauto vck_callback() { return m_vck_cb.bind(); }"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "vck_legacy_callback",
+      "aliases": [
+        "legacy VCK callback"
+      ],
+      "description": "Second output callback: it is called with 1 once per sample, at the capture point after the falling edge of VCK.",
+      "behaviour": "Called only when bound. It runs just before the chip reads its latched nibble, so a data_w made inside it decides that sample. In master mode it fires 6 clocks after each falling edge, in slave mode 6 clocks after a vclk_w that fell.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_legacy_callback",
+          "cites": "\tauto vck_legacy_callback() { return m_vck_legacy_cb.bind(); }"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "reset_w",
+      "access": "write",
+      "aliases": [
+        "reset pin"
+      ],
+      "description": "Reset pin: nonzero holds the decoder at rest, zero lets it play.",
+      "behaviour": "The value is only stored, and is checked at each capture point. While set, a capture forces the signal and the step index to 0 and ignores the latched nibble, which stays. The header asks to hold it for two VCK cycles; it is 0 after a device reset.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::reset_w",
+          "cites": "void msm5205_device::reset_w(int state)"
+        }
+      ]
+    },
+    {
+      "key": "0x04",
+      "name": "data_w",
+      "access": "write",
+      "aliases": [
+        "nibble input"
+      ],
+      "description": "Supplies the next ADPCM nibble; it is latched and decoded at the next capture point.",
+      "behaviour": "In 4-bit mode bits 0 to 3 are latched; in 3-bit mode bits 0 to 2 are latched shifted up one place, so input bit 2 becomes the sign. The chip decodes the last value written before the capture and imposes no nibble order. Bit 3 of the latched nibble is the sign, bits 0 to 2 the magnitude.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::data_w",
+          "cites": "void msm5205_device::data_w(u8 data)"
+        }
+      ]
+    },
+    {
+      "key": "0x05",
+      "name": "vclk_w",
+      "access": "write",
+      "aliases": [
+        "VCK input"
+      ],
+      "description": "VCK input for slave mode: the driver supplies the clock edges itself.",
+      "behaviour": "Valid only in slave mode (S1 and S2 both set); in any other mode it logs an error and changes nothing. On a 1 to 0 change it schedules the capture 6 clocks later, then stores the level. The header asks to call it after data_w and reset_w when they change at the same time.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::vclk_w",
+          "cites": "void msm5205_device::vclk_w(int state)"
+        }
+      ]
+    },
+    {
+      "key": "0x06",
+      "name": "playmode_w",
+      "access": "write",
+      "aliases": [
+        "play mode",
+        "prescaler select"
+      ],
+      "description": "Sets the rate selectors S1 and S2 and the data width from one byte.",
+      "behaviour": "Bit 0 is S1, bit 1 is S2, bit 2 chooses 4-bit data when set, else 3-bit; other bits are ignored. A change of S1 or S2 updates the stream and restarts the VCK timer: prescaler 96 with both clear, 48 with S1 only, 64 with S2 only, slave mode with both. Sample rate is clock over prescaler.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::playmode_w",
+          "cites": "void msm5205_device::playmode_w(u8 data)"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "s1_w",
+      "access": "write",
+      "aliases": [
+        "S1 pin"
+      ],
+      "description": "Drives the S1 rate-select pin.",
+      "behaviour": "A nonzero state sets S1 and zero clears it; a change updates the stream and restarts the VCK timer for the new prescaler, an unchanged value does nothing. The data width is untouched. The prescaler table is under playmode_w.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s1_w",
+          "cites": "void msm5205_device::s1_w(int state)"
+        }
+      ]
+    },
+    {
+      "key": "0x08",
+      "name": "s2_w",
+      "access": "write",
+      "aliases": [
+        "S2 pin"
+      ],
+      "description": "Drives the S2 rate-select pin.",
+      "behaviour": "A nonzero state sets S2 and zero clears it; a change updates the stream and restarts the VCK timer for the new prescaler, an unchanged value does nothing. The data width is untouched. The prescaler table is under playmode_w.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s2_w",
+          "cites": "void msm5205_device::s2_w(int state)"
+        }
+      ]
+    }
+  ]
+}

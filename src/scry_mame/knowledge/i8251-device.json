@@ -1,0 +1,53 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "i8251-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The Intel 8251 USART as a chip",
+  "complete_against": "mame:src/devices/machine/i8251.cpp DEFINE_DEVICE_TYPE",
+  "left_out": [
+    {
+      "key": "v5x_scu",
+      "why": "the NEC V5X serial unit derives from the i8251 and adds an interrupt mask read and write at offset 3 and a separate mode write at offset 2, so its layout differs from the i8251 entries; its handlers were read but it is not written here"
+    }
+  ],
+  "entries": [
+    {
+      "key": "i8251",
+      "name": "Intel 8251 USART",
+      "aliases": [
+        "8251",
+        "uPD71051",
+        "USART"
+      ],
+      "description": "Serial port chip with asynchronous and synchronous modes: a data port, a control and status port, and pins for the modem handshake lines.",
+      "behaviour": "Offset 0 is data; offset 1 is control on a write and status on a read. Characters move on clock edges at the TxC and RxC pins, so the baud rate is the clock divided by the mode byte's factor. Output pins are TxD, DTR, RTS, RxRDY, TxRDY, TxEMPTY and SYNDET; inputs are RxD, CTS, DSR, SYN.",
+      "classes": [
+        "i8251_device"
+      ],
+      "handlers": {
+        "read": "data (offset 0) or status (offset 1)",
+        "write": "data (offset 0) or control (offset 1)",
+        "data_r": "data read",
+        "data_w": "data write",
+        "status_r": "status read",
+        "control_w": "control write: mode, sync characters or command",
+        "write_rxd": "RxD input line",
+        "write_cts": "CTS input line",
+        "write_dsr": "DSR input line",
+        "write_txc": "TxC clock input",
+        "write_rxc": "RxC clock input",
+        "write_syn": "SYN input line, read as an input only with external sync",
+        "txrdy_r": "TxRDY pin level",
+        "rxrdy_r": "RxRDY pin level"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp DEFINE_DEVICE_TYPE i8251",
+          "cites": "DEFINE_DEVICE_TYPE(I8251,   i8251_device,  \"i8251\",    \"Intel 8251 USART\")"
+        }
+      ]
+    }
+  ]
+}

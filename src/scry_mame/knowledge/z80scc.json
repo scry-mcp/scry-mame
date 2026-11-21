@@ -1,0 +1,577 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "z80scc",
+  "kind": "register",
+  "scope": "z80scc",
+  "covers": "One channel's register file of the Zilog SCC family: write registers WR0 to WR15 (access write) and read registers RR0 to RR15 (access read), keyed by the register number the WR0 pointer selects, with 8 to 15 reached by the point high command; key 0x10 is WR7 prime, reached through WR7. Both channels hold the whole set, except that WR2 and WR9 exist once and RR3 is read in channel A only. Which registers exist depends on the type tested in the source: Z85X3X types (scc8530, scc85c30, scc85230, scc85233, scc8523l) use the pointer, Z80X30 types (scc8030, scc80c30, scc80230) address registers directly, ESCC types are scc80230, scc85230 and scc8523l (scc85233 is outside the source's ESCC set), and WR7 prime and the extended reads need an ESCC or scc85c30 type",
+  "complete_against": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write and scc_register_read",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "WR0 pointer and command",
+      "access": "write",
+      "aliases": [
+        "register pointer",
+        "command register"
+      ],
+      "description": "Command register: the register pointer, the command and the CRC reset code in one byte.",
+      "behaviour": "Bits 0-2 are the register pointer for the next control access (Z85X3X types), shared by both channels and cleared after that access; the point high command adds 8. Bits 3-5 are the command and bits 6-7 a CRC reset code (see the command entries). Z80X30 types have no pointer: the zbus offset names the register.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x00",
+          "cites": "\tcase REG_WR0_COMMAND_REGPT:     do_sccreg_wr0(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "WR1 interrupt and wait",
+      "access": "write",
+      "aliases": [
+        "interrupt enables",
+        "wait/request"
+      ],
+      "description": "Interrupt enables and the wait or DMA request function.",
+      "behaviour": "Bit 0 enables external/status interrupts, bit 1 transmit interrupts, bit 2 makes a parity error a special condition. Bits 3-4: 01 interrupts on the first character until re-armed, 10 on every character, 00 and 11 on none. Bits 7 and 6 both set let bit 5 pick the W/REQ pin as receive-ready or transmit-ready; wait mode is not implemented.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x01",
+          "cites": "\tcase REG_WR1_INT_DMA_ENABLE:    do_sccreg_wr1(data); m_uart->check_interrupts(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "WR2 interrupt vector",
+      "access": "write",
+      "aliases": [
+        "vector"
+      ],
+      "description": "The interrupt vector, one for both channels.",
+      "behaviour": "A write through either channel stores the vector in channel A's WR2 and in RR2 of both channels, then re-evaluates the interrupt line. When WR9 bit 0 is set, an interrupt replaces the vector's bits 1-3 (bits 4-6 if WR9 bit 4) with the channel and source before it is acknowledged.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x02",
+          "cites": "\tcase REG_WR2_INT_VECTOR:        do_sccreg_wr2(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "WR3 receive control",
+      "access": "write",
+      "aliases": [
+        "receiver control"
+      ],
+      "description": "Receiver enable, hunt mode, auto enables and receive character length.",
+      "behaviour": "Bit 0 enables the receiver; bits 1-3 (sync inhibit, address search, Rx CRC) are stored and unused. Bit 4 set or bit 0 clear sets RR0 bit 4; bit 5 lets CTS set WR5 bit 3 and DCD set bit 0. Bits 6-7 set both lengths: 0 is 5, 1 is 7, 2 is 6, 3 is 8.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x03",
+          "cites": "\tcase REG_WR3_RX_CONTROL:        do_sccreg_wr3(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x04",
+      "name": "WR4 modes and clock",
+      "access": "write",
+      "aliases": [
+        "parity and stop bits"
+      ],
+      "description": "Parity, stop bits, synchronous mode and the clock multiplier.",
+      "behaviour": "Bit 0 parity enable, bit 1 even parity. Bits 3-2 stop bits: 01 one, 10 one and a half, 11 two, 00 synchronous (unmodelled); bits 5-4 sync mode are stored and unused; bits 7-6 clock multiplier 1, 16, 32, 64. A write equal to the current value does nothing; any other reprograms the frame and resets both shift registers.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x04",
+          "cites": "\tcase REG_WR4_RX_TX_MODES:       do_sccreg_wr4(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x05",
+      "name": "WR5 transmit control",
+      "access": "write",
+      "aliases": [
+        "transmitter control"
+      ],
+      "description": "Transmitter enable, break, RTS and DTR outputs.",
+      "behaviour": "Bit 3 enables the transmitter, bit 4 sends break, bit 1 drives /RTS low (cleared, it rises once the transmitter empties if WR3 bit 5 is set), bit 7 drives /DTR low unless WR14 bit 2. Bits 0 and 2 are unused; bits 6-5 only log, as WR3 sets the length. A write equal to the current value does nothing.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x05",
+          "cites": "\tcase REG_WR5_TX_CONTROL:        do_sccreg_wr5(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x06",
+      "name": "WR6 sync low",
+      "access": "write",
+      "aliases": [
+        "sync character low"
+      ],
+      "description": "Low byte of the sync character or the SDLC address.",
+      "behaviour": "Stored as the low byte of the sync pattern, which is stored and unused by MAME.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x06",
+          "cites": "\tcase REG_WR6_SYNC_OR_SDLC_A:    do_sccreg_wr6(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "WR7 sync high",
+      "access": "write",
+      "aliases": [
+        "sync character high"
+      ],
+      "description": "High byte of the sync character or the SDLC flag.",
+      "behaviour": "On ESCC and 85C30 types, a write while WR15 bit 0 is 1 goes to WR7 prime (key 0x10) instead. Any other write is stored as the high byte of the sync pattern, which is stored and unused by MAME.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x07",
+          "cites": "\tcase REG_WR7_SYNC_OR_SDLC_F:    do_sccreg_wr7(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x08",
+      "name": "WR8 transmit data",
+      "access": "write",
+      "aliases": [
+        "transmit buffer"
+      ],
+      "description": "The transmit buffer: the same as a write to the data port.",
+      "behaviour": "Queues the byte in the transmit FIFO (1 deep, 4 on ESCC types); a write with the FIFO full is discarded. The shift register loads at once if the transmitter is enabled (WR5 bit 3) and idle, clearing RR1 bit 0. With WR1 bit 1 set, a free slot raises the transmit interrupt.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x08",
+          "cites": "\tcase REG_WR8_TRANSMIT_DATA:     do_sccreg_wr8(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x09",
+      "name": "WR9 master interrupt",
+      "access": "write",
+      "aliases": [
+        "master interrupt control",
+        "reset command"
+      ],
+      "description": "Master interrupt control and reset commands, one register shared by both channels.",
+      "behaviour": "Bit 0 vector includes status, bit 1 no vector (an acknowledge gives the CPU's default vector), bit 2 disable lower chain, bit 3 master interrupt enable (no interrupt while clear), bit 4 status high, bit 5 software acknowledge (CMOS and ESCC types). Bits 6-7 are a reset command (see the command entries).",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x09",
+          "cites": "\tcase REG_WR9_MASTER_INT_CTRL:   do_sccreg_wr9(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0A",
+      "name": "WR10 misc control",
+      "access": "write",
+      "aliases": [
+        "sync and encoding"
+      ],
+      "description": "Miscellaneous transmit and receive control: sync length, loop, idle, encoding, CRC preset.",
+      "behaviour": "All bits are only logged: 0 six-bit sync, 1 loop mode, 2 abort or flag on underrun, 3 mark or flag idle, 4 go active on poll, 5-6 encoding (NRZ, NRZI, FM1, FM0), 7 CRC preset. Channel reset keeps bits 5-6, hardware reset clears all; an ESCC extended read returns it as RR11.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0A",
+          "cites": "\tcase REG_WR10_MSC_RX_TX_CTRL:   do_sccreg_wr10(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0B",
+      "name": "WR11 clock mode",
+      "access": "write",
+      "aliases": [
+        "clock source select"
+      ],
+      "description": "Clock sources and the RTxC and TRxC pin modes.",
+      "behaviour": "Bits 6-5 pick the receive clock and bits 4-3 the transmit clock: 0 RTxC, 2 baud rate generator; 1 TRxC and 3 DPLL stop that clock. Bit 7 (crystal), bit 2 and bits 1-0 (TRxC output) are only logged, and with bit 7 set a /SYNC input change is a fatal error; hardware reset sets 0x08.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0B",
+          "cites": "\tcase REG_WR11_CLOCK_MODES:      do_sccreg_wr11(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0C",
+      "name": "WR12 BRG low",
+      "access": "write",
+      "aliases": [
+        "time constant low"
+      ],
+      "description": "Low byte of the baud rate generator time constant.",
+      "behaviour": "With WR13 the bit rate is the source divided by (constant + 2) and by 2 times the WR4 multiplier. The source is the device clock when WR14 bit 1 is set, else the clock the driver gave to configure_channels for the channel. A write reprograms the serial clocks at once.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0C",
+          "cites": "\tcase REG_WR12_LO_BAUD_GEN:      do_sccreg_wr12(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0D",
+      "name": "WR13 BRG high",
+      "access": "write",
+      "aliases": [
+        "time constant high"
+      ],
+      "description": "High byte of the baud rate generator time constant.",
+      "behaviour": "The high byte of the constant described at WR12. A write reprograms the serial clocks at once, so a driver sets WR12 and WR13 with the generator disabled, as the source advises.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0D",
+          "cites": "\tcase REG_WR13_HI_BAUD_GEN:      do_sccreg_wr13(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0E",
+      "name": "WR14 BRG and loopback",
+      "access": "write",
+      "aliases": [
+        "miscellaneous control",
+        "DPLL command"
+      ],
+      "description": "Baud rate generator enable and source, DTR/REQ function, loopback and DPLL commands.",
+      "behaviour": "Bit 0 enables the generator (the serial clocks use it only while set), bit 1 selects the device clock over RTxC, bit 2 makes the /DTR pin the transmit request, bit 4 is local loopback. Bit 3 and the DPLL commands in bits 7-5 are stored and unused. Hardware reset leaves bits 5-4 set.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0E",
+          "cites": "\tcase REG_WR14_MISC_CTRL:        do_sccreg_wr14(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0F",
+      "name": "WR15 status enables",
+      "access": "write",
+      "aliases": [
+        "external status control"
+      ],
+      "description": "Which external/status conditions raise an interrupt, and the gates of the extended registers.",
+      "behaviour": "Bits 3, 4, 5 enable the interrupt on a DCD, /SYNC or CTS change (WR1 bit 0 too); bit 1 enables a zero count interrupt on each period of the running baud generator. Bit 0 diverts WR7 writes to WR7 prime (ESCC, 85C30) and bit 2 gates the extended reads. Bits 6-7 are unused; channel reset sets 0xF8.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0F",
+          "cites": "\tcase REG_WR15_EXT_ST_INT_CTRL:  do_sccreg_wr15(data); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x10",
+      "name": "WR7 prime",
+      "access": "write",
+      "aliases": [
+        "WR7'",
+        "extended write register 7"
+      ],
+      "description": "Extra write register of ESCC and 85C30 types, reached by writing WR7 while WR15 bit 0 is 1.",
+      "behaviour": "Only bits 2 and 6 act. Bit 2 (ESCC types) delays the transmit interrupt until the transmit FIFO is completely empty, not just has a free slot. Bit 6 turns on the extended reads of RR4, RR5, RR9, RR11 and RR14 (ESCC types, WR15 bit 2 set); RR14 returns this register when set.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr7 WR7 prime",
+          "cites": "\t\tm_wr7p = data;"
+        }
+      ]
+    },
+    {
+      "key": "0x00",
+      "name": "RR0 status",
+      "access": "read",
+      "aliases": [
+        "buffer and modem status"
+      ],
+      "description": "Receive and transmit buffer status and the modem input levels.",
+      "behaviour": "Bit 0 receive character available, bit 2 transmit empty, bits 3 DCD and 5 CTS (1 while the pin is active), bit 4 /SYNC pin or hunt. Bit 6 is 1 from reset; bits 1, 7 are never set. After an enabled change, bits with their WR15 enable set hold the value at the change until the reset external/status command.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x00",
+          "cites": "\tcase REG_RR0_STATUS:         data = do_sccreg_rr0(); break; // TODO: verify handling of SCC specific bits: D6 and D1"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "RR1 special conditions",
+      "access": "read",
+      "aliases": [
+        "receive errors",
+        "all sent"
+      ],
+      "description": "Special receive condition flags and the all-sent bit.",
+      "behaviour": "Bit 0 all sent is set at reset, cleared when the transmitter is loaded and set when it empties. Bit 5 overrun is the only error MAME sets, loaded from the receive FIFO on each data read; bits 4, 6, 7 stay 0. Bits 1-2 read 1 from reset, never changing.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x01",
+          "cites": "\tcase REG_RR1_SPEC_RCV_COND:  data = do_sccreg_rr1(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "RR2 vector",
+      "access": "read",
+      "aliases": [
+        "interrupt vector"
+      ],
+      "description": "The interrupt vector; channel B adds the status of the pending interrupt.",
+      "behaviour": "Channel A returns WR2. Channel B, whatever WR9 bit 0 says, replaces vector bits 3-1 (6-4 if WR9 bit 4) with the channel (1 for A) and source (0 transmit, 1 external, 2 receive, 3 special) of the first pending interrupt; with none it returns WR2. On CMOS and ESCC types with WR9 bit 5 it also acknowledges it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x02",
+          "cites": "\tcase REG_RR2_INTERRUPT_VECT: data = do_sccreg_rr2(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "RR3 interrupt pending",
+      "access": "read",
+      "aliases": [
+        "pending bits"
+      ],
+      "description": "Interrupt pending bits of both channels, readable in channel A only.",
+      "behaviour": "Channel B reads 0. Bits 0-2 are channel B external, transmit and receive pending; bits 3-5 the same for channel A; bits 6-7 are 0. A special receive condition sets the external bit; each bit clears as its source is serviced or reset.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x03",
+          "cites": "\tcase REG_RR3_INTERUPPT_PEND: data = wreg ? m_wr3 : do_sccreg_rr3(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x04",
+      "name": "RR4 WR4 or RR0",
+      "access": "read",
+      "aliases": [
+        "extended read 4"
+      ],
+      "description": "Reads as RR0, or as WR4 in the ESCC extended read.",
+      "behaviour": "Reads as RR0 on every type, except on ESCC types with WR15 bit 2 and WR7 prime bit 6 both set, where it returns WR4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x04",
+          "cites": "\tcase REG_RR4_WR4_OR_RR0:     data = wreg ? m_wr4 : do_sccreg_rr4(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x05",
+      "name": "RR5 WR5 or RR1",
+      "access": "read",
+      "aliases": [
+        "extended read 5"
+      ],
+      "description": "Reads as RR1, or as WR5 in the ESCC extended read.",
+      "behaviour": "Reads as RR1 on every type, except on ESCC types with WR15 bit 2 and WR7 prime bit 6 both set, where it returns WR5.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x05",
+          "cites": "\tcase REG_RR5_WR5_OR_RR0:     data = wreg ? m_wr5 : do_sccreg_rr5(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x06",
+      "name": "RR6 count low",
+      "access": "read",
+      "aliases": [
+        "status FIFO low"
+      ],
+      "description": "Frame byte count low, or an image of RR2.",
+      "behaviour": "Reads as RR2 when WR15 bit 2 is clear and on NMOS types. Otherwise it returns 0: the status FIFO byte count is not implemented.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x06",
+          "cites": "\tcase REG_RR6_LSB_OR_RR2:     data = do_sccreg_rr6(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "RR7 count high",
+      "access": "read",
+      "aliases": [
+        "status FIFO high"
+      ],
+      "description": "Frame byte count high, or an image of RR3.",
+      "behaviour": "Reads as RR3 when WR15 bit 2 is clear and on NMOS types, so 0 on channel B. Otherwise it returns 0: the status FIFO is not implemented.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x07",
+          "cites": "\tcase REG_RR7_MSB_OR_RR3:     data = wreg ? m_wr7p : do_sccreg_rr7(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x08",
+      "name": "RR8 receive data",
+      "access": "read",
+      "aliases": [
+        "receive buffer"
+      ],
+      "description": "The receive buffer: the same as a read of the data port.",
+      "behaviour": "Pops the receive FIFO (3 deep, 8 on ESCC types); an empty FIFO returns 0. The character's error bits load into RR1; an overrun, or a parity error with WR1 bit 2 set, locks the FIFO and raises a special interrupt, so the same character reads again until the error reset command.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x08",
+          "cites": "\tcase REG_RR8_RECEIVE_DATA:   data = data_read(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x09",
+      "name": "RR9 WR3 or RR13",
+      "access": "read",
+      "aliases": [
+        "extended read 9"
+      ],
+      "description": "Reads as RR13, or as WR3 in the ESCC extended read.",
+      "behaviour": "Reads as RR13, the high byte of the baud generator constant, except on ESCC types with WR15 bit 2 and WR7 prime bit 6 both set, where it returns WR3.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x09",
+          "cites": "\tcase REG_RR9_WR3_OR_RR13:    data = do_sccreg_rr9(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0A",
+      "name": "RR10 misc status",
+      "access": "read",
+      "aliases": [
+        "DPLL status"
+      ],
+      "description": "Miscellaneous status: loop, DPLL clock missing and sync bits.",
+      "behaviour": "MAME never sets any bit, so it reads 0 and logs that the feature is not implemented. Channel reset keeps only its bit 6.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0A",
+          "cites": "\tcase REG_RR10_MISC_STATUS:   data = wreg ? m_wr10 : do_sccreg_rr10(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0B",
+      "name": "RR11 WR10 or RR15",
+      "access": "read",
+      "aliases": [
+        "extended read 11"
+      ],
+      "description": "Reads as RR15, or as WR10 in the ESCC extended read.",
+      "behaviour": "Reads as RR15, which is WR15 with bits 0 and 2 cleared, except on ESCC types with WR15 bit 2 and WR7 prime bit 6 both set, where it returns WR10.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0B",
+          "cites": "\tcase REG_RR11_WR10_OR_RR15:  data = do_sccreg_rr11(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0C",
+      "name": "RR12 BRG low",
+      "access": "read",
+      "aliases": [
+        "time constant low"
+      ],
+      "description": "Reads back WR12, the low byte of the baud rate generator constant.",
+      "behaviour": "Returns the stored WR12 with no other effect.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0C",
+          "cites": "\tcase REG_RR12_LO_TIME_CONST: data = do_sccreg_rr12(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0D",
+      "name": "RR13 BRG high",
+      "access": "read",
+      "aliases": [
+        "time constant high"
+      ],
+      "description": "Reads back WR13, the high byte of the baud rate generator constant.",
+      "behaviour": "Returns the stored WR13 with no other effect. RR9 reads as this register on most types.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0D",
+          "cites": "\tcase REG_RR13_HI_TIME_CONST: data = do_sccreg_rr13(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0E",
+      "name": "RR14 WR7 prime or RR10",
+      "access": "read",
+      "aliases": [
+        "extended read 14"
+      ],
+      "description": "Reads as RR10, or as WR7 prime.",
+      "behaviour": "ESCC and 85C30 types return WR7 prime when its bit 6 is set, else RR10, which reads 0. Other types return RR10. On ESCC types with WR15 bit 2 set and WR7 prime bit 6 set it returns WR7 prime.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0E",
+          "cites": "\tcase REG_RR14_WR7_OR_R10:    data = do_sccreg_rr14(); break;"
+        }
+      ]
+    },
+    {
+      "key": "0x0F",
+      "name": "RR15 status enables",
+      "access": "read",
+      "aliases": [
+        "WR15 readback"
+      ],
+      "description": "Reads back WR15, the external/status interrupt enables.",
+      "behaviour": "Returns WR15 with bits 0 and 2 cleared, so the WR7 prime and status FIFO enables read as 0. Channel reset sets WR15 to 0xF8.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0F",
+          "cites": "\tcase REG_RR15_WR15_EXT_STAT: data = do_sccreg_rr15(); break;"
+        }
+      ]
+    }
+  ]
+}

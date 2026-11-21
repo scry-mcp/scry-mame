@@ -1,0 +1,185 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "mc68681-commands",
+  "kind": "command",
+  "scope": "mc68681",
+  "covers": "The byte written to the command registers CRA and CRB of the MC68681: enable bits in the low nibble and a command in bits 4 to 6",
+  "complete_against": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR commands",
+  "reached": {
+    "data": [
+      "write"
+    ]
+  },
+  "entries": [
+    {
+      "key": "0x00..0x0F",
+      "name": "no command",
+      "access": "write",
+      "aliases": [
+        "enable disable"
+      ],
+      "description": "Command field 0: no command, only the receiver and transmitter enable bits in the low nibble act.",
+      "behaviour": "Bit 0 enables the receiver, bit 1 disables it and clears receiver ready; both set means disabled. Bit 2 enables the transmitter only if bit 2 of the previous write was clear, setting ready and empty; bit 3 disables it and clears both. These act after any command.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x00..0x0F",
+          "cites": "\tcase 0: /* No command */"
+        }
+      ]
+    },
+    {
+      "key": "0x10..0x1F",
+      "name": "reset MR pointer",
+      "access": "write",
+      "aliases": [
+        "reset mode pointer"
+      ],
+      "description": "Command field 1: points the channel's mode pointer back at MR1.",
+      "behaviour": "The next mode register access reaches MR1, and the one after MR2. Reset does this for both channels. The low nibble enables and disables as in field 0.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x10..0x1F",
+          "cites": "\tcase 1: /* Reset MR pointer. Causes the channel MR pointer to point to MR1 */"
+        }
+      ]
+    },
+    {
+      "key": "0x20..0x2F",
+      "name": "reset receiver",
+      "access": "write",
+      "aliases": [
+        "flush receiver"
+      ],
+      "description": "Command field 2: disables the receiver and flushes its FIFO.",
+      "behaviour": "The FIFO and shift register empty, and receiver ready, break, framing, parity and overrun clear in SR; FIFO full is not cleared. The receiver stays off until a later write sets bit 0, or bit 0 of this same byte does.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x20..0x2F",
+          "cites": "\tcase 2: /* Reset channel receiver (disable receiver and flush fifo) */"
+        }
+      ]
+    },
+    {
+      "key": "0x30..0x3F",
+      "name": "reset transmitter",
+      "access": "write",
+      "aliases": [
+        "flush transmitter"
+      ],
+      "description": "Command field 3: stops the transmitter and empties its holding register.",
+      "behaviour": "Transmitter ready and empty clear in SR and the ISR ready bit with them, TxD goes to 1, the shifter and holding byte are dropped and the transmitter is disabled. Enabling it again needs a write with bit 2 set that follows one with bit 2 clear, so 0x34 re-enables only if the previous write had bit 2 clear.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x30..0x3F",
+          "cites": "\tcase 3: /* Reset channel transmitter */"
+        }
+      ]
+    },
+    {
+      "key": "0x40..0x4F",
+      "name": "reset error status",
+      "access": "write",
+      "aliases": [
+        "clear errors"
+      ],
+      "description": "Command field 4: clears the error bits of the status register.",
+      "behaviour": "Received break, framing error, parity error and overrun clear in SR. Characters already queued keep their stored errors, which load into SR as they reach the head of the FIFO.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x40..0x4F",
+          "cites": "\tcase 4: /* Reset Error Status */"
+        }
+      ]
+    },
+    {
+      "key": "0x50..0x5F",
+      "name": "reset break change",
+      "access": "write",
+      "aliases": [
+        "clear delta break"
+      ],
+      "description": "Command field 5: clears the channel's delta break interrupt.",
+      "behaviour": "ISR bit 2 clears for channel A or bit 6 for channel B, and the interrupt line is re-evaluated.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x50..0x5F",
+          "cites": "\tcase 5: /* Reset Channel break change interrupt */"
+        }
+      ]
+    },
+    {
+      "key": "0x60..0x6F",
+      "name": "start break",
+      "access": "write",
+      "aliases": [
+        "send break"
+      ],
+      "description": "Command field 6: starts a break on the transmit line, which MAME does not drive.",
+      "behaviour": "Only the internal break flag is set, and only if it was clear; no break reaches TxD. In local loopback (MR2 bits 6-7 equal to 2) it also sets the delta break ISR bit and queues a null character with received break into the receive FIFO.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x60..0x6F",
+          "cites": "\tcase 6: /* Start Tx break */"
+        }
+      ]
+    },
+    {
+      "key": "0x70..0x7F",
+      "name": "stop break",
+      "access": "write",
+      "aliases": [
+        "end break"
+      ],
+      "description": "Command field 7: ends a break started by command 6.",
+      "behaviour": "Does nothing if no break is running. Otherwise it clears the flag and, in local loopback only, sets the delta break ISR bit.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x70..0x7F",
+          "cites": "\tcase 7: /* Stop tx break */"
+        }
+      ]
+    },
+    {
+      "key": "0x80..0xBF",
+      "name": "xr68c681 baud extend",
+      "access": "write",
+      "aliases": [
+        "extend bits"
+      ],
+      "description": "Bit 7 set with fields 0 to 3: on the xr68c681 only, set or clear the extend bit of a baud table.",
+      "behaviour": "Fields 8 and 9 set and clear the receiver X bit, A and B the transmitter X bit; the channel's baud rates are recomputed and the rest of the byte acts as no command. The mc68681 and scn2681 ignore bit 7, so these bytes run commands 0 to 3.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0x80..0xBF",
+          "cites": "\t\tcase 0x08: /* set RX extend bit */"
+        }
+      ]
+    },
+    {
+      "key": "0xC0..0xFF",
+      "name": "xr68c681 power",
+      "access": "write",
+      "aliases": [
+        "low power"
+      ],
+      "description": "Bit 7 set with fields 4 to 7: on the xr68c681 only, low power commands and two reserved codes.",
+      "behaviour": "Fields C to F do nothing but pass the low nibble on as no command; entering low power is a noted unimplemented case. The mc68681 and scn2681 ignore bit 7, so these bytes run commands 4 to 7.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0xC0..0xFF",
+          "cites": "\t\tcase 0x0c: /* enter low power mode TODO: unimplemented */"
+        }
+      ]
+    }
+  ]
+}

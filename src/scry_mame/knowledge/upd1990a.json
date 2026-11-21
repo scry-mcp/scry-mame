@@ -1,0 +1,184 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "upd1990a",
+  "kind": "register",
+  "scope": "upd1990a",
+  "covers": "The pins of the NEC uPD1990A and uPD4990A, as MAME's handlers expose them",
+  "complete_against": "mame:src/devices/machine/upd1990a.h upd1990a_device handlers",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "oe_w",
+      "access": "write",
+      "aliases": [
+        "OUT ENBL",
+        "output enable"
+      ],
+      "description": "The output enable pin of DATA OUT.",
+      "behaviour": "While OE is low, DATA OUT reads 1 (high impedance), except in test mode. A change of OE, unless the latched command is test mode, sends the resulting DATA OUT level to the data callback.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device oe_w",
+          "cites": "\tvoid oe_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "cs_w",
+      "access": "write",
+      "aliases": [
+        "chip select"
+      ],
+      "description": "The chip select pin.",
+      "behaviour": "While CS is low, STB and CLK are ignored completely, so no command is latched and nothing shifts. The C pins, DATA IN and OE are still stored; CS is a level and has no edge action.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device cs_w",
+          "cites": "\tvoid cs_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "stb_w",
+      "access": "write",
+      "aliases": [
+        "STB",
+        "strobe"
+      ],
+      "description": "The strobe pin: a rising edge latches and runs the command.",
+      "behaviour": "Needs CS high and a 0 to 1 change. The command is the C pin value, except that value 7 means test mode on a 1990A and, on a 4990A, takes the 4-bit command from the serial command register instead. See upd1990a-commands.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device stb_w",
+          "cites": "\tvoid stb_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "clk_w",
+      "access": "write",
+      "aliases": [
+        "CLK",
+        "shift clock"
+      ],
+      "description": "The shift clock pin: a rising edge shifts the register.",
+      "behaviour": "Needs CS high. It shifts the time register right only while the latched command is 1 (shift). On a 4990A with the C pins at 7 every edge also shifts the 4-bit command register, DATA IN entering at its top bit, and its outgoing bit feeds the time register instead of DATA IN.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device clk_w",
+          "cites": "\tvoid clk_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x04",
+      "name": "c0_w",
+      "access": "write",
+      "aliases": [
+        "C0"
+      ],
+      "description": "Bit 0 of the command pins.",
+      "behaviour": "Only stored; nothing happens until STB rises. The value should be 0 or 1 because it is merged unmasked.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c0_w",
+          "cites": "\tvoid c0_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x05",
+      "name": "c1_w",
+      "access": "write",
+      "aliases": [
+        "C1"
+      ],
+      "description": "Bit 1 of the command pins.",
+      "behaviour": "Only stored; nothing happens until STB rises. The value should be 0 or 1 because it is merged unmasked.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c1_w",
+          "cites": "\tvoid c1_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x06",
+      "name": "c2_w",
+      "access": "write",
+      "aliases": [
+        "C2"
+      ],
+      "description": "Bit 2 of the command pins.",
+      "behaviour": "Only stored; nothing happens until STB rises. On a 4990A, all three pins high at that moment (and at each CLK) selects the serial command mode.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c2_w",
+          "cites": "\tvoid c2_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "data_in_w",
+      "access": "write",
+      "aliases": [
+        "DATA IN"
+      ],
+      "description": "The serial data input pin.",
+      "behaviour": "Only stored. It is sampled at each rising CLK: it enters the top of the time register under the shift command, or the top of the 4-bit command register in the 4990A serial mode.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device data_in_w",
+          "cites": "\tvoid data_in_w(int state);"
+        }
+      ]
+    },
+    {
+      "key": "0x08",
+      "name": "data_out_r",
+      "access": "read",
+      "aliases": [
+        "DATA OUT"
+      ],
+      "description": "Reads the DATA OUT pin.",
+      "behaviour": "Returns 1 when OE is low unless in test mode. Otherwise bit 0 of the time register after a strobe or shift, or a square wave under hold and read commands (see upd1990a-commands). Each change also goes to the data callback.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device data_out_r",
+          "cites": "\tint data_out_r();"
+        }
+      ]
+    },
+    {
+      "key": "0x09",
+      "name": "tp_r",
+      "access": "read",
+      "aliases": [
+        "TP",
+        "time pulse"
+      ],
+      "description": "Reads the TP time pulse pin.",
+      "behaviour": "Returns the current level of a square wave the commands set (64 Hz after hold, other rates by command), low at start; only time set in test mode stops it, low. Each toggle also goes to the TP callback.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device tp_r",
+          "cites": "\tint tp_r();"
+        }
+      ]
+    }
+  ]
+}

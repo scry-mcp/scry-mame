@@ -1,0 +1,291 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "z80scc-commands",
+  "kind": "command",
+  "scope": "z80scc",
+  "covers": "The command fields of two bytes of the Zilog SCC: WR0 (CRC reset code in bits 7-6, keyed by the byte itself, 0x00 to 0xFF; command in bits 5-3, keyed 0x100 plus the field in place) and WR9 (reset command in bits 7-6, keyed 0x200 plus the byte). A single byte can carry a CRC code and a command together",
+  "complete_against": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 and do_sccreg_wr9 commands",
+  "reached": {
+    "data": [
+      "ca_w",
+      "cb_w",
+      "dc_ab_w",
+      "ab_dc_w",
+      "zbus_w"
+    ]
+  },
+  "entries": [
+    {
+      "key": "0x00..0x3F",
+      "name": "CRC reset null",
+      "access": "write",
+      "aliases": [
+        "no CRC reset"
+      ],
+      "description": "WR0 bits 7-6 are 00: no CRC reset.",
+      "behaviour": "Keyed by the byte written to WR0, whose bits 7-6 select the CRC reset code. No action; the pointer and command fields of the same byte still apply.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset null",
+          "cites": "\tcase WR0_CRC_RESET_NULL:"
+        }
+      ]
+    },
+    {
+      "key": "0x40..0x7F",
+      "name": "reset Rx CRC checker",
+      "access": "write",
+      "aliases": [
+        "CRC reset receive"
+      ],
+      "description": "WR0 bits 7-6 are 01: reset the receive CRC checker.",
+      "behaviour": "Not implemented: MAME only logs it. The pointer and command fields of the same byte still apply.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset receive",
+          "cites": "\tcase WR0_CRC_RESET_RX: /* In Synchronous mode: all Os (zeros) (CCITT-O CRC-16) */"
+        }
+      ]
+    },
+    {
+      "key": "0x80..0xBF",
+      "name": "reset Tx CRC generator",
+      "access": "write",
+      "aliases": [
+        "CRC reset transmit"
+      ],
+      "description": "WR0 bits 7-6 are 10: reset the transmit CRC generator.",
+      "behaviour": "Not implemented: MAME only logs it. The pointer and command fields of the same byte still apply.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset transmit",
+          "cites": "\tcase WR0_CRC_RESET_TX: /* In HDLC mode: all 1s (ones) (CCITT-1) */"
+        }
+      ]
+    },
+    {
+      "key": "0xC0..0xFF",
+      "name": "reset Tx underrun latch",
+      "access": "write",
+      "aliases": [
+        "CRC reset underrun"
+      ],
+      "description": "WR0 bits 7-6 are 11: reset the transmit underrun/EOM latch.",
+      "behaviour": "Not implemented: MAME only logs it, and RR0 bit 6 is not changed. The pointer and command fields of the same byte still apply.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset underrun",
+          "cites": "\tcase WR0_CRC_RESET_TX_UNDERRUN: /* Resets Tx underrun/EOM bit (D6 of the RRO register) */"
+        }
+      ]
+    },
+    {
+      "key": "0x100",
+      "name": "null command",
+      "access": "write",
+      "aliases": [
+        "no command"
+      ],
+      "description": "WR0 command 0: do nothing.",
+      "behaviour": "Bits 5-3 of the WR0 byte are 000. No action; the pointer and CRC reset fields of the same byte still apply.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 0",
+          "cites": "\tcase WR0_NULL: // Do nothing"
+        }
+      ]
+    },
+    {
+      "key": "0x108",
+      "name": "point high",
+      "access": "write",
+      "aliases": [
+        "register 8 to 15"
+      ],
+      "description": "WR0 command 1: the next control access reaches registers 8 to 15.",
+      "behaviour": "On Z85X3X types it adds 8 to the register pointer in bits 2-0 of the same byte, for one access. On Z80X30 types it is a null command.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 1",
+          "cites": "\tcase WR0_POINT_HIGH:"
+        }
+      ]
+    },
+    {
+      "key": "0x110",
+      "name": "reset ext/status ints",
+      "access": "write",
+      "aliases": [
+        "reset external status"
+      ],
+      "description": "WR0 command 2: release the latched RR0 status and the external interrupt.",
+      "behaviour": "Clears the channel's pending external interrupt and the RR0 latch, but only when no WR15-enabled status bit differs now from the latched value; otherwise the latch and the interrupt stay.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 2",
+          "cites": "\tcase WR0_RESET_EXT_STATUS:"
+        }
+      ]
+    },
+    {
+      "key": "0x118",
+      "name": "send abort",
+      "access": "write",
+      "aliases": [
+        "abort"
+      ],
+      "description": "WR0 command 3: send an SDLC abort.",
+      "behaviour": "Not implemented: MAME only logs it and the transmitter is not flushed.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 3",
+          "cites": "\tcase WR0_SEND_ABORT: // Flush transmitter and Send 8-13 bits of '1's, used with SDLC"
+        }
+      ]
+    },
+    {
+      "key": "0x120",
+      "name": "enable int on next Rx",
+      "access": "write",
+      "aliases": [
+        "interrupt on next char"
+      ],
+      "description": "WR0 command 4: arm the first-character receive interrupt again.",
+      "behaviour": "Sets the flag that lets WR1 mode 01 (interrupt on the first character) interrupt on the next character received.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 4",
+          "cites": "\tcase WR0_ENABLE_INT_NEXT_RX: // enable interrupt on next receive character"
+        }
+      ]
+    },
+    {
+      "key": "0x128",
+      "name": "reset Tx int pending",
+      "access": "write",
+      "aliases": [
+        "reset transmit interrupt"
+      ],
+      "description": "WR0 command 5: clear a pending transmit interrupt.",
+      "behaviour": "Clears the channel's pending transmit interrupt and its RR3 bit, and suppresses the interrupt that the character now being sent would raise when it completes.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 5",
+          "cites": "\tcase WR0_RESET_TX_INT: // reset transmitter interrupt pending"
+        }
+      ]
+    },
+    {
+      "key": "0x130",
+      "name": "error reset",
+      "access": "write",
+      "aliases": [
+        "reset receive error"
+      ],
+      "description": "WR0 command 6: unlock the receive FIFO after an error.",
+      "behaviour": "When the receive FIFO is not empty it steps past the character at its head, which is lost if unread, and so ends the lock a special condition set.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 6",
+          "cites": "\tcase WR0_ERROR_RESET:"
+        }
+      ]
+    },
+    {
+      "key": "0x138",
+      "name": "reset highest IUS",
+      "access": "write",
+      "aliases": [
+        "end of interrupt"
+      ],
+      "description": "WR0 command 7: end service of the highest-priority interrupt.",
+      "behaviour": "Clears the first in-service flag in the order A external/special, A transmit, A receive, B external/special, B transmit, B receive, updates the interrupt line, then re-checks the receive interrupt condition.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 7",
+          "cites": "\tcase WR0_RESET_HIGHEST_IUS:"
+        }
+      ]
+    },
+    {
+      "key": "0x200..0x23F",
+      "name": "no reset",
+      "access": "write",
+      "aliases": [
+        "WR9 no reset"
+      ],
+      "description": "WR9 bits 7-6 are 00: no reset.",
+      "behaviour": "Keyed 0x200 plus the byte written to WR9, whose bits 7-6 are the reset command. The other WR9 bits are stored and nothing is reset.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset no reset",
+          "cites": "\tcase WR9_CMD_NORESET:"
+        }
+      ]
+    },
+    {
+      "key": "0x240..0x27F",
+      "name": "reset channel B",
+      "access": "write",
+      "aliases": [
+        "WR9 channel B reset"
+      ],
+      "description": "WR9 bits 7-6 are 01: channel reset of channel B.",
+      "behaviour": "Empties the FIFOs, sets WR0 and WR5 to 0, WR4 to 0x04, WR15 to 0xF8, keeps WR1 bits 2 and 5 and WR3 bit 0, and sets RR0 bits 2 and 6. Stops the baud timer and recomputes /RTS and /DTR; pending interrupt state is not cleared.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset reset channel B",
+          "cites": "\tcase WR9_CMD_CHNB_RESET:"
+        }
+      ]
+    },
+    {
+      "key": "0x280..0x2BF",
+      "name": "reset channel A",
+      "access": "write",
+      "aliases": [
+        "WR9 channel A reset"
+      ],
+      "description": "WR9 bits 7-6 are 10: channel reset of channel A.",
+      "behaviour": "The same channel reset for channel A, which also clears the pending and in-service state of every interrupt source of both channels.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset reset channel A",
+          "cites": "\tcase WR9_CMD_CHNA_RESET:"
+        }
+      ]
+    },
+    {
+      "key": "0x2C0..0x2FF",
+      "name": "hardware reset",
+      "access": "write",
+      "aliases": [
+        "WR9 force hardware reset"
+      ],
+      "description": "WR9 bits 7-6 are 11: reset the whole device.",
+      "behaviour": "Resets both channels and gives WR10 0, WR11 0x08 and WR14 bits 5-4 set; Z80X30 types keep WR0 bits 1-0. WR9 keeps bits 3, 4 and 2 as written (interrupt enable, status high, disable lower chain) and clears bits 0, 1 and 5.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset hardware reset",
+          "cites": "\tcase WR9_CMD_HW_RESET:"
+        }
+      ]
+    }
+  ]
+}

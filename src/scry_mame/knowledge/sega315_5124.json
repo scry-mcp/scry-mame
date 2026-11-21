@@ -1,0 +1,114 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "sega315_5124",
+  "kind": "register",
+  "scope": "sega315_5124",
+  "covers": "The four direct ports of the 315-5124 family video chip: data, control and status, vertical counter and horizontal counter. MAME names one handler per port, so the keys 0x00 to 0x03 number them in that order; the register file is the dictionary sega315_5124-regs.",
+  "complete_against": "mame:src/devices/video/315_5124.cpp sega315_5124_device::direct ports",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "data read",
+      "access": "read",
+      "aliases": [
+        "data port read"
+      ],
+      "description": "Reads the video RAM through a one byte read-ahead buffer.",
+      "behaviour": "Returns the buffer, then reloads it from video RAM at the 14 bit address register and increments the address. The read is always from video RAM, even when the code selects colour RAM. It also cancels a half-finished control write.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_read",
+          "cites": "u8 sega315_5124_device::data_read()"
+        }
+      ]
+    },
+    {
+      "key": "0x00",
+      "name": "data write",
+      "access": "write",
+      "aliases": [
+        "data port write"
+      ],
+      "description": "Writes video RAM or colour RAM at the address register.",
+      "behaviour": "Cancels a half-finished control write. Code 3 writes colour RAM at the address masked to its size, any other code writes video RAM (14 bit address); then the read buffer takes the byte and the address increments. The 315-5377 in its own colour mode stores a colour only on an odd address, as the buffer byte plus this byte.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_write",
+          "cites": "void sega315_5124_device::data_write(u8 data)"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "status",
+      "access": "read",
+      "aliases": [
+        "control read",
+        "VDP status"
+      ],
+      "description": "Reads the status flags and clears them.",
+      "behaviour": "Bit 7 vertical interrupt, bit 6 sprite overflow, bit 5 sprite collision; bits 0 to 4 read 1 (after an overflow, a number derived from the overflowing sprite). The read first brings pending flags up to date, then clears the three flags, the line interrupt latch and any half-finished control write, and releases /INT.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_read",
+          "cites": "u8 sega315_5124_device::control_read()"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "control write",
+      "access": "write",
+      "aliases": [
+        "control port write",
+        "address or register"
+      ],
+      "description": "Two bytes in a row: the first is a value, the second sets a code and either the address or a register number.",
+      "behaviour": "The first byte sets the address low byte. The second gives the code in bits 6 and 7 (0 read, 1 write, 2 register, 3 colour RAM) and address high bits in bits 0 to 5. Code 0 also preloads the buffer; code 2 stores the first byte in register (second and 0x0F) and resets the code.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write",
+          "cites": "void sega315_5124_device::control_write(u8 data)"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "V counter",
+      "access": "read",
+      "aliases": [
+        "vertical counter"
+      ],
+      "description": "Reads the vertical line counter.",
+      "behaviour": "Returns the screen line minus the first line of the active display, low 8 bits, so it counts from 0 at the first active line and wraps. It keeps the previous line number until a fixed position early in the line.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::vcount_read",
+          "cites": "u8 sega315_5124_device::vcount_read()"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "H counter",
+      "access": "read",
+      "aliases": [
+        "horizontal counter"
+      ],
+      "description": "Reads the horizontal counter as last latched.",
+      "behaviour": "Returns the value stored by the last hcount_latch call, never the live position, and clears the latched flag; the flag is also cleared on the last line of the top border. The stored value is the horizontal clock minus 46, halved, low 8 bits.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::hcount_read",
+          "cites": "u8 sega315_5124_device::hcount_read()"
+        }
+      ]
+    }
+  ]
+}

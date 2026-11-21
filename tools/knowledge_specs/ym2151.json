@@ -1,0 +1,191 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/sound/ymopm.cpp DEFINE_DEVICE_TYPE ym2151",
+      "find": "^DEFINE_DEVICE_TYPE\\(YM2151,",
+      "key": "ym2151"
+    },
+    {
+      "ref": "mame:src/devices/sound/ymopm.cpp DEFINE_DEVICE_TYPE ym2164",
+      "find": "^DEFINE_DEVICE_TYPE\\(YM2164,",
+      "key": "ym2164"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x01",
+      "find": "^//\\s+01 xxxxxx-x Test register",
+      "key": "0x01"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x08",
+      "find": "^//\\s+08 -x------ Key on/off operator 4",
+      "key": "0x08"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x0F",
+      "find": "^//\\s+0F x------- Noise enable",
+      "key": "0x0F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x10",
+      "find": "^//\\s+10 xxxxxxxx Timer A value \\(upper 8 bits\\)",
+      "key": "0x10"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x11",
+      "find": "^//\\s+11 ------xx Timer A value \\(lower 2 bits\\)",
+      "key": "0x11"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x12",
+      "find": "^//\\s+12 xxxxxxxx Timer B value",
+      "key": "0x12"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x14",
+      "find": "^//\\s+14 x------- CSM mode",
+      "key": "0x14"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x18",
+      "find": "^//\\s+18 xxxxxxxx LFO frequency",
+      "key": "0x18"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x19",
+      "find": "^//\\s+19 0xxxxxxx AM LFO depth",
+      "key": "0x19"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x1A",
+      "find": "^//\\s+1A -xxxxxxx PM depth",
+      "key": "0x1A"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x1B",
+      "find": "^//\\s+1B xx------ CT \\(2 output data lines\\)",
+      "key": "0x1B"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x20..0x27",
+      "find": "^//\\s+20-27 x------- Pan right",
+      "key": "0x20..0x27"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x28..0x2F",
+      "find": "^//\\s+28-2F -xxxxxxx Key code",
+      "key": "0x28..0x2F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x30..0x37",
+      "find": "^//\\s+30-37 xxxxxx-- Key fraction",
+      "key": "0x30..0x37"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x38..0x3F",
+      "find": "^//\\s+38-3F -xxx---- LFO PM sensitivity",
+      "key": "0x38..0x3F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x40..0x5F",
+      "find": "^//\\s+40-5F -xxx---- Detune value",
+      "key": "0x40..0x5F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x60..0x7F",
+      "find": "^//\\s+60-7F -xxxxxxx Total level",
+      "key": "0x60..0x7F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x80..0x9F",
+      "find": "^//\\s+80-9F xx------ Key scale rate",
+      "key": "0x80..0x9F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xA0..0xBF",
+      "find": "^//\\s+A0-BF x------- LFO AM enable",
+      "key": "0xA0..0xBF"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xC0..0xDF",
+      "find": "^//\\s+C0-DF xx------ Detune 2 value",
+      "key": "0xC0..0xDF"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xE0..0xFF",
+      "find": "^//\\s+E0-FF xxxx---- Sustain level",
+      "key": "0xE0..0xFF"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map left out 0x00",
+      "find": "mystery registers in the 00-07 range",
+      "key": "0x00"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map left out 0x02..0x07",
+      "find": "mystery registers in the 00-07 range",
+      "key": "0x02..0x07"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp opm_registers register map left out 0x09..0x0E",
+      "find": "^\\t\\tm_regdata\\[index\\] = data;$",
+      "key": "0x09..0x0E",
+      "inside": "opm_registers::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp opm_registers register map left out 0x13",
+      "find": "^\\t\\tm_regdata\\[index\\] = data;$",
+      "key": "0x13",
+      "inside": "opm_registers::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp opm_registers register map left out 0x15..0x17",
+      "find": "^\\t\\tm_regdata\\[index\\] = data;$",
+      "key": "0x15..0x17",
+      "inside": "opm_registers::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp opm_registers register map left out 0x1C..0x1F",
+      "find": "^\\t\\tm_regdata\\[index\\] = data;$",
+      "key": "0x1C..0x1F",
+      "inside": "opm_registers::write"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/sound/ymopm.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/sound/ymopm.cpp"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02..0x07",
+        "0x08",
+        "0x09..0x0E",
+        "0x0F",
+        "0x10",
+        "0x11",
+        "0x12",
+        "0x13",
+        "0x14",
+        "0x15..0x17",
+        "0x18",
+        "0x19",
+        "0x1A",
+        "0x1B",
+        "0x1C..0x1F",
+        "0x20..0x27",
+        "0x28..0x2F",
+        "0x30..0x37",
+        "0x38..0x3F",
+        "0x40..0x5F",
+        "0x60..0x7F",
+        "0x80..0x9F",
+        "0xA0..0xBF",
+        "0xC0..0xDF",
+        "0xE0..0xFF"
+      ]
+    }
+  ]
+}

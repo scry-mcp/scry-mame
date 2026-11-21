@@ -1,0 +1,282 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "upd1990a-commands",
+  "kind": "command",
+  "scope": "upd1990a",
+  "covers": "The command set of the uPD1990A and uPD4990A, selected by the C pins or the 4-bit serial command register when STB rises",
+  "complete_against": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w commands",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "register hold",
+      "access": "write",
+      "aliases": [
+        "hold"
+      ],
+      "description": "Command 0: the shift register is held; the clock runs and test mode ends.",
+      "behaviour": "CLK does not shift while it is latched. DATA OUT toggles every half second (1 Hz pulse) and TP at 64 Hz with a 32768 Hz crystal, both starting at once. The clock is enabled and test mode is cleared.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x00",
+          "cites": "\t\tcase MODE_REGISTER_HOLD:"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "shift",
+      "access": "write",
+      "aliases": [
+        "register shift"
+      ],
+      "description": "Command 1: CLK shifts the time register, least significant bit first.",
+      "behaviour": "Each rising CLK shifts the register one bit right, DATA IN entering at bit 7 of its last byte. The register is 5 bytes, or 6 on a 4990A in serial mode. The strobe puts bit 0 of byte 0 on DATA OUT, stops its pulse, and starts the clock unless in test mode.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x01",
+          "cites": "\t\tcase MODE_SHIFT:"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "time set",
+      "access": "write",
+      "aliases": [
+        "time set, counter hold"
+      ],
+      "description": "Command 2: copies the shift register into the time counter and sets the emulated date and time.",
+      "behaviour": "Bytes 0 to 4 (and 5, the year, in 4990A serial mode) load the counter; layout is under command 0x03. MAME disables the clock, but realigning its sub-second divider re-arms it in the same strobe, so the clock keeps running. DATA OUT shows bit 0 and stops pulsing; in test mode TP goes low and stops.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x02",
+          "cites": "\t\tcase MODE_TIME_SET:"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "time read",
+      "access": "write",
+      "aliases": [
+        "time read"
+      ],
+      "description": "Command 3: copies the time counter into the shift register to be shifted out.",
+      "behaviour": "Byte 0 seconds, 1 minutes, 2 hours, 3 day, all BCD; byte 4 high nibble month (binary 1 to 12), low nibble weekday minus 1; byte 5, 4990A serial mode only, BCD year. DATA OUT pulses at 1 Hz on a 4990A, 0.5 Hz on a 1990A (512 Hz in test mode); TP is 32 Hz in test mode.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x03",
+          "cites": "\t\tcase MODE_TIME_READ:"
+        }
+      ]
+    },
+    {
+      "key": "0x04",
+      "name": "TP 64 Hz",
+      "access": "write",
+      "aliases": [
+        "tp 64"
+      ],
+      "description": "Command 4: TP becomes a 64 Hz square wave.",
+      "behaviour": "TP toggles at 64 Hz with a 32768 Hz crystal, starting at once. The clock is enabled and test mode ends.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x04",
+          "cites": "\t\tcase MODE_TP_64HZ:"
+        }
+      ]
+    },
+    {
+      "key": "0x05",
+      "name": "TP 256 Hz",
+      "access": "write",
+      "aliases": [
+        "tp 256"
+      ],
+      "description": "Command 5: TP becomes a 256 Hz square wave.",
+      "behaviour": "TP toggles at 256 Hz with a 32768 Hz crystal, starting at once. The clock is enabled and test mode ends.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x05",
+          "cites": "\t\tcase MODE_TP_256HZ:"
+        }
+      ]
+    },
+    {
+      "key": "0x06",
+      "name": "TP 2048 Hz",
+      "access": "write",
+      "aliases": [
+        "tp 2048"
+      ],
+      "description": "Command 6: TP becomes a 2048 Hz square wave.",
+      "behaviour": "TP toggles at 2048 Hz with a 32768 Hz crystal, starting at once. The clock is enabled and test mode ends.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x06",
+          "cites": "\t\tcase MODE_TP_2048HZ:"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "TP 4096 Hz",
+      "access": "write",
+      "aliases": [
+        "tp 4096"
+      ],
+      "description": "Command 7: TP becomes a 4096 Hz square wave; only reachable through the 4-bit serial command.",
+      "behaviour": "TP toggles at 4096 Hz with a 32768 Hz crystal. The C pins at 7 never give this: they mean test mode on a 1990A and the serial mode on a 4990A. The clock is enabled and test mode ends.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x07",
+          "cites": "\t\tcase MODE_TP_4096HZ:"
+        }
+      ]
+    },
+    {
+      "key": "0x08",
+      "name": "TP 1 s interval",
+      "access": "write",
+      "aliases": [
+        "tp 1s"
+      ],
+      "description": "Command 8: TP becomes a square wave with a 1 second period; serial command only.",
+      "behaviour": "TP toggles every half second with a 32768 Hz crystal, starting at once. The clock is enabled and test mode ends. MAME treats interval and pulse alike; the source marks the difference as unknown.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x08",
+          "cites": "\t\tcase MODE_TP_1S_INT:"
+        }
+      ]
+    },
+    {
+      "key": "0x09",
+      "name": "TP 10 s interval",
+      "access": "write",
+      "aliases": [
+        "tp 10s"
+      ],
+      "description": "Command 9: TP becomes a square wave with a 10 second period; serial command only.",
+      "behaviour": "TP toggles every 5 seconds with a 32768 Hz crystal, starting at once. The clock is enabled and test mode ends.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x09",
+          "cites": "\t\tcase MODE_TP_10S_INT:"
+        }
+      ]
+    },
+    {
+      "key": "0x0A",
+      "name": "TP 30 s interval",
+      "access": "write",
+      "aliases": [
+        "tp 30s"
+      ],
+      "description": "Command 10: TP becomes a square wave with a 30 second period; serial command only.",
+      "behaviour": "TP toggles every 15 seconds with a 32768 Hz crystal, starting at once. The clock is enabled and test mode ends.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0A",
+          "cites": "\t\tcase MODE_TP_30S_INT:"
+        }
+      ]
+    },
+    {
+      "key": "0x0B",
+      "name": "TP 60 s interval",
+      "access": "write",
+      "aliases": [
+        "tp 60s"
+      ],
+      "description": "Command 11: TP becomes a square wave with a 60 second period; serial command only.",
+      "behaviour": "TP toggles every 30 seconds with a 32768 Hz crystal, starting at once. The clock is enabled and test mode ends.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0B",
+          "cites": "\t\tcase MODE_TP_60S_INT:"
+        }
+      ]
+    },
+    {
+      "key": "0x0C",
+      "name": "INT reset output",
+      "access": "write",
+      "aliases": [
+        "interrupt reset"
+      ],
+      "description": "Command 12: interrupt output reset; serial command only and not emulated.",
+      "behaviour": "MAME does nothing for it beyond the effect shared by commands 4 to 14: the clock is enabled and test mode ends. The source marks it as to do.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0C",
+          "cites": "\t\tcase MODE_INT_RESET_OUTPUT:"
+        }
+      ]
+    },
+    {
+      "key": "0x0D",
+      "name": "INT run clock",
+      "access": "write",
+      "aliases": [
+        "interrupt run"
+      ],
+      "description": "Command 13: interrupt output, clock running; serial command only and not emulated.",
+      "behaviour": "MAME does nothing for it beyond the effect shared by commands 4 to 14: the clock is enabled and test mode ends. The source marks it as to do.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0D",
+          "cites": "\t\tcase MODE_INT_RUN_CLOCK:"
+        }
+      ]
+    },
+    {
+      "key": "0x0E",
+      "name": "INT stop clock",
+      "access": "write",
+      "aliases": [
+        "interrupt stop"
+      ],
+      "description": "Command 14: interrupt output, clock stopped; serial command only and not emulated.",
+      "behaviour": "MAME does nothing for it beyond the effect shared by commands 4 to 14, so the clock is enabled, not stopped, and test mode ends. The source marks it as to do.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0E",
+          "cites": "\t\tcase MODE_INT_STOP_CLOCK:"
+        }
+      ]
+    },
+    {
+      "key": "0x0F",
+      "name": "test mode",
+      "access": "write",
+      "aliases": [
+        "test"
+      ],
+      "description": "Command 15: test mode, reached by the C pins at 7 on a 1990A or the 4-bit serial value 15.",
+      "behaviour": "Stops the clock and the data pulse and counts at 8192 Hz on a 4990A, 1024 Hz on a 1990A with a 32768 Hz crystal. With OE low each byte counts alone and DATA OUT goes high when any wraps; with OE high the bytes ripple. Command 0 or 4 to 14 leaves it; untested in the source.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0F",
+          "cites": "\t\tcase MODE_TEST:"
+        }
+      ]
+    }
+  ]
+}

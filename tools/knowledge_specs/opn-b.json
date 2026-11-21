@@ -1,0 +1,890 @@
+{
+  "rows": [
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x00..0x05",
+      "find": "^//\\s+00,02,04 xxxxxxxx Tone period \\(fine\\)",
+      "key": "0x00..0x05"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x06",
+      "find": "^//\\s+06 ---xxxxx Noise period",
+      "key": "0x06"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x07",
+      "find": "^//\\s+07 x------- I/O B in\\(0\\) or out\\(1\\)",
+      "key": "0x07"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x08..0x0A",
+      "find": "^//\\s+08,09,0A ---x---- Mode: fixed",
+      "key": "0x08..0x0A"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0B",
+      "find": "^//\\s+0B xxxxxxxx Envelope period fine",
+      "key": "0x0B"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0C",
+      "find": "^//\\s+0C xxxxxxxx Envelope period coarse",
+      "key": "0x0C"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0D",
+      "find": "^//\\s+0D ----x--- Envelope shape: continue",
+      "key": "0x0D"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0E..0x0F",
+      "find": "^//\\s+0E xxxxxxxx 8-bit parallel I/O port A",
+      "key": "0x0E..0x0F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x10",
+      "find": "^//\\s+00 x------- Dump \\(disable=1\\) or keyon \\(0\\) control",
+      "key": "0x10"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x11",
+      "find": "^//\\s+01 --xxxxxx Total level",
+      "key": "0x11"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x12",
+      "find": "uint32_t test\\(\\) const\\s+\\{ return m_regdata\\[0x02\\]",
+      "key": "0x12"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data left out 0x13..0x17",
+      "find": "m_adpcm_a\\.write\\(m_address & 0x0f, data\\);",
+      "key": "0x13..0x17",
+      "inside": "ym2608::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x18..0x1D",
+      "find": "^//\\s+08-0D x------- Pan left",
+      "key": "0x18..0x1D"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data left out 0x1E..0x1F",
+      "find": "m_adpcm_a\\.write\\(m_address & 0x0f, data\\);",
+      "key": "0x1E..0x1F",
+      "inside": "ym2608::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data left out 0x20",
+      "find": "// 20-28, 2A-FF: write to FM",
+      "key": "0x20",
+      "inside": "ym2608::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x21",
+      "find": "^\\tuint32_t test\\(\\) const",
+      "key": "0x21"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x22",
+      "find": "^//\\s+22 ----x--- LFO enable",
+      "key": "0x22"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x24",
+      "find": "^//\\s+24 xxxxxxxx Timer A value \\(upper 8 bits\\)",
+      "key": "0x24"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x25",
+      "find": "^//\\s+25 ------xx Timer A value \\(lower 2 bits\\)",
+      "key": "0x25"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x26",
+      "find": "^//\\s+26 xxxxxxxx Timer B value",
+      "key": "0x26"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x27",
+      "find": "^//\\s+27 xx------ CSM/Multi-frequency",
+      "key": "0x27"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x28",
+      "find": "^//\\s+28 x------- Key on/off operator 4",
+      "key": "0x28"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data register 0x29",
+      "find": "// 29: special IRQ mask register",
+      "key": "0x29",
+      "inside": "ym2608::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data left out 0x2A..0x2C",
+      "find": "// 20-28, 2A-FF: write to FM",
+      "key": "0x2A..0x2C",
+      "inside": "ym2608::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2D",
+      "find": "^\\t\\tif \\(m_address == 0x2d\\)",
+      "key": "0x2D",
+      "inside": "ym2608::write_address"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2E",
+      "find": "else if \\(m_address == 0x2e && ",
+      "key": "0x2E",
+      "inside": "ym2608::write_address"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2F",
+      "find": "else if \\(m_address == 0x2f\\)",
+      "key": "0x2F",
+      "inside": "ym2608::write_address"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x30..0x3F",
+      "find": "^//\\s+30-3F -xxx---- Detune value",
+      "key": "0x30..0x3F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x40..0x4F",
+      "find": "^//\\s+40-4F -xxxxxxx Total level",
+      "key": "0x40..0x4F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x50..0x5F",
+      "find": "^//\\s+50-5F xx------ Key scale rate",
+      "key": "0x50..0x5F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x60..0x6F",
+      "find": "^//\\s+60-6F x------- LFO AM enable",
+      "key": "0x60..0x6F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x70..0x7F",
+      "find": "^//\\s+70-7F ---xxxxx Sustain rate",
+      "key": "0x70..0x7F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x80..0x8F",
+      "find": "^//\\s+80-8F xxxx---- Sustain level",
+      "key": "0x80..0x8F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x90..0x9F",
+      "find": "^//\\s+90-9F ----x--- SSG-EG enable",
+      "key": "0x90..0x9F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xA0..0xA3",
+      "find": "^//\\s+A0-A3 xxxxxxxx Frequency number lower",
+      "key": "0xA0..0xA3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xA4..0xA7",
+      "find": "^//\\s+A4-A7 --xxx--- Block",
+      "key": "0xA4..0xA7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xA8..0xAB",
+      "find": "^//\\s+A8-AB xxxxxxxx Frequency number lower",
+      "key": "0xA8..0xAB"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xAC..0xAF",
+      "find": "^//\\s+AC-AF --xxx--- Block",
+      "key": "0xAC..0xAF"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xB0..0xB3",
+      "find": "^//\\s+B0-B3 --xxx--- Feedback",
+      "key": "0xB0..0xB3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xB4..0xB7",
+      "find": "^//\\s+B4-B7 x------- Pan left",
+      "key": "0xB4..0xB7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x100",
+      "find": "^//\\s+00 x------- Start of synthesis/analysis",
+      "key": "0x100"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x101",
+      "find": "^//\\s+01 x------- Pan left",
+      "key": "0x101"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x102..0x103",
+      "find": "^//\\s+02 xxxxxxxx Start address \\(low\\)",
+      "key": "0x102..0x103"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x104..0x105",
+      "find": "^//\\s+04 xxxxxxxx End address \\(low\\)",
+      "key": "0x104..0x105"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x106..0x107",
+      "find": "^//\\s+06 xxxxxxxx Prescale value \\(low\\)",
+      "key": "0x106..0x107"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_b_channel::write ym2608 register 0x108",
+      "find": "else if \\(regnum == 0x08\\)",
+      "key": "0x108",
+      "inside": "adpcm_b_channel::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_b_channel::read ym2608 register 0x108",
+      "find": "if \\(regnum == 0x08 && !m_regs\\.execute\\(\\)",
+      "key": "0x108",
+      "inside": "adpcm_b_channel::read"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x109..0x10A",
+      "find": "^//\\s+09 xxxxxxxx Delta-N frequency scale \\(low\\)",
+      "key": "0x109..0x10A"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10B",
+      "find": "^//\\s+0b xxxxxxxx Level control",
+      "key": "0x10B"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10C..0x10D",
+      "find": "^//\\s+0c xxxxxxxx Limit address \\(low\\)",
+      "key": "0x10C..0x10D"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10E..0x10F",
+      "find": "^//\\s+0e xxxxxxxx DAC data \\[YM2608/10\\]",
+      "key": "0x10E..0x10F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data_hi register 0x110",
+      "find": "// 110: IRQ flag control",
+      "key": "0x110",
+      "inside": "ym2608::write_data_hi"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data_hi left out 0x111..0x12F",
+      "find": "// 111-1FF: write to FM",
+      "key": "0x111..0x12F",
+      "inside": "ym2608::write_data_hi"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x130..0x13F",
+      "find": "^//\\s+30-3F -xxx---- Detune value",
+      "key": "0x130..0x13F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x140..0x14F",
+      "find": "^//\\s+40-4F -xxxxxxx Total level",
+      "key": "0x140..0x14F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x150..0x15F",
+      "find": "^//\\s+50-5F xx------ Key scale rate",
+      "key": "0x150..0x15F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x160..0x16F",
+      "find": "^//\\s+60-6F x------- LFO AM enable",
+      "key": "0x160..0x16F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x170..0x17F",
+      "find": "^//\\s+70-7F ---xxxxx Sustain rate",
+      "key": "0x170..0x17F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x180..0x18F",
+      "find": "^//\\s+80-8F xxxx---- Sustain level",
+      "key": "0x180..0x18F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x190..0x19F",
+      "find": "^//\\s+90-9F ----x--- SSG-EG enable",
+      "key": "0x190..0x19F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1A0..0x1A3",
+      "find": "^//\\s+A0-A3 xxxxxxxx Frequency number lower",
+      "key": "0x1A0..0x1A3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1A4..0x1A7",
+      "find": "^//\\s+A4-A7 --xxx--- Block",
+      "key": "0x1A4..0x1A7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1B0..0x1B3",
+      "find": "^//\\s+B0-B3 --xxx--- Feedback",
+      "key": "0x1B0..0x1B3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1B4..0x1B7",
+      "find": "^//\\s+B4-B7 x------- Pan left",
+      "key": "0x1B4..0x1B7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2608 left out 0xB8..0xBF",
+      "find": "// registers 0xb8-0xbf are used internally",
+      "key": "0xB8..0xBF",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2608 left out 0x1A8..0x1AF",
+      "find": "if \\(multi_freq\\(\\) && choffs == 2\\)",
+      "key": "0x1A8..0x1AF",
+      "inside": "opn_registers_base<IsOpnA>::cache_operator_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2608 left out 0x1B8..0x1BF",
+      "find": "// registers 0xb8-0xbf are used internally",
+      "key": "0x1B8..0x1BF",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2608 left out 0x1C0..0x1FF",
+      "find": "// everything else is normal",
+      "key": "0x1C0..0x1FF",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2608 left out 0xC0..0xFE",
+      "find": "// everything else is normal",
+      "key": "0xC0..0xFE",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::read_data register 0xFF",
+      "find": "// FF: ID code",
+      "key": "0xFF",
+      "inside": "ym2608::read_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2610 register 0x00..0x05",
+      "find": "^//\\s+00,02,04 xxxxxxxx Tone period \\(fine\\)",
+      "key": "0x00..0x05"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2610 register 0x06",
+      "find": "^//\\s+06 ---xxxxx Noise period",
+      "key": "0x06"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2610 register 0x07",
+      "find": "^//\\s+07 x------- I/O B in\\(0\\) or out\\(1\\)",
+      "key": "0x07"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2610 register 0x08..0x0A",
+      "find": "^//\\s+08,09,0A ---x---- Mode: fixed",
+      "key": "0x08..0x0A"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2610 register 0x0B",
+      "find": "^//\\s+0B xxxxxxxx Envelope period fine",
+      "key": "0x0B"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2610 register 0x0C",
+      "find": "^//\\s+0C xxxxxxxx Envelope period coarse",
+      "key": "0x0C"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2610 register 0x0D",
+      "find": "^//\\s+0D ----x--- Envelope shape: continue",
+      "key": "0x0D"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2610::read_data register 0x0E..0x0F",
+      "find": "// 0E-0F: I/O ports not supported",
+      "key": "0x0E..0x0F",
+      "inside": "ym2610::read_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2610 register 0x10",
+      "find": "^//\\s+00 x------- Start of synthesis/analysis",
+      "key": "0x10"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2610 register 0x11",
+      "find": "^//\\s+01 x------- Pan left",
+      "key": "0x11"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2610 register 0x12..0x13",
+      "find": "^//\\s+02 xxxxxxxx Start address \\(low\\)",
+      "key": "0x12..0x13"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2610 register 0x14..0x15",
+      "find": "^//\\s+04 xxxxxxxx End address \\(low\\)",
+      "key": "0x14..0x15"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2610 register 0x16..0x17",
+      "find": "^//\\s+06 xxxxxxxx Prescale value \\(low\\)",
+      "key": "0x16..0x17"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_b_channel::write ym2610 register 0x18",
+      "find": "else if \\(regnum == 0x08\\)",
+      "key": "0x18",
+      "inside": "adpcm_b_channel::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2610 register 0x19..0x1A",
+      "find": "^//\\s+09 xxxxxxxx Delta-N frequency scale \\(low\\)",
+      "key": "0x19..0x1A"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2610 register 0x1B",
+      "find": "^//\\s+0b xxxxxxxx Level control",
+      "key": "0x1B"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2610::write_data register 0x1C",
+      "find": "// 1C: EOS flag reset",
+      "key": "0x1C",
+      "inside": "ym2610::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2610::write_data left out 0x1D..0x20",
+      "find": "// 1D-FF: write to FM",
+      "key": "0x1D..0x20",
+      "inside": "ym2610::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x21",
+      "find": "^\\tuint32_t test\\(\\) const",
+      "key": "0x21"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x22",
+      "find": "^//\\s+22 ----x--- LFO enable",
+      "key": "0x22"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x24",
+      "find": "^//\\s+24 xxxxxxxx Timer A value \\(upper 8 bits\\)",
+      "key": "0x24"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x25",
+      "find": "^//\\s+25 ------xx Timer A value \\(lower 2 bits\\)",
+      "key": "0x25"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x26",
+      "find": "^//\\s+26 xxxxxxxx Timer B value",
+      "key": "0x26"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x27",
+      "find": "^//\\s+27 xx------ CSM/Multi-frequency",
+      "key": "0x27"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x28",
+      "find": "^//\\s+28 x------- Key on/off operator 4",
+      "key": "0x28"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2610::write_data left out 0x29..0x2F",
+      "find": "// 1D-FF: write to FM",
+      "key": "0x29..0x2F",
+      "inside": "ym2610::write_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x30..0x3F",
+      "find": "^//\\s+30-3F -xxx---- Detune value",
+      "key": "0x30..0x3F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x40..0x4F",
+      "find": "^//\\s+40-4F -xxxxxxx Total level",
+      "key": "0x40..0x4F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x50..0x5F",
+      "find": "^//\\s+50-5F xx------ Key scale rate",
+      "key": "0x50..0x5F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x60..0x6F",
+      "find": "^//\\s+60-6F x------- LFO AM enable",
+      "key": "0x60..0x6F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x70..0x7F",
+      "find": "^//\\s+70-7F ---xxxxx Sustain rate",
+      "key": "0x70..0x7F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x80..0x8F",
+      "find": "^//\\s+80-8F xxxx---- Sustain level",
+      "key": "0x80..0x8F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x90..0x9F",
+      "find": "^//\\s+90-9F ----x--- SSG-EG enable",
+      "key": "0x90..0x9F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0xA0..0xA3",
+      "find": "^//\\s+A0-A3 xxxxxxxx Frequency number lower",
+      "key": "0xA0..0xA3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0xA4..0xA7",
+      "find": "^//\\s+A4-A7 --xxx--- Block",
+      "key": "0xA4..0xA7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0xA8..0xAB",
+      "find": "^//\\s+A8-AB xxxxxxxx Frequency number lower",
+      "key": "0xA8..0xAB"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0xAC..0xAF",
+      "find": "^//\\s+AC-AF --xxx--- Block",
+      "key": "0xAC..0xAF"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0xB0..0xB3",
+      "find": "^//\\s+B0-B3 --xxx--- Feedback",
+      "key": "0xB0..0xB3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0xB4..0xB7",
+      "find": "^//\\s+B4-B7 x------- Pan left",
+      "key": "0xB4..0xB7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x100",
+      "find": "^//\\s+00 x------- Dump \\(disable=1\\) or keyon \\(0\\) control",
+      "key": "0x100"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x101",
+      "find": "^//\\s+01 --xxxxxx Total level",
+      "key": "0x101"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x102",
+      "find": "uint32_t test\\(\\) const\\s+\\{ return m_regdata\\[0x02\\]",
+      "key": "0x102"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_a_engine::write ym2610 left out 0x103..0x107",
+      "find": "m_regs\\.write\\(regnum, data\\);",
+      "key": "0x103..0x107",
+      "inside": "adpcm_a_engine::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x108..0x10D",
+      "find": "^//\\s+08-0D x------- Pan left",
+      "key": "0x108..0x10D"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_a_engine::write ym2610 left out 0x10E..0x10F",
+      "find": "m_regs\\.write\\(regnum, data\\);",
+      "key": "0x10E..0x10F",
+      "inside": "adpcm_a_engine::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x110..0x115",
+      "find": "^//\\s+10-15 xxxxxxxx Start address \\(low\\)",
+      "key": "0x110..0x115"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_a_engine::write ym2610 left out 0x116..0x117",
+      "find": "m_regs\\.write\\(regnum, data\\);",
+      "key": "0x116..0x117",
+      "inside": "adpcm_a_engine::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x118..0x11D",
+      "find": "^//\\s+18-1D xxxxxxxx Start address \\(high\\)",
+      "key": "0x118..0x11D"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_a_engine::write ym2610 left out 0x11E..0x11F",
+      "find": "m_regs\\.write\\(regnum, data\\);",
+      "key": "0x11E..0x11F",
+      "inside": "adpcm_a_engine::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x120..0x125",
+      "find": "^//\\s+20-25 xxxxxxxx End address \\(low\\)",
+      "key": "0x120..0x125"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_a_engine::write ym2610 left out 0x126..0x127",
+      "find": "m_regs\\.write\\(regnum, data\\);",
+      "key": "0x126..0x127",
+      "inside": "adpcm_a_engine::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2610 register 0x128..0x12D",
+      "find": "^//\\s+28-2D xxxxxxxx End address \\(high\\)",
+      "key": "0x128..0x12D"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_a_engine::write ym2610 left out 0x12E..0x12F",
+      "find": "m_regs\\.write\\(regnum, data\\);",
+      "key": "0x12E..0x12F",
+      "inside": "adpcm_a_engine::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x130..0x13F",
+      "find": "^//\\s+30-3F -xxx---- Detune value",
+      "key": "0x130..0x13F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x140..0x14F",
+      "find": "^//\\s+40-4F -xxxxxxx Total level",
+      "key": "0x140..0x14F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x150..0x15F",
+      "find": "^//\\s+50-5F xx------ Key scale rate",
+      "key": "0x150..0x15F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x160..0x16F",
+      "find": "^//\\s+60-6F x------- LFO AM enable",
+      "key": "0x160..0x16F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x170..0x17F",
+      "find": "^//\\s+70-7F ---xxxxx Sustain rate",
+      "key": "0x170..0x17F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x180..0x18F",
+      "find": "^//\\s+80-8F xxxx---- Sustain level",
+      "key": "0x180..0x18F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x190..0x19F",
+      "find": "^//\\s+90-9F ----x--- SSG-EG enable",
+      "key": "0x190..0x19F"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x1A0..0x1A3",
+      "find": "^//\\s+A0-A3 xxxxxxxx Frequency number lower",
+      "key": "0x1A0..0x1A3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x1A4..0x1A7",
+      "find": "^//\\s+A4-A7 --xxx--- Block",
+      "key": "0x1A4..0x1A7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x1B0..0x1B3",
+      "find": "^//\\s+B0-B3 --xxx--- Feedback",
+      "key": "0x1B0..0x1B3"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2610 register 0x1B4..0x1B7",
+      "find": "^//\\s+B4-B7 x------- Pan left",
+      "key": "0x1B4..0x1B7"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2610 left out 0xB8..0xBF",
+      "find": "// registers 0xb8-0xbf are used internally",
+      "key": "0xB8..0xBF",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2610 left out 0x1A8..0x1AF",
+      "find": "if \\(multi_freq\\(\\) && choffs == 2\\)",
+      "key": "0x1A8..0x1AF",
+      "inside": "opn_registers_base<IsOpnA>::cache_operator_data"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2610 left out 0x1B8..0x1BF",
+      "find": "// registers 0xb8-0xbf are used internally",
+      "key": "0x1B8..0x1BF",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2610 left out 0x1C0..0x1FF",
+      "find": "// everything else is normal",
+      "key": "0x1C0..0x1FF",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp opn_registers_base ym2610 left out 0xC0..0xFE",
+      "find": "// everything else is normal",
+      "key": "0xC0..0xFE",
+      "inside": "opn_registers_base<IsOpnA>::write"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2610::read_data register 0xFF",
+      "find": "// FF: ID code",
+      "key": "0xFF",
+      "inside": "ym2610::read_data"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608 registers",
+      "keys": [
+        "0x00..0x05",
+        "0x06",
+        "0x07",
+        "0x08..0x0A",
+        "0x0B",
+        "0x0C",
+        "0x0D",
+        "0x0E..0x0F",
+        "0x10",
+        "0x11",
+        "0x12",
+        "0x13..0x17",
+        "0x18..0x1D",
+        "0x1E..0x1F",
+        "0x20",
+        "0x21",
+        "0x22",
+        "0x24",
+        "0x25",
+        "0x26",
+        "0x27",
+        "0x28",
+        "0x29",
+        "0x2A..0x2C",
+        "0x2D",
+        "0x2E",
+        "0x2F",
+        "0x30..0x3F",
+        "0x40..0x4F",
+        "0x50..0x5F",
+        "0x60..0x6F",
+        "0x70..0x7F",
+        "0x80..0x8F",
+        "0x90..0x9F",
+        "0xA0..0xA3",
+        "0xA4..0xA7",
+        "0xA8..0xAB",
+        "0xAC..0xAF",
+        "0xB0..0xB3",
+        "0xB4..0xB7",
+        "0xB8..0xBF",
+        "0xC0..0xFE",
+        "0xFF",
+        "0x100",
+        "0x101",
+        "0x102..0x103",
+        "0x104..0x105",
+        "0x106..0x107",
+        "0x108",
+        "0x109..0x10A",
+        "0x10B",
+        "0x10C..0x10D",
+        "0x10E..0x10F",
+        "0x110",
+        "0x111..0x12F",
+        "0x130..0x13F",
+        "0x140..0x14F",
+        "0x150..0x15F",
+        "0x160..0x16F",
+        "0x170..0x17F",
+        "0x180..0x18F",
+        "0x190..0x19F",
+        "0x1A0..0x1A3",
+        "0x1A4..0x1A7",
+        "0x1A8..0x1AF",
+        "0x1B0..0x1B3",
+        "0x1B4..0x1B7",
+        "0x1B8..0x1BF",
+        "0x1C0..0x1FF"
+      ]
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2610 registers",
+      "keys": [
+        "0x00..0x05",
+        "0x06",
+        "0x07",
+        "0x08..0x0A",
+        "0x0B",
+        "0x0C",
+        "0x0D",
+        "0x0E..0x0F",
+        "0x10",
+        "0x11",
+        "0x12..0x13",
+        "0x14..0x15",
+        "0x16..0x17",
+        "0x18",
+        "0x19..0x1A",
+        "0x1B",
+        "0x1C",
+        "0x1D..0x20",
+        "0x21",
+        "0x22",
+        "0x24",
+        "0x25",
+        "0x26",
+        "0x27",
+        "0x28",
+        "0x29..0x2F",
+        "0x30..0x3F",
+        "0x40..0x4F",
+        "0x50..0x5F",
+        "0x60..0x6F",
+        "0x70..0x7F",
+        "0x80..0x8F",
+        "0x90..0x9F",
+        "0xA0..0xA3",
+        "0xA4..0xA7",
+        "0xA8..0xAB",
+        "0xAC..0xAF",
+        "0xB0..0xB3",
+        "0xB4..0xB7",
+        "0xB8..0xBF",
+        "0xC0..0xFE",
+        "0xFF",
+        "0x100",
+        "0x101",
+        "0x102",
+        "0x103..0x107",
+        "0x108..0x10D",
+        "0x10E..0x10F",
+        "0x110..0x115",
+        "0x116..0x117",
+        "0x118..0x11D",
+        "0x11E..0x11F",
+        "0x120..0x125",
+        "0x126..0x127",
+        "0x128..0x12D",
+        "0x12E..0x12F",
+        "0x130..0x13F",
+        "0x140..0x14F",
+        "0x150..0x15F",
+        "0x160..0x16F",
+        "0x170..0x17F",
+        "0x180..0x18F",
+        "0x190..0x19F",
+        "0x1A0..0x1A3",
+        "0x1A4..0x1A7",
+        "0x1A8..0x1AF",
+        "0x1B0..0x1B3",
+        "0x1B4..0x1B7",
+        "0x1B8..0x1BF",
+        "0x1C0..0x1FF"
+      ]
+    }
+  ]
+}

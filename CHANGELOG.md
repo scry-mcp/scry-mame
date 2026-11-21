@@ -9,6 +9,10 @@ What a client of the server notices.
   leaves replies bare, and the window's captions keep their names. A program's symbols come
   first, then the vectors of the 68000, the V30 and the 6809, then the shared chips, then the
   memory the machine's map names.
+- The first tier of MAME's chips is in the base, each with its registers and, where it takes
+  them, its commands: the AY-3-8910 family, the MSM6295, the YM2151, the OPN family, the YM3526,
+  the MSM5205, the uPD7759, Sega's 315-5313 and 315-5124 video chips, the 8255, the 8251, the
+  Z80 SIO and SCC, the uPD4990A, the 6821, the 68681 and the 6850.
 - `knowledge_find` asks what a number is called and what the server knows about it, with the
   public source each fact was read from. With a session it also lists the machine's input
   fields, its devices and its memory map.

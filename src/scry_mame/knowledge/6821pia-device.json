@@ -1,0 +1,68 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "6821pia-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The Motorola 6821 peripheral interface adapter as a chip",
+  "complete_against": "mame:src/devices/machine/6821pia.cpp DEFINE_DEVICE_TYPE",
+  "entries": [
+    {
+      "key": "pia6821",
+      "name": "Motorola 6821 PIA",
+      "aliases": [
+        "6821",
+        "MC6821",
+        "PIA"
+      ],
+      "description": "Two 8-bit parallel ports, each with two handshake lines and an interrupt output, behind four registers.",
+      "behaviour": "Address bits 0 and 1 pick one of four offsets, and bit 2 of a control register chooses data or direction register at offsets 0 and 2. read_alt and write_alt swap the two address bits. IRQA and IRQB follow flags set by CA1, CA2, CB1 and CB2 edges and cleared by reading the port.",
+      "classes": [
+        "pia6821_device"
+      ],
+      "handlers": {
+        "read": "register read, offset 0 to 3",
+        "write": "register write, offset 0 to 3",
+        "read_alt": "register read with address bits 0 and 1 swapped",
+        "write_alt": "register write with address bits 0 and 1 swapped",
+        "porta_w": "drives all eight port A input pins",
+        "portb_w": "drives all eight port B input pins",
+        "ca1_w": "drives the CA1 input line; an active edge sets the CA1 flag",
+        "ca2_w": "drives the CA2 input line; an active edge sets the CA2 flag only while CA2 is an input",
+        "cb1_w": "drives the CB1 input line; an active edge sets the CB1 flag",
+        "cb2_w": "drives the CB2 input line; an active edge sets the CB2 flag only while CB2 is an input",
+        "a_output": "port A output value as seen on the pins",
+        "b_output": "port B output value, output bits only unless a tri-state handler fills the rest",
+        "ca2_output": "CA2 output level",
+        "ca2_output_z": "CA2 level, high while CA2 is an input (internal pullup)",
+        "cb2_output": "CB2 output level",
+        "cb2_output_z": "true while CB2 is an input (high impedance)",
+        "port_b_z_mask": "mask of port B bits that are inputs (high impedance)",
+        "irq_a_state": "level of the IRQA output",
+        "irq_b_state": "level of the IRQB output",
+        "pa0_w": "drives input pin PA0",
+        "pa1_w": "drives input pin PA1",
+        "pa2_w": "drives input pin PA2",
+        "pa3_w": "drives input pin PA3",
+        "pa4_w": "drives input pin PA4",
+        "pa5_w": "drives input pin PA5",
+        "pa6_w": "drives input pin PA6",
+        "pa7_w": "drives input pin PA7",
+        "pb0_w": "drives input pin PB0",
+        "pb1_w": "drives input pin PB1",
+        "pb2_w": "drives input pin PB2",
+        "pb3_w": "drives input pin PB3",
+        "pb4_w": "drives input pin PB4",
+        "pb5_w": "drives input pin PB5",
+        "pb6_w": "drives input pin PB6",
+        "pb7_w": "drives input pin PB7"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/6821pia.cpp DEFINE_DEVICE_TYPE pia6821",
+          "cites": "DEFINE_DEVICE_TYPE(PIA6821, pia6821_device, \"pia6821\", \"6821 PIA\")"
+        }
+      ]
+    }
+  ]
+}

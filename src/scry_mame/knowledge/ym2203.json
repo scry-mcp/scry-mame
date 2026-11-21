@@ -1,0 +1,477 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "ym2203",
+  "kind": "register",
+  "scope": "ym2203",
+  "covers": "The registers of the YM2203 (OPN): the SSG block and the FM block",
+  "complete_against": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2203 registers",
+  "reached": {
+    "index": "address_w",
+    "data": [
+      "data_w"
+    ]
+  },
+  "left_out": [
+    {
+      "key": "0x10..0x20",
+      "why": "written to the FM block and stored; nothing decodes them"
+    },
+    {
+      "key": "0x22",
+      "why": "the LFO register of the OPNA chips: the OPN register class returns 0 for its fields, so the byte is stored and unused"
+    },
+    {
+      "key": "0x29..0x2C",
+      "why": "written to the FM block and stored; nothing decodes them"
+    },
+    {
+      "key": "0xB4..0xB7",
+      "why": "pan, AM and PM sensitivity exist on the OPNA chips only: the OPN register class returns constants, so the byte is stored and unused"
+    },
+    {
+      "key": "0xB8..0xBF",
+      "why": "a write is dropped: ymfm keeps the latched frequency bits in these slots"
+    },
+    {
+      "key": "0xC0..0xFF",
+      "why": "written to the FM block and stored; nothing decodes them"
+    }
+  ],
+  "entries": [
+    {
+      "key": "0x00..0x05",
+      "name": "tone period",
+      "aliases": [],
+      "description": "Tone period of voices A, B and C, 12 bits each.",
+      "behaviour": "Even addresses 0x00, 0x02, 0x04 hold the low 8 bits for voices A, B, C; odd addresses 0x01, 0x03, 0x05 hold bits 11 to 8 in their low 4 bits. Reads return the byte as written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x00..0x05",
+          "cites": "//     00,02,04 xxxxxxxx Tone period (fine) for channel A,B,C"
+        }
+      ]
+    },
+    {
+      "key": "0x06",
+      "name": "noise period",
+      "aliases": [],
+      "description": "Period of the noise generator.",
+      "behaviour": "Bits 4 to 0 are the noise period (0 to 31); bits 7 to 5 are unused. Reads return the byte as written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x06",
+          "cites": "//           06 ---xxxxx Noise period"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "mixer, I/O direction",
+      "aliases": [],
+      "description": "Tone and noise switches of the three voices and the direction of the two I/O ports.",
+      "behaviour": "Bits 2 to 0 switch tone off for voices C, B, A and bits 5 to 3 switch noise off (0 enables, 1 disables). Bit 6 makes I/O port A an output and bit 7 port B (0 is input). Reads return the byte as written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x07",
+          "cites": "//           07 x------- I/O B in(0) or out(1)"
+        }
+      ]
+    },
+    {
+      "key": "0x08..0x0A",
+      "name": "amplitude",
+      "aliases": [],
+      "description": "Volume and envelope switch of voice A, B or C.",
+      "behaviour": "Address 0x08 is voice A, 0x09 B, 0x0A C. Bit 4 set makes the voice follow the envelope; clear, bits 3 to 0 give a fixed level (0 to 15, with 15 as loud as the envelope's top). Reads return the byte as written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x08..0x0A",
+          "cites": "//     08,09,0A ---x---- Mode: fixed(0) or variable(1) for channel A,B,C"
+        }
+      ]
+    },
+    {
+      "key": "0x0B",
+      "name": "envelope period low",
+      "aliases": [],
+      "description": "Low 8 bits of the 16-bit envelope period.",
+      "behaviour": "0x0C holds the high byte. The envelope takes one step each time the period counts out, so a larger value is slower. Reads return the byte as written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x0B",
+          "cites": "//           0B xxxxxxxx Envelope period fine"
+        }
+      ]
+    },
+    {
+      "key": "0x0C",
+      "name": "envelope period high",
+      "aliases": [],
+      "description": "High 8 bits of the 16-bit envelope period.",
+      "behaviour": "0x0B holds the low byte; the period is the two bytes together. Reads return the byte as written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x0C",
+          "cites": "//           0C xxxxxxxx Envelope period coarse"
+        }
+      ]
+    },
+    {
+      "key": "0x0D",
+      "name": "envelope shape",
+      "aliases": [],
+      "description": "Shape of the envelope the voices can follow.",
+      "behaviour": "Bit 3 is continue, bit 2 attack, bit 1 alternate and bit 0 hold. Every write, even of the same value, restarts the envelope at step 0. Reads return the byte as written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x0D",
+          "cites": "//           0D ----x--- Envelope shape: continue"
+        }
+      ]
+    },
+    {
+      "key": "0x0E..0x0F",
+      "name": "I/O ports A and B",
+      "aliases": [
+        "I/O port"
+      ],
+      "description": "The two 8-bit parallel I/O ports, A at 0x0E and B at 0x0F.",
+      "behaviour": "0x07 bits 6 and 7 set port A and port B as input (0) or output (1). Reading an input port calls the port read callback and returns its value; reading an output port returns the stored byte. A write always stores and calls the port write callback only for an output.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2203 register 0x0E..0x0F",
+          "cites": "//           0E xxxxxxxx 8-bit parallel I/O port A"
+        }
+      ]
+    },
+    {
+      "key": "0x21",
+      "name": "test",
+      "access": "write",
+      "aliases": [],
+      "description": "Test register.",
+      "behaviour": "Eight test bits. The byte is stored and nothing in MAME reads it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x21",
+          "cites": "\tuint32_t test() const                       { return byte(0x21, 0, 8); }"
+        }
+      ]
+    },
+    {
+      "key": "0x24",
+      "name": "timer A high",
+      "access": "write",
+      "aliases": [],
+      "description": "Upper 8 bits of the 10-bit timer A preset.",
+      "behaviour": "0x25 holds the lower 2 bits. The timer counts 1024 minus the value, in FM sample periods, and reads the value when it starts or re-arms after an overflow, so a change while it runs applies at the next overflow.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x24",
+          "cites": "//           24 xxxxxxxx Timer A value (upper 8 bits)"
+        }
+      ]
+    },
+    {
+      "key": "0x25",
+      "name": "timer A low",
+      "access": "write",
+      "aliases": [],
+      "description": "Lower 2 bits of the 10-bit timer A preset.",
+      "behaviour": "Bits 1 to 0 are bits 1 to 0 of the timer A value and bits 7 to 2 are ignored; 0x24 holds the upper 8 bits.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x25",
+          "cites": "//           25 ------xx Timer A value (lower 2 bits)"
+        }
+      ]
+    },
+    {
+      "key": "0x26",
+      "name": "timer B",
+      "access": "write",
+      "aliases": [],
+      "description": "Timer B preset.",
+      "behaviour": "All 8 bits are the value. The timer counts 16 times (256 minus the value) FM sample periods and reads the value when it starts or re-arms after an overflow.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x26",
+          "cites": "//           26 xxxxxxxx Timer B value"
+        }
+      ]
+    },
+    {
+      "key": "0x27",
+      "name": "timer control, mode",
+      "access": "write",
+      "aliases": [
+        "CSM"
+      ],
+      "description": "Timer start, flag reset and flag enable bits, and the channel 2 mode.",
+      "behaviour": "Bits 7 to 6: 0 normal, 1 or 3 per-operator frequencies on channel 2 (0xA8 to 0xAF), 2 also CSM (each timer A overflow keys channel 2 on); bits 5, 4 clear flags B, A; bits 3, 2 let flags B, A set and raise the interrupt; bits 1, 0 start timers B, A, and clearing one stops it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x27",
+          "cites": "//           27 xx------ CSM/Multi-frequency mode for channel #2"
+        }
+      ]
+    },
+    {
+      "key": "0x28",
+      "name": "key on/off",
+      "access": "write",
+      "aliases": [
+        "key on"
+      ],
+      "description": "Starts or releases the operators of one channel.",
+      "behaviour": "Bits 7 to 4 key operators 4 to 1 on when set and off when clear, for the channel in bits 1 to 0 (0 to 2; 3 is ignored); bit 2 is ignored. Operator 2 is the one at offset 8 in the rows from 0x30 and operator 3 the one at offset 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x28",
+          "cites": "//           28 x------- Key on/off operator 4"
+        }
+      ]
+    },
+    {
+      "key": "0x2D",
+      "name": "prescaler 6",
+      "access": "write",
+      "aliases": [],
+      "description": "Selects the clock divider 6.",
+      "behaviour": "Selecting this address with the address port sets the FM clock divider to 6 at once; the data byte is not looked at. The SSG divider follows: 4 for FM divider 6, 2 for 3, 1 for 2.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2203::write_address register 0x2D",
+          "cites": "\t\tif (m_address == 0x2d)"
+        }
+      ]
+    },
+    {
+      "key": "0x2E",
+      "name": "prescaler 3",
+      "access": "write",
+      "aliases": [],
+      "description": "Selects the clock divider 3.",
+      "behaviour": "Selecting this address with the address port sets the FM clock divider to 3 at once; it takes effect only while the divider is 6, so from 2 go through 0x2D first. The SSG divider follows: 4 for FM divider 6, 2 for 3, 1 for 2.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2203::write_address register 0x2E",
+          "cites": "\t\telse if (m_address == 0x2e && m_fm.clock_prescale() == 6)"
+        }
+      ]
+    },
+    {
+      "key": "0x2F",
+      "name": "prescaler 2",
+      "access": "write",
+      "aliases": [],
+      "description": "Selects the clock divider 2.",
+      "behaviour": "Selecting this address with the address port sets the FM clock divider to 2 at once; the data byte is not looked at. The SSG divider follows: 4 for FM divider 6, 2 for 3, 1 for 2.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2203::write_address register 0x2F",
+          "cites": "\t\telse if (m_address == 0x2f)"
+        }
+      ]
+    },
+    {
+      "key": "0x30..0x3F",
+      "name": "detune, multiple",
+      "access": "write",
+      "aliases": [],
+      "description": "Detune and frequency multiple of one operator.",
+      "behaviour": "Bits 6 to 4 are the detune (0 to 7) and bits 3 to 0 the frequency multiple (0 to 15, where 0 means one half). Offset: bits 1 to 0 pick the channel (0 to 2), then +0, +8, +4, +12 are operators 1, 2, 3, 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x30..0x3F",
+          "cites": "//        30-3F -xxx---- Detune value (0-7)"
+        }
+      ]
+    },
+    {
+      "key": "0x40..0x4F",
+      "name": "total level",
+      "access": "write",
+      "aliases": [],
+      "description": "Total level of one operator, its output attenuation.",
+      "behaviour": "Bits 6 to 0 are the total level (0 to 127, larger is quieter); bit 7 is ignored. Offset: bits 1 to 0 pick the channel (0 to 2), then +0, +8, +4, +12 are operators 1, 2, 3, 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x40..0x4F",
+          "cites": "//        40-4F -xxxxxxx Total level (0-127)"
+        }
+      ]
+    },
+    {
+      "key": "0x50..0x5F",
+      "name": "key scale, attack",
+      "access": "write",
+      "aliases": [],
+      "description": "Key scale rate and attack rate of one operator.",
+      "behaviour": "Bits 7 to 6 are the key scale rate (0 to 3) and bits 4 to 0 the attack rate (0 to 31); bit 5 is ignored. Offset: bits 1 to 0 pick the channel (0 to 2), then +0, +8, +4, +12 are operators 1, 2, 3, 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x50..0x5F",
+          "cites": "//        50-5F xx------ Key scale rate (0-3)"
+        }
+      ]
+    },
+    {
+      "key": "0x60..0x6F",
+      "name": "decay rate",
+      "access": "write",
+      "aliases": [],
+      "description": "Decay rate of one operator.",
+      "behaviour": "Bits 4 to 0 are the decay rate (0 to 31). Bit 7 is the LFO AM enable of the OPNA chips and is ignored here. Offset: bits 1 to 0 pick the channel (0 to 2), then +0, +8, +4, +12 are operators 1, 2, 3, 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x60..0x6F",
+          "cites": "//              ---xxxxx Decay rate (0-31)"
+        }
+      ]
+    },
+    {
+      "key": "0x70..0x7F",
+      "name": "sustain rate",
+      "access": "write",
+      "aliases": [],
+      "description": "Sustain rate of one operator.",
+      "behaviour": "Bits 4 to 0 are the sustain rate (0 to 31); bits 7 to 5 are ignored. Offset: bits 1 to 0 pick the channel (0 to 2), then +0, +8, +4, +12 are operators 1, 2, 3, 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x70..0x7F",
+          "cites": "//        70-7F ---xxxxx Sustain rate (0-31)"
+        }
+      ]
+    },
+    {
+      "key": "0x80..0x8F",
+      "name": "sustain level, release",
+      "access": "write",
+      "aliases": [],
+      "description": "Sustain level and release rate of one operator.",
+      "behaviour": "Bits 7 to 4 are the sustain level (0 to 15; 15 counts as 31 on a 5-bit scale) and bits 3 to 0 the release rate (0 to 15). Offset: bits 1 to 0 pick the channel (0 to 2), then +0, +8, +4, +12 are operators 1, 2, 3, 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x80..0x8F",
+          "cites": "//        80-8F xxxx---- Sustain level (0-15)"
+        }
+      ]
+    },
+    {
+      "key": "0x90..0x9F",
+      "name": "SSG-EG",
+      "access": "write",
+      "aliases": [
+        "SSG-EG envelope"
+      ],
+      "description": "SSG-style envelope shape of one operator.",
+      "behaviour": "Bit 3 enables it; bits 2 to 0 are the shape: 0 repeat, 1 once and hold low, 2 repeat alternating, 3 once and hold high, 4 to 7 the same inverted. Offset: bits 1 to 0 pick the channel (0 to 2), then +0, +8, +4, +12 are operators 1, 2, 3, 4.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0x90..0x9F",
+          "cites": "//        90-9F ----x--- SSG-EG enable"
+        }
+      ]
+    },
+    {
+      "key": "0xA0..0xA3",
+      "name": "frequency low",
+      "access": "write",
+      "aliases": [],
+      "description": "Low 8 bits of a channel's frequency number.",
+      "behaviour": "A write to offset 0 to 2 stores the byte and applies the block and high bits last written to 0xA4 to 0xA6, so write that register first. One latch serves all channels; offset 3 is ignored.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0xA0..0xA3",
+          "cites": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
+        }
+      ]
+    },
+    {
+      "key": "0xA4..0xA7",
+      "name": "block, frequency high",
+      "access": "write",
+      "aliases": [],
+      "description": "Block and high 3 bits of a channel's frequency number, latched.",
+      "behaviour": "Bits 5 to 3 are the block (octave, 0 to 7) and bits 2 to 0 the frequency number bits 10 to 8; bits 7 to 6 are dropped. The write only fills a latch, which the next write to 0xA0 to 0xA2 applies to that channel; offset 3 is ignored.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0xA4..0xA7",
+          "cites": "//        A4-A7 --xxx--- Block (0-7)"
+        }
+      ]
+    },
+    {
+      "key": "0xA8..0xAB",
+      "name": "channel 2 freq low",
+      "access": "write",
+      "aliases": [],
+      "description": "Low 8 bits of the frequency number of one operator of channel 2, in per-operator frequency mode.",
+      "behaviour": "Used only while 0x27 bits 7 to 6 are not 0: offset 0 is operator 3, offset 1 operator 1, offset 2 operator 2, and operator 4 keeps the channel's 0xA2 and 0xA6. A write applies the latch filled by 0xAC to 0xAE; offset 3 is ignored.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0xA8..0xAB",
+          "cites": "//        A8-AB xxxxxxxx Frequency number lower 8 bits"
+        }
+      ]
+    },
+    {
+      "key": "0xAC..0xAF",
+      "name": "channel 2 block, high",
+      "access": "write",
+      "aliases": [],
+      "description": "Block and high 3 bits of the per-operator frequency of channel 2, latched.",
+      "behaviour": "Bits 5 to 3 are the block and bits 2 to 0 the frequency number bits 10 to 8, same offsets as 0xA8: 0 operator 3, 1 operator 1, 2 operator 2. A latch of its own, separate from the one of 0xA4, holds the value until 0xA8 to 0xAA is written. Offset 3 is ignored.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0xAC..0xAF",
+          "cites": "//        AC-AF --xxx--- Block (0-7)"
+        }
+      ]
+    },
+    {
+      "key": "0xB0..0xB3",
+      "name": "feedback, algorithm",
+      "access": "write",
+      "aliases": [],
+      "description": "Feedback of operator 1 and connection algorithm of a channel.",
+      "behaviour": "Bits 5 to 3 are the feedback of operator 1 (0 to 7) and bits 2 to 0 the algorithm (0 to 7); bits 7 to 6 are ignored. Bits 1 to 0 of the address pick the channel (0 to 2).",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2203 register 0xB0..0xB3",
+          "cites": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
+        }
+      ]
+    }
+  ]
+}

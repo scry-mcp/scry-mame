@@ -1,0 +1,200 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "z80sio-commands",
+  "kind": "command",
+  "scope": "z80sio",
+  "covers": "The command field (bits 3 to 5) and the CRC reset code (bits 6 and 7) of a WR0 write; a key is the field's own value in place in the byte, 0x00 standing for both null fields",
+  "complete_against": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 commands",
+  "reached": {
+    "data": [
+      "cd_ba_w",
+      "ba_cd_w",
+      "ca_w",
+      "cb_w"
+    ]
+  },
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "null command",
+      "access": "write",
+      "aliases": [
+        "no operation",
+        "null code"
+      ],
+      "description": "No command and no CRC code; the byte only sets the register pointer.",
+      "behaviour": "Bits 3 to 5 equal to 0 do nothing, and bits 6 and 7 equal to 0 do nothing either. Bits 0 to 2 still set the register pointer for the next control access.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x00",
+          "cites": "\tcase WR0_NULL:"
+        }
+      ]
+    },
+    {
+      "key": "0x08",
+      "name": "send abort",
+      "access": "write",
+      "description": "Sends an SDLC abort sequence from the transmitter.",
+      "behaviour": "Acts only in SDLC mode (WR4 bits 2 and 3 zero, bits 4 and 5 equal to 2): the transmitter is loaded with eight ones as an abort and the buffer is marked empty. In any other mode the command is ignored.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x08",
+          "cites": "\tcase WR0_SEND_ABORT:"
+        }
+      ]
+    },
+    {
+      "key": "0x10",
+      "name": "reset ext status",
+      "access": "write",
+      "aliases": [
+        "reset external status",
+        "reset ext/status"
+      ],
+      "description": "Re-arms the external/status interrupt and refreshes the pin bits of RR0.",
+      "behaviour": "Clears the latch that froze RR0 bits 3 to 5 and the break latch, rereads DCD, CTS and sync into RR0, and clears the pending external/status interrupt. It does not clear RR0 bit 6, which CRC code 0xC0 does, and bit 7 follows the line.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x10",
+          "cites": "\tcase WR0_RESET_EXT_STATUS:"
+        }
+      ]
+    },
+    {
+      "key": "0x18",
+      "name": "channel reset",
+      "access": "write",
+      "description": "Resets the channel without touching most register bits.",
+      "behaviour": "Disables the receiver (WR3 bit 0) and transmitter (WR5 bit 3) and wait or ready (WR1 bit 7), empties the receive FIFO and clears the RR1 error bits, sets RR0 buffer empty and underrun, and raises TxD, RTS and DTR. The channel's interrupts are cleared; on channel A every interrupt of both channels goes. Other register bits keep their value.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x18",
+          "cites": "\tcase WR0_CHANNEL_RESET:"
+        }
+      ]
+    },
+    {
+      "key": "0x20",
+      "name": "enable int next rx",
+      "access": "write",
+      "aliases": [
+        "enable int on next rx char"
+      ],
+      "description": "Arms an interrupt on the next received character, for receive interrupt on first character mode.",
+      "behaviour": "Sets a flag that the next received character consumes, marking it as the one that interrupts. It matters only when WR1 bits 3 and 4 select first character, where later characters interrupt only with a special condition.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x20",
+          "cites": "\tcase WR0_ENABLE_INT_NEXT_RX:"
+        }
+      ]
+    },
+    {
+      "key": "0x28",
+      "name": "reset tx int pending",
+      "access": "write",
+      "aliases": [
+        "reset tx int"
+      ],
+      "description": "Clears the channel's pending transmit interrupt.",
+      "behaviour": "Drops the transmit interrupt request of the channel written to. It returns when the transmit buffer next goes from full to empty with WR1 bit 1 set; writing a data byte also clears it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x28",
+          "cites": "\tcase WR0_RESET_TX_INT:"
+        }
+      ]
+    },
+    {
+      "key": "0x30",
+      "name": "error reset",
+      "access": "write",
+      "description": "Clears the error bits of RR1.",
+      "behaviour": "Clears RR1 bits 4 to 7 (parity, overrun, CRC or framing, end of frame). When receive interrupt mode is first character and a framing, overrun or end of frame error was set, it also advances the receive FIFO; otherwise it recomputes the receive interrupt.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x30",
+          "cites": "\tcase WR0_ERROR_RESET:"
+        }
+      ]
+    },
+    {
+      "key": "0x38",
+      "name": "reset highest IUS",
+      "access": "write",
+      "aliases": [
+        "return from interrupt",
+        "reset IUS"
+      ],
+      "description": "Releases the highest-priority interrupt under service so lower ones can interrupt again.",
+      "behaviour": "Only a write to channel A acts, on the whole chip, and the INT line is rechecked. On the Z80 SIO and DART a RETI seen on the daisy chain does the same. A write to channel B does nothing.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x38",
+          "cites": "\tcase WR0_RETURN_FROM_INT:"
+        }
+      ]
+    },
+    {
+      "key": "0x40",
+      "name": "reset rx CRC checker",
+      "access": "write",
+      "aliases": [
+        "CRC code 1"
+      ],
+      "description": "CRC reset code 1: preloads the receive CRC.",
+      "behaviour": "Loads the receive CRC with ones in SDLC mode and zeros otherwise; in byte-sync modes it also stops accumulation until the next character boundary re-enables it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x40",
+          "cites": "\tcase WR0_CRC_RESET_RX: /* In Synchronous mode: all Os (zeros) (CCITT-O CRC-16) */"
+        }
+      ]
+    },
+    {
+      "key": "0x80",
+      "name": "reset tx CRC generator",
+      "access": "write",
+      "aliases": [
+        "CRC code 2"
+      ],
+      "description": "CRC reset code 2: preloads the transmit CRC.",
+      "behaviour": "Loads the transmit CRC with ones in SDLC mode and zeros otherwise.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x80",
+          "cites": "\tcase WR0_CRC_RESET_TX: /* In HDLC mode: all 1s (ones) (CCITT-1) */"
+        }
+      ]
+    },
+    {
+      "key": "0xC0",
+      "name": "reset tx underrun latch",
+      "access": "write",
+      "aliases": [
+        "CRC code 3",
+        "reset EOM latch"
+      ],
+      "description": "CRC reset code 3: clears the underrun or end of message latch, RR0 bit 6.",
+      "behaviour": "Accepted only in the active part of a packet, which in sync mode starts with the first data byte written after the idle pattern; otherwise it is ignored and bit 6 stays set.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0xC0",
+          "cites": "\tcase WR0_CRC_RESET_TX_UNDERRUN: /* Resets Tx underrun/EOM bit (D6 of the SRO register) */"
+        }
+      ]
+    }
+  ]
+}

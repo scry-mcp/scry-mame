@@ -1,0 +1,106 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp DEFINE_DEVICE_TYPE i8255",
+      "find": "^DEFINE_DEVICE_TYPE\\(I8255,",
+      "key": "i8255"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp DEFINE_DEVICE_TYPE ams40489_ppi",
+      "find": "^DEFINE_DEVICE_TYPE\\(AMS40489_PPI,",
+      "key": "ams40489_ppi"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_A",
+      "find": "^\\tcase PORT_A:$",
+      "key": "0x00",
+      "inside": "i8255_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_A",
+      "find": "^\\tcase PORT_A:$",
+      "key": "0x00",
+      "inside": "i8255_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_B",
+      "find": "^\\tcase PORT_B:$",
+      "key": "0x01",
+      "inside": "i8255_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_B",
+      "find": "^\\tcase PORT_B:$",
+      "key": "0x01",
+      "inside": "i8255_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_C",
+      "find": "^\\tcase PORT_C:$",
+      "key": "0x02",
+      "inside": "i8255_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_C",
+      "find": "^\\tcase PORT_C:$",
+      "key": "0x02",
+      "inside": "i8255_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case CONTROL",
+      "find": "^\\tcase CONTROL:$",
+      "key": "0x03",
+      "inside": "i8255_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case CONTROL",
+      "find": "^\\tcase CONTROL:$",
+      "key": "0x03",
+      "inside": "i8255_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write mode set",
+      "find": "^\\t\\tif \\(data & CONTROL_MODE_SET\\)$",
+      "key": "0x80..0xFF",
+      "inside": "i8255_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write bit set reset",
+      "find": "int bit = \\(data >> 1\\) & 0x07;",
+      "key": "0x00..0x7F",
+      "inside": "i8255_device::write"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/i8255.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03"
+      ],
+      "cases": {
+        "file": "src/devices/machine/i8255.cpp",
+        "inside": "i8255_device::write",
+        "enums": [
+          {
+            "file": "src/devices/machine/i8255.cpp",
+            "after": "^\\tPORT_A = 0,$"
+          }
+        ]
+      }
+    },
+    {
+      "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write control word",
+      "keys": [
+        "0x80..0xFF",
+        "0x00..0x7F"
+      ]
+    }
+  ]
+}

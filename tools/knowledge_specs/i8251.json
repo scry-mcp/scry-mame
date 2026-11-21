@@ -1,0 +1,112 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp DEFINE_DEVICE_TYPE i8251",
+      "find": "^DEFINE_DEVICE_TYPE\\(I8251,",
+      "key": "i8251"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp DEFINE_DEVICE_TYPE v5x_scu",
+      "find": "^DEFINE_DEVICE_TYPE\\(V5X_SCU,",
+      "key": "v5x_scu"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp i8251_device::data_r",
+      "find": "^uint8_t i8251_device::data_r\\(\\)$",
+      "key": "0x00",
+      "inside": "i8251_device::data_r"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp i8251_device::data_w",
+      "find": "^void i8251_device::data_w\\(uint8_t data\\)$",
+      "key": "0x00",
+      "inside": "i8251_device::data_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp i8251_device::status_r",
+      "find": "^uint8_t i8251_device::status_r\\(\\)$",
+      "key": "0x01",
+      "inside": "i8251_device::status_r"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp i8251_device::control_w",
+      "find": "^void i8251_device::control_w\\(uint8_t data\\)$",
+      "key": "0x01",
+      "inside": "i8251_device::control_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp command_w m_command",
+      "find": "^\\tm_command = data;$",
+      "key": "0x00..0x1F",
+      "inside": "i8251_device::command_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp command_w rts",
+      "find": "m_rts_handler\\(!BIT\\(data, 5\\)\\);",
+      "key": "0x20..0x3F",
+      "inside": "i8251_device::command_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp command_w ir",
+      "find": "if \\(BIT\\(data, 6\\)\\)",
+      "key": "0x40..0x5F",
+      "inside": "i8251_device::command_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp command_w mode flag",
+      "find": "m_flags = I8251_NEXT_MODE;",
+      "key": "0x60..0x7F",
+      "inside": "i8251_device::command_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp command_w hunt",
+      "find": "m_hunt_on = BIT\\(data, 7\\);",
+      "key": "0x80..0x9F",
+      "inside": "i8251_device::command_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp command_w ext sync",
+      "find": "m_ext_syn_set = false;",
+      "key": "0xA0..0xBF",
+      "inside": "i8251_device::command_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp mode_w sync pin",
+      "find": "m_syndet_pin = BIT\\(data, 6\\);",
+      "key": "0xC0..0xDF",
+      "inside": "i8251_device::mode_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp mode_w sync count",
+      "find": "m_sync_byte_count = BIT\\(data, 7\\) \\? 1 : 2;",
+      "key": "0xE0..0xFF",
+      "inside": "i8251_device::mode_w"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/i8251.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp i8251_device::write",
+      "keys": [
+        "0x00",
+        "0x01"
+      ]
+    },
+    {
+      "ref": "mame:src/devices/machine/i8251.cpp i8251_device::control_w commands",
+      "keys": [
+        "0x00..0x1F",
+        "0x20..0x3F",
+        "0x40..0x5F",
+        "0x60..0x7F",
+        "0x80..0x9F",
+        "0xA0..0xBF",
+        "0xC0..0xDF",
+        "0xE0..0xFF"
+      ]
+    }
+  ]
+}

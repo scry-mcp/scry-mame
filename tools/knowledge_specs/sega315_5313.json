@@ -1,0 +1,286 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp DEFINE_DEVICE_TYPE sega315_5313",
+      "find": "^DEFINE_DEVICE_TYPE\\(SEGA315_5313,",
+      "key": "sega315_5313"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::data_port_r",
+      "find": "^u16 sega315_5313_device::data_port_r\\(\\)$",
+      "key": "0x00..0x03",
+      "inside": "sega315_5313_device::data_port_r"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::data_port_w",
+      "find": "^void sega315_5313_device::data_port_w\\(int data\\)$",
+      "key": "0x00..0x03",
+      "inside": "sega315_5313_device::data_port_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_r",
+      "find": "^u16 sega315_5313_device::ctrl_port_r\\(\\)$",
+      "key": "0x04..0x07",
+      "inside": "sega315_5313_device::ctrl_port_r"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w",
+      "find": "^void sega315_5313_device::ctrl_port_w\\(int data\\)$",
+      "key": "0x04..0x07",
+      "inside": "sega315_5313_device::ctrl_port_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::megadriv_read_hv_counters",
+      "find": "^u16 sega315_5313_device::megadriv_read_hv_counters\\(\\)$",
+      "key": "0x08..0x0F",
+      "inside": "sega315_5313_device::megadriv_read_hv_counters"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_w HV counter",
+      "find": "Attempt to Write to HV counters",
+      "key": "0x08..0x0F",
+      "inside": "sega315_5313_device::vdp_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_w PSG",
+      "find": "psg_w\\(data & 0xff\\);",
+      "key": "0x10..0x17",
+      "inside": "sega315_5313_device::vdp_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_r PSG",
+      "find": "Attempting to read PSG",
+      "key": "0x10..0x17",
+      "inside": "sega315_5313_device::vdp_r"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_w default",
+      "find": "^\\t\\tdefault:$",
+      "key": "0x18..0x1F",
+      "inside": "sega315_5313_device::vdp_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x00 (0x100)",
+      "find": "^ \\$00 - Mode Set Register No\\. 1$",
+      "key": "0x100"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x01 (0x101)",
+      "find": "^ \\$01 - Mode Set Register No\\. 2$",
+      "key": "0x101"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x02 (0x102)",
+      "find": "^#define MEGADRIVE_REG02_PATTERN_ADDR_A\\b",
+      "key": "0x102"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x03 (0x103)",
+      "find": "^#define MEGADRIVE_REG03_PATTERN_ADDR_W\\b",
+      "key": "0x103"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x04 (0x104)",
+      "find": "^#define MEGADRIVE_REG04_PATTERN_ADDR_B\\b",
+      "key": "0x104"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x05 (0x105)",
+      "find": "^#define MEGADRIVE_REG05_SPRITE_ADDR\\b",
+      "key": "0x105"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x06 (0x106)",
+      "find": "^/\\* 6\\? \\*/$",
+      "key": "0x106"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x07 (0x107)",
+      "find": "^#define MEGADRIVE_REG07_BGCOLOUR\\b",
+      "key": "0x107"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x08 (0x108)",
+      "find": "^/\\* 8\\? \\*/$",
+      "key": "0x108"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x09 (0x109)",
+      "find": "^/\\* 9\\? \\*/$",
+      "key": "0x109"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0A (0x10A)",
+      "find": "^#define MEGADRIVE_REG0A_HINT_VALUE\\b",
+      "key": "0x10A"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0B (0x10B)",
+      "find": "^#define MEGADRIVE_REG0B_HSCROLL_MODE\\b",
+      "key": "0x10B"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0C (0x10C)",
+      "find": "^#define MEGADRIVE_REG0C_INTERLEAVE\\b",
+      "key": "0x10C"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0D (0x10D)",
+      "find": "^#define MEGADRIVE_REG0D_HSCROLL_ADDR\\b",
+      "key": "0x10D"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0E (0x10E)",
+      "find": "^/\\* e\\? \\*/$",
+      "key": "0x10E"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0F (0x10F)",
+      "find": "^#define MEGADRIVE_REG0F_AUTO_INC\\b",
+      "key": "0x10F"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x10 (0x110)",
+      "find": "^#define MEGADRIVE_REG10_VSCROLL_SIZE\\b",
+      "key": "0x110"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x11 (0x111)",
+      "find": "^#define MEGADRIVE_REG11_WINDOW_HPOS\\b",
+      "key": "0x111"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x12 (0x112)",
+      "find": "^#define MEGADRIVE_REG12_WINDOW_VPOS\\b",
+      "key": "0x112"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x13 (0x113)",
+      "find": "^#define MEGADRIVE_REG13_DMALENGTH1\\b",
+      "key": "0x113"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x14 (0x114)",
+      "find": "^#define MEGADRIVE_REG14_DMALENGTH2\\b",
+      "key": "0x114"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x15 (0x115)",
+      "find": "^#define MEGADRIVE_REG15_DMASOURCE1\\b",
+      "key": "0x115"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x16 (0x116)",
+      "find": "^#define MEGADRIVE_REG16_DMASOURCE2\\b",
+      "key": "0x116"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x17 (0x117)",
+      "find": "^#define MEGADRIVE_REG17_DMATYPE\\b",
+      "key": "0x117"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp VDP registers 0x18 to 0x1F (0x118..0x11F)",
+      "find": "vdp_set_register\\(regnum & 0x1f, value\\);",
+      "key": "0x118..0x11F",
+      "inside": "sega315_5313_device::ctrl_port_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w register-set word (0x200)",
+      "find": "\\(data & 0xc000\\) == 0x8000",
+      "key": "0x200",
+      "inside": "sega315_5313_device::ctrl_port_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w command first word (0x201)",
+      "find": "m_command_pending = 1;",
+      "key": "0x201",
+      "inside": "sega315_5313_device::ctrl_port_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w command second word (0x202)",
+      "find": "m_command_part2 = data;",
+      "key": "0x202",
+      "inside": "sega315_5313_device::ctrl_port_w"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::handle_dma_bits 68k",
+      "find": "MEGADRIVE_REG17_DMATYPE == 0x0 \\|\\| MEGADRIVE_REG17_DMATYPE == 0x1",
+      "key": "0x00..0x7F",
+      "inside": "sega315_5313_device::handle_dma_bits"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::handle_dma_bits fill",
+      "find": "MEGADRIVE_REG17_DMATYPE == 0x2",
+      "key": "0x80..0xBF",
+      "inside": "sega315_5313_device::handle_dma_bits"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::handle_dma_bits copy",
+      "find": "MEGADRIVE_REG17_DMATYPE == 0x3",
+      "key": "0xC0..0xFF",
+      "inside": "sega315_5313_device::handle_dma_bits"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/video/315_5313.cpp"
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_r",
+      "keys": [
+        "0x00..0x03",
+        "0x04..0x07",
+        "0x08..0x0F",
+        "0x10..0x17",
+        "0x18..0x1F"
+      ],
+      "cases": {
+        "file": "src/devices/video/315_5313.cpp",
+        "inside": "sega315_5313_device::vdp_r"
+      }
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_set_register",
+      "keys": [
+        "0x100",
+        "0x101",
+        "0x102",
+        "0x103",
+        "0x104",
+        "0x105",
+        "0x106",
+        "0x107",
+        "0x108",
+        "0x109",
+        "0x10A",
+        "0x10B",
+        "0x10C",
+        "0x10D",
+        "0x10E",
+        "0x10F",
+        "0x110",
+        "0x111",
+        "0x112",
+        "0x113",
+        "0x114",
+        "0x115",
+        "0x116",
+        "0x117",
+        "0x118..0x11F",
+        "0x200",
+        "0x201",
+        "0x202"
+      ]
+    },
+    {
+      "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::handle_dma_bits commands",
+      "keys": [
+        "0x00..0x7F",
+        "0x80..0xBF",
+        "0xC0..0xFF"
+      ]
+    }
+  ]
+}

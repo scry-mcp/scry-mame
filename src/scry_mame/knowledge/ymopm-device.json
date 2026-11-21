@@ -1,0 +1,46 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "ymopm-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The Yamaha YM2151 (OPM) FM synthesizer as a chip",
+  "complete_against": "mame:src/devices/sound/ymopm.cpp DEFINE_DEVICE_TYPE",
+  "left_out": [
+    {
+      "key": "ym2164",
+      "why": "the OPP, same register layout as the ym2151 and listed in its types; MAME declares its extra registers 0x00 to 0x07 and half-speed timer B in a comment and implements neither"
+    }
+  ],
+  "entries": [
+    {
+      "key": "ym2151",
+      "name": "YM2151 OPM",
+      "aliases": [
+        "OPM",
+        "YM2151",
+        "Yamaha OPM"
+      ],
+      "description": "Yamaha four-operator FM synthesizer with eight stereo channels, an LFO, a noise source and two timers, programmed through an address port and a data port.",
+      "behaviour": "Offset 0 selects a register and offset 1 writes it; registers cannot be read back. A read of offset 1 returns status (bit 0 timer A, bit 1 timer B, bit 7 busy for 64 chip clocks after a data write) and offset 0 reads 0xFF. While the reset line is low writes are ignored; raising it resets the chip.",
+      "classes": [
+        "ym2151_device",
+        "ym2164_device"
+      ],
+      "handlers": {
+        "read": "status on offset 1, 0xFF on offset 0",
+        "status_r": "status",
+        "write": "address on offset 0, data on offset 1",
+        "address_w": "register select",
+        "data_w": "register data",
+        "reset_w": "reset line, active low (ym2151_device only)"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ymopm.cpp DEFINE_DEVICE_TYPE ym2151",
+          "cites": "DEFINE_DEVICE_TYPE(YM2151, ym2151_device, \"ym2151\", \"YM2151 OPM\")"
+        }
+      ]
+    }
+  ]
+}

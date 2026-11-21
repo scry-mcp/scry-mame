@@ -1,0 +1,45 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "upd7759-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The NEC uPD7759 ADPCM speech chip as a chip",
+  "complete_against": "mame:src/devices/sound/upd7759.cpp DEFINE_DEVICE_TYPE",
+  "left_out": [
+    {
+      "key": "upd7756",
+      "why": "mask-ROM variant with no MD pin, no DRQ output and no slave mode, and a different sample address shift (none, against one in the uPD7759), so md_w and the slave protocol of these entries do not exist on it"
+    }
+  ],
+  "entries": [
+    {
+      "key": "upd7759",
+      "name": "NEC uPD7759",
+      "aliases": [
+        "uPD7759",
+        "NEC 7759",
+        "7759"
+      ],
+      "description": "Speech chip that plays ADPCM samples from an external ROM, chosen by number in stand-alone mode or fed byte by byte by the host in slave mode.",
+      "behaviour": "Inputs are RESET, START, MD and an 8-bit port; outputs are BUSY and, on this class, DRQ. Stand-alone mode starts a sample from the ROM table when START falls. Slave mode asks the host for every byte through DRQ.",
+      "classes": [
+        "upd7759_device",
+        "upd775x_device"
+      ],
+      "handlers": {
+        "reset_w": "RESET line",
+        "start_w": "START line",
+        "busy_r": "BUSY output",
+        "port_w": "8-bit data port",
+        "md_w": "mode select line"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/upd7759.cpp DEFINE_DEVICE_TYPE upd7759",
+          "cites": "DEFINE_DEVICE_TYPE(UPD7759, upd7759_device, \"upd7759\", \"NEC uPD7759\")"
+        }
+      ]
+    }
+  ]
+}

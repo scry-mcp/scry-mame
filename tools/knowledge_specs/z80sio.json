@@ -1,0 +1,267 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE z80sio",
+      "find": "^DEFINE_DEVICE_TYPE\\(Z80SIO,",
+      "key": "z80sio"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE z80dart",
+      "find": "^DEFINE_DEVICE_TYPE\\(Z80DART,",
+      "key": "z80dart"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE i8274",
+      "find": "^DEFINE_DEVICE_TYPE\\(I8274,",
+      "key": "i8274"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE upd7201",
+      "find": "^DEFINE_DEVICE_TYPE\\(UPD7201,",
+      "key": "upd7201"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE mk68564",
+      "find": "^DEFINE_DEVICE_TYPE\\(MK68564,",
+      "key": "mk68564"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE z80sio_channel",
+      "find": "^DEFINE_DEVICE_TYPE\\(Z80SIO_CHANNEL,",
+      "key": "z80sio_channel"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE z80dart_channel",
+      "find": "^DEFINE_DEVICE_TYPE\\(Z80DART_CHANNEL,",
+      "key": "z80dart_channel"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE i8274_channel",
+      "find": "^DEFINE_DEVICE_TYPE\\(I8274_CHANNEL,",
+      "key": "i8274_channel"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE mk68564_channel",
+      "find": "^DEFINE_DEVICE_TYPE\\(MK68564_CHANNEL,",
+      "key": "mk68564_channel"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_read register 0x00 read",
+      "find": "case REG_RR0_STATUS:",
+      "key": "0x00",
+      "inside": "z80sio_channel::control_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_read register 0x01 read",
+      "find": "case REG_RR1_SPEC_RCV_COND:",
+      "key": "0x01",
+      "inside": "z80sio_channel::control_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_read register 0x02 read",
+      "find": "case REG_RR2_INTERRUPT_VECT:",
+      "key": "0x02",
+      "inside": "z80sio_channel::control_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x00 write",
+      "find": "case REG_WR0_COMMAND_REGPT:",
+      "key": "0x00",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x01 write",
+      "find": "case REG_WR1_INT_DMA_ENABLE:",
+      "key": "0x01",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x02 write",
+      "find": "case REG_WR2_INT_VECTOR:",
+      "key": "0x02",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x03 write",
+      "find": "case REG_WR3_RX_CONTROL:",
+      "key": "0x03",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x04 write",
+      "find": "case REG_WR4_RX_TX_MODES:",
+      "key": "0x04",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x05 write",
+      "find": "case REG_WR5_TX_CONTROL:",
+      "key": "0x05",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x06 write",
+      "find": "case REG_WR6_SYNC_OR_SDLC_A:",
+      "key": "0x06",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x07 write",
+      "find": "case REG_WR7_SYNC_OR_SDLC_F:",
+      "key": "0x07",
+      "inside": "z80sio_channel::control_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x00",
+      "find": "case WR0_NULL:",
+      "key": "0x00",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x08",
+      "find": "case WR0_SEND_ABORT:",
+      "key": "0x08",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x10",
+      "find": "case WR0_RESET_EXT_STATUS:",
+      "key": "0x10",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x18",
+      "find": "case WR0_CHANNEL_RESET:",
+      "key": "0x18",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x20",
+      "find": "case WR0_ENABLE_INT_NEXT_RX:",
+      "key": "0x20",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x28",
+      "find": "case WR0_RESET_TX_INT:",
+      "key": "0x28",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x30",
+      "find": "case WR0_ERROR_RESET:",
+      "key": "0x30",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x38",
+      "find": "case WR0_RETURN_FROM_INT:",
+      "key": "0x38",
+      "inside": "z80sio_channel::do_sioreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x40",
+      "find": "case WR0_CRC_RESET_RX:",
+      "key": "0x40",
+      "inside": "z80sio_channel::do_sioreg_wr0_resets"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x80",
+      "find": "case WR0_CRC_RESET_TX:",
+      "key": "0x80",
+      "inside": "z80sio_channel::do_sioreg_wr0_resets"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0xC0",
+      "find": "case WR0_CRC_RESET_TX_UNDERRUN:",
+      "key": "0xC0",
+      "inside": "z80sio_channel::do_sioreg_wr0_resets"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::cd_ba_r port 0x100..0x103",
+      "find": "return cd \\? channel->control_read\\(\\) : channel->data_read\\(\\);",
+      "key": "0x100..0x103",
+      "inside": "z80sio_device::cd_ba_r"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::cd_ba_w port 0x100..0x103",
+      "find": "^\\tif \\(cd\\)$",
+      "key": "0x100..0x103",
+      "inside": "z80sio_device::cd_ba_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::ba_cd_r port 0x110..0x113",
+      "find": "return cd \\? channel->control_read\\(\\) : channel->data_read\\(\\);",
+      "key": "0x110..0x113",
+      "inside": "z80sio_device::ba_cd_r"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device::ba_cd_w port 0x110..0x113",
+      "find": "^\\tif \\(cd\\)$",
+      "key": "0x110..0x113",
+      "inside": "z80sio_device::ba_cd_w"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/z80sio.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write registers",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04",
+        "0x05",
+        "0x06",
+        "0x07"
+      ],
+      "cases": {
+        "file": "src/devices/machine/z80sio.cpp",
+        "inside": "z80sio_channel::control_write",
+        "enums": [
+          {
+            "file": "src/devices/machine/z80sio.h",
+            "after": "^\\t\\tREG_WR0_COMMAND_REGPT\\s+= 0,$"
+          }
+        ]
+      }
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 commands",
+      "keys": [
+        "0x00",
+        "0x08",
+        "0x10",
+        "0x18",
+        "0x20",
+        "0x28",
+        "0x30",
+        "0x38",
+        "0x40",
+        "0x80",
+        "0xC0"
+      ],
+      "cases": {
+        "file": "src/devices/machine/z80sio.cpp",
+        "inside": "z80sio_channel::do_sioreg_wr0",
+        "enums": [
+          {
+            "file": "src/devices/machine/z80sio.cpp",
+            "after": "^\\tWR0_REGISTER_MASK\\s+= 0x07,$"
+          }
+        ]
+      }
+    },
+    {
+      "ref": "mame:src/devices/machine/z80sio.cpp z80sio_device ports",
+      "keys": [
+        "0x100..0x103",
+        "0x110..0x113"
+      ]
+    }
+  ]
+}

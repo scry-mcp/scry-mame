@@ -1,0 +1,148 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "i8255",
+  "kind": "register",
+  "scope": "i8255",
+  "covers": "The four registers of the Intel 8255 by offset",
+  "complete_against": "mame:src/devices/machine/i8255.cpp i8255_device::write",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "port A read",
+      "access": "read",
+      "aliases": [
+        "PA read"
+      ],
+      "description": "Reads port A: the pins, the output latch or the strobed input latch, by mode.",
+      "behaviour": "Mode 0 returns the output latch when port A is an output, else the live pins. Mode 1 as an output returns the latch; mode 1 as an input and mode 2 (any direction bit) return the byte a PC4 strobe latched. That read then clears the latch, IBF A and INTR A, except for a debugger read.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_A",
+          "cites": "\tcase PORT_A:"
+        }
+      ]
+    },
+    {
+      "key": "0x00",
+      "name": "port A write",
+      "access": "write",
+      "aliases": [
+        "PA write"
+      ],
+      "description": "Writes port A: latches the byte and drives the pins when port A is an output.",
+      "behaviour": "Mode 0 and mode 1 ignore the write when port A is an input. Mode 1 as an output also sets OBF A to 0 (buffer full) and clears INTR A. Mode 2 always latches and drives, and does the same flag change.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_A",
+          "cites": "\tcase PORT_A:"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "port B read",
+      "access": "read",
+      "aliases": [
+        "PB read"
+      ],
+      "description": "Reads port B: the pins, the output latch or the strobed input latch, by mode.",
+      "behaviour": "Group B mode 0 returns the output latch when port B is an output, else the live pins. Mode 1 as an output returns the latch; mode 1 as an input returns the byte a PC2 strobe latched. That read then clears the latch, IBF B and INTR B, except for a debugger read.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_B",
+          "cites": "\tcase PORT_B:"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "port B write",
+      "access": "write",
+      "aliases": [
+        "PB write"
+      ],
+      "description": "Writes port B: latches the byte and drives the pins when port B is an output.",
+      "behaviour": "The write is ignored when port B is an input. Group B mode 1 as an output also sets OBF B to 0 (buffer full) and clears INTR B.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_B",
+          "cites": "\tcase PORT_B:"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "port C read",
+      "access": "read",
+      "aliases": [
+        "PC read",
+        "status"
+      ],
+      "description": "Reads port C: pins, output latch or, in a handshake mode, the status flags.",
+      "behaviour": "Flags (OBF reads 0 while full): group A mode 1 output PC3 INTR, PC6 INTE, PC7 OBF; mode 1 input PC3 INTR, PC4 INTE, PC5 IBF; mode 2 PC3 INTR, PC4 INTE2, PC5 IBF, PC6 INTE1, PC7 OBF; group B mode 1 PC0 INTR, PC1 OBF or IBF, PC2 INTE. Other bits: output latch or pins by direction.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_C",
+          "cites": "\tcase PORT_C:"
+        }
+      ]
+    },
+    {
+      "key": "0x02",
+      "name": "port C write",
+      "access": "write",
+      "aliases": [
+        "PC write"
+      ],
+      "description": "Writes the port C output latch and drives the pins.",
+      "behaviour": "The byte always goes into the output latch. The pins show the latch for output bits, the tri-state level for input halves (default 0xFF), and the flags in place of the signal bits of a handshake mode. A write never changes a flag.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_C",
+          "cites": "\tcase PORT_C:"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "control read",
+      "access": "read",
+      "aliases": [
+        "mode word read"
+      ],
+      "description": "Returns the stored mode word.",
+      "behaviour": "The byte is the last mode word written with bit 7 set, 0x9B after a reset. A port C bit set/reset does not change it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case CONTROL",
+          "cites": "\tcase CONTROL:"
+        }
+      ]
+    },
+    {
+      "key": "0x03",
+      "name": "control write",
+      "access": "write",
+      "aliases": [
+        "mode word",
+        "control word"
+      ],
+      "description": "Writes the control word: a mode set or a port C bit set/reset.",
+      "behaviour": "Bit 7 set is a mode set, clear a bit set/reset (see the commands). A mode set stores the word, clears the three output latches, the input latches, the INTE enables and IBF, sets OBF to 1 and, for an output port A, IBF A to 1, then redrives the pins. INTR flags are not cleared.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case CONTROL",
+          "cites": "\tcase CONTROL:"
+        }
+      ]
+    }
+  ]
+}

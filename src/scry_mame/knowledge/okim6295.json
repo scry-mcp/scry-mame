@@ -1,0 +1,44 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "okim6295",
+  "kind": "register",
+  "scope": "okim6295",
+  "covers": "The one port of the OKI MSM6295",
+  "complete_against": "mame:src/devices/sound/okim6295.cpp okim6295_device::write",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "status",
+      "access": "read",
+      "aliases": [
+        "voice busy"
+      ],
+      "description": "Which of the four voices is playing.",
+      "behaviour": "Bits 0 to 3 are 1 for voices 1 to 4 while that voice plays; bits 4 to 7 always read 1. The stream is brought up to date before the bits are read.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::read",
+          "cites": "uint8_t okim6295_device::read()"
+        }
+      ]
+    },
+    {
+      "key": "0x00",
+      "name": "command",
+      "access": "write",
+      "aliases": [
+        "command byte"
+      ],
+      "description": "Starts or stops voices, in one byte or two.",
+      "behaviour": "With no byte pending, bit 7 set remembers bits 0 to 6 as a phrase number and waits for a second byte; bit 7 clear stops voices. The second byte, whatever its value, takes bits 4 to 7 as the voices to start and bits 0 to 3 as the volume, and clears the pending phrase.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write",
+          "cites": "void okim6295_device::write(uint8_t command)"
+        }
+      ]
+    }
+  ]
+}

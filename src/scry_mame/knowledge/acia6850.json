@@ -1,0 +1,78 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "acia6850",
+  "kind": "register",
+  "scope": "acia6850",
+  "covers": "The two registers of the MC6850 ACIA, selected by the RS pin",
+  "complete_against": "mame:src/devices/machine/6850acia.cpp acia6850_device::write",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "status",
+      "access": "read",
+      "aliases": [
+        "SR"
+      ],
+      "description": "Status register: receiver, transmitter, modem pin and interrupt flags.",
+      "behaviour": "Bits 0 to 7: RDRF, TDRE, DCD, CTS, FE, OVRN, PE, IRQ. FE and PE update per byte; IRQ follows the interrupt output; CTS follows the pin. DCD sets at a receive clock edge with the pin high and clears after the pin falls, a status read and a data read; TDRE reads 0 in reset or with CTS set.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::status_r",
+          "cites": "uint8_t acia6850_device::status_r()"
+        }
+      ]
+    },
+    {
+      "key": "0x00",
+      "name": "control",
+      "access": "write",
+      "aliases": [
+        "CR"
+      ],
+      "description": "Control register: clock divide, word format, transmit control, receive interrupt enable; divide code 11 is master reset, which clears the flags except CTS and sets TDRE.",
+      "behaviour": "Bits 0-1 divide the clock by 1, 16, 64, or 11 for master reset. Bits 2-4 pick 7E2, 7O2, 7E1, 7O1, 8N2, 8N1, 8E1, 8O1. Bits 5-6: 01 enables the transmit interrupt, 10 drives RTS high, 11 sends break, 00 none; bit 7 enables the receive interrupt.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::control_w",
+          "cites": "void acia6850_device::control_w(uint8_t data)"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "receive data",
+      "access": "read",
+      "aliases": [
+        "RDR"
+      ],
+      "description": "Receive data register: the last complete received character.",
+      "behaviour": "Returns the byte, or its low 7 bits for a 7-bit word with parity. A read clears RDRF and OVRN, except the first read after an overrun, which sets OVRN and leaves RDRF. After a status read, a data read ends a DCD interrupt.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_r",
+          "cites": "uint8_t acia6850_device::data_r()"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "transmit data",
+      "access": "write",
+      "aliases": [
+        "TDR"
+      ],
+      "description": "Transmit data register: the next character to send.",
+      "behaviour": "Stores the byte and clears TDRE, replacing one not yet taken; ignored while in master reset. The transmitter takes it on a falling transmit clock edge when CTS is low, sets TDRE, and sends it low bit first.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_w",
+          "cites": "void acia6850_device::data_w(uint8_t data)"
+        }
+      ]
+    }
+  ]
+}

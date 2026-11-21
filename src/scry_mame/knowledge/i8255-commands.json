@@ -1,0 +1,49 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "i8255-commands",
+  "kind": "command",
+  "scope": "i8255",
+  "covers": "The two forms of the 8255 control word",
+  "complete_against": "mame:src/devices/machine/i8255.cpp i8255_device::write control word",
+  "reached": {
+    "data": [
+      "write"
+    ]
+  },
+  "entries": [
+    {
+      "key": "0x80..0xFF",
+      "name": "mode set",
+      "access": "write",
+      "aliases": [
+        "mode word"
+      ],
+      "description": "Sets the direction of every port and the mode of both groups.",
+      "behaviour": "Bit 0 makes PC0 to PC3 inputs, bit 1 port B an input, bit 2 selects group B mode 1, bit 3 makes PC4 to PC7 inputs, bit 4 port A an input; a clear bit means output or mode 0. Bits 6 and 5 select group A mode 0, 1 or 2 (2 and 3 mean mode 2).",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write mode set",
+          "cites": "\t\tif (data & CONTROL_MODE_SET)"
+        }
+      ]
+    },
+    {
+      "key": "0x00..0x7F",
+      "name": "port C bit set/reset",
+      "access": "write",
+      "aliases": [
+        "bit set reset"
+      ],
+      "description": "Sets or clears one bit of port C, or a handshake flag.",
+      "behaviour": "Bits 3 to 1 are the port C bit number, bit 0 the value, bits 6 to 4 are ignored. The output latch always takes it and port C is redriven. In handshake modes a flag bit sets or clears that flag, and INTE or a flag change re-evaluates INTR (flag map: port C read).",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write bit set reset",
+          "cites": "\t\t\tint bit = (data >> 1) & 0x07;"
+        }
+      ]
+    }
+  ]
+}

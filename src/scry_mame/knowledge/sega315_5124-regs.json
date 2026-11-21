@@ -1,0 +1,218 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "sega315_5124-regs",
+  "kind": "register",
+  "scope": "sega315_5124",
+  "covers": "The VDP register file of the 315-5124 family. A register is not addressed directly: it is written by a control port write pair (value, then 0x80 plus the register number), so the keys are 0x100 plus the register number, which keeps them apart from the port keys of sega315_5124.",
+  "complete_against": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write register file",
+  "entries": [
+    {
+      "key": "0x100",
+      "name": "R0 mode control 1",
+      "access": "write",
+      "aliases": [
+        "mode register 0"
+      ],
+      "description": "Mode control 1: M2 and M4 mode bits, sprite, column and scroll options, and the line interrupt enable (a write changes /INT at once).",
+      "behaviour": "Value, then 0x80: bit 1 M2, bit 2 M4, bit 3 shifts sprites left 8 in mode 4, bit 4 enables the line interrupt, bit 5 blanks column 0 and its sprite collisions, bit 6 stops h-scroll on the top 2 rows, bit 7 stops v-scroll on the right 8 columns; bit 0 is stored and unused by MAME.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_display_mode register 0x00",
+          "cites": "\tconst bool M4 = BIT(m_reg[0x00], 2);"
+        }
+      ]
+    },
+    {
+      "key": "0x101",
+      "name": "R1 mode control 2",
+      "access": "write",
+      "aliases": [
+        "mode register 1"
+      ],
+      "description": "Mode control 2: M1 and M3 mode bits (with M2 and M4, 224 or 240 lines on the 315-5246 and 5377), display and interrupt enable, sprite size.",
+      "behaviour": "Value, then 0x81: bit 0 doubles sprites, bit 1 makes them 16 lines tall, bit 3 M3, bit 4 M1, bit 5 enables the vertical interrupt, bit 6 enables the display; bits 2 and 7 are stored and unused by MAME. Setting bit 5 while the flag is pending asserts /INT; clearing it releases /INT.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_display_mode register 0x01",
+          "cites": "\tconst bool M1 = BIT(m_reg[0x01], 4);"
+        }
+      ]
+    },
+    {
+      "key": "0x102",
+      "name": "R2 name table base",
+      "access": "write",
+      "aliases": [
+        "name table address"
+      ],
+      "description": "Where the background name table sits in video RAM.",
+      "behaviour": "Value, then 0x82: mode 4 bits 1 to 3 give address bits 11 to 13 (224 and 240 lines: bits 2 and 3 give 12 and 13, plus 0x700); modes 0 to 3 bits 0 to 3 give 10 to 13. On the 315-5124 only, bit 0 clear masks row address bit 10, so rows 16 and up repeat.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::draw_scanline_mode4 register 0x02",
+          "cites": "\t\tname_base = (m_reg[0x02] << 10) & 0x3800;"
+        }
+      ]
+    },
+    {
+      "key": "0x103",
+      "name": "R3 color table base",
+      "access": "write",
+      "aliases": [
+        "color table address",
+        "tile mask"
+      ],
+      "description": "Where the colour table sits (modes 0 and 2); a tile mask on the 315-5124.",
+      "behaviour": "Value, then 0x83: mode 0, the value times 64 is the table address; mode 2, bit 7 selects the 0x2000 half and bits 0 to 6 mask the colour index. Mode 4, 315-5124 only: bit k clear masks tile number bit k+1 for bitplanes 0 and 1. Modes 1 and 3 ignore it.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::tile1_select_mode4 register 0x03",
+          "cites": "\treturn tile_number & ((m_reg[0x03] << 1) | 1);"
+        }
+      ]
+    },
+    {
+      "key": "0x104",
+      "name": "R4 pattern table base",
+      "access": "write",
+      "aliases": [
+        "pattern table address",
+        "tile mask"
+      ],
+      "description": "Where the background pattern table sits; a tile mask on the 315-5124.",
+      "behaviour": "Value, then 0x84: modes 0, 1 and 3, the value times 2048 is the table address; mode 2, bit 2 selects the 0x2000 half and bits 0 and 1 mask the pattern index. Mode 4, 315-5124 only: bits 0 to 2 clear mask tile number bits 6 to 8 for bitplanes 2 and 3.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::tile2_select_mode4 register 0x04",
+          "cites": "\treturn tile_number & (((m_reg[0x04] & 0x07) << 6) | 0x03f);"
+        }
+      ]
+    },
+    {
+      "key": "0x105",
+      "name": "R5 sprite table base",
+      "access": "write",
+      "aliases": [
+        "sprite attribute table"
+      ],
+      "description": "Where the sprite attribute table sits in video RAM.",
+      "behaviour": "Value, then 0x85: modes 0 to 3, bits 0 to 6 give address bits 7 to 13; mode 4, bits 1 to 6 give address bits 8 to 13. On the 315-5124 only, bit 0 clear moves the X and tile pairs from offset 0x80 to offset 0, over the Y table.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_sprites register 0x05",
+          "cites": "\t\tm_sprite_attribute_base = (m_reg[0x05] << 7) & 0x3f00;"
+        }
+      ]
+    },
+    {
+      "key": "0x106",
+      "name": "R6 sprite pattern base",
+      "access": "write",
+      "aliases": [
+        "sprite pattern table"
+      ],
+      "description": "Where the sprite patterns sit in video RAM.",
+      "behaviour": "Value, then 0x86: modes 0 to 3, bits 0 to 2 give pattern table address bits 11 to 13; mode 4, bit 2 selects tiles 256 to 511 (table at 0x2000). On the 315-5124 only, bits 0 and 1 clear mask sprite tile number bits 6 and 7.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::select_sprites register 0x06",
+          "cites": "\t\t\t\t\t\tsprite_tile_selected += 256; /* pattern table select */"
+        }
+      ]
+    },
+    {
+      "key": "0x107",
+      "name": "R7 backdrop color",
+      "access": "write",
+      "aliases": [
+        "border color",
+        "text color"
+      ],
+      "description": "The backdrop and border colour, and the text colour in text mode.",
+      "behaviour": "Value, then 0x87: the low 4 bits are the backdrop colour: in mode 4 colour RAM entry 16 plus them, otherwise the colour that replaces colour 0. In text mode (mode 1) the high 4 bits are the text colour and the low 4 bits its background.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp header register 0x07",
+          "cites": "#define BACKDROP_COLOR        ((m_vdp_mode == 4 ? 0x10 : 0x00) + (m_reg[0x07] & 0x0f))"
+        }
+      ]
+    },
+    {
+      "key": "0x108",
+      "name": "R8 horizontal scroll",
+      "access": "write",
+      "aliases": [
+        "X scroll"
+      ],
+      "description": "Horizontal scroll of the mode 4 background, in pixels.",
+      "behaviour": "Value, then 0x88: Mode 4 only: the high 5 bits shift the tile columns and the low 3 bits are the fine pixel offset. It is latched at the start of each line, or at once when written early in the line; bit 6 of register 0 holds the top 2 rows still.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x08",
+          "cites": "\tm_reg8copy = m_reg[0x08];"
+        }
+      ]
+    },
+    {
+      "key": "0x109",
+      "name": "R9 vertical scroll",
+      "access": "write",
+      "aliases": [
+        "Y scroll"
+      ],
+      "description": "Vertical scroll of the mode 4 background, in lines.",
+      "behaviour": "Value, then 0x89: Mode 4 only: the background row is the line plus this value, modulo 224 in 192 line mode and modulo 256 in the taller modes. It is latched once per frame at the first active line, so a mid-frame write waits for the next frame.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x09",
+          "cites": "\t\t\tm_reg9copy = m_reg[0x09];"
+        }
+      ]
+    },
+    {
+      "key": "0x10A",
+      "name": "R10 line counter",
+      "access": "write",
+      "aliases": [
+        "line interrupt counter",
+        "line interval"
+      ],
+      "description": "The reload value of the line interrupt counter.",
+      "behaviour": "Value, then 0x8A: On each active line and on the first bottom border line the counter drops by 1, and when already 0 it reloads from this value and raises the line interrupt; other lines reload it. The interrupt reaches /INT only if bit 4 of register 0 is set; reset value 0xFF.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x0A",
+          "cites": "\t\tif (m_line_counter == 0x00)"
+        }
+      ]
+    },
+    {
+      "key": "0x10B..0x10F",
+      "name": "R11 to R15 unused",
+      "access": "write",
+      "aliases": [
+        "unused registers"
+      ],
+      "description": "Registers 11 to 15: the chip accepts the write, MAME does nothing with it.",
+      "behaviour": "Value, then 0x8B to 0x8F: The control write masks the register number with 0x0F, so these five are kept in the register file and are stored and unused by MAME.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write register 0x0B",
+          "cites": "\t\t\treg_num = data & m_reg_num_mask;"
+        }
+      ]
+    }
+  ]
+}

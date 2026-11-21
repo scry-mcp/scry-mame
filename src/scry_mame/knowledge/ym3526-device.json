@@ -1,0 +1,37 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "ym3526-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The Yamaha YM3526 (OPL1) FM synthesizer as a chip",
+  "complete_against": "mame:src/devices/sound/ymopl.cpp DEFINE_DEVICE_TYPE ym3526",
+  "entries": [
+    {
+      "key": "ym3526",
+      "name": "YM3526 OPL",
+      "aliases": [
+        "OPL1",
+        "Yamaha OPL1"
+      ],
+      "description": "Yamaha FM synthesizer, the first OPL: nine two-operator channels, a rhythm mode and two timers, programmed through an address port and a data port.",
+      "behaviour": "A write at offset 0 selects a register and a write at offset 1 sets it. A read at offset 0 returns the status: bit 7 interrupt, bit 6 timer 1, bit 5 timer 2, bits 2 and 1 always 1, the rest 0. A read at offset 1 returns 0xFF, and no register can be read back.",
+      "classes": [
+        "ym3526_device"
+      ],
+      "handlers": {
+        "read": "status read at offset 0, 0xFF at offset 1",
+        "status_r": "status",
+        "write": "register select at offset 0, register data at offset 1",
+        "address_w": "register select",
+        "data_w": "register data"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ymopl.cpp DEFINE_DEVICE_TYPE ym3526 device",
+          "cites": "DEFINE_DEVICE_TYPE(YM3526, ym3526_device, \"ym3526\", \"YM3526 OPL\")"
+        }
+      ]
+    }
+  ]
+}

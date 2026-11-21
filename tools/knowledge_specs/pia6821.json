@@ -1,0 +1,76 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp DEFINE_DEVICE_TYPE pia6821",
+      "find": "^DEFINE_DEVICE_TYPE\\(PIA6821,",
+      "key": "pia6821"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x00",
+      "find": "ret = output_selected\\(m_ctl_a\\) \\? port_a_r\\(\\) : ddr_a_r\\(\\);",
+      "key": "0x00",
+      "inside": "pia6821_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x00",
+      "find": "if \\(output_selected\\(m_ctl_a\\)\\)",
+      "key": "0x00",
+      "inside": "pia6821_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x01",
+      "find": "ret = control_a_r\\(\\);",
+      "key": "0x01",
+      "inside": "pia6821_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x01",
+      "find": "control_a_w\\(data\\);",
+      "key": "0x01",
+      "inside": "pia6821_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x02",
+      "find": "ret = output_selected\\(m_ctl_b\\) \\? port_b_r\\(\\) : ddr_b_r\\(\\);",
+      "key": "0x02",
+      "inside": "pia6821_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x02",
+      "find": "if \\(output_selected\\(m_ctl_b\\)\\)",
+      "key": "0x02",
+      "inside": "pia6821_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x03",
+      "find": "ret = control_b_r\\(\\);",
+      "key": "0x03",
+      "inside": "pia6821_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x03",
+      "find": "control_b_w\\(data\\);",
+      "key": "0x03",
+      "inside": "pia6821_device::write"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/6821pia.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03"
+      ],
+      "cases": {
+        "file": "src/devices/machine/6821pia.cpp",
+        "inside": "pia6821_device::read"
+      }
+    }
+  ]
+}

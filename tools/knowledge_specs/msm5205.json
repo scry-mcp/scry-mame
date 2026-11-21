@@ -1,0 +1,85 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/sound/msm5205.h msm5205_device::set_prescaler_selector",
+      "find": "^\\tvoid set_prescaler_selector\\(int select\\)$",
+      "key": "0x00"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_callback",
+      "find": "^\\tauto vck_callback\\(\\)",
+      "key": "0x01"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_legacy_callback",
+      "find": "^\\tauto vck_legacy_callback\\(\\)",
+      "key": "0x02"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::reset_w",
+      "find": "^void msm5205_device::reset_w\\(int state\\)$",
+      "key": "0x03",
+      "inside": "msm5205_device::reset_w"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::data_w",
+      "find": "^void msm5205_device::data_w\\(u8 data\\)$",
+      "key": "0x04",
+      "inside": "msm5205_device::data_w"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::vclk_w",
+      "find": "^void msm5205_device::vclk_w\\(int state\\)$",
+      "key": "0x05",
+      "inside": "msm5205_device::vclk_w"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::playmode_w",
+      "find": "^void msm5205_device::playmode_w\\(u8 data\\)$",
+      "key": "0x06",
+      "inside": "msm5205_device::playmode_w"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s1_w",
+      "find": "^void msm5205_device::s1_w\\(int state\\)$",
+      "key": "0x07",
+      "inside": "msm5205_device::s1_w"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s2_w",
+      "find": "^void msm5205_device::s2_w\\(int state\\)$",
+      "key": "0x08",
+      "inside": "msm5205_device::s2_w"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp DEFINE_DEVICE_TYPE msm5205",
+      "find": "^DEFINE_DEVICE_TYPE\\(MSM5205,",
+      "key": "msm5205"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp DEFINE_DEVICE_TYPE msm6585",
+      "find": "^DEFINE_DEVICE_TYPE\\(MSM6585,",
+      "key": "msm6585"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/sound/msm5205.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/sound/msm5205.cpp"
+    },
+    {
+      "ref": "mame:src/devices/sound/msm5205.h msm5205_device public handlers",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04",
+        "0x05",
+        "0x06",
+        "0x07",
+        "0x08"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/sound/ymopl.cpp DEFINE_DEVICE_TYPE ym3526 device",
+      "find": "^DEFINE_DEVICE_TYPE\\(YM3526,",
+      "key": "ym3526"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 01",
+      "find": "^//           01 xxxxxxxx Test register$",
+      "key": "0x01",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 02",
+      "find": "^//           02 xxxxxxxx Timer A value",
+      "key": "0x02",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 03",
+      "find": "^//           03 xxxxxxxx Timer B value",
+      "key": "0x03",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 04",
+      "find": "^//           04 x------- RST",
+      "key": "0x04",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 08",
+      "find": "^//           08 x------- CSM mode",
+      "key": "0x08",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 BD",
+      "find": "^//           BD x------- AM depth",
+      "key": "0xBD",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 A0-A8",
+      "find": "^//        A0-A8 xxxxxxxx F-number",
+      "key": "0xA0..0xA8",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 B0-B8",
+      "find": "^//        B0-B8 --x----- Key on",
+      "key": "0xB0..0xB8",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 20-35",
+      "find": "^//        20-35 x------- AM enable",
+      "key": "0x20..0x35",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 40-55",
+      "find": "^//        40-55 xx------ Key scale level",
+      "key": "0x40..0x55",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 60-75",
+      "find": "^//        60-75 xxxx---- Attack rate",
+      "key": "0x60..0x75",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 80-95",
+      "find": "^//        80-95 xxxx---- Sustain level",
+      "key": "0x80..0x95",
+      "after": "^// OPL/OPL2/OPL3/OPL4 register map:",
+      "until": "^template<int Revision>"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 ch_feedback",
+      "find": "ch_feedback\\(uint32_t choffs\\) const +\\{ return byte\\(0xc0",
+      "key": "0xC0..0xC8"
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 waveform_enable",
+      "find": "waveform_enable\\(\\) const +\\{ return IsOpl2",
+      "key": "0xE0..0xF5"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/sound/ymopl.cpp DEFINE_DEVICE_TYPE ym3526",
+      "keys": [
+        "ym3526"
+      ]
+    },
+    {
+      "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526",
+      "keys": [
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04",
+        "0x08",
+        "0xBD",
+        "0xA0..0xA8",
+        "0xB0..0xB8",
+        "0xC0..0xC8",
+        "0x20..0x35",
+        "0x40..0x55",
+        "0x60..0x75",
+        "0x80..0x95",
+        "0xE0..0xF5"
+      ]
+    }
+  ]
+}

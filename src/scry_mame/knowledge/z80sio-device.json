@@ -1,0 +1,99 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "z80sio-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The Zilog Z80 SIO and Z80 DART serial controllers as a chip",
+  "complete_against": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE",
+  "left_out": [
+    {
+      "key": "z80dart",
+      "why": "same register layout and handlers as z80sio, listed in its types; the DART has no synchronous modes in MAME (its hunt, sync receive, SDLC receive and sync transmit are stubs, so WR6 and WR7 do nothing), RR0 bit 4 is the ring indicator pin, and RR1 reloads end of frame, framing and residue from the receive FIFO"
+    },
+    {
+      "key": "i8274",
+      "why": "not covered: it overrides interrupt priority, vector and acknowledge, so WR2 of channel A (priority, 8085 or 8086 mode, vectored) and the variable bits of RR2 differ from this chip, and RR1 reloads only the overrun bit from the FIFO"
+    },
+    {
+      "key": "upd7201",
+      "why": "not covered: derived from the i8274 class with no overrides of its own, so it behaves as the i8274 (WR2 and RR2 differ from the z80sio)"
+    },
+    {
+      "key": "mk68564",
+      "why": "not covered: a different register map, read and write by offset through its own handlers (command, mode control, interrupt control, sync, receive and transmit control, time constant, baud rate control and vector registers), with a built-in baud rate generator"
+    },
+    {
+      "key": "z80sio_channel",
+      "why": "internal channel sub-device that z80sio creates twice; a driver maps the parent's handlers, never this device, and its registers are the channel registers of z80sio"
+    },
+    {
+      "key": "z80dart_channel",
+      "why": "internal channel sub-device of z80dart; a driver maps the parent's handlers, and its registers are the channel registers of z80sio"
+    },
+    {
+      "key": "i8274_channel",
+      "why": "internal channel sub-device of i8274 and upd7201; a driver maps the parent's handlers, never this device"
+    },
+    {
+      "key": "mk68564_channel",
+      "why": "internal channel sub-device of mk68564; a driver maps the parent's handlers, never this device"
+    }
+  ],
+  "entries": [
+    {
+      "key": "z80sio",
+      "name": "Z80 SIO",
+      "aliases": [
+        "Z80-SIO",
+        "Z80 SIO/0",
+        "Z80 DART",
+        "Z80-DART",
+        "Z8470",
+        "Z804C43"
+      ],
+      "description": "Zilog dual-channel serial controller with asynchronous, byte-synchronous and SDLC modes; each channel has a data port and a control port.",
+      "behaviour": "The control port reaches write registers WR0 to WR7 and read registers RR0 to RR2 through a pointer that the last WR0 write set. The combined handlers take the channel and the data or control choice from the two low offset bits, in either order. Each channel receives into a three-character FIFO and transmits from a one-character buffer.",
+      "classes": [
+        "z80sio_device",
+        "z80dart_device"
+      ],
+      "handlers": {
+        "cd_ba_r": "read: offset bit 0 picks channel B (1) or A, bit 1 picks control (1) or data",
+        "cd_ba_w": "write: offset bit 0 picks channel B (1) or A, bit 1 picks control (1) or data",
+        "ba_cd_r": "read: offset bit 0 picks control (1) or data, bit 1 picks channel B (1) or A",
+        "ba_cd_w": "write: offset bit 0 picks control (1) or data, bit 1 picks channel B (1) or A",
+        "da_r": "read the data port of channel A",
+        "da_w": "write the data port of channel A",
+        "db_r": "read the data port of channel B",
+        "db_w": "write the data port of channel B",
+        "ca_r": "read the control port of channel A (RR0 to RR2 through the pointer)",
+        "ca_w": "write the control port of channel A (WR0 to WR7 through the pointer)",
+        "cb_r": "read the control port of channel B (RR0 to RR2 through the pointer)",
+        "cb_w": "write the control port of channel B (WR0 to WR7 through the pointer)",
+        "m1_r": "interrupt acknowledge: returns the vector of the highest-priority pending interrupt and marks it in service",
+        "rxa_w": "receive data input, channel A",
+        "rxb_w": "receive data input, channel B",
+        "ctsa_w": "clear to send input, channel A",
+        "ctsb_w": "clear to send input, channel B",
+        "dcda_w": "data carrier detect input, channel A",
+        "dcdb_w": "data carrier detect input, channel B",
+        "rxca_w": "receive clock input, channel A",
+        "rxcb_w": "receive clock input, channel B",
+        "txca_w": "transmit clock input, channel A",
+        "txcb_w": "transmit clock input, channel B",
+        "rxtxcb_w": "one clock input for both receive and transmit, channel B",
+        "synca_w": "sync input, channel A",
+        "syncb_w": "sync input, channel B",
+        "ria_w": "ring indicator input, channel A, on the Z80 DART",
+        "rib_w": "ring indicator input, channel B, on the Z80 DART"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE z80sio",
+          "cites": "DEFINE_DEVICE_TYPE(Z80SIO,          z80sio_device,      \"z80sio\",          \"Z80 SIO\")"
+        }
+      ]
+    }
+  ]
+}

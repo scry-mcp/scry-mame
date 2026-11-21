@@ -1,0 +1,128 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "i8251-commands",
+  "kind": "command",
+  "scope": "i8251",
+  "covers": "The byte written to the control port of the Intel 8251, which the chip reads as a mode byte, a sync character or a command by its state, keyed by bits 7 to 5 of the byte",
+  "complete_against": "mame:src/devices/machine/i8251.cpp i8251_device::control_w commands",
+  "reached": {
+    "data": [
+      "control_w",
+      "write"
+    ]
+  },
+  "entries": [
+    {
+      "key": "0x00..0x1F",
+      "name": "bits 7-5 = 000",
+      "access": "write",
+      "description": "Bits 7 to 5 clear: a plain command, or a mode byte with no stop-bit setting or two internal sync characters.",
+      "behaviour": "In any range, a command's bit 0 TxEN (needs CTS low), bit 1 DTR pulls DTR low and bit 2 RxE enables the receiver. Here bits 7 to 5 clear mean no hunt, reset or RTS. As a mode byte, async has no stop bits set and sync has two sync characters with internal sync.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp command_w m_command",
+          "cites": "\tm_command = data;"
+        }
+      ]
+    },
+    {
+      "key": "0x20..0x3F",
+      "name": "bits 7-5 = 001",
+      "access": "write",
+      "description": "Bits 7 to 5 equal to 001: a command that pulls RTS low, or a mode byte with the even parity choice.",
+      "behaviour": "As a command, bit 5 RTS pulls the RTS pin low; in any range bit 3 SBRK drives TxD low and bit 4 ER clears PE, OE and FE. In any range, a mode byte's bit 4 enables parity and bit 5 set picks even, clear odd. Bits 7 and 6 clear give the stop-bit or sync setting of 0x00..0x1F.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp command_w rts",
+          "cites": "\tm_rts_handler(!BIT(data, 5));"
+        }
+      ]
+    },
+    {
+      "key": "0x40..0x5F",
+      "name": "bits 7-5 = 010",
+      "access": "write",
+      "description": "Bits 7 to 5 equal to 010: a command with internal reset, or a mode byte with one stop bit or two sync characters and external sync.",
+      "behaviour": "As a command, IR makes the next control write a mode byte and resets nothing else; the rest of the byte still acts. In any range, mode bits 3 and 2 give the character length, 5 to 8 bits. Here a mode byte has one stop bit in async, or two sync characters with external sync.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp command_w ir",
+          "cites": "\tif (BIT(data, 6))"
+        }
+      ]
+    },
+    {
+      "key": "0x60..0x7F",
+      "name": "bits 7-5 = 011",
+      "access": "write",
+      "description": "Bits 7 to 5 equal to 011: a command with internal reset and RTS low, or a mode byte as for 010 with even parity.",
+      "behaviour": "As a command, IR as in 0x40..0x5F and RTS low. In any range, a mode byte's bits 1 and 0 of 1, 2 or 3 give clock factor 1, 16 or 64 and 0 means sync mode. Bits 7 and 6 give the stop-bit or sync setting of 0x40..0x5F.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp command_w mode flag",
+          "cites": "\t\tm_flags = I8251_NEXT_MODE;"
+        }
+      ]
+    },
+    {
+      "key": "0x80..0x9F",
+      "name": "bits 7-5 = 100",
+      "access": "write",
+      "description": "Bits 7 to 5 equal to 100: a command that enters hunt mode, or a mode byte with one and a half stop bits or one internal sync character.",
+      "behaviour": "As a command, EH enters hunt mode in sync mode only, so the receiver discards data until the sync character and the external sync latch clears; a command with bit 7 clear ends hunt mode. As a mode byte here, one and a half stop bits in async, or one sync character with internal sync.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp command_w hunt",
+          "cites": "\t\tm_hunt_on = BIT(data, 7);"
+        }
+      ]
+    },
+    {
+      "key": "0xA0..0xBF",
+      "name": "bits 7-5 = 101",
+      "access": "write",
+      "description": "Bits 7 to 5 equal to 101: a command that enters hunt mode with RTS low, or a mode byte as for 100 with even parity.",
+      "behaviour": "As a command, EH as in 0x80..0x9F and RTS low. As a mode byte, one and a half stop bits in async, or one sync character with internal sync, and bit 5 selects even parity as in 0x20..0x3F.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp command_w ext sync",
+          "cites": "\t\tm_ext_syn_set = false;"
+        }
+      ]
+    },
+    {
+      "key": "0xC0..0xDF",
+      "name": "bits 7-5 = 110",
+      "access": "write",
+      "description": "Bits 7 to 5 equal to 110: a command with hunt and internal reset, or a mode byte with two stop bits or one sync character and external sync.",
+      "behaviour": "As a command, EH and IR together: hunt mode in sync mode, and the next control write is a mode byte. As a mode byte, two stop bits in async, or one sync character with external sync, which makes the SYNDET pin an input.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp mode_w sync pin",
+          "cites": "\t\tm_syndet_pin = BIT(data, 6);"
+        }
+      ]
+    },
+    {
+      "key": "0xE0..0xFF",
+      "name": "bits 7-5 = 111",
+      "access": "write",
+      "description": "Bits 7 to 5 equal to 111: a command with hunt, internal reset and RTS low, or a mode byte as for 110 with even parity.",
+      "behaviour": "As a command, EH, IR and RTS together, as in 0x80..0x9F, 0x40..0x5F and 0x20..0x3F. As a mode byte, two stop bits in async, or one sync character with external sync, with even parity if bit 4 enables parity.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp mode_w sync count",
+          "cites": "\t\tm_sync_byte_count = BIT(data, 7) ? 1 : 2;"
+        }
+      ]
+    }
+  ]
+}

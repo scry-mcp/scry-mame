@@ -1,0 +1,110 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "z80scc-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The Zilog Z80 SCC serial communications controller family as a chip: one entry for every type that shares the z80scc register file",
+  "complete_against": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE",
+  "entries": [
+    {
+      "key": "z80scc",
+      "name": "Zilog Z80 SCC family",
+      "aliases": [
+        "Z8530",
+        "Z85C30",
+        "Z85230",
+        "Z8030",
+        "Z80C30",
+        "Z80230"
+      ],
+      "description": "Dual-channel serial controller with asynchronous, byte-synchronous and SDLC modes, programmed through a register file per channel; the family spans NMOS, CMOS, ESCC and EMSCC parts.",
+      "behaviour": "Each channel has write registers WR0 to WR15 and read registers RR0 to RR15. Universal-bus types (Z8530 family) reach them through a register pointer in WR0 and a control and a data port; Z-bus types (Z8030 family) address them directly. Asynchronous framing and the baud rate generator are modelled; SDLC, CRC, the DPLL and the status FIFO are not.",
+      "classes": [
+        "z80scc_device",
+        "scc8030_device",
+        "scc80c30_device",
+        "scc80230_device",
+        "scc8530_device",
+        "scc85c30_device",
+        "scc85230_device",
+        "scc85233_device",
+        "scc8523l_device"
+      ],
+      "handlers": {
+        "dc_ab_r": "universal-bus read: offset bit 1 data or control, bit 0 channel A or B",
+        "dc_ab_w": "universal-bus write: offset bit 1 data or control, bit 0 channel A or B",
+        "ab_dc_r": "universal-bus read: offset bit 1 channel A or B, bit 0 data or control",
+        "ab_dc_w": "universal-bus write: offset bit 1 channel A or B, bit 0 data or control",
+        "da_r": "read the receive data of channel A",
+        "da_w": "write the transmit data of channel A",
+        "db_r": "read the receive data of channel B",
+        "db_w": "write the transmit data of channel B",
+        "ca_r": "read the control port of channel A (register by pointer)",
+        "ca_w": "write the control port of channel A (register by pointer)",
+        "cb_r": "read the control port of channel B (register by pointer)",
+        "cb_w": "write the control port of channel B (register by pointer)",
+        "zbus_r": "Z-bus read: the offset names channel and register directly",
+        "zbus_w": "Z-bus write: the offset names channel and register directly",
+        "m1_r": "interrupt acknowledge: returns the vector of the pending interrupt",
+        "rxa_w": "receive data input, channel A",
+        "rxb_w": "receive data input, channel B",
+        "ctsa_w": "clear to send input, channel A",
+        "ctsb_w": "clear to send input, channel B",
+        "dcda_w": "data carrier detect input, channel A",
+        "dcdb_w": "data carrier detect input, channel B",
+        "rxca_w": "receive clock input, channel A",
+        "rxcb_w": "receive clock input, channel B",
+        "txca_w": "transmit clock input, channel A",
+        "txcb_w": "transmit clock input, channel B",
+        "rxtxcb_w": "one clock input for both receive and transmit, channel B",
+        "synca_w": "sync input, channel A",
+        "syncb_w": "sync input, channel B"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/z80scc.cpp z80scc_device::z80scc_device",
+          "cites": "z80scc_device::z80scc_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, uint32_t variant)"
+        }
+      ]
+    }
+  ],
+  "left_out": [
+    {
+      "key": "z80scc_channel",
+      "why": "a sub-device the SCC creates for each of its two channels; a driver never places it and its handlers are those of z80scc"
+    },
+    {
+      "key": "scc8030",
+      "why": "the Zilog Z8030 NMOS Z-bus part, the same register file as z80scc and listed in the chip's types"
+    },
+    {
+      "key": "scc80c30",
+      "why": "the Zilog Z80C30 CMOS Z-bus part, the same register file as z80scc and listed in the chip's types"
+    },
+    {
+      "key": "scc80230",
+      "why": "the Zilog Z80230 ESCC Z-bus part, the same register file as z80scc and listed in the chip's types"
+    },
+    {
+      "key": "scc8530",
+      "why": "the Zilog Z8530 NMOS universal-bus part, the same register file as z80scc and listed in the chip's types"
+    },
+    {
+      "key": "scc85c30",
+      "why": "the Zilog Z85C30 CMOS universal-bus part, the same register file as z80scc and listed in the chip's types"
+    },
+    {
+      "key": "scc85230",
+      "why": "the Zilog Z85230 ESCC universal-bus part, the same register file as z80scc and listed in the chip's types"
+    },
+    {
+      "key": "scc85233",
+      "why": "the Zilog Z85233 EMSCC universal-bus part, the same register file as z80scc and listed in the chip's types"
+    },
+    {
+      "key": "scc8523l",
+      "why": "the Zilog Z8523L low-voltage ESCC, the same register file as z80scc and listed in the chip's types"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "i8251",
+  "kind": "register",
+  "scope": "i8251",
+  "covers": "The data port and the control and status port of the Intel 8251",
+  "complete_against": "mame:src/devices/machine/i8251.cpp i8251_device::write",
+  "entries": [
+    {
+      "key": "0x00",
+      "name": "receive data",
+      "access": "read",
+      "aliases": [
+        "data in"
+      ],
+      "description": "Returns the last character the receiver assembled.",
+      "behaviour": "Returns the last character received, 0 after reset, fresh or not, and clears RxRDY. A character that completes while RxRDY is still set replaces the old one and sets OE. The read ignores RxE and leaves the error flags alone; a debugger peek changes nothing.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp i8251_device::data_r",
+          "cites": "uint8_t i8251_device::data_r()"
+        }
+      ]
+    },
+    {
+      "key": "0x00",
+      "name": "transmit data",
+      "access": "write",
+      "aliases": [
+        "data out"
+      ],
+      "description": "Loads the transmit buffer with the character to send.",
+      "behaviour": "Always replaces the buffer and clears TxRDY. If TxEN is set, CTS is low and the transmitter is empty, it starts shifting out at once, TxEMPTY clears and TxRDY sets again. Otherwise the byte waits, and a later transmit clock starts it once the transmitter is enabled, or if it was enabled when the byte was written.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp i8251_device::data_w",
+          "cites": "void i8251_device::data_w(uint8_t data)"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "status",
+      "access": "read",
+      "aliases": [
+        "status register"
+      ],
+      "description": "Returns the transmit, receive, error and modem flags.",
+      "behaviour": "Bit 0 TxRDY, 1 RxRDY, 2 TxEMPTY, 3 PE, 4 OE, 5 FE, 6 SYNDET, 7 DSR (1 while the DSR pin is low). Bits 0 and 1 ignore TxEN, CTS and RxE, unlike the matching pins. PE, OE and FE stay set until an ER command; a read clears SYNDET; reset leaves bits 0 and 2 set.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp i8251_device::status_r",
+          "cites": "uint8_t i8251_device::status_r()"
+        }
+      ]
+    },
+    {
+      "key": "0x01",
+      "name": "mode, sync, command",
+      "access": "write",
+      "aliases": [
+        "control"
+      ],
+      "description": "Control port: the same address takes a mode byte, sync characters or a command, depending on what the chip expects next.",
+      "behaviour": "After reset the next byte is a mode byte. A mode byte with bits 1 and 0 clear selects sync mode and expects one or two sync characters, the first as the high byte; every later byte is a command. A command with IR set returns to the mode state; every command write clears SYNDET.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/i8251.cpp i8251_device::control_w",
+          "cites": "void i8251_device::control_w(uint8_t data)"
+        }
+      ]
+    }
+  ]
+}

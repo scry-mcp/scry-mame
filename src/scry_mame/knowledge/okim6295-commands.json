@@ -1,0 +1,49 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "okim6295-commands",
+  "kind": "command",
+  "scope": "okim6295",
+  "covers": "The first byte of an OKI MSM6295 command",
+  "complete_against": "mame:src/devices/sound/okim6295.cpp okim6295_device::write commands",
+  "reached": {
+    "data": [
+      "write"
+    ]
+  },
+  "entries": [
+    {
+      "key": "0x00..0x7F",
+      "name": "stop voices",
+      "access": "write",
+      "aliases": [
+        "silence"
+      ],
+      "description": "Stops the voices selected by bits 3 to 6, when no phrase number is pending.",
+      "behaviour": "Bit 3 stops voice 1, bit 4 voice 2, bit 5 voice 3 and bit 6 voice 4; the stream is updated first. When a phrase number is pending the same byte is read as the second half of a start instead, so a stop never follows a start byte.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write stop",
+          "cites": "\t\tint voicemask = command >> 3;"
+        }
+      ]
+    },
+    {
+      "key": "0x80..0xFF",
+      "name": "select phrase",
+      "access": "write",
+      "aliases": [
+        "start, first byte"
+      ],
+      "description": "First byte of a start: the phrase number to play.",
+      "behaviour": "Bits 0 to 6 are the phrase number, kept for the next byte. Its bits 4 to 7 pick voices and bits 0 to 3 the volume: 0 full, 8 is -24 dB, 9 to 15 silent. A phrase starts only on a stopped voice whose ROM-table start address is below its stop, both masked to 18 bits.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write start",
+          "cites": "\telse if (command & 0x80)"
+        }
+      ]
+    }
+  ]
+}

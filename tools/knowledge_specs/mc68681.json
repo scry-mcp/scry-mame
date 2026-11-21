@@ -1,0 +1,341 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE scn2681",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCN2681,",
+      "key": "scn2681"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE xr68c681",
+      "find": "^DEFINE_DEVICE_TYPE\\(XR68C681,",
+      "key": "xr68c681"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE mcf5206euart",
+      "find": "^DEFINE_DEVICE_TYPE\\(MCF5206E_UART,",
+      "key": "mcf5206euart"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE sc28c94",
+      "find": "^DEFINE_DEVICE_TYPE\\(SC28C94,",
+      "key": "sc28c94"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE mc68340duart",
+      "find": "^DEFINE_DEVICE_TYPE\\(MC68340_DUART,",
+      "key": "mc68340duart"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE duart_channel",
+      "find": "^DEFINE_DEVICE_TYPE\\(DUART_CHANNEL,",
+      "key": "duart_channel"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE mc68681",
+      "find": "^DEFINE_DEVICE_TYPE\\(MC68681,",
+      "key": "mc68681"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x00 read",
+      "find": "case 0x00: /\\* MR1A/MR2A \\*/",
+      "key": "0x00",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x00 write",
+      "find": "case 0x00: /\\* MRA \\*/",
+      "key": "0x00",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x01 read",
+      "find": "case 0x01: /\\* SRA \\*/",
+      "key": "0x01",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x01 write",
+      "find": "case 0x01: /\\* CSRA \\*/",
+      "key": "0x01",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x02 read",
+      "find": "LOG\\(\"Reading unhandled 68681 reg",
+      "key": "0x02",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x02 write",
+      "find": "case 0x02: /\\* CRA \\*/",
+      "key": "0x02",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x03 read",
+      "find": "case 0x03: /\\* Rx Holding Register A \\*/",
+      "key": "0x03",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x03 write",
+      "find": "case 0x03: /\\* THRA \\*/",
+      "key": "0x03",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x04 read",
+      "find": "case 0x04: /\\* IPCR \\*/",
+      "key": "0x04",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x04 write",
+      "find": "case 0x04: /\\* ACR \\*/",
+      "key": "0x04",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x05 read",
+      "find": "case 0x05: /\\* ISR \\*/",
+      "key": "0x05",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x05 write",
+      "find": "case 0x05: /\\* IMR \\*/",
+      "key": "0x05",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x06 read",
+      "find": "case 0x06: /\\* CUR \\*/",
+      "key": "0x06",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x06 write",
+      "find": "case 0x06: /\\* CTUR \\*/",
+      "key": "0x06",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x07 read",
+      "find": "case 0x07: /\\* CLR \\*/",
+      "key": "0x07",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x07 write",
+      "find": "case 0x07: /\\* CTLR \\*/",
+      "key": "0x07",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x08 read",
+      "find": "case 0x08: /\\* MR1B/MR2B \\*/",
+      "key": "0x08",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x08 write",
+      "find": "case 0x08: /\\* MRB \\*/",
+      "key": "0x08",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x09 read",
+      "find": "case 0x09: /\\* SRB \\*/",
+      "key": "0x09",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x09 write",
+      "find": "case 0x09: /\\* CSRB \\*/",
+      "key": "0x09",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0A write",
+      "find": "case 0x0a: /\\* CRB \\*/",
+      "key": "0x0A",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0B read",
+      "find": "case 0x0b: /\\* RHRB \\*/",
+      "key": "0x0B",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0B write",
+      "find": "case 0x0b: /\\* THRB \\*/",
+      "key": "0x0B",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0A read",
+      "find": "case 0x0a: /\\* 1X/16X Test \\*/",
+      "key": "0x0A",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp mc68681_device::read register 0x0C read",
+      "find": "if \\(offset == 0x0c\\)",
+      "key": "0x0C",
+      "inside": "mc68681_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp mc68681_device::write register 0x0C write",
+      "find": "if \\(offset == 0x0c\\)",
+      "key": "0x0C",
+      "inside": "mc68681_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0D read",
+      "find": "case 0x0d: /\\* IP \\*/",
+      "key": "0x0D",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0D write",
+      "find": "case 0x0d: /\\* OPCR \\*/",
+      "key": "0x0D",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0E read",
+      "find": "case 0x0e: /\\* Start counter command \\*/",
+      "key": "0x0E",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0E write",
+      "find": "case 0x0e: /\\* Set Output Port Bits \\*/",
+      "key": "0x0E",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0F read",
+      "find": "case 0x0f: /\\* Stop counter command \\*/",
+      "key": "0x0F",
+      "inside": "duart_base_device::read"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0F write",
+      "find": "case 0x0f: /\\* Reset Output Port Bits \\*/",
+      "key": "0x0F",
+      "inside": "duart_base_device::write"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x00..0x0F",
+      "find": "case 0: /\\* No command \\*/",
+      "key": "0x00..0x0F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x10..0x1F",
+      "find": "case 1: /\\* Reset MR pointer",
+      "key": "0x10..0x1F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x20..0x2F",
+      "find": "case 2: /\\* Reset channel receiver",
+      "key": "0x20..0x2F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x30..0x3F",
+      "find": "case 3: /\\* Reset channel transmitter",
+      "key": "0x30..0x3F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x40..0x4F",
+      "find": "case 4: /\\* Reset Error Status",
+      "key": "0x40..0x4F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x50..0x5F",
+      "find": "case 5: /\\* Reset Channel break change",
+      "key": "0x50..0x5F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x60..0x6F",
+      "find": "case 6: /\\* Start Tx break",
+      "key": "0x60..0x6F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x70..0x7F",
+      "find": "case 7: /\\* Stop tx break",
+      "key": "0x70..0x7F",
+      "inside": "duart_channel::write_CR"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0x80..0xBF",
+      "find": "case 0x08: /\\* set RX extend bit \\*/",
+      "key": "0x80..0xBF",
+      "inside": "xr68c681_device::write",
+      "which": 0,
+      "of": 2
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0xC0..0xFF",
+      "find": "case 0x0c: /\\* enter low power mode",
+      "key": "0xC0..0xFF",
+      "inside": "xr68c681_device::write",
+      "which": 0,
+      "of": 2
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/mc68681.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04",
+        "0x05",
+        "0x06",
+        "0x07",
+        "0x08",
+        "0x09",
+        "0x0A",
+        "0x0B",
+        "0x0C",
+        "0x0D",
+        "0x0E",
+        "0x0F"
+      ],
+      "cases": {
+        "file": "src/devices/machine/mc68681.cpp",
+        "inside": "duart_base_device::write"
+      }
+    },
+    {
+      "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR commands",
+      "keys": [
+        "0x00..0x0F",
+        "0x10..0x1F",
+        "0x20..0x2F",
+        "0x30..0x3F",
+        "0x40..0x4F",
+        "0x50..0x5F",
+        "0x60..0x6F",
+        "0x70..0x7F",
+        "0x80..0xBF",
+        "0xC0..0xFF"
+      ]
+    }
+  ]
+}

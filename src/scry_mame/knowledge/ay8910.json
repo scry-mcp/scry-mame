@@ -1,0 +1,213 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "ay8910",
+  "kind": "register",
+  "scope": "ay8910",
+  "covers": "The 16 registers of the AY-3-8910 family behind its address latch",
+  "complete_against": "mame:src/devices/sound/ay8910.h ay8910_device register ids",
+  "reached": {
+    "index": "address_w",
+    "data": [
+      "data_w",
+      "data_r",
+      "address_data_w",
+      "data_address_w",
+      "write_bc1_bc2"
+    ]
+  },
+  "left_out": [
+    {
+      "key": "0x10..0x1F",
+      "why": "the second register bank exists only on the ay8930 in extended mode; the types of this chip have a 4-bit register latch and the bank offset is always 0"
+    }
+  ],
+  "entries": [
+    {
+      "key": "0x00..0x05",
+      "name": "tone period",
+      "aliases": [
+        "channel frequency",
+        "fine and coarse tune"
+      ],
+      "description": "Tone period of channels A, B and C: the fine byte at even offsets, the coarse nibble at odd offsets.",
+      "behaviour": "0x00, 0x02 and 0x04 are the low 8 bits for channels A, B and C; 0x01, 0x03 and 0x05 are bits 8 to 11 in their low four bits, and bits 4 to 7 are stored and unused. A period of 0 acts as 1. A read returns the stored byte; type ay8910 alone masks the coarse registers to 0x0F.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x00..0x05",
+          "cites": "\t\tcase AY_AFINE:"
+        }
+      ]
+    },
+    {
+      "key": "0x06",
+      "name": "noise period",
+      "description": "Period of the noise generator, 5 bits.",
+      "behaviour": "Bits 0 to 4 are the noise period and 0 acts as 1. Bits 5 to 7 are stored and unused. A read returns the stored byte; type ay8910 alone masks it to 0x1F.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x06",
+          "cites": "\t\tcase AY_NOISEPER:"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "mixer and port control",
+      "access": "write",
+      "aliases": [
+        "enable",
+        "port direction"
+      ],
+      "description": "Switches tone and noise off per channel and sets the direction of I/O ports A and B.",
+      "behaviour": "Bits 0 to 2 switch off tone on channels A, B and C and bits 3 to 5 noise, 1 meaning off. Bit 6 makes port A an output (1) or input (0), bit 7 port B. A change of either calls that port's write callback with the latch when it turns output, 0xFF and an empty mask when input.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x07 write",
+          "cites": "\t\tcase AY_ENABLE:"
+        }
+      ]
+    },
+    {
+      "key": "0x07",
+      "name": "mixer readback",
+      "access": "read",
+      "description": "Returns the mixer and port direction byte as written.",
+      "behaviour": "A read returns the stored byte on every type, with no masking. The direction bits are only what was written, not the state of the pins.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x07 read",
+          "cites": "\telse return m_regs[r];"
+        }
+      ]
+    },
+    {
+      "key": "0x08..0x0A",
+      "name": "channel volume",
+      "aliases": [
+        "amplitude"
+      ],
+      "description": "Volume of channels A, B and C: a fixed 4-bit level or the envelope.",
+      "behaviour": "Bits 0 to 3 are the fixed level and bit 4 takes the level from the envelope generator instead, shared by all three channels. Bits 5 to 7 are stored and unused; type ay8910 alone masks a read to 0x1F. With tone and noise both off in 0x07 the output holds this level as a constant.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x08..0x0A",
+          "cites": "\t\tcase AY_AVOL:"
+        }
+      ]
+    },
+    {
+      "key": "0x0B..0x0C",
+      "name": "envelope period",
+      "aliases": [
+        "envelope frequency"
+      ],
+      "description": "The 16-bit envelope period: low byte at 0x0B, high byte at 0x0C.",
+      "behaviour": "Both bytes are fully used, and a read returns them as stored. A period of 0 steps on every tick, like 1 on a YM-type chip (ym2149, ym3439, ymz284, ymz294, sunsoft_5b_sound) and twice as fast as 1 on an AY-type chip. Writing them does not restart the envelope; only a write to 0x0D does.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0B..0x0C",
+          "cites": "\t\tcase AY_EACOARSE:"
+        }
+      ]
+    },
+    {
+      "key": "0x0D",
+      "name": "envelope shape",
+      "access": "write",
+      "aliases": [
+        "envelope cycle"
+      ],
+      "description": "Shape bits of the envelope: continue, attack, alternate and hold; writing them starts the envelope.",
+      "behaviour": "Bit 3 is continue, bit 2 attack (rising), bit 1 alternate and bit 0 hold; with continue clear it acts as hold set and alternate equal to attack. Every write restarts the envelope, even of the same value. It has 16 steps on AY-type chips (ay8910, ay8912, ay8913) and 32, twice as fast, on the YM-type ones.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0D write",
+          "cites": "\t\tcase AY_EASHAPE:"
+        }
+      ]
+    },
+    {
+      "key": "0x0D",
+      "name": "envelope shape readback",
+      "access": "read",
+      "description": "Returns the stored shape byte, not the live envelope level.",
+      "behaviour": "Bits 4 to 7 are stored and unused: type ay8910 returns them as 0 and the other types return them as written. No register returns the running envelope or counters.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0D read",
+          "cites": "\t\t\t0xff,0x0f,0xff,0x0f,0xff,0x0f,0x1f,0xff,0x1f,0x1f,0x1f,0xff,0xff,0x0f,0xff,0xff"
+        }
+      ]
+    },
+    {
+      "key": "0x0E",
+      "name": "port A output",
+      "access": "write",
+      "aliases": [
+        "I/O port A"
+      ],
+      "description": "The port A output latch, 8 bits.",
+      "behaviour": "The byte is stored. With bit 6 of 0x07 set it goes to the port A write callback, or a warning is logged when none is bound. With bit 6 clear it is not sent now, and the stored byte goes out when the port later becomes an output.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0E write",
+          "cites": "\t\tcase AY_PORTA:"
+        }
+      ]
+    },
+    {
+      "key": "0x0E",
+      "name": "port A input",
+      "access": "read",
+      "description": "Reads the 8 pins of port A through the port A read callback.",
+      "behaviour": "The callback is called and its value returned whatever bit 6 of 0x07 says, so an output port still reads the pins. With none bound the last stored value is returned. Binding a callback on a type without port A is fatal at start: ay8913, ymz284, ymz294 and sunsoft_5b_sound have none.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0E read",
+          "cites": "\tcase AY_PORTA:"
+        }
+      ]
+    },
+    {
+      "key": "0x0F",
+      "name": "port B output",
+      "access": "write",
+      "aliases": [
+        "I/O port B"
+      ],
+      "description": "The port B output latch, 8 bits.",
+      "behaviour": "The byte is stored. With bit 7 of 0x07 set it goes to the port B write callback, or a warning is logged when none is bound. With bit 7 clear it is not sent now, and the stored byte goes out when the port later becomes an output.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0F write",
+          "cites": "\t\tcase AY_PORTB:"
+        }
+      ]
+    },
+    {
+      "key": "0x0F",
+      "name": "port B input",
+      "access": "read",
+      "description": "Reads the 8 pins of port B through the port B read callback.",
+      "behaviour": "The callback is called and its value returned whatever bit 7 of 0x07 says, so an output port still reads the pins. With none bound the last stored value is returned. Binding a callback on a type without port B is fatal at start: ay8912, ay8913, ymz284, ymz294 and sunsoft_5b_sound have none.",
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0F read",
+          "cites": "\tcase AY_PORTB:"
+        }
+      ]
+    }
+  ]
+}

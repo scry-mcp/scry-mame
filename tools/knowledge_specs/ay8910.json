@@ -1,0 +1,151 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ay8910",
+      "find": "^DEFINE_DEVICE_TYPE\\(AY8910,",
+      "key": "ay8910"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ay8912",
+      "find": "^DEFINE_DEVICE_TYPE\\(AY8912,",
+      "key": "ay8912"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ay8913",
+      "find": "^DEFINE_DEVICE_TYPE\\(AY8913,",
+      "key": "ay8913"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ym2149",
+      "find": "^DEFINE_DEVICE_TYPE\\(YM2149,",
+      "key": "ym2149"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ym3439",
+      "find": "^DEFINE_DEVICE_TYPE\\(YM3439,",
+      "key": "ym3439"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ymz284",
+      "find": "^DEFINE_DEVICE_TYPE\\(YMZ284,",
+      "key": "ymz284"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ymz294",
+      "find": "^DEFINE_DEVICE_TYPE\\(YMZ294,",
+      "key": "ymz294"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE sunsoft_5b_sound",
+      "find": "^DEFINE_DEVICE_TYPE\\(SUNSOFT_5B_SOUND,",
+      "key": "sunsoft_5b_sound"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ay8914",
+      "find": "^DEFINE_DEVICE_TYPE\\(AY8914,",
+      "key": "ay8914"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ay8930",
+      "find": "^DEFINE_DEVICE_TYPE\\(AY8930,",
+      "key": "ay8930"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x00..0x05",
+      "find": "case AY_AFINE:",
+      "key": "0x00..0x05",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x06",
+      "find": "case AY_NOISEPER:",
+      "key": "0x06",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x07 write",
+      "find": "case AY_ENABLE:",
+      "key": "0x07",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x07 read",
+      "find": "^\\telse return m_regs\\[r\\];",
+      "key": "0x07",
+      "inside": "ay8910_device::ay8910_read_ym"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x08..0x0A",
+      "find": "case AY_AVOL:",
+      "key": "0x08..0x0A",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0B..0x0C",
+      "find": "case AY_EACOARSE:",
+      "key": "0x0B..0x0C",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0D write",
+      "find": "case AY_EASHAPE:",
+      "key": "0x0D",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0D read",
+      "find": "^\\t\\t\\t0xff,0x0f,0xff,0x0f,0xff,0x0f,0x1f,0xff,0x1f,0x1f,0x1f,0xff,0xff,0x0f,0xff,0xff$",
+      "key": "0x0D",
+      "inside": "ay8910_device::ay8910_read_ym"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0E write",
+      "find": "case AY_PORTA:",
+      "key": "0x0E",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0E read",
+      "find": "case AY_PORTA:",
+      "key": "0x0E",
+      "inside": "ay8910_device::ay8910_read_ym"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0F write",
+      "find": "case AY_PORTB:",
+      "key": "0x0F",
+      "inside": "ay8910_device::ay8910_write_reg"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0F read",
+      "find": "case AY_PORTB:",
+      "key": "0x0F",
+      "inside": "ay8910_device::ay8910_read_ym"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.h ay8910_device register ids bank 0x10..0x1F",
+      "find": "AY_EBFINE\\s+= 0x10,",
+      "key": "0x10..0x1F"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/sound/ay8910.cpp"
+    },
+    {
+      "ref": "mame:src/devices/sound/ay8910.h ay8910_device register ids",
+      "keys": [
+        "0x00..0x05",
+        "0x06",
+        "0x07",
+        "0x08..0x0A",
+        "0x0B..0x0C",
+        "0x0D",
+        "0x0E",
+        "0x0F",
+        "0x10..0x1F"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/6850acia.cpp DEFINE_DEVICE_TYPE acia6850",
+      "find": "^DEFINE_DEVICE_TYPE\\(ACIA6850,",
+      "key": "acia6850"
+    },
+    {
+      "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::status_r",
+      "find": "^uint8_t acia6850_device::status_r\\(\\)$",
+      "key": "0x00",
+      "inside": "acia6850_device::status_r"
+    },
+    {
+      "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::control_w",
+      "find": "^void acia6850_device::control_w\\(uint8_t data\\)$",
+      "key": "0x00",
+      "inside": "acia6850_device::control_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_r",
+      "find": "^uint8_t acia6850_device::data_r\\(\\)$",
+      "key": "0x01",
+      "inside": "acia6850_device::data_r"
+    },
+    {
+      "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_w",
+      "find": "^void acia6850_device::data_w\\(uint8_t data\\)$",
+      "key": "0x01",
+      "inside": "acia6850_device::data_w"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/6850acia.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/6850acia.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::write",
+      "keys": [
+        "0x00",
+        "0x01"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp DEFINE_DEVICE_TYPE upd1990a",
+      "find": "^DEFINE_DEVICE_TYPE\\(UPD1990A,",
+      "key": "upd1990a"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp DEFINE_DEVICE_TYPE upd4990a",
+      "find": "^DEFINE_DEVICE_TYPE\\(UPD4990A,",
+      "key": "upd4990a"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device oe_w",
+      "find": "^\\tvoid oe_w\\(int state\\);",
+      "key": "0x00"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device cs_w",
+      "find": "^\\tvoid cs_w\\(int state\\);",
+      "key": "0x01"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device stb_w",
+      "find": "^\\tvoid stb_w\\(int state\\);",
+      "key": "0x02"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device clk_w",
+      "find": "^\\tvoid clk_w\\(int state\\);",
+      "key": "0x03"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c0_w",
+      "find": "^\\tvoid c0_w\\(int state\\);",
+      "key": "0x04"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c1_w",
+      "find": "^\\tvoid c1_w\\(int state\\);",
+      "key": "0x05"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c2_w",
+      "find": "^\\tvoid c2_w\\(int state\\);",
+      "key": "0x06"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device data_in_w",
+      "find": "^\\tvoid data_in_w\\(int state\\);",
+      "key": "0x07"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device data_out_r",
+      "find": "^\\tint data_out_r\\(\\);",
+      "key": "0x08"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device tp_r",
+      "find": "^\\tint tp_r\\(\\);",
+      "key": "0x09"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x00",
+      "find": "^\\t\\tcase MODE_REGISTER_HOLD:$",
+      "key": "0x00",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x01",
+      "find": "^\\t\\tcase MODE_SHIFT:$",
+      "key": "0x01",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x02",
+      "find": "^\\t\\tcase MODE_TIME_SET:$",
+      "key": "0x02",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x03",
+      "find": "^\\t\\tcase MODE_TIME_READ:$",
+      "key": "0x03",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x04",
+      "find": "^\\t\\tcase MODE_TP_64HZ:$",
+      "key": "0x04",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x05",
+      "find": "^\\t\\tcase MODE_TP_256HZ:$",
+      "key": "0x05",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x06",
+      "find": "^\\t\\tcase MODE_TP_2048HZ:$",
+      "key": "0x06",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x07",
+      "find": "^\\t\\tcase MODE_TP_4096HZ:$",
+      "key": "0x07",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x08",
+      "find": "^\\t\\tcase MODE_TP_1S_INT:$",
+      "key": "0x08",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x09",
+      "find": "^\\t\\tcase MODE_TP_10S_INT:$",
+      "key": "0x09",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0A",
+      "find": "^\\t\\tcase MODE_TP_30S_INT:$",
+      "key": "0x0A",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0B",
+      "find": "^\\t\\tcase MODE_TP_60S_INT:$",
+      "key": "0x0B",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0C",
+      "find": "^\\t\\tcase MODE_INT_RESET_OUTPUT:$",
+      "key": "0x0C",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0D",
+      "find": "^\\t\\tcase MODE_INT_RUN_CLOCK:$",
+      "key": "0x0D",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0E",
+      "find": "^\\t\\tcase MODE_INT_STOP_CLOCK:$",
+      "key": "0x0E",
+      "inside": "upd1990a_device::stb_w"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0F",
+      "find": "^\\t\\tcase MODE_TEST:$",
+      "key": "0x0F",
+      "inside": "upd1990a_device::stb_w"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/upd1990a.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device handlers",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04",
+        "0x05",
+        "0x06",
+        "0x07",
+        "0x08",
+        "0x09"
+      ]
+    },
+    {
+      "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w commands",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04",
+        "0x05",
+        "0x06",
+        "0x07",
+        "0x08",
+        "0x09",
+        "0x0A",
+        "0x0B",
+        "0x0C",
+        "0x0D",
+        "0x0E",
+        "0x0F"
+      ]
+    }
+  ]
+}

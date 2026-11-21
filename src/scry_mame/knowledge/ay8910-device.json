@@ -1,0 +1,90 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "ay8910-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The General Instruments AY-3-8910 sound generator family as a chip",
+  "complete_against": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE",
+  "left_out": [
+    {
+      "key": "ay8912",
+      "why": "same register layout and handlers as ay8910, listed in its types; one I/O port (A only)"
+    },
+    {
+      "key": "ay8913",
+      "why": "same register layout and handlers as ay8910, listed in its types; no I/O ports"
+    },
+    {
+      "key": "ym2149",
+      "why": "same register layout and handlers as ay8910, listed in its types; YM-type envelope and unmasked readback are told in the register entries, and pin 26 low halves the clock input"
+    },
+    {
+      "key": "ym3439",
+      "why": "same register layout and handlers as ay8910, listed in its types; behaves as the ym2149, including the pin 26 clock select"
+    },
+    {
+      "key": "ymz284",
+      "why": "same register layout and handlers as ay8910, listed in its types; YM-type, no I/O ports, one mixed output"
+    },
+    {
+      "key": "ymz294",
+      "why": "same register layout and handlers as ay8910, listed in its types; YM-type, no I/O ports, one mixed output"
+    },
+    {
+      "key": "sunsoft_5b_sound",
+      "why": "same register layout and handlers as ay8910, listed in its types; YM-type, no I/O ports, one mixed output, internal clock divider"
+    },
+    {
+      "key": "ay8914",
+      "why": "different register map: its own read and write handlers translate each offset through a table to the AY-3-8910 registers, and its volume registers keep a 6-bit envelope field"
+    },
+    {
+      "key": "ay8930",
+      "why": "extended mode (0x0D bits 5 to 7 equal to 101) adds a second bank of 16 registers with wider periods, per-channel envelope and duty, so its layout is not this chip's"
+    }
+  ],
+  "entries": [
+    {
+      "key": "ay8910",
+      "name": "AY-3-8910 PSG",
+      "aliases": [
+        "AY-3-8910",
+        "YM2149",
+        "AY-3-8912",
+        "AY-3-8913",
+        "PSG",
+        "SSG"
+      ],
+      "description": "General Instruments programmable sound generator: three tone channels, a noise generator, an envelope generator and two 8-bit I/O ports, run through 16 registers.",
+      "behaviour": "A write to the address port latches the register number in bits 0 to 3, but only when bits 4 to 7 are zero; otherwise the chip goes inactive, ignoring data writes and answering data reads with 0xFF. Reset leaves it inactive, so write an address first.",
+      "classes": [
+        "ay8910_device",
+        "ay8912_device",
+        "ay8913_device",
+        "ym2149_device",
+        "ym3439_device",
+        "ymz284_device",
+        "ymz294_device",
+        "sunsoft_5b_sound_device"
+      ],
+      "handlers": {
+        "address_w": "register select: bits 0 to 3 latch the register when bits 4 to 7 are zero",
+        "data_w": "register data write",
+        "data_r": "register data read",
+        "address_data_w": "combined: offset bit 0 clear selects the register, set writes data",
+        "data_address_w": "combined: offset bit 0 clear writes data, set selects the register",
+        "write_bc1_bc2": "combined bus form: offset bits 0 and 1 are BC1 and BC2; 0 and 3 select the register, 2 writes data, 1 does nothing",
+        "reset_w": "reset line: clears registers 0x00 to 0x0D, the register latch and the active state",
+        "set_pin26_low_w": "pin 26 low: halves the clock input, on the types with a clock select (ym2149, ym3439)",
+        "set_pin26_high_w": "pin 26 high: restores the normal clock input"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/sound/ay8910.cpp DEFINE_DEVICE_TYPE ay8910",
+          "cites": "DEFINE_DEVICE_TYPE(AY8910, ay8910_device, \"ay8910\", \"AY-3-8910A PSG\")"
+        }
+      ]
+    }
+  ]
+}

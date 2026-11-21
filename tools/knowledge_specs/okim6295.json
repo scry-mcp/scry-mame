@@ -1,0 +1,52 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp DEFINE_DEVICE_TYPE okim6295",
+      "find": "^DEFINE_DEVICE_TYPE\\(OKIM6295,",
+      "key": "okim6295"
+    },
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::read",
+      "find": "^uint8_t okim6295_device::read\\(\\)$",
+      "key": "0x00",
+      "inside": "okim6295_device::read"
+    },
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write",
+      "find": "^void okim6295_device::write\\(uint8_t command\\)$",
+      "key": "0x00",
+      "inside": "okim6295_device::write"
+    },
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write start",
+      "find": "else if \\(command & 0x80\\)",
+      "key": "0x80..0xFF",
+      "inside": "okim6295_device::write"
+    },
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write stop",
+      "find": "int voicemask = command >> 3;",
+      "key": "0x00..0x7F",
+      "inside": "okim6295_device::write"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/sound/okim6295.cpp"
+    },
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write",
+      "keys": [
+        "0x00"
+      ]
+    },
+    {
+      "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write commands",
+      "keys": [
+        "0x80..0xFF",
+        "0x00..0x7F"
+      ]
+    }
+  ]
+}

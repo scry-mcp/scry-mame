@@ -1,0 +1,75 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "mc68681-device",
+  "kind": "device",
+  "scope": "chip",
+  "covers": "The Motorola MC68681 DUART family as a chip",
+  "complete_against": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE",
+  "left_out": [
+    {
+      "key": "scn2681",
+      "why": "same register layout as mc68681, listed in its types; it has no vector register, so 0x0C reads 0xFF and ignores writes, and bit 6 of 0x0D is input pin IP6"
+    },
+    {
+      "key": "xr68c681",
+      "why": "same register offsets, but it differs in behaviour (extra baud tables, 14 and 15 on any ACR, ISR and IMR ANDed at read 0x02, CRA and CRB commands with bit 7), so the entries describe the mc68681 and it is not in its types"
+    },
+    {
+      "key": "mcf5206euart",
+      "why": "own register map: one channel, no counter/timer, a 16-bit baud prescaler in 0x06 and 0x07, no channel B offsets; its handlers were read but not described here"
+    },
+    {
+      "key": "sc28c94",
+      "why": "four-channel QUART: offsets 0x10 to 0x1F reach channels C and D, an extension this 16-offset map does not describe"
+    },
+    {
+      "key": "mc68340duart",
+      "why": "own register map: MR1A and MR1B at 0x00 and 0x08, MR2A and MR2B at 0x10 and 0x11 with no pointer, and its own baud table"
+    },
+    {
+      "key": "duart_channel",
+      "why": "the serial channel child device a DUART creates for each of its channels, with no bus address of its own; its registers are the parent's offsets"
+    }
+  ],
+  "entries": [
+    {
+      "key": "mc68681",
+      "name": "MC68681 DUART",
+      "aliases": [
+        "68681",
+        "SCN2681",
+        "2681",
+        "XR68C681",
+        "DUART"
+      ],
+      "description": "Dual asynchronous serial port with a counter/timer, a 7-bit input port and an 8-bit output port, run through 16 byte registers.",
+      "behaviour": "Sixteen offsets: channel A at 0 to 3, channel B at 8 to 11, the rest shared. A read and a write at one offset reach different registers. The command registers at 0x02 and 0x0A are write-only.",
+      "classes": [
+        "mc68681_device",
+        "scn2681_device",
+        "xr68c681_device"
+      ],
+      "handlers": {
+        "read": "register read: offset 0 to 15 picks the register; 0x02 is a command register and reads 0xFF",
+        "write": "register write: offset 0 to 15 picks the register; the same offset reaches a different register than a read",
+        "rx_a_w": "serial data input line of channel A",
+        "rx_b_w": "serial data input line of channel B",
+        "ip0_w": "input pin IP0: a level change sets IPCR bit 4 and, with ACR bit 0, ISR bit 7",
+        "ip1_w": "input pin IP1: a level change sets IPCR bit 5 and, with ACR bit 1, ISR bit 7",
+        "ip2_w": "input pin IP2: a level change sets IPCR bit 6 and, with ACR bit 2, ISR bit 7",
+        "ip3_w": "input pin IP3: a level change sets IPCR bit 7 and, with ACR bit 3, ISR bit 7",
+        "ip4_w": "input pin IP4: only the level read at 0x0D is kept",
+        "ip5_w": "input pin IP5: only the level read at 0x0D is kept",
+        "ip6_w": "input pin IP6: only the level read at 0x0D is kept; on the mc68681 bit 6 of 0x0D shows IACK instead",
+        "get_irq_vector": "interrupt acknowledge: returns the vector register and marks IACK until no interrupt is pending"
+      },
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/machine/mc68681.cpp DEFINE_DEVICE_TYPE mc68681",
+          "cites": "DEFINE_DEVICE_TYPE(MC68681, mc68681_device, \"mc68681\", \"MC68681 DUART\")"
+        }
+      ]
+    }
+  ]
+}

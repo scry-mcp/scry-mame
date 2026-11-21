@@ -1,0 +1,489 @@
+{
+  "rows": [
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE z80scc_channel",
+      "find": "^DEFINE_DEVICE_TYPE\\(Z80SCC_CHANNEL,",
+      "key": "z80scc_channel"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc8030",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC8030,",
+      "key": "scc8030"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc80c30",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC80C30,",
+      "key": "scc80c30"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc80230",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC80230,",
+      "key": "scc80230"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc8530",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC8530,",
+      "key": "scc8530"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc85c30",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC85C30,",
+      "key": "scc85c30"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc85230",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC85230,",
+      "key": "scc85230"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc85233",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC85233,",
+      "key": "scc85233"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE scc8523l",
+      "find": "^DEFINE_DEVICE_TYPE\\(SCC8523L,",
+      "key": "scc8523l"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_device::z80scc_device",
+      "find": "^z80scc_device::z80scc_device\\(const machine_config &mconfig, device_type type",
+      "key": "z80scc"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x00",
+      "find": "case REG_WR0_COMMAND_REGPT:",
+      "key": "0x00",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x01",
+      "find": "case REG_WR1_INT_DMA_ENABLE:",
+      "key": "0x01",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x02",
+      "find": "case REG_WR2_INT_VECTOR:",
+      "key": "0x02",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x03",
+      "find": "case REG_WR3_RX_CONTROL:",
+      "key": "0x03",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x04",
+      "find": "case REG_WR4_RX_TX_MODES:",
+      "key": "0x04",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x05",
+      "find": "case REG_WR5_TX_CONTROL:",
+      "key": "0x05",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x06",
+      "find": "case REG_WR6_SYNC_OR_SDLC_A:",
+      "key": "0x06",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x07",
+      "find": "case REG_WR7_SYNC_OR_SDLC_F:",
+      "key": "0x07",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x08",
+      "find": "case REG_WR8_TRANSMIT_DATA:",
+      "key": "0x08",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x09",
+      "find": "case REG_WR9_MASTER_INT_CTRL:",
+      "key": "0x09",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0A",
+      "find": "case REG_WR10_MSC_RX_TX_CTRL:",
+      "key": "0x0A",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0B",
+      "find": "case REG_WR11_CLOCK_MODES:",
+      "key": "0x0B",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0C",
+      "find": "case REG_WR12_LO_BAUD_GEN:",
+      "key": "0x0C",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0D",
+      "find": "case REG_WR13_HI_BAUD_GEN:",
+      "key": "0x0D",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0E",
+      "find": "case REG_WR14_MISC_CTRL:",
+      "key": "0x0E",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0F",
+      "find": "case REG_WR15_EXT_ST_INT_CTRL:",
+      "key": "0x0F",
+      "inside": "z80scc_channel::scc_register_write"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr7 WR7 prime",
+      "find": "m_wr7p = data;",
+      "key": "0x10",
+      "inside": "z80scc_channel::do_sccreg_wr7"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x00",
+      "find": "case REG_RR0_STATUS:",
+      "key": "0x00",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x01",
+      "find": "case REG_RR1_SPEC_RCV_COND:",
+      "key": "0x01",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x02",
+      "find": "case REG_RR2_INTERRUPT_VECT:",
+      "key": "0x02",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x03",
+      "find": "case REG_RR3_INTERUPPT_PEND:",
+      "key": "0x03",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x04",
+      "find": "case REG_RR4_WR4_OR_RR0:",
+      "key": "0x04",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x05",
+      "find": "case REG_RR5_WR5_OR_RR0:",
+      "key": "0x05",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x06",
+      "find": "case REG_RR6_LSB_OR_RR2:",
+      "key": "0x06",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x07",
+      "find": "case REG_RR7_MSB_OR_RR3:",
+      "key": "0x07",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x08",
+      "find": "case REG_RR8_RECEIVE_DATA:",
+      "key": "0x08",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x09",
+      "find": "case REG_RR9_WR3_OR_RR13:",
+      "key": "0x09",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0A",
+      "find": "case REG_RR10_MISC_STATUS:",
+      "key": "0x0A",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0B",
+      "find": "case REG_RR11_WR10_OR_RR15:",
+      "key": "0x0B",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0C",
+      "find": "case REG_RR12_LO_TIME_CONST:",
+      "key": "0x0C",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0D",
+      "find": "case REG_RR13_HI_TIME_CONST:",
+      "key": "0x0D",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0E",
+      "find": "case REG_RR14_WR7_OR_R10:",
+      "key": "0x0E",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0F",
+      "find": "case REG_RR15_WR15_EXT_STAT:",
+      "key": "0x0F",
+      "inside": "z80scc_channel::scc_register_read"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::dc_ab_r",
+      "find": "uint8_t dc_ab_r\\(offs_t offset\\);",
+      "key": "0x100"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::dc_ab_w",
+      "find": "void dc_ab_w\\(offs_t offset, uint8_t data\\);",
+      "key": "0x100"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ab_dc_r",
+      "find": "uint8_t ab_dc_r\\(offs_t offset\\);",
+      "key": "0x101"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ab_dc_w",
+      "find": "void ab_dc_w\\(offs_t offset, uint8_t data\\);",
+      "key": "0x101"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::da_r",
+      "find": "uint8_t da_r\\(offs_t offset\\);",
+      "key": "0x102"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::da_w",
+      "find": "void da_w\\(offs_t offset, uint8_t data\\);",
+      "key": "0x102"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::db_r",
+      "find": "uint8_t db_r\\(offs_t offset\\);",
+      "key": "0x103"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::db_w",
+      "find": "void db_w\\(offs_t offset, uint8_t data\\);",
+      "key": "0x103"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ca_r",
+      "find": "uint8_t ca_r\\(offs_t offset\\)",
+      "key": "0x104"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ca_w",
+      "find": "void ca_w\\(offs_t offset, uint8_t data\\)",
+      "key": "0x104"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::cb_r",
+      "find": "uint8_t cb_r\\(offs_t offset\\)",
+      "key": "0x105"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::cb_w",
+      "find": "void cb_w\\(offs_t offset, uint8_t data\\)",
+      "key": "0x105"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::zbus_r",
+      "find": "uint8_t zbus_r\\(offs_t offset\\);",
+      "key": "0x106"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::zbus_w",
+      "find": "void zbus_w\\(offs_t offset, uint8_t data\\);",
+      "key": "0x106"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device::m1_r",
+      "find": "int m1_r\\(\\);",
+      "key": "0x107"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset null",
+      "find": "case WR0_CRC_RESET_NULL:",
+      "key": "0x00..0x3F",
+      "inside": "z80scc_channel::do_sccreg_wr0",
+      "after": "/\\* CRC Initialization Code handling \\*/"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset receive",
+      "find": "case WR0_CRC_RESET_RX:",
+      "key": "0x40..0x7F",
+      "inside": "z80scc_channel::do_sccreg_wr0",
+      "after": "/\\* CRC Initialization Code handling \\*/"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset transmit",
+      "find": "case WR0_CRC_RESET_TX:",
+      "key": "0x80..0xBF",
+      "inside": "z80scc_channel::do_sccreg_wr0",
+      "after": "/\\* CRC Initialization Code handling \\*/"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset underrun",
+      "find": "case WR0_CRC_RESET_TX_UNDERRUN:",
+      "key": "0xC0..0xFF",
+      "inside": "z80scc_channel::do_sccreg_wr0",
+      "after": "/\\* CRC Initialization Code handling \\*/"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 0",
+      "find": "case WR0_NULL:",
+      "key": "0x100",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 1",
+      "find": "case WR0_POINT_HIGH:",
+      "key": "0x108",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 2",
+      "find": "case WR0_RESET_EXT_STATUS:",
+      "key": "0x110",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 3",
+      "find": "case WR0_SEND_ABORT:",
+      "key": "0x118",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 4",
+      "find": "case WR0_ENABLE_INT_NEXT_RX:",
+      "key": "0x120",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 5",
+      "find": "case WR0_RESET_TX_INT:",
+      "key": "0x128",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 6",
+      "find": "case WR0_ERROR_RESET:",
+      "key": "0x130",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 7",
+      "find": "case WR0_RESET_HIGHEST_IUS:",
+      "key": "0x138",
+      "inside": "z80scc_channel::do_sccreg_wr0"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset no reset",
+      "find": "case WR9_CMD_NORESET:",
+      "key": "0x200..0x23F",
+      "inside": "z80scc_channel::do_sccreg_wr9"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset reset channel B",
+      "find": "case WR9_CMD_CHNB_RESET:",
+      "key": "0x240..0x27F",
+      "inside": "z80scc_channel::do_sccreg_wr9"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset reset channel A",
+      "find": "case WR9_CMD_CHNA_RESET:",
+      "key": "0x280..0x2BF",
+      "inside": "z80scc_channel::do_sccreg_wr9"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset hardware reset",
+      "find": "case WR9_CMD_HW_RESET:",
+      "key": "0x2C0..0x2FF",
+      "inside": "z80scc_channel::do_sccreg_wr9"
+    }
+  ],
+  "lists": [
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp DEFINE_DEVICE_TYPE",
+      "device_types": "src/devices/machine/z80scc.cpp"
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write and scc_register_read",
+      "keys": [
+        "0x00",
+        "0x01",
+        "0x02",
+        "0x03",
+        "0x04",
+        "0x05",
+        "0x06",
+        "0x07",
+        "0x08",
+        "0x09",
+        "0x0A",
+        "0x0B",
+        "0x0C",
+        "0x0D",
+        "0x0E",
+        "0x0F",
+        "0x10"
+      ]
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.h z80scc_device handlers",
+      "keys": [
+        "0x100",
+        "0x101",
+        "0x102",
+        "0x103",
+        "0x104",
+        "0x105",
+        "0x106",
+        "0x107"
+      ]
+    },
+    {
+      "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 and do_sccreg_wr9 commands",
+      "keys": [
+        "0x00..0x3F",
+        "0x40..0x7F",
+        "0x80..0xBF",
+        "0xC0..0xFF",
+        "0x100",
+        "0x108",
+        "0x110",
+        "0x118",
+        "0x120",
+        "0x128",
+        "0x130",
+        "0x138",
+        "0x200..0x23F",
+        "0x240..0x27F",
+        "0x280..0x2BF",
+        "0x2C0..0x2FF"
+      ]
+    }
+  ]
+}
