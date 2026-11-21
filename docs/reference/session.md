@@ -15,7 +15,9 @@ Start MAME on a system, stopped at the debugger, after checking that it runs the
 start(system="", rompath="", reference_rom="", symbols="", reference_addr=0, inipath="",
     boot_seconds=8.0, shared=false, display=null, size=null, background=null, boot_lua="", env=null,
     bases=null, reference_base=0, stub_port=0, state_dir="", throttle_from_frame=0, types="",
-    cfg="", binary="", presence=true, view="", profile="")
+    cfg="", binary="", presence=true,
+    overlay={"calls": true, "keys": true, "pointer": true, "pause": true, "place": "auto"}, view="",
+    profile="")
 ```
 
 ### Try it
@@ -137,6 +139,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `cfg` (string, default `""`): A `.cfg` file the server installs as the system's own before it boots. Left empty, MAME runs on its defaults.
 - `binary` (string, default `""`): The MAME to run: an executable, or a `.app` bundle holding one. Left empty, `MAME_BINARY`, else the `mame` on the PATH.
 - `presence` (boolean, default `true`): Draws a border around the emulator's window while the session is open, brighter while a call runs the machine. `false` leaves it off.
+- `overlay` (any, default `{"calls": true, "keys": true, "pointer": true, "pause": true, "place": "auto"}`): Marks over the border, each on by default: `calls` names each call, `keys` the input fields held, `pause` marks a stopped machine, and `place` is `top`, `bottom` or `auto`.
 - `view` (string, default `""`): What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.
 - `profile` (string, default `""`): A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.
 
@@ -149,7 +152,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `kept`: Says that this start's arguments were saved as a start profile for `promote`, the tool that writes one into your repository's `.scry/` folder.
 - `start_retries`: Present when MAME had to be launched more than once: what each earlier attempt left.
 
-<details><summary>All 50 reply fields</summary>
+<details><summary>All 51 reply fields</summary>
 
 - `activation` (string)
 - `asked_display` (integer)
@@ -174,6 +177,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `frame` (integer or object)
 - `frame_symbol` (string or object)
 - `machine` (object)
+- `overlay` (object)
 - `pc` (string)
 - `phase` (string)
 - `pid` (integer)
@@ -277,6 +281,7 @@ A watched window is the largest whole multiple of the machine's first screen tha
 - `frame_symbol` is the name the frame counter answers to; a board with no screen has none ([Run](run.md)).
 - `flags`, `env`, `view`, `background`, `binary_origin`, `errorlog_path` and `stdout_path` say what the launch used, so a start can be told from another by its own reply.
 - `presence` is `true` while the border is drawn. A failure drawing it never changes another reply: `presence`, here and in `status`, turns `available: false` with a `why`.
+- `overlay` is there with the border on: the `layers` drawn, the `place` in effect, and in `lacking` why one is not. MAME has no pointer, so that layer is lacking.
 
 </details>
 
@@ -341,6 +346,8 @@ boots with a `note` saying so.
 Reference: REFERENCE.md, The session.
 
 presence: Draw an edge around the emulator's window while this session is open: dim while idle, bright while a call runs the machine. No capture of this server carries it.
+
+overlay: Layers drawn over the presence edge, each on by default: `calls` a caption naming each call and its arguments, abbreviated (paths by their last name); `keys` the keys or fields held down; `pointer` the guest's mouse pointer; `pause` a mark while the session holds the machine stopped. `place`: where the captions go, `top`, `bottom`, or `auto`, the band of the picture that shows less. Ignored with `presence=false`.
 
 view: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
 ```
@@ -441,7 +448,7 @@ Takes no argument.
 - `in_debugger`: What MAME's debugger holds now: `breakpoints`, `watches` and `regpoints` (registerpoints, stops on a register condition), each by its `ref`, a symbol or an address, and its `cpu`.
 - `fingerprint`: A hash of the system, the reference image and the symbol file. A breakpoint or watch saved under another one is not trusted; `fingerprints` has one per cpu.
 
-<details><summary>All 19 reply fields</summary>
+<details><summary>All 20 reply fields</summary>
 
 - `cfg` (object)
 - `console_pending` (integer)
@@ -451,6 +458,7 @@ Takes no argument.
 - `fingerprints` (object)
 - `frame_symbol` (string or object)
 - `in_debugger` (object)
+- `overlay` (object)
 - `pc` (string or object)
 - `pid` (integer)
 - `presence` (boolean)
@@ -477,6 +485,7 @@ Takes no argument.
 - `console_pending` counts Lua lines sent and not yet run. `throttles_pending` lists speed switches asked and not yet applied (`tag`, `on`).
 - `tallies_pending_removal` lists write counts waiting to be removed (`tally_id`, `call`); a row that leaves is a removal done.
 - `presence` is `true` when the border is drawn, `false` when it was asked off, or the reason it is not drawn.
+- `overlay` is there with the border on, as `start` gave it: the `layers` drawn, the `place` in effect and, in `lacking`, why a layer is not.
 - `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.
 - `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.
 

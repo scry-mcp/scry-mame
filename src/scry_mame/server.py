@@ -63,6 +63,7 @@ from scry_core import (  # noqa: E402
     screen_map,
     signalled_end,
 )
+from scry_core import overlay as scry_overlay  # noqa: E402
 from scry_core import presence as scry_presence  # noqa: E402
 from scry_core import promote as core_promote  # noqa: E402
 from scry_core import (
@@ -163,6 +164,8 @@ def start(
     cfg: str = "",
     binary: str = "",
     presence: Annotated[bool, Field(description=scry_presence.ARGUMENT)] = True,
+    overlay: Annotated[scry_overlay.Overlay,
+                       Field(description=scry_overlay.ARGUMENT)] = scry_overlay.OVERLAY,
     view: Annotated[str, Field(description=launch.VIEW_ARGUMENT)] = "",
     profile: str = "",
     ctx: Context[Any, Any] | None = None,
@@ -222,6 +225,8 @@ def start(
         params, block = launch.with_profile(profile, keys=_PROFILE_KEYS, arguments=params,
                                             given=given.names() or ())
     params.pop("profile")
+    asked = launch.overlay_argument(params["overlay"])
+    params["overlay"] = asked.model_dump()
     args.check("start", binary=params["binary"], system=params["system"],
                rompath=params["rompath"], reference_rom=params["reference_rom"],
                symbols=params["symbols"], inipath=params["inipath"],
@@ -240,12 +245,14 @@ def start(
                              throttle_from_frame=params["throttle_from_frame"],
                              types=params["types"], cfg=params["cfg"],
                              background=params["background"], presence=params["presence"],
+                             overlay=asked,
                              view=params["view"], display=params["display"],
                              size=params["size"], progress=bridge(ctx))
     return mpromote.after_start(reply, params, block=block, defaults=_START_DEFAULTS)
 
 
 _PROFILE_KEYS, _START_DEFAULTS = project_store.start_arguments(start)
+_START_DEFAULTS["overlay"] = scry_overlay.OVERLAY.model_dump()
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -1619,8 +1626,14 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
     """
     value = inputs.as_read(value)
     args.check("input", port=port, field=field, frames=frames, seconds=seconds)
-    return mlua.input_field(*stopped("an input"), port, field, value, frames, seconds,
-                            bridge(ctx))
+    reply = mlua.input_field(*stopped("an input"), port, field, value, frames, seconds,
+                             bridge(ctx))
+    # Reported once the set mark proved the field pressed, so a refused or pending call shows no
+    # key; the keycap's minimum time shows a press that was already released.
+    if "frame_set" in reply:
+        STATE.presence.key(field, True)
+        STATE.presence.key(field, False)
+    return reply
 
 
 @tool("Wait for a mapped screen or a black palette", summary=summaries.screen_wait,

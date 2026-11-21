@@ -966,6 +966,7 @@ class StartReply(WindowRefused, tool_replies.ProfileRefusedFields, total=False):
     frame: Required[int | dict[str, Any]]
     frame_symbol: str | dict[str, Any]
     machine: dict[str, Any]
+    overlay: Annotated[dict[str, Any], When("with presence on")]
     pc: Required[str]
     phase: str
     pid: Required[int]
@@ -1011,6 +1012,7 @@ class StatusReply(MameEnvelope, total=False):
     fingerprints: dict[str, Any]
     frame_symbol: str | dict[str, Any]
     in_debugger: Annotated[dict[str, Any], When("with a session")]
+    overlay: Annotated[dict[str, Any], When("with presence on")]
     pc: Annotated[str | dict[str, Any], When("with a session")]
     pid: Annotated[int, When("with a session")]
     presence: Annotated[bool, When("with a session")]

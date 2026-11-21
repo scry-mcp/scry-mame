@@ -17,6 +17,7 @@ from typing import Any
 
 import pytest
 from scry_core import narrowing, window_size
+from scry_core import overlay as overlay_mod
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core import window as core_window
@@ -908,6 +909,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},
         "stdout_log": open(tmp_log, "wb"),  # noqa: SIM115 (kill closes it)
         "presence": presence_mod.Shown(held=_ClosedPresence()),  # type: ignore[arg-type]
+        "overlay": overlay_mod.Overlay(calls=False),
     }
     fresh = mstate.State()
     # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,

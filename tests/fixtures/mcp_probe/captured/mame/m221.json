@@ -1,0 +1,51 @@
+{
+ "task": {
+  "id": "m221",
+  "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. I will watch it: keep the orange edge, but leave out the caption of each call and put the keycaps at the top of the picture.",
+  "tool": "start",
+  "args": {
+   "binary": "{anchor}opt/fury/mamed",
+   "system": "spacefury",
+   "rompath": "{anchor}opt/fury/roms",
+   "reference_rom": "{anchor}opt/fury/roms/fury.bin",
+   "overlay": {
+    "any_of": [
+     {
+      "calls": false,
+      "place": "top"
+     },
+     {
+      "calls": false,
+      "keys": true,
+      "pointer": true,
+      "pause": true,
+      "place": "top"
+     }
+    ]
+   }
+  },
+  "allow": [
+   "shared"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "m221: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"overlay\": {\"calls\": false, \"place\": \"top\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m221: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"overlay\": {\"calls\": false, \"place\": \"top\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m221: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"overlay\": {\"calls\": false, \"place\": \"top\"}}}"
+   ],
+   "right": true
+  }
+ ]
+}

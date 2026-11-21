@@ -19,6 +19,7 @@ from scry_core import (
     boundary,
     cancel,
     guardian,
+    overlay,
     picture,
     presence,
     process_tree,
@@ -115,6 +116,8 @@ class State:
         self.proc: Emulator | None = None
         self.guard: guardian.Guard | None = None
         self.presence = presence.Shown()
+        # What `start` asked to draw over the edge; None while no presence is on.
+        self.overlay: overlay.Overlay | None = None
         self.ses: gs.Session | None = None
         # Symbol tables by cpu tag: each cpu runs its own program. Read through `table`.
         self.tables: dict[str | None, gs.SymbolTable] = {}
@@ -269,6 +272,17 @@ class State:
             return unavailable("MAME has exited under this session")
         why = mpresence.broken(self.scratch) if self.scratch is not None else ""
         return unavailable(f"the drawer stopped: {why}") if why else self.presence.held.reply()
+
+    def overlay_field(self) -> dict[str, Any]:
+        """The reply's `overlay`, present only with a session whose presence is on."""
+        if self.presence.held is None or self.overlay is None:
+            return {}
+        return {"overlay": mpresence.overlay_reply(self.overlay)}
+
+    def holds_stopped(self) -> bool:
+        """Whether a live machine is held stopped by the session."""
+        return (self.ses is not None and not self.ses.running and not self.ses.broken
+                and self.proc is not None and self.proc.poll() is None)
 
     def live(self) -> tuple[gs.Session, Path]:
         ses = self.alive()

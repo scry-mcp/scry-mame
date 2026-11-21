@@ -133,6 +133,7 @@ def status() -> dict[str, Any]:
         "cfg": launch.cfg_report(),
         "debugger": launch.debugger_report(),
         "presence": STATE.presence_shown(),
+        **STATE.overlay_field(),
         "fingerprint": STATE.fingerprint(),
         # By cpu tag; the flat table names no cpu and is `fingerprint`.
         "fingerprints": {cpu: f for cpu, f in STATE.fingerprints.items() if cpu is not None},

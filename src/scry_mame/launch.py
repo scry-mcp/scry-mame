@@ -8,7 +8,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from collections.abc import Collection
+from collections.abc import Collection, Mapping
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
+import pydantic
 from scry_core import (
     app_launch,
     file_names,
@@ -27,6 +28,7 @@ from scry_core import (
     window_size,
     window_words,
 )
+from scry_core import overlay as scry_overlay
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
@@ -355,6 +357,7 @@ class Judged:
     listed: machine.Listed | None = None
     background: bool = False
     presence: bool = False
+    overlay: scry_overlay.Overlay = scry_overlay.OVERLAY
     window: core_window.WindowRequest | None = None
     scaled: str | None = None     # a stated size MAME scales, said in the reply
     picked: bool = False          # the port is this server's pick
@@ -571,6 +574,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           reference_base: NumberArg, port: int, state_dir: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, presence: bool = False,
+          overlay: scry_overlay.Overlay = scry_overlay.OVERLAY,
           binary_origin: str = binaries.ARGUMENT, view: str = "", display: int | None = None,
           size: str | None = None, bundle: str = "") -> Judged:
     """Every refusal of the caller's input, before the emulator exists: after the boot a bad
@@ -671,8 +675,22 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
                   rompath=rompath, inipath=inipath, wait=wait, boot_lua=boot_lua,
                   env=dict(env or {}), state_dir=state_dir, throttle_from_frame=throttle_from_frame,
                   listxml=asked, cfg=cfg_source, listed=listed, background=behind,
-                  presence=presence, picked=picked, view=view, bundle=bundle,
+                  presence=presence, overlay=overlay, picked=picked, view=view,
+                  bundle=bundle,
                   window=fitted_request(wanted, screens), scaled=scaled_note(wanted, screens))
+
+
+def overlay_argument(value: scry_overlay.Overlay | Mapping[str, Any]) -> scry_overlay.Overlay:
+    """`start`'s `overlay` as the model: a call's arrives validated, a profile's as a mapping."""
+    if isinstance(value, scry_overlay.Overlay):
+        return value
+    try:
+        return scry_overlay.Overlay.model_validate(value)
+    except pydantic.ValidationError as e:
+        first = e.errors()[0]
+        where = ".".join(str(part) for part in first["loc"])
+        raise st.Invalid("bad_argument", f"overlay{'.' + where if where else ''}: "
+                         f"{first['msg']}") from None
 
 
 VIEW_ARGUMENT = ("What `snapshot` and `record` render through: empty, the emulated screen at its "
@@ -921,7 +939,8 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
           env: dict[str, str] | None, bases: syms.Bases | None, reference_base: NumberArg,
           port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
-          background: bool | None = None, *, presence: bool, view: str = "",
+          background: bool | None = None, *, presence: bool,
+          overlay: scry_overlay.Overlay = scry_overlay.OVERLAY, view: str = "",
           display: int | None = None, size: str | None = None,
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `start` tool: one launch, relaunched whole up to `START_RETRIES_MAX` times
@@ -941,8 +960,8 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
                     return _launch(binary, system, rompath, reference_rom, symbols, reference_addr,
                                    inipath, wait, shared, boot_lua, env, bases, reference_base,
                                    port, state_dir, throttle_from_frame, types, cfg,
-                                   background, presence, retries, progress, view, display,
-                                   size)
+                                   background, presence, overlay, retries, progress, view,
+                                   display, size)
                 except failures.LaunchFailed as failed:
                     if (not failed.relaunch(port_picked=not port)
                             or len(retries) == START_RETRIES_MAX):
@@ -964,7 +983,8 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             env: dict[str, str] | None, bases: syms.Bases | None, reference_base: NumberArg,
             port: int, state_dir: str, throttle_from_frame: int,
             types: syms.Types, cfg: str, background: bool | None, presence: bool,
-            retries: list[dict[str, Any]], progress: mprogress.Progress,
+            overlay: scry_overlay.Overlay, retries: list[dict[str, Any]],
+            progress: mprogress.Progress,
             view: str = "", display: int | None = None, size: str | None = None) -> dict[str, Any]:
     """One launch: judge, boot under one guard, re-arm, park, reply."""
     # Ending a live session is the caller's act: a stray second `start` must not throw away a
@@ -983,7 +1003,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                    shared=shared, boot_lua=boot_lua, env=env, bases=bases,
                    reference_base=reference_base, port=port,
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
-                   cfg=cfg, background=background, presence=presence,
+                   cfg=cfg, background=background, presence=presence, overlay=overlay,
                    binary_origin=resolved.origin, view=view, display=display,
                    size=size, bundle=resolved.bundle or "")
     # From the scratch on, everything sits under one guard: a failed ROM check or any raise
@@ -1041,9 +1061,11 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         STATE.ses.know_endianness(cpus.program_endianness(STATE.ses, STATE.machine_map,
                                                           STATE.first_cpu))
         if judged.presence:
+            STATE.overlay = judged.overlay
             STATE.presence = scry_presence.Presence.open(
                 mpresence.FileAdapter(STATE.scratch, st.LOCK, STATE.repaintable,
-                                      transport.pending_lines), mpresence.DRIVING_TOOLS)
+                                      transport.pending_lines), mpresence.DRIVING_TOOLS,
+                judged.overlay)
         STATE.frame_symbol = read.probe_frame_symbol(STATE.ses)
         # Before the park's survey so the first stop carries every watch evaluated.
         judged.declarations["rearm"] = rearming.rearm_breakpoints_and_watches(STATE.ses)
@@ -1076,6 +1098,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             "throttle_from_frame": throttle_from_frame,
             "boot_lua_path": harness,
             "presence": STATE.presence_shown(),
+            **STATE.overlay_field(),
             "machine": {name: len(STATE.machine_map[name]) for name in machine.SECTIONS},
             "declarations": judged.declarations,
             "start_retries": list(retries),

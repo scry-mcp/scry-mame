@@ -178,7 +178,7 @@ def test_a_fresh_session_reads_the_emulator_log_from_its_first_byte(tmp_path: Pa
 # The fields a session holds only once it has one: everything else starts as the value an empty
 # session reads, so its first reader never meets None where it iterates or compares.
 _NONE_UNTIL_START = {"boot_pc", "cfg", "first_cpu", "guard", "manifest",
-                     "proc",
+                     "overlay", "proc",
                      "reference", "run_release", "scratch", "ses", "session_origin", "cancelled",
                      "scan", "stale_counter", "state_signature", "stdout_log", "store", "window"}
 

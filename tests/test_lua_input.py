@@ -118,3 +118,67 @@ def test_input_refuses_its_arguments_before_the_pipe(
 def test_inputs_own_script_raising_is_coded_by_what_it_raised(error: str, code: str) -> None:
     """The console prefixes the chunk's place (`mcp:N:`)"""
     assert lua.input_refusal_code(error) == code
+
+
+class _Keys:
+    """A presence that records the keys reported to it."""
+
+    def __init__(self) -> None:
+        self.seen: list[tuple[str, bool]] = []
+
+    def key(self, name: str, down: bool) -> None:
+        self.seen.append((name, down))
+
+    def began(self, call: object) -> None:
+        pass
+
+    def ended(self, call: object, outcome: str) -> None:
+        pass
+
+    def paused(self, stopped: bool) -> None:
+        pass
+
+
+def _keys(monkeypatch: pytest.MonkeyPatch) -> _Keys:
+    from scry_core import presence
+
+    from scry_mame import state as mstate
+    keys = _Keys()
+    monkeypatch.setattr(mstate.STATE, "presence", presence.Shown(held=keys))  # type: ignore[arg-type]
+    return keys
+
+
+def test_an_input_shows_its_field_pressed_and_released_once_it_was_pressed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    keys = _keys(monkeypatch)
+    ses.answers[1] = _captured(3)
+    ses.marks[1] = [m.replace("#3", "#1") for m in _marks_of("MAME_MCP_INPUT#3")]
+    assert s.input(port=":P1", field="Coin 1", frames=4)["status"] == "ok"
+    assert keys.seen == [("Coin 1", True), ("Coin 1", False)]
+
+
+def test_a_refused_input_shows_no_key_and_a_cut_short_one_shows_it_released(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    keys = _keys(monkeypatch)
+    ses.answers[1] = _captured(4)
+    refused("has no field No Such Field", s.input(port=":P1", field="No Such Field", frames=2))
+    assert keys.seen == [], "nothing was pressed"
+    ses.answers[2] = ses.sentinel(2)
+    ses.marks[2] = [_marks_of("MAME_MCP_INPUT#3 set")[0].replace("#3", "#2")]
+    assert s.input(port=":P1", field="Coin 1", frames=4)["released"] is False
+    assert keys.seen == [("Coin 1", True), ("Coin 1", False)], (
+        "the field is held, but a keycap no later call would lift is not left up")
+
+
+def test_an_input_that_never_ran_is_pending_and_shows_no_key(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _channel(monkeypatch, tmp_path)
+    keys = _keys(monkeypatch)
+    monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
+    assert s.input(port=":P1", field="Coin 1", frames=4)["pending"] is True
+    assert keys.seen == []

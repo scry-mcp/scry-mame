@@ -10,7 +10,8 @@ from typing import Any
 
 import pytest
 from lua_text import has, squash
-from scry_core import presence
+from scry_core import boundary, overlay, presence
+from scry_core import overlay_timeline as tl
 
 from scry_mame import launch  # noqa: E402
 from scry_mame import presence as mpresence  # noqa: E402
@@ -39,6 +40,10 @@ def test_the_drawer_draws_on_the_ui_container_from_the_look_and_reads_its_file(
     assert "render.ui_container" in text and "screens[" not in text
     assert has(text, "local RGB, EDGE, STEPS = 0x123456, 0.05, 3")
     assert has(text, f"local ACTING, HELD, FADE, REREAD = 0.9, 0.45, 1.5, {mpresence.REREAD_S!r}")
+    assert has(text, "local TEXT_RGB, CAP_ALPHA, KEY_RGB = 0xFFFFFF, "
+                     f"{look.caption_alpha!r}, 0x202020")
+    assert has(text, f"local CPS, CAP_FADE, DWELL = {look.scroll_cps!r}, "
+                     f"{mpresence.CAPTION_FADE_S!r}, {mpresence.SCROLL_DWELL_S!r}")
     assert has(text, 'execution_state == "run"'), "a stopped machine is never drawn a fade"
     state = str(tmp_path / 'a"b' / mpresence.STATE_FILE)
     assert has(text, '"' + state.replace("\\", "\\\\").replace('"', '\\"') + '"')
@@ -50,10 +55,68 @@ def test_the_drawer_draws_on_the_ui_container_from_the_look_and_reads_its_file(
 
 def test_a_state_replaces_the_file_whole(tmp_path: Path) -> None:
     adapter = made(tmp_path)
-    adapter.show("held")
-    adapter.show("acting")
-    assert (tmp_path / mpresence.STATE_FILE).read_text() == "acting\n"
+    adapter.show("held", presence.Payload(caption=tl.Caption("log", "read", 0x5AC8FA, 1)))
+    adapter.show("acting", presence.Payload())
+    assert (tmp_path / mpresence.STATE_FILE).read_text().splitlines()[0] == "acting"
+    assert "caption=" not in (tmp_path / mpresence.STATE_FILE).read_text()
     assert sorted(p.name for p in tmp_path.iterdir()) == [mpresence.STATE_FILE]
+
+
+def test_the_state_file_carries_the_extended_state_one_line_each() -> None:
+    caption = tl.Caption("write_memory 0x10 AA..", "write", 0xFF8C00, 7)
+    text = mpresence.encode("acting", presence.Payload(
+        paused=True, caption=caption, keys=("P1 Left", "P1 Button 1"),
+        layers=("edge", "pointer", "keys", "calls", "pause"), place="top"))
+    assert text.splitlines() == [
+        "acting", "paused=1", "place=top", "layers=edge,keys,calls,pause", "serial=7",
+        "rgb=FF8C00", "caption=write_memory 0x10 AA..", "key=P1 Left", "key=P1 Button 1"]
+    bare = mpresence.encode("held", presence.Payload())
+    assert bare.splitlines() == ["held", "paused=0", "place=auto", "layers=edge"]
+
+
+def test_a_line_of_the_state_file_is_printable_ascii_whatever_it_was_given() -> None:
+    caption = tl.Caption("a\nb\u00e9\x00", "read", 0x5AC8FA, 1)
+    text = mpresence.encode("held", presence.Payload(caption=caption, keys=("\r\u20ac",)))
+    assert "caption=a?b??" in text and "key=??" in text and text.count("\n") == 8
+    assert all(" " <= c <= "~" or c == "\n" for c in text)
+
+
+def test_the_reply_names_the_layers_drawn_and_says_why_mame_has_no_pointer() -> None:
+    assert mpresence.overlay_reply(overlay.OVERLAY) == {
+        "layers": ["edge", "keys", "calls", "pause"], "place": "auto",
+        "lacking": {"pointer": mpresence.LACKING["pointer"]}}
+    off = overlay.Overlay(pointer=False, keys=False, place="bottom")
+    assert mpresence.overlay_reply(off) == {"layers": ["edge", "calls", "pause"],
+                                            "place": "bottom"}
+
+
+def test_the_listener_tells_the_presence_when_the_machine_is_held_stopped() -> None:
+    told: list[bool] = []
+
+    class Held:
+        def began(self, call: boundary.Call) -> None:
+            pass
+
+        def ended(self, call: boundary.Call, outcome: boundary.Outcome) -> None:
+            pass
+
+        def paused(self, stopped: bool) -> None:
+            told.append(stopped)
+
+    stopped = [True]
+    listener = mpresence.Listener(lambda: Held(), lambda: stopped[0])  # type: ignore[arg-type,return-value]
+    top = boundary.Call("run_for", {}, False, False)
+    listener.began(top)
+    listener.began(boundary.Call("log", {}, False, True))
+    listener.began(boundary.Call("write", {}, True, False))
+    listener.ended(top, "ok")
+    stopped[0] = False
+    listener.ended(top, "ok")
+    listener.ended(boundary.Call("read_memory", {}, True, True), "ok")
+    assert told == [False, True, False], (
+        "a driving call lifts the mark, a still call or a step of one says nothing, any call "
+        "that ends says how the machine stands")
+    mpresence.Listener(lambda: None, lambda: True).ended(top, "ok")
 
 
 def test_status_and_start_say_what_the_session_holds() -> None:
@@ -259,3 +322,65 @@ def test_a_repaint_that_runs_out_is_the_presence_s_failure_and_never_breaks_the_
     with pytest.raises(gs.Timeout):
         _session(monkeypatch, tmp_path, ses).repaint(lambda: True)
     assert ses.broken is None and ses.sent == [mpresence.REPAINT]
+
+
+class _Drawn:
+    def reply(self) -> bool:
+        return True
+
+
+def test_overlay_is_in_the_reply_only_with_a_presence_that_is_on() -> None:
+    state = mstate.State()
+    assert state.overlay_field() == {}
+    state.overlay = overlay.Overlay(keys=False)
+    assert state.overlay_field() == {}, "no presence, nothing drawn to describe"
+    state.presence = presence.Shown(refused={"available": False, "why": "x"})
+    assert state.overlay_field() == {}
+    state.presence = presence.Shown(held=_Drawn())  # type: ignore[arg-type]
+    assert state.overlay_field() == {"overlay": {"layers": ["edge", "calls", "pause"],
+                                                 "place": "auto", "lacking": {
+                                                     "pointer": mpresence.LACKING["pointer"]}}}
+
+
+def test_the_session_holds_the_machine_stopped_only_while_alive_whole_and_not_running() -> None:
+    class Ses:
+        running = False
+        broken: str | None = None
+
+    class Proc:
+        def __init__(self, code: int | None) -> None:
+            self.code = code
+
+        def poll(self) -> int | None:
+            return self.code
+
+    state = mstate.State()
+    ses = Ses()
+    assert state.holds_stopped() is False
+    state.ses, state.proc = ses, Proc(None)  # type: ignore[assignment]
+    assert state.holds_stopped() is True
+    ses.running = True
+    assert state.holds_stopped() is False
+    ses.running, ses.broken = False, "lost its place"
+    assert state.holds_stopped() is False
+    ses.broken = None
+    state.proc = Proc(0)  # type: ignore[assignment]
+    assert state.holds_stopped() is False
+
+
+def test_start_takes_the_overlay_as_one_object_and_a_profile_may_fill_it() -> None:
+    tool = next(t for t in asyncio.run(s.mcp.list_tools()) if t.name == "start")
+    assert "overlay" in tool.input_schema["properties"]
+    assert "overlay" in s._PROFILE_KEYS
+    assert s._START_DEFAULTS["overlay"] == overlay.OVERLAY.model_dump()
+
+
+def test_a_profile_s_overlay_is_judged_like_a_call_s() -> None:
+    assert launch.overlay_argument({"calls": False, "place": "top"}) == overlay.Overlay(
+        calls=False, place="top")
+    assert launch.overlay_argument(overlay.OVERLAY) is overlay.OVERLAY
+    for bad, said in (({"calls": "no"}, "overlay.calls"), ({"edge": True}, "overlay.edge"),
+                      ("calls", "overlay")):
+        with pytest.raises(mstate.Invalid) as refused:
+            launch.overlay_argument(bad)  # type: ignore[arg-type]
+        assert refused.value.code == "bad_argument" and said in str(refused.value), bad

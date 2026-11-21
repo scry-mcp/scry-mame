@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import log_marks, stop_wait
+from scry_core import boundary, log_marks, stop_wait
 from scry_core import log_wait as core_wait
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
@@ -1013,17 +1013,20 @@ def test_run_to_refused_at_the_readback_removes_only_what_was_listed_and_says_if
 
 def test_the_boundary_tells_the_session_s_presence_of_each_call(
         monkeypatch: pytest.MonkeyPatch) -> None:
-    heard: list[tuple[str, str]] = []
+    heard: list[tuple[str, str | bool]] = []
 
     class Heard:
-        def began(self, tool: str) -> None:
-            heard.append(("began", tool))
+        def began(self, call: boundary.Call) -> None:
+            heard.append(("began", call.tool))
 
-        def ended(self, tool: str) -> None:
-            heard.append(("ended", tool))
+        def ended(self, call: boundary.Call, outcome: boundary.Outcome) -> None:
+            heard.append(("ended", f"{call.tool} {outcome}"))
+
+        def paused(self, stopped: bool) -> None:
+            heard.append(("paused", stopped))
     monkeypatch.setattr(mstate.STATE, "presence", presence_mod.Shown(held=Heard()))  # type: ignore[arg-type]
     assert s.status()["status"] == "ok"
-    assert heard == [("began", "status"), ("ended", "status")]
+    assert heard == [("began", "status"), ("ended", "status ok"), ("paused", False)]
 
 
 def test_boot_names_a_process_that_died_without_waiting_out_the_bound(

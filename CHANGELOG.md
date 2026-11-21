@@ -4,6 +4,11 @@ What a client of the server notices.
 
 ## Unreleased
 
+- The orange edge can carry a caption naming each call and its arguments, a keycap for each
+  input field held and a pause mark while the session holds the machine stopped. `start` takes
+  `overlay` to choose them and where they go, and `start` and `status` answer with an `overlay`
+  that lists what is drawn and why a layer is not: MAME has no pointer. A long caption scrolls
+  while the machine runs. No capture carries any of it.
 - Every demo is shown moving: a `loop.webp` beside its README replaces `loop.mp4`. It holds
   one to three moments cut from `record` calls of the demo's own run, scaled up so its pixels
   stay sharp.

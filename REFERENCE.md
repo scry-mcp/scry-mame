@@ -58,6 +58,8 @@ MAME's debugger acts on one cpu at a time, the visible one, and every stop makes
 
 While a session is live MAME's window has an orange edge, so a person at the computer knows it is in use. It is bright while a call that can run or change the program is in progress, and dim otherwise, even over a program `resume` left running. `start(presence=False)` turns it off, and no capture shows it.
 
+Over the edge it can also show a caption naming each call, a keycap for each input field held, and a pause mark while the session holds the machine stopped. `start(overlay=...)` chooses them and where they go. MAME has no pointer, so `start` says that layer is lacking.
+
 The tools: [Session](docs/reference/session.md), [Machine](docs/reference/machine.md).
 
 ## What every reply carries
