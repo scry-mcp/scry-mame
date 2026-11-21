@@ -22,7 +22,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states reset",
           "cites": "    [0x002, \"reset\", 0, True],"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states reset",
+            "line": "    [0x002, \"reset\", 0, True],"
+          }
+        ],
+        "digest": "e75e1a81d1591a5181f14ea9ebb4cef5b2c0f51a1fa281f03152213bc20b5c35"
+      }
     },
     {
       "key": "2",
@@ -40,7 +51,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states bus_error",
           "cites": "    [0x003, \"bus_error\", 2, True],"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states bus_error",
+            "line": "    [0x003, \"bus_error\", 2, True],"
+          }
+        ],
+        "digest": "36808c4162b7d524f7fe6086dd4b6d6b24f8ded37dbbf79bd4ebd606f803a749"
+      }
     },
     {
       "key": "3",
@@ -55,7 +77,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states address_error",
           "cites": "    [0x003, \"address_error\", 3, True],"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states address_error",
+            "line": "    [0x003, \"address_error\", 3, True],"
+          }
+        ],
+        "digest": "0d96ff10d9026bb78edc9de5d5e98d473517ab2face9214a010be58f63d8254f"
+      }
     },
     {
       "key": "4",
@@ -73,7 +106,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states illegal",
           "cites": "    [0x1c0, \"illegal\", 4, False],"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states illegal",
+            "line": "    [0x1c0, \"illegal\", 4, False],"
+          }
+        ],
+        "digest": "cd7f4297248062747296fcac463573f2c8a8d268ebcf9a000a7414501b827a95"
+      }
     },
     {
       "key": "5",
@@ -91,7 +135,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn fallback",
           "cites": "                5)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn fallback",
+            "line": "                5)"
+          }
+        ],
+        "digest": "00892e77a1d6691a6882677ffb04b634ca30bfcc18f4a22fc07675aefad48b00"
+      }
     },
     {
       "key": "6",
@@ -109,7 +164,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn chk",
           "cites": "    macro_tvn = (6 if (ir & 0xf040) == 0x4000 else"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn chk",
+            "line": "    macro_tvn = (6 if (ir & 0xf040) == 0x4000 else"
+          }
+        ],
+        "digest": "d6d3925709494645d09fdc75b576448f5733dec882a81d57bd25ff6af10437c9"
+      }
     },
     {
       "key": "7",
@@ -127,7 +193,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn trapv",
           "cites": "                7 if (ir & 0xf060) == 0x4060 else"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn trapv",
+            "line": "                7 if (ir & 0xf060) == 0x4060 else"
+          }
+        ],
+        "digest": "4c1c362282afe0c1924b09bc11b89068e35c66c430e495ad7e24e58fe9de8d4d"
+      }
     },
     {
       "key": "8",
@@ -145,7 +222,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states priviledge",
           "cites": "    [0x1c0, \"priviledge\", 8, False],"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states priviledge",
+            "line": "    [0x1c0, \"priviledge\", 8, False],"
+          }
+        ],
+        "digest": "beaec5a2496355a53ae817c6a9a4244272928cd38280efc23ec3833070fac587"
+      }
     },
     {
       "key": "9",
@@ -160,7 +248,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states trace",
           "cites": "    [0x1c0, \"trace\", 9, False],"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states trace",
+            "line": "    [0x1c0, \"trace\", 9, False],"
+          }
+        ],
+        "digest": "97ececfab96946a44fc5393d4ce2eb21f225bd04ab2d9e1f981781d665957485"
+      }
     },
     {
       "key": "10",
@@ -178,7 +277,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states linea",
           "cites": "    [0x1c0, \"linea\", 10, False],"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states linea",
+            "line": "    [0x1c0, \"linea\", 10, False],"
+          }
+        ],
+        "digest": "5164b9f7585abe8e04da20277b94cb54b588b12ad66148087389dcedee3e3442"
+      }
     },
     {
       "key": "11",
@@ -196,7 +306,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py states linef",
           "cites": "    [0x1c0, \"linef\", 11, False]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py states linef",
+            "line": "    [0x1c0, \"linef\", 11, False]"
+          }
+        ],
+        "digest": "ad89c853137c36802230cc05981962180ca973bc3b366fe6fb45bb27e8dc7b1d"
+      }
     },
     {
       "key": "25",
@@ -214,7 +335,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
           "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+            "line": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+          }
+        ],
+        "digest": "e4ca47a65ee7fb902fdd4380e2345056b68b261462be49ec2e60b7e0ea02a65d"
+      }
     },
     {
       "key": "26",
@@ -232,7 +364,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
           "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+            "line": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+          }
+        ],
+        "digest": "f99c306370cdcd7c826a52072811d40135cad7dc289eae7fb6586690c62cfb0e"
+      }
     },
     {
       "key": "27",
@@ -250,7 +393,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
           "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+            "line": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+          }
+        ],
+        "digest": "731f2ee22d14f5d0547e557619bf625cb90ced8d4c83653be9c4abcc5036468a"
+      }
     },
     {
       "key": "28",
@@ -268,7 +422,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
           "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+            "line": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+          }
+        ],
+        "digest": "d5c4652742d190166325cb82cbe290d1a890d36d2f0489eb2bd632e607c36c11"
+      }
     },
     {
       "key": "29",
@@ -286,7 +451,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
           "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+            "line": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+          }
+        ],
+        "digest": "8626bf43a3f9efd5521c1cac0b796bd005cdd508d82007f18a9217fceaf00596"
+      }
     },
     {
       "key": "30",
@@ -304,7 +480,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
           "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+            "line": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+          }
+        ],
+        "digest": "00f12195faec12988b7b3a83aa643e2cb848ab450d2c398ea9cc20f402e2364a"
+      }
     },
     {
       "key": "31",
@@ -340,7 +527,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "45a23b326a82ecba2c1a4f6b7540c5d4e8b39786709f9551f94247f6f4c5afac"
+      }
     },
     {
       "key": "33",
@@ -358,7 +556,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "56129caf8c2bf7121f5c66628c7163a5d7509870793aa19d0d89882809534777"
+      }
     },
     {
       "key": "34",
@@ -376,7 +585,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "dcba77144812619f399a9dd6617aed090d41e83147e3af0a5ab4bbcc472f989e"
+      }
     },
     {
       "key": "35",
@@ -394,7 +614,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "79e4f8ec1084a7eec143033fe346298c4e3b96ed3faeb4fbe3b7dfe3b36574b5"
+      }
     },
     {
       "key": "36",
@@ -412,7 +643,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "3bc70a4080432288e7d0da90cc8150085c82bae1c353e5d824baace44ff76fa3"
+      }
     },
     {
       "key": "37",
@@ -430,7 +672,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "55f849356aeb6e3d7395e2c436c78418476c5eac67e96ce4f59e184a4082e0e0"
+      }
     },
     {
       "key": "38",
@@ -448,7 +701,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "a1cc9384d92341462d6a85fa1930663eff06642fa627ed3d1534d6037418f238"
+      }
     },
     {
       "key": "39",
@@ -466,7 +730,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "e6692567656e00bd8ba0d1db8e359f98f28531726b4f5f1dd97706017976decb"
+      }
     },
     {
       "key": "40",
@@ -484,7 +759,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "4f935cccd378225b29b59e117b24330a80dfd5dc1e4701c48ca824eda9371e13"
+      }
     },
     {
       "key": "41",
@@ -502,7 +788,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "1893c6f7b4e37435790ec197d34bb385582a99c6d3ee1e98e84758f38a2e80da"
+      }
     },
     {
       "key": "42",
@@ -520,7 +817,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "61bc4fd2c46043166550b0663568d2024ed0221c0593abe220f7cb6143230dd2"
+      }
     },
     {
       "key": "43",
@@ -538,7 +846,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "4939d0e637d00f146e9a19d57445f2dc3dbd29a31154f66a75007bae681b51e2"
+      }
     },
     {
       "key": "44",
@@ -556,7 +875,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "3909e30658c2aad54344e424e552b7f8cd41afc423198298f92da295d04f4f97"
+      }
     },
     {
       "key": "45",
@@ -574,7 +904,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "e9c985c092eabcb21bdc5c493a10aa3dbdcc1e73cd8b8a42dc530d9ad591d16a"
+      }
     },
     {
       "key": "46",
@@ -592,7 +933,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "3cb8026f02d357b37589387c8c575399d32c3f5d9d75cd07916dfa7ad867705f"
+      }
     },
     {
       "key": "47",
@@ -610,7 +962,18 @@
           "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
           "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+            "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+          }
+        ],
+        "digest": "8c323bd548d8404fa3a71947f6cb0a1744246aefa26705e5ac7fccf730f065bf"
+      }
     }
   ]
 }

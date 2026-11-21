@@ -67,7 +67,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x00..0x05",
           "cites": "//     00,02,04 xxxxxxxx Tone period (fine) for channel A,B,C"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x00..0x05",
+            "line": "//     00,02,04 xxxxxxxx Tone period (fine) for channel A,B,C"
+          }
+        ],
+        "digest": "d92dd5c86eb58068677bd23b54aaadbe18befb2edbd44e186e67aad12fa98fe4"
+      }
     },
     {
       "key": "0x06",
@@ -81,7 +92,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x06",
           "cites": "//           06 ---xxxxx Noise period"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x06",
+            "line": "//           06 ---xxxxx Noise period"
+          }
+        ],
+        "digest": "cbdf422b1f7ba6d438324f0acc0a0650de6b67eada5e2222436ade1e3e6bf38a"
+      }
     },
     {
       "key": "0x07",
@@ -95,7 +117,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x07",
           "cites": "//           07 x------- I/O B in(0) or out(1)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x07",
+            "line": "//           07 x------- I/O B in(0) or out(1)"
+          }
+        ],
+        "digest": "f532b902263d4ad243c52ff5bbc25c44bd2a49250e98524da6bd5595e748144f"
+      }
     },
     {
       "key": "0x08..0x0A",
@@ -109,7 +142,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x08..0x0A",
           "cites": "//     08,09,0A ---x---- Mode: fixed(0) or variable(1) for channel A,B,C"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x08..0x0A",
+            "line": "//     08,09,0A ---x---- Mode: fixed(0) or variable(1) for channel A,B,C"
+          }
+        ],
+        "digest": "044b854b9a0629f054bf051836d08de4af3aa68c816d964f4bc99e886f3e969c"
+      }
     },
     {
       "key": "0x0B",
@@ -123,7 +167,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0B",
           "cites": "//           0B xxxxxxxx Envelope period fine"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0B",
+            "line": "//           0B xxxxxxxx Envelope period fine"
+          }
+        ],
+        "digest": "40082531a3eb1770bc4bf940c6ce86852f1d2943d41b38c0f5101648774aaee0"
+      }
     },
     {
       "key": "0x0C",
@@ -137,7 +192,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0C",
           "cites": "//           0C xxxxxxxx Envelope period coarse"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0C",
+            "line": "//           0C xxxxxxxx Envelope period coarse"
+          }
+        ],
+        "digest": "4aa82d5ab1df39d85b29940cd679376588135a0d64340aa12500e2ff4ab5521c"
+      }
     },
     {
       "key": "0x0D",
@@ -151,7 +217,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0D",
           "cites": "//           0D ----x--- Envelope shape: continue"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0D",
+            "line": "//           0D ----x--- Envelope shape: continue"
+          }
+        ],
+        "digest": "96de26cb8765892b956742c01881715440ba350dde78c73dabe93f8651bd0a49"
+      }
     },
     {
       "key": "0x0E..0x0F",
@@ -167,7 +244,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0E..0x0F",
           "cites": "//           0E xxxxxxxx 8-bit parallel I/O port A"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h ssg_registers ym2608 register 0x0E..0x0F",
+            "line": "//           0E xxxxxxxx 8-bit parallel I/O port A"
+          }
+        ],
+        "digest": "a567d75a1e80236f48eb4e1058292b3a971fc75f436df89cdb73541c0f1d52f3"
+      }
     },
     {
       "key": "0x10",
@@ -182,7 +270,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x10",
           "cites": "//           00 x------- Dump (disable=1) or keyon (0) control"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x10",
+            "line": "//           00 x------- Dump (disable=1) or keyon (0) control"
+          }
+        ],
+        "digest": "a14730ad2be24338f03e34428af7baecc718e58f5a8f76b6ba95833921dbcbf6"
+      }
     },
     {
       "key": "0x11",
@@ -197,7 +296,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x11",
           "cites": "//           01 --xxxxxx Total level"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x11",
+            "line": "//           01 --xxxxxx Total level"
+          }
+        ],
+        "digest": "071ce052d2183242d52f2699a57c70c72e7ab158397e3d23d38e1c2cd44ea339"
+      }
     },
     {
       "key": "0x12",
@@ -212,7 +322,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x12",
           "cites": "\tuint32_t test() const                               { return m_regdata[0x02]; }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_a_registers ym2608 register 0x12",
+            "line": "\tuint32_t test() const                               { return m_regdata[0x02]; }"
+          }
+        ],
+        "digest": "79aae9f6dfcaab36f6c585525890f395c553e0cd8deeef27c3046791f558bce9"
+      }
     },
     {
       "key": "0x18..0x1D",
@@ -242,7 +363,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x21",
           "cites": "\tuint32_t test() const                       { return byte(0x21, 0, 8); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x21",
+            "line": "\tuint32_t test() const                       { return byte(0x21, 0, 8); }"
+          }
+        ],
+        "digest": "3456ec4c1c4bc84c2b434fb3f135a50499396be2aa940e6f1f77143affa4c563"
+      }
     },
     {
       "key": "0x22",
@@ -274,7 +406,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x24",
           "cites": "//           24 xxxxxxxx Timer A value (upper 8 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x24",
+            "line": "//           24 xxxxxxxx Timer A value (upper 8 bits)"
+          }
+        ],
+        "digest": "ff71d234c5f5f69b69f91a48bdbce962fe9de58f56483dc776ea58129e028025"
+      }
     },
     {
       "key": "0x25",
@@ -289,7 +432,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x25",
           "cites": "//           25 ------xx Timer A value (lower 2 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x25",
+            "line": "//           25 ------xx Timer A value (lower 2 bits)"
+          }
+        ],
+        "digest": "d82d98a9886c35621c1106f720385989ecf0356e0d29b471d8cc8eb9594e71ba"
+      }
     },
     {
       "key": "0x26",
@@ -304,7 +458,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x26",
           "cites": "//           26 xxxxxxxx Timer B value"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x26",
+            "line": "//           26 xxxxxxxx Timer B value"
+          }
+        ],
+        "digest": "21af96b7716b5d4ada546056703435a2a4526da827d5cb5e5a69846345d4a968"
+      }
     },
     {
       "key": "0x27",
@@ -321,7 +486,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x27",
           "cites": "//           27 xx------ CSM/Multi-frequency mode for channel #2"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x27",
+            "line": "//           27 xx------ CSM/Multi-frequency mode for channel #2"
+          }
+        ],
+        "digest": "c30557f5310c83b589ad051c078123d0fe3c6e2cb8889b33311a836c221d6ab9"
+      }
     },
     {
       "key": "0x28",
@@ -338,7 +514,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x28",
           "cites": "//           28 x------- Key on/off operator 4"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x28",
+            "line": "//           28 x------- Key on/off operator 4"
+          }
+        ],
+        "digest": "da312c8f897b0b005011e1efac67f436077ae24af769b11fd787de5c486b38f3"
+      }
     },
     {
       "key": "0x29",
@@ -353,7 +540,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data register 0x29",
           "cites": "\t\t// 29: special IRQ mask register"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data register 0x29",
+            "line": "\t\t// 29: special IRQ mask register"
+          }
+        ],
+        "digest": "7652518f533b1b470d8e6bc1e83c3fdd6d46d804619d8e938403796e68bc8bfd"
+      }
     },
     {
       "key": "0x2D",
@@ -368,7 +566,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2D",
           "cites": "\t\tif (m_address == 0x2d)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2D",
+            "line": "\t\tif (m_address == 0x2d)"
+          }
+        ],
+        "digest": "8419ce04c4eebf2cac0c2bda60872a9b2041849cae50627ea519d967e7706f47"
+      }
     },
     {
       "key": "0x2E",
@@ -383,7 +592,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2E",
           "cites": "\t\telse if (m_address == 0x2e && m_fm.clock_prescale() == 6)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2E",
+            "line": "\t\telse if (m_address == 0x2e && m_fm.clock_prescale() == 6)"
+          }
+        ],
+        "digest": "4c42e364c4c86771bac1ce7a74af053812942cf95589890a5c2013f755c0ba05"
+      }
     },
     {
       "key": "0x2F",
@@ -398,7 +618,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2F",
           "cites": "\t\telse if (m_address == 0x2f)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_address register 0x2F",
+            "line": "\t\telse if (m_address == 0x2f)"
+          }
+        ],
+        "digest": "8d5554056bfa2b997368c890dc825c0d7ddef97ffc030cd86c9eceb222317fbd"
+      }
     },
     {
       "key": "0x30..0x3F",
@@ -413,7 +644,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x30..0x3F",
           "cites": "//        30-3F -xxx---- Detune value (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x30..0x3F",
+            "line": "//        30-3F -xxx---- Detune value (0-7)"
+          }
+        ],
+        "digest": "2c3d8a28c1ad9170982db142b76e37f0c1fdeff56658555147ecf6daf91c52c0"
+      }
     },
     {
       "key": "0x40..0x4F",
@@ -428,7 +670,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x40..0x4F",
           "cites": "//        40-4F -xxxxxxx Total level (0-127)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x40..0x4F",
+            "line": "//        40-4F -xxxxxxx Total level (0-127)"
+          }
+        ],
+        "digest": "3d2adb4df755df8eb0e2886e4c3a7c66f70c2c2a22024b0faf298dc29ea251bc"
+      }
     },
     {
       "key": "0x50..0x5F",
@@ -443,7 +696,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x50..0x5F",
           "cites": "//        50-5F xx------ Key scale rate (0-3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x50..0x5F",
+            "line": "//        50-5F xx------ Key scale rate (0-3)"
+          }
+        ],
+        "digest": "97ce5696f8f173eb99f35e2ed4771b1dd89db171e4cbdd8921cbcec1f8f5de12"
+      }
     },
     {
       "key": "0x60..0x6F",
@@ -458,7 +722,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x60..0x6F",
           "cites": "//        60-6F x------- LFO AM enable [OPNA]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x60..0x6F",
+            "line": "//        60-6F x------- LFO AM enable [OPNA]"
+          }
+        ],
+        "digest": "d775cef5d6876e9e6db64bb0256943d055d80a3e652b9df325f894afa2bc38be"
+      }
     },
     {
       "key": "0x70..0x7F",
@@ -473,7 +748,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x70..0x7F",
           "cites": "//        70-7F ---xxxxx Sustain rate (0-31)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x70..0x7F",
+            "line": "//        70-7F ---xxxxx Sustain rate (0-31)"
+          }
+        ],
+        "digest": "ec1afc22e605089b54312ea31bd483f9c5a06e1fa8a3b02e7684c66cb21d1ed6"
+      }
     },
     {
       "key": "0x80..0x8F",
@@ -488,7 +774,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x80..0x8F",
           "cites": "//        80-8F xxxx---- Sustain level (0-15)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x80..0x8F",
+            "line": "//        80-8F xxxx---- Sustain level (0-15)"
+          }
+        ],
+        "digest": "fea7848d659deb7e242b5b18d8a2512f8b35c6ceb108b0ded326ed5c7e9c14f7"
+      }
     },
     {
       "key": "0x90..0x9F",
@@ -505,7 +802,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x90..0x9F",
           "cites": "//        90-9F ----x--- SSG-EG enable"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x90..0x9F",
+            "line": "//        90-9F ----x--- SSG-EG enable"
+          }
+        ],
+        "digest": "d43bbe020fc201044cbf9fb013eeae3d7ac4a2e48d2aab761b655a644068f234"
+      }
     },
     {
       "key": "0xA0..0xA3",
@@ -520,7 +828,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xA0..0xA3",
           "cites": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xA0..0xA3",
+            "line": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
+          }
+        ],
+        "digest": "86f48603d74dfb25eb81df246bca32c6fea94478bd4e2982ee4d58c4c9d94f9c"
+      }
     },
     {
       "key": "0xA4..0xA7",
@@ -550,7 +869,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xA8..0xAB",
           "cites": "//        A8-AB xxxxxxxx Frequency number lower 8 bits"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xA8..0xAB",
+            "line": "//        A8-AB xxxxxxxx Frequency number lower 8 bits"
+          }
+        ],
+        "digest": "56e563ba17279c19d71d8129a47010cb09f199b0758196b7eb9024cea1f0fbb1"
+      }
     },
     {
       "key": "0xAC..0xAF",
@@ -565,7 +895,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xAC..0xAF",
           "cites": "//        AC-AF --xxx--- Block (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xAC..0xAF",
+            "line": "//        AC-AF --xxx--- Block (0-7)"
+          }
+        ],
+        "digest": "cfc08fac9425b01e77fe00d24f82178da69fe207923c773c7ebbcf9440121388"
+      }
     },
     {
       "key": "0xB0..0xB3",
@@ -580,7 +921,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xB0..0xB3",
           "cites": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xB0..0xB3",
+            "line": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
+          }
+        ],
+        "digest": "9094a27847a884848593d993f93af8df093f6ed81be6ad609079eb1685614383"
+      }
     },
     {
       "key": "0xB4..0xB7",
@@ -597,7 +949,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xB4..0xB7",
           "cites": "//        B4-B7 x------- Pan left [OPNA]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0xB4..0xB7",
+            "line": "//        B4-B7 x------- Pan left [OPNA]"
+          }
+        ],
+        "digest": "a73b25d54fa3da7a5e92a9bf424a422ed735b6877b34141145e8c72eacaf9784"
+      }
     },
     {
       "key": "0xFF",
@@ -612,7 +975,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::read_data register 0xFF",
           "cites": "\t\t// FF: ID code"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::read_data register 0xFF",
+            "line": "\t\t// FF: ID code"
+          }
+        ],
+        "digest": "195242477af94031864b545c174b3de52db792610d29e1d8342ef15ed966f892"
+      }
     },
     {
       "key": "0x100",
@@ -627,7 +1001,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x100",
           "cites": "//           00 x------- Start of synthesis/analysis"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x100",
+            "line": "//           00 x------- Start of synthesis/analysis"
+          }
+        ],
+        "digest": "6e5bf16ccec8beceb674277b2887ab84a9110055a853046595367414ee5f68cf"
+      }
     },
     {
       "key": "0x101",
@@ -642,7 +1027,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x101",
           "cites": "//           01 x------- Pan left"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x101",
+            "line": "//           01 x------- Pan left"
+          }
+        ],
+        "digest": "d8b8dd834261f507a082f607520fbecd31dcf7900f6a08ad57e3e13260ab5d4f"
+      }
     },
     {
       "key": "0x102..0x103",
@@ -657,7 +1053,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x102..0x103",
           "cites": "//           02 xxxxxxxx Start address (low)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x102..0x103",
+            "line": "//           02 xxxxxxxx Start address (low)"
+          }
+        ],
+        "digest": "224e6e528fecd8f0ffb50d1e238eb0b18b7f4fc902ebc6aa65c2a92639b6f870"
+      }
     },
     {
       "key": "0x104..0x105",
@@ -687,7 +1094,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x106..0x107",
           "cites": "//           06 xxxxxxxx Prescale value (low)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x106..0x107",
+            "line": "//           06 xxxxxxxx Prescale value (low)"
+          }
+        ],
+        "digest": "3d5503106eb8985827b8c1eca8b02fb13e5856b1d7bab38e92d83e146f1eeeb8"
+      }
     },
     {
       "key": "0x108",
@@ -702,7 +1120,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_b_channel::read ym2608 register 0x108",
           "cites": "\tif (regnum == 0x08 && !m_regs.execute() && !m_regs.record() && m_regs.external())"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_b_channel::read ym2608 register 0x108",
+            "line": "\tif (regnum == 0x08 && !m_regs.execute() && !m_regs.record() && m_regs.external())"
+          }
+        ],
+        "digest": "c310df05cace3667b3045e055ca193d1be832a69544382fe0567c33f63913143"
+      }
     },
     {
       "key": "0x108",
@@ -717,7 +1146,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_b_channel::write ym2608 register 0x108",
           "cites": "\telse if (regnum == 0x08)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp adpcm_b_channel::write ym2608 register 0x108",
+            "line": "\telse if (regnum == 0x08)"
+          }
+        ],
+        "digest": "dec669fb3dce740bce90f842ceceb34f57bea96a9d9996f15adafea119909406"
+      }
     },
     {
       "key": "0x109..0x10A",
@@ -732,7 +1172,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x109..0x10A",
           "cites": "//           09 xxxxxxxx Delta-N frequency scale (low)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x109..0x10A",
+            "line": "//           09 xxxxxxxx Delta-N frequency scale (low)"
+          }
+        ],
+        "digest": "4de3f9a38ecd510ab472adb46e7d4d082e263e41e913d79d27633c6eaee9a977"
+      }
     },
     {
       "key": "0x10B",
@@ -747,7 +1198,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10B",
           "cites": "//           0b xxxxxxxx Level control"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10B",
+            "line": "//           0b xxxxxxxx Level control"
+          }
+        ],
+        "digest": "97249a8845b05199cb8d7bd48c01ab3d44b14ef51ce484176bc154bbf388a5ed"
+      }
     },
     {
       "key": "0x10C..0x10D",
@@ -762,7 +1224,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10C..0x10D",
           "cites": "//           0c xxxxxxxx Limit address (low)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10C..0x10D",
+            "line": "//           0c xxxxxxxx Limit address (low)"
+          }
+        ],
+        "digest": "fb8e2449f32985c00cb66afd2de2fd2d0c73afa2789d1fb2fe805fe381d6ce20"
+      }
     },
     {
       "key": "0x10E..0x10F",
@@ -777,7 +1250,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10E..0x10F",
           "cites": "//           0e xxxxxxxx DAC data [YM2608/10]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h adpcm_b_registers ym2608 register 0x10E..0x10F",
+            "line": "//           0e xxxxxxxx DAC data [YM2608/10]"
+          }
+        ],
+        "digest": "badadbf01e91bc1e3513ac35df00e283434a0f17a5227d5d2bd3b927b897ff2a"
+      }
     },
     {
       "key": "0x110",
@@ -792,7 +1276,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data_hi register 0x110",
           "cites": "\t\t// 110: IRQ flag control"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2608::write_data_hi register 0x110",
+            "line": "\t\t// 110: IRQ flag control"
+          }
+        ],
+        "digest": "03f525530442eda7df1729d328e25ae67b560c98495d811c3edfffadf3102c38"
+      }
     },
     {
       "key": "0x130..0x13F",
@@ -807,7 +1302,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x130..0x13F",
           "cites": "//        30-3F -xxx---- Detune value (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x130..0x13F",
+            "line": "//        30-3F -xxx---- Detune value (0-7)"
+          }
+        ],
+        "digest": "18fc84857ff9c57055871826e9eae0431afeba1364c66aebbe168f307501ba52"
+      }
     },
     {
       "key": "0x140..0x14F",
@@ -822,7 +1328,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x140..0x14F",
           "cites": "//        40-4F -xxxxxxx Total level (0-127)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x140..0x14F",
+            "line": "//        40-4F -xxxxxxx Total level (0-127)"
+          }
+        ],
+        "digest": "7c9e8339ddbe01217d4efd1136deb332248783f2b96ca16504ecfaf6a7ff8218"
+      }
     },
     {
       "key": "0x150..0x15F",
@@ -837,7 +1354,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x150..0x15F",
           "cites": "//        50-5F xx------ Key scale rate (0-3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x150..0x15F",
+            "line": "//        50-5F xx------ Key scale rate (0-3)"
+          }
+        ],
+        "digest": "dbe355f681f1b7f462acf770ed0171d55b2651d12b1b9b581e9d3d99a2d000ce"
+      }
     },
     {
       "key": "0x160..0x16F",
@@ -867,7 +1395,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x170..0x17F",
           "cites": "//        70-7F ---xxxxx Sustain rate (0-31)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x170..0x17F",
+            "line": "//        70-7F ---xxxxx Sustain rate (0-31)"
+          }
+        ],
+        "digest": "a5e438e9a0e233f30981af09bb8db6d353c8cbdbba54657525a672834ae3526b"
+      }
     },
     {
       "key": "0x180..0x18F",
@@ -882,7 +1421,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x180..0x18F",
           "cites": "//        80-8F xxxx---- Sustain level (0-15)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x180..0x18F",
+            "line": "//        80-8F xxxx---- Sustain level (0-15)"
+          }
+        ],
+        "digest": "62a7c3b01398ea3bd8937d3bdef2c4b4d95bd49e355bab4a46ca6fe8947b94bf"
+      }
     },
     {
       "key": "0x190..0x19F",
@@ -899,7 +1449,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x190..0x19F",
           "cites": "//        90-9F ----x--- SSG-EG enable"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x190..0x19F",
+            "line": "//        90-9F ----x--- SSG-EG enable"
+          }
+        ],
+        "digest": "8b6f83ee03a5635a26fc15339d4ec0769460c50792abe9d66fb8ff485a0ffb9b"
+      }
     },
     {
       "key": "0x1A0..0x1A3",
@@ -914,7 +1475,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1A0..0x1A3",
           "cites": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1A0..0x1A3",
+            "line": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
+          }
+        ],
+        "digest": "2103869a792ca9b99345a6fe4a4cbd109269f9c783170644ae35341c43304e1d"
+      }
     },
     {
       "key": "0x1A4..0x1A7",
@@ -944,7 +1516,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1B0..0x1B3",
           "cites": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1B0..0x1B3",
+            "line": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
+          }
+        ],
+        "digest": "324627d3eb3116df5b6be5ba3e5cdebd854bc14572afc440d8c91da629e457a9"
+      }
     },
     {
       "key": "0x1B4..0x1B7",
@@ -961,7 +1544,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1B4..0x1B7",
           "cites": "//        B4-B7 x------- Pan left [OPNA]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2608 register 0x1B4..0x1B7",
+            "line": "//        B4-B7 x------- Pan left [OPNA]"
+          }
+        ],
+        "digest": "75ab731a67bd596a1dc8b0d71125b64977c89c025b7ab9d616883de42b225582"
+      }
     }
   ]
 }

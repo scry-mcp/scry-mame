@@ -57,7 +57,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x02",
           "cites": "\tcase REG_WR2_INT_VECTOR:        do_sccreg_wr2(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x02",
+            "line": "\tcase REG_WR2_INT_VECTOR:        do_sccreg_wr2(data); break;"
+          }
+        ],
+        "digest": "6070916542d4b54bb988ca2d5753ba023c2aab8a989b4a4f818680d378f38a6a"
+      }
     },
     {
       "key": "0x03",
@@ -74,7 +85,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x03",
           "cites": "\tcase REG_WR3_RX_CONTROL:        do_sccreg_wr3(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x03",
+            "line": "\tcase REG_WR3_RX_CONTROL:        do_sccreg_wr3(data); break;"
+          }
+        ],
+        "digest": "977580ecb9370c0db1bf87736442871872152fbd4bc8f0347b99d5d746705882"
+      }
     },
     {
       "key": "0x04",
@@ -91,7 +113,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x04",
           "cites": "\tcase REG_WR4_RX_TX_MODES:       do_sccreg_wr4(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x04",
+            "line": "\tcase REG_WR4_RX_TX_MODES:       do_sccreg_wr4(data); break;"
+          }
+        ],
+        "digest": "2b205192f08d4328525d1dbdf3c9ffba28e68ccd27e38ce0b352669b2eb44d59"
+      }
     },
     {
       "key": "0x05",
@@ -125,7 +158,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x06",
           "cites": "\tcase REG_WR6_SYNC_OR_SDLC_A:    do_sccreg_wr6(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x06",
+            "line": "\tcase REG_WR6_SYNC_OR_SDLC_A:    do_sccreg_wr6(data); break;"
+          }
+        ],
+        "digest": "74bbd8d2703c714ffdc875b85724962e1501155ec2c6369c0f3277f8f094c45d"
+      }
     },
     {
       "key": "0x07",
@@ -142,7 +186,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x07",
           "cites": "\tcase REG_WR7_SYNC_OR_SDLC_F:    do_sccreg_wr7(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x07",
+            "line": "\tcase REG_WR7_SYNC_OR_SDLC_F:    do_sccreg_wr7(data); break;"
+          }
+        ],
+        "digest": "48f386f5cab2dc7e7bcd505af61cd9126ad4e1ca3ad00eed31be37ce90fa5089"
+      }
     },
     {
       "key": "0x08",
@@ -159,7 +214,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x08",
           "cites": "\tcase REG_WR8_TRANSMIT_DATA:     do_sccreg_wr8(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x08",
+            "line": "\tcase REG_WR8_TRANSMIT_DATA:     do_sccreg_wr8(data); break;"
+          }
+        ],
+        "digest": "d87d1c4fa2437c7539e0fbff469cbee0834f856b28485541ede84156f4e209ff"
+      }
     },
     {
       "key": "0x09",
@@ -177,7 +243,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x09",
           "cites": "\tcase REG_WR9_MASTER_INT_CTRL:   do_sccreg_wr9(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x09",
+            "line": "\tcase REG_WR9_MASTER_INT_CTRL:   do_sccreg_wr9(data); break;"
+          }
+        ],
+        "digest": "064a8d6a93e6820e12d79c314f39c183bdd5b9ee5feec20e69458db1a8806c0e"
+      }
     },
     {
       "key": "0x0A",
@@ -194,7 +271,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0A",
           "cites": "\tcase REG_WR10_MSC_RX_TX_CTRL:   do_sccreg_wr10(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0A",
+            "line": "\tcase REG_WR10_MSC_RX_TX_CTRL:   do_sccreg_wr10(data); break;"
+          }
+        ],
+        "digest": "b9f25f85ad73ad26d657b90f40f9cac2401f9a4c66d28b2b4fd29ce7b91820e9"
+      }
     },
     {
       "key": "0x0B",
@@ -211,7 +299,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0B",
           "cites": "\tcase REG_WR11_CLOCK_MODES:      do_sccreg_wr11(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0B",
+            "line": "\tcase REG_WR11_CLOCK_MODES:      do_sccreg_wr11(data); break;"
+          }
+        ],
+        "digest": "5c3423210793584a2c20db43a79a956562283d9cb8635d2f58880b4443876e97"
+      }
     },
     {
       "key": "0x0C",
@@ -228,7 +327,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0C",
           "cites": "\tcase REG_WR12_LO_BAUD_GEN:      do_sccreg_wr12(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0C",
+            "line": "\tcase REG_WR12_LO_BAUD_GEN:      do_sccreg_wr12(data); break;"
+          }
+        ],
+        "digest": "9460757471cc85bb1da827219de1a7c24ddc15a73f51fb7c4fed77d3e7b4c95c"
+      }
     },
     {
       "key": "0x0D",
@@ -245,7 +355,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0D",
           "cites": "\tcase REG_WR13_HI_BAUD_GEN:      do_sccreg_wr13(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0D",
+            "line": "\tcase REG_WR13_HI_BAUD_GEN:      do_sccreg_wr13(data); break;"
+          }
+        ],
+        "digest": "1843740fab9f481d4ec4b434be478f68752f8b39614d25656fc9fe17a9b69399"
+      }
     },
     {
       "key": "0x0E",
@@ -263,7 +384,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0E",
           "cites": "\tcase REG_WR14_MISC_CTRL:        do_sccreg_wr14(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0E",
+            "line": "\tcase REG_WR14_MISC_CTRL:        do_sccreg_wr14(data); break;"
+          }
+        ],
+        "digest": "8ccaa08cbaae07525872a324dfe6802955274a0eb3b71143edd1356d5a2359e9"
+      }
     },
     {
       "key": "0x0F",
@@ -280,7 +412,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0F",
           "cites": "\tcase REG_WR15_EXT_ST_INT_CTRL:  do_sccreg_wr15(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_write register 0x0F",
+            "line": "\tcase REG_WR15_EXT_ST_INT_CTRL:  do_sccreg_wr15(data); break;"
+          }
+        ],
+        "digest": "0692606f4d0276e0d185b4672e6b607c81be8a49df0e9c279a36e4d051178954"
+      }
     },
     {
       "key": "0x10",
@@ -333,7 +476,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x01",
           "cites": "\tcase REG_RR1_SPEC_RCV_COND:  data = do_sccreg_rr1(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x01",
+            "line": "\tcase REG_RR1_SPEC_RCV_COND:  data = do_sccreg_rr1(); break;"
+          }
+        ],
+        "digest": "7c8deca6694a4742b05bbac2318033113e5e7f49e849cf0fcfd709fcf9f520c4"
+      }
     },
     {
       "key": "0x02",
@@ -384,7 +538,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x04",
           "cites": "\tcase REG_RR4_WR4_OR_RR0:     data = wreg ? m_wr4 : do_sccreg_rr4(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x04",
+            "line": "\tcase REG_RR4_WR4_OR_RR0:     data = wreg ? m_wr4 : do_sccreg_rr4(); break;"
+          }
+        ],
+        "digest": "8570e5cff4748a05072f2302609e58ab14db623a3aae311bf772479bb6c03116"
+      }
     },
     {
       "key": "0x05",
@@ -401,7 +566,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x05",
           "cites": "\tcase REG_RR5_WR5_OR_RR0:     data = wreg ? m_wr5 : do_sccreg_rr5(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x05",
+            "line": "\tcase REG_RR5_WR5_OR_RR0:     data = wreg ? m_wr5 : do_sccreg_rr5(); break;"
+          }
+        ],
+        "digest": "3dc282ea966b9303d7beaaa5ffc1593dee8bd5b7b5ee8bddf08ee0ce8da153c3"
+      }
     },
     {
       "key": "0x06",
@@ -418,7 +594,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x06",
           "cites": "\tcase REG_RR6_LSB_OR_RR2:     data = do_sccreg_rr6(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x06",
+            "line": "\tcase REG_RR6_LSB_OR_RR2:     data = do_sccreg_rr6(); break;"
+          }
+        ],
+        "digest": "80cd24a919ee834053c7344b3ef7c0a590a659d6e43aaa8c984a6027f0d1ced1"
+      }
     },
     {
       "key": "0x07",
@@ -435,7 +622,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x07",
           "cites": "\tcase REG_RR7_MSB_OR_RR3:     data = wreg ? m_wr7p : do_sccreg_rr7(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x07",
+            "line": "\tcase REG_RR7_MSB_OR_RR3:     data = wreg ? m_wr7p : do_sccreg_rr7(); break;"
+          }
+        ],
+        "digest": "2aa1ec97156882943c9a8666ebb9789c4855407bb2e637f6b9be8a5077f6031d"
+      }
     },
     {
       "key": "0x08",
@@ -469,7 +667,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x09",
           "cites": "\tcase REG_RR9_WR3_OR_RR13:    data = do_sccreg_rr9(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x09",
+            "line": "\tcase REG_RR9_WR3_OR_RR13:    data = do_sccreg_rr9(); break;"
+          }
+        ],
+        "digest": "94f60ba5b76f70be01e6342dddbb57db7f7654511bbbda499c2613987289bf6f"
+      }
     },
     {
       "key": "0x0A",
@@ -503,7 +712,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0B",
           "cites": "\tcase REG_RR11_WR10_OR_RR15:  data = do_sccreg_rr11(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0B",
+            "line": "\tcase REG_RR11_WR10_OR_RR15:  data = do_sccreg_rr11(); break;"
+          }
+        ],
+        "digest": "4ef32ff855e6b32330882124f87a7272de388e0ab70bc06d218292b010937f03"
+      }
     },
     {
       "key": "0x0C",
@@ -520,7 +740,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0C",
           "cites": "\tcase REG_RR12_LO_TIME_CONST: data = do_sccreg_rr12(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0C",
+            "line": "\tcase REG_RR12_LO_TIME_CONST: data = do_sccreg_rr12(); break;"
+          }
+        ],
+        "digest": "1e45461317b8d2519df6cc6e00820828d76e901f5db04b563c22af59375b60d3"
+      }
     },
     {
       "key": "0x0D",
@@ -537,7 +768,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0D",
           "cites": "\tcase REG_RR13_HI_TIME_CONST: data = do_sccreg_rr13(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0D",
+            "line": "\tcase REG_RR13_HI_TIME_CONST: data = do_sccreg_rr13(); break;"
+          }
+        ],
+        "digest": "6f4168f49156e8fc2f5dd6d985e60d611c08b18f542fc6660462ad1641d4f9cb"
+      }
     },
     {
       "key": "0x0E",
@@ -554,7 +796,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0E",
           "cites": "\tcase REG_RR14_WR7_OR_R10:    data = do_sccreg_rr14(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0E",
+            "line": "\tcase REG_RR14_WR7_OR_R10:    data = do_sccreg_rr14(); break;"
+          }
+        ],
+        "digest": "c7dc343265eb1972d54be8851a036187f1306a6f4cf47f35cde3c3afae546fa5"
+      }
     },
     {
       "key": "0x0F",
@@ -571,7 +824,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0F",
           "cites": "\tcase REG_RR15_WR15_EXT_STAT: data = do_sccreg_rr15(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::scc_register_read register 0x0F",
+            "line": "\tcase REG_RR15_WR15_EXT_STAT: data = do_sccreg_rr15(); break;"
+          }
+        ],
+        "digest": "111166c9fd04ee1ffa486c0467d0470e3fe8798dec636f8630a0f1aeb05177e7"
+      }
     }
   ]
 }

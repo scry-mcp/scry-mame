@@ -21,7 +21,18 @@
           "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::status_r",
           "cites": "uint8_t acia6850_device::status_r()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::status_r",
+            "line": "uint8_t acia6850_device::status_r()"
+          }
+        ],
+        "digest": "e1b505889a29fdbb813480726e5feaf38b451d88c4dacd357120bb74f28d049d"
+      }
     },
     {
       "key": "0x00",
@@ -55,7 +66,18 @@
           "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_r",
           "cites": "uint8_t acia6850_device::data_r()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_r",
+            "line": "uint8_t acia6850_device::data_r()"
+          }
+        ],
+        "digest": "9ee40ba2f1722643fc85e0c6681ae51491f9341b20ddd682f427746fd8f96f49"
+      }
     },
     {
       "key": "0x01",
@@ -72,7 +94,18 @@
           "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_w",
           "cites": "void acia6850_device::data_w(uint8_t data)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6850acia.cpp acia6850_device::data_w",
+            "line": "void acia6850_device::data_w(uint8_t data)"
+          }
+        ],
+        "digest": "5315c2c310c385c05454a79795b5cdbb51a16908e0642b5f176f983ee05ee610"
+      }
     }
   ]
 }

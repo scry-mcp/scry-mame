@@ -66,7 +66,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_device::z80scc_device",
           "cites": "z80scc_device::z80scc_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, uint32_t variant)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_device::z80scc_device",
+            "line": "z80scc_device::z80scc_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, uint32_t variant)"
+          }
+        ],
+        "digest": "30b2f6bd6b78fdbba11a7b7695cf5613a29aab59abee6a092ec7502e42cc63f2"
+      }
     }
   ],
   "left_out": [

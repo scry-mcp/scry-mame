@@ -22,7 +22,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_read register 0x00 read",
           "cites": "\tcase REG_RR0_STATUS:         data = do_sioreg_rr0(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_read register 0x00 read",
+            "line": "\tcase REG_RR0_STATUS:         data = do_sioreg_rr0(); break;"
+          }
+        ],
+        "digest": "3ee53781b0f2d2711ae02b579b77072a3a6debb92461b7c13f98e650904fc71e"
+      }
     },
     {
       "key": "0x01",
@@ -57,7 +68,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_read register 0x02 read",
           "cites": "\tcase REG_RR2_INTERRUPT_VECT: data = do_sioreg_rr2(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_read register 0x02 read",
+            "line": "\tcase REG_RR2_INTERRUPT_VECT: data = do_sioreg_rr2(); break;"
+          }
+        ],
+        "digest": "32e6da7d9310966ede2789182bf5ae207b8391246970f3f0c1ebe37bfcbb8f81"
+      }
     },
     {
       "key": "0x00",
@@ -75,7 +97,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x00 write",
           "cites": "\tcase REG_WR0_COMMAND_REGPT:     do_sioreg_wr0(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x00 write",
+            "line": "\tcase REG_WR0_COMMAND_REGPT:     do_sioreg_wr0(data); break;"
+          }
+        ],
+        "digest": "c304a250b1dd8d5fb30e7d29a7963d05c93672250ee82396c13f2ca04908b4c7"
+      }
     },
     {
       "key": "0x01",
@@ -92,7 +125,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x01 write",
           "cites": "\tcase REG_WR1_INT_DMA_ENABLE:    do_sioreg_wr1(data); m_uart->check_interrupts(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x01 write",
+            "line": "\tcase REG_WR1_INT_DMA_ENABLE:    do_sioreg_wr1(data); m_uart->check_interrupts(); break;"
+          }
+        ],
+        "digest": "fd833bb0f92210dd52bc951af54ae15a30b1b1d6bb184d137faf91885caf31e8"
+      }
     },
     {
       "key": "0x02",
@@ -109,7 +153,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x02 write",
           "cites": "\tcase REG_WR2_INT_VECTOR:        do_sioreg_wr2(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x02 write",
+            "line": "\tcase REG_WR2_INT_VECTOR:        do_sioreg_wr2(data); break;"
+          }
+        ],
+        "digest": "07494c74a6993fa7f39ed03aadf106a1ba34a119119da5b7ed053e500916c9cb"
+      }
     },
     {
       "key": "0x03",
@@ -126,7 +181,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x03 write",
           "cites": "\tcase REG_WR3_RX_CONTROL:        do_sioreg_wr3(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x03 write",
+            "line": "\tcase REG_WR3_RX_CONTROL:        do_sioreg_wr3(data); break;"
+          }
+        ],
+        "digest": "33badaa1c98507b13e50b57cc7cafdf5b31f1d34135706e4edf5974f24c7ac7a"
+      }
     },
     {
       "key": "0x04",
@@ -143,7 +209,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x04 write",
           "cites": "\tcase REG_WR4_RX_TX_MODES:       do_sioreg_wr4(data); update_dtr_rts_break(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x04 write",
+            "line": "\tcase REG_WR4_RX_TX_MODES:       do_sioreg_wr4(data); update_dtr_rts_break(); break;"
+          }
+        ],
+        "digest": "c9ce8a0eb703013ef79ebaf85b640d8363ba209962018c384d1b690831585b5d"
+      }
     },
     {
       "key": "0x05",
@@ -160,7 +237,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x05 write",
           "cites": "\tcase REG_WR5_TX_CONTROL:        do_sioreg_wr5(data); update_dtr_rts_break(); transmit_enable(); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x05 write",
+            "line": "\tcase REG_WR5_TX_CONTROL:        do_sioreg_wr5(data); update_dtr_rts_break(); transmit_enable(); break;"
+          }
+        ],
+        "digest": "a259bc353753e52de972c7fb4f89f84726ea3b3d83d9f168c2784ac080a86bc9"
+      }
     },
     {
       "key": "0x06",
@@ -178,7 +266,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x06 write",
           "cites": "\tcase REG_WR6_SYNC_OR_SDLC_A:    do_sioreg_wr6(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x06 write",
+            "line": "\tcase REG_WR6_SYNC_OR_SDLC_A:    do_sioreg_wr6(data); break;"
+          }
+        ],
+        "digest": "306564be975650a728841be74ce5426b278cea4725b2536aefcdbeb4171acbf8"
+      }
     },
     {
       "key": "0x07",
@@ -196,7 +295,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x07 write",
           "cites": "\tcase REG_WR7_SYNC_OR_SDLC_F:    do_sioreg_wr7(data); break;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::control_write register 0x07 write",
+            "line": "\tcase REG_WR7_SYNC_OR_SDLC_F:    do_sioreg_wr7(data); break;"
+          }
+        ],
+        "digest": "39d394f69364dbe3fda5cdfa1d4bb7570e5941757e63215fcf8533af5b0c07c2"
+      }
     }
   ]
 }

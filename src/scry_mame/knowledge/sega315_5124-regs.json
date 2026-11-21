@@ -73,7 +73,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::tile1_select_mode4 register 0x03",
           "cites": "\treturn tile_number & ((m_reg[0x03] << 1) | 1);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::tile1_select_mode4 register 0x03",
+            "line": "\treturn tile_number & ((m_reg[0x03] << 1) | 1);"
+          }
+        ],
+        "digest": "3bbe70d8e467f19c790b566a200c315d071c4275c1bd2c2e5f7b66944afe703d"
+      }
     },
     {
       "key": "0x104",
@@ -143,7 +154,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp header register 0x07",
           "cites": "#define BACKDROP_COLOR        ((m_vdp_mode == 4 ? 0x10 : 0x00) + (m_reg[0x07] & 0x0f))"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp header register 0x07",
+            "line": "#define BACKDROP_COLOR        ((m_vdp_mode == 4 ? 0x10 : 0x00) + (m_reg[0x07] & 0x0f))"
+          }
+        ],
+        "digest": "6b2c781e87dc6a6148f71c6c6b068ac9638a237310129a57c72fc3b7d5aa11cb"
+      }
     },
     {
       "key": "0x108",
@@ -160,7 +182,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x08",
           "cites": "\tm_reg8copy = m_reg[0x08];"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x08",
+            "line": "\tm_reg8copy = m_reg[0x08];"
+          }
+        ],
+        "digest": "5c53acbcfb5f09ce82ef7aee243be8ff04c06ebb517db06c21461dc3bb714ce9"
+      }
     },
     {
       "key": "0x109",
@@ -177,7 +210,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x09",
           "cites": "\t\t\tm_reg9copy = m_reg[0x09];"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x09",
+            "line": "\t\t\tm_reg9copy = m_reg[0x09];"
+          }
+        ],
+        "digest": "0ec3ed07f654fc7cc3533b14150c86c9d09f7d1db5f7771cfc272b692a8f9538"
+      }
     },
     {
       "key": "0x10A",
@@ -195,7 +239,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x0A",
           "cites": "\t\tif (m_line_counter == 0x00)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::process_line_timer register 0x0A",
+            "line": "\t\tif (m_line_counter == 0x00)"
+          }
+        ],
+        "digest": "9a277a507caaa97831379d09f26b5d72d07481f3226a649076037d5ef466361c"
+      }
     },
     {
       "key": "0x10B..0x10F",
@@ -212,7 +267,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write register 0x0B",
           "cites": "\t\t\treg_num = data & m_reg_num_mask;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_write register 0x0B",
+            "line": "\t\t\treg_num = data & m_reg_num_mask;"
+          }
+        ],
+        "digest": "c619782edbd71521526c89f9a04b0c615725f111fd22dca9daf8bd657c13fd04"
+      }
     }
   ]
 }

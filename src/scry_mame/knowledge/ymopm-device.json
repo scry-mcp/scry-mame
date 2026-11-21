@@ -40,7 +40,18 @@
           "ref": "mame:src/devices/sound/ymopm.cpp DEFINE_DEVICE_TYPE ym2151",
           "cites": "DEFINE_DEVICE_TYPE(YM2151, ym2151_device, \"ym2151\", \"YM2151 OPM\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ymopm.cpp DEFINE_DEVICE_TYPE ym2151",
+            "line": "DEFINE_DEVICE_TYPE(YM2151, ym2151_device, \"ym2151\", \"YM2151 OPM\")"
+          }
+        ],
+        "digest": "0f6b1b09a2d52fc11509a685cb6b6879a676c8c2141fde69d00c91aa4e4368bb"
+      }
     }
   ]
 }

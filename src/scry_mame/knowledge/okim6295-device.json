@@ -30,7 +30,18 @@
           "ref": "mame:src/devices/sound/okim6295.cpp DEFINE_DEVICE_TYPE okim6295",
           "cites": "DEFINE_DEVICE_TYPE(OKIM6295, okim6295_device, \"okim6295\", \"OKI MSM6295 ADPCM\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/okim6295.cpp DEFINE_DEVICE_TYPE okim6295",
+            "line": "DEFINE_DEVICE_TYPE(OKIM6295, okim6295_device, \"okim6295\", \"OKI MSM6295 ADPCM\")"
+          }
+        ],
+        "digest": "641c05df34d7639034ad71f6627f0c8e08f2f52db9262e87115292c5ca4767f1"
+      }
     }
   ]
 }

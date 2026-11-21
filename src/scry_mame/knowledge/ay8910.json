@@ -37,7 +37,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x00..0x05",
           "cites": "\t\tcase AY_AFINE:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x00..0x05",
+            "line": "\t\tcase AY_AFINE:"
+          }
+        ],
+        "digest": "04260ccdf5e89c79df70b4609dde8c74be0c71fccd6af7e2e9817e192fbf9661"
+      }
     },
     {
       "key": "0x06",
@@ -50,7 +61,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x06",
           "cites": "\t\tcase AY_NOISEPER:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x06",
+            "line": "\t\tcase AY_NOISEPER:"
+          }
+        ],
+        "digest": "71da8aace2a883c1809fc3eb0ad5de4ee0ce1412d3c85bdffa5f2ae3bf0f2788"
+      }
     },
     {
       "key": "0x07",
@@ -68,7 +90,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x07 write",
           "cites": "\t\tcase AY_ENABLE:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x07 write",
+            "line": "\t\tcase AY_ENABLE:"
+          }
+        ],
+        "digest": "e179501190153e8fc6b5aef736a68fa7ea21043ca2e8b7846b6a2df95d0a715e"
+      }
     },
     {
       "key": "0x07",
@@ -82,7 +115,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x07 read",
           "cites": "\telse return m_regs[r];"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x07 read",
+            "line": "\telse return m_regs[r];"
+          }
+        ],
+        "digest": "7bb4a7c24496a48bb4a23d44b8444dd9f1ee45444a128e97abf2c0f95ce782e0"
+      }
     },
     {
       "key": "0x08..0x0A",
@@ -98,7 +142,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x08..0x0A",
           "cites": "\t\tcase AY_AVOL:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x08..0x0A",
+            "line": "\t\tcase AY_AVOL:"
+          }
+        ],
+        "digest": "00fb49f96d53aec630df4ed6fd859da5ffd36108edac63a7474a6b320c344c94"
+      }
     },
     {
       "key": "0x0B..0x0C",
@@ -114,7 +169,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0B..0x0C",
           "cites": "\t\tcase AY_EACOARSE:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0B..0x0C",
+            "line": "\t\tcase AY_EACOARSE:"
+          }
+        ],
+        "digest": "7b588d3e5ff7e8410fbed8c69a4a83fd0f860546c5110c7e17937f7068fa32c6"
+      }
     },
     {
       "key": "0x0D",
@@ -131,7 +197,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0D write",
           "cites": "\t\tcase AY_EASHAPE:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0D write",
+            "line": "\t\tcase AY_EASHAPE:"
+          }
+        ],
+        "digest": "e46f0268a4d5a788f78b08b743b5b23fab9e236b9a7868d857bd989adee6d1b0"
+      }
     },
     {
       "key": "0x0D",
@@ -145,7 +222,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0D read",
           "cites": "\t\t\t0xff,0x0f,0xff,0x0f,0xff,0x0f,0x1f,0xff,0x1f,0x1f,0x1f,0xff,0xff,0x0f,0xff,0xff"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0D read",
+            "line": "\t\t\t0xff,0x0f,0xff,0x0f,0xff,0x0f,0x1f,0xff,0x1f,0x1f,0x1f,0xff,0xff,0x0f,0xff,0xff"
+          }
+        ],
+        "digest": "a22b31afcff29f86bcf07adaa46a125dd08acf46948ac937602ca90ceb0b52a4"
+      }
     },
     {
       "key": "0x0E",
@@ -162,7 +250,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0E write",
           "cites": "\t\tcase AY_PORTA:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0E write",
+            "line": "\t\tcase AY_PORTA:"
+          }
+        ],
+        "digest": "f07fa7f56655d453acd8f8d6b8e8aa078e58190c8af605a12765d9cee1ed2553"
+      }
     },
     {
       "key": "0x0E",
@@ -176,7 +275,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0E read",
           "cites": "\tcase AY_PORTA:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0E read",
+            "line": "\tcase AY_PORTA:"
+          }
+        ],
+        "digest": "5e5093a83bb1b41ce9368928ef63ad406b5294727684fe1f5a72a9561a5ef258"
+      }
     },
     {
       "key": "0x0F",
@@ -193,7 +303,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0F write",
           "cites": "\t\tcase AY_PORTB:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_write_reg register 0x0F write",
+            "line": "\t\tcase AY_PORTB:"
+          }
+        ],
+        "digest": "7d6450f14e6e5f871ee432f6b4b1aa7e0c5dd0f550bb8117107f5b5c5e5da801"
+      }
     },
     {
       "key": "0x0F",
@@ -207,7 +328,18 @@
           "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0F read",
           "cites": "\tcase AY_PORTB:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ay8910.cpp ay8910_device::ay8910_read_ym register 0x0F read",
+            "line": "\tcase AY_PORTB:"
+          }
+        ],
+        "digest": "d471b528269e8cf75027aee6616a4ee6f8988a1783e5d4a0b61760226895cdef"
+      }
     }
   ]
 }

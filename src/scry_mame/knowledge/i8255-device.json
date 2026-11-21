@@ -45,7 +45,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp DEFINE_DEVICE_TYPE i8255",
           "cites": "DEFINE_DEVICE_TYPE(I8255, i8255_device, \"i8255\", \"Intel 8255 PPI\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp DEFINE_DEVICE_TYPE i8255",
+            "line": "DEFINE_DEVICE_TYPE(I8255, i8255_device, \"i8255\", \"Intel 8255 PPI\")"
+          }
+        ],
+        "digest": "b1796781523a27c1f8634905d44440fd28cb5b97bb5bb1d21e73f794f9e16a17"
+      }
     }
   ]
 }

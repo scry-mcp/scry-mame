@@ -26,7 +26,18 @@
           "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write stop",
           "cites": "\t\tint voicemask = command >> 3;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write stop",
+            "line": "\t\tint voicemask = command >> 3;"
+          }
+        ],
+        "digest": "9bb6591f7234a18e2df9b0d9b58808e982b7c03ce6f75c671a71be4974d733be"
+      }
     },
     {
       "key": "0x80..0xFF",
@@ -43,7 +54,18 @@
           "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write start",
           "cites": "\telse if (command & 0x80)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/okim6295.cpp okim6295_device::write start",
+            "line": "\telse if (command & 0x80)"
+          }
+        ],
+        "digest": "fb42da87f2667c55b9b23d4305e45ae954f19d5649b3100e26b67de546e62b95"
+      }
     }
   ]
 }

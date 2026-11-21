@@ -61,7 +61,18 @@
           "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::handle_dma_bits copy",
           "cites": "\telse if (MEGADRIVE_REG17_DMATYPE == 0x3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::handle_dma_bits copy",
+            "line": "\telse if (MEGADRIVE_REG17_DMATYPE == 0x3)"
+          }
+        ],
+        "digest": "09789ce51cbe63ebff19767b090e913c3d8d0f78d4373750b5383202b138f74b"
+      }
     }
   ]
 }

@@ -22,7 +22,18 @@
           "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI3",
           "cites": "\t\tVECTOR_SWI3         = 0xFFF2,"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI3",
+            "line": "\t\tVECTOR_SWI3         = 0xFFF2,"
+          }
+        ],
+        "digest": "0130ed3699bba24b488350e6e71335111d37d82268a055a8835439c74cf94dbc"
+      }
     },
     {
       "key": "0xFFF4",
@@ -40,7 +51,18 @@
           "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI2",
           "cites": "\t\tVECTOR_SWI2         = 0xFFF4,"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI2",
+            "line": "\t\tVECTOR_SWI2         = 0xFFF4,"
+          }
+        ],
+        "digest": "cdebbc41c3192b255c85f47fe6f8b915b7a4ad3b260d50219b4785f8a217743a"
+      }
     },
     {
       "key": "0xFFF6",
@@ -58,7 +80,18 @@
           "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_FIRQ",
           "cites": "\t\tVECTOR_FIRQ         = 0xFFF6,"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_FIRQ",
+            "line": "\t\tVECTOR_FIRQ         = 0xFFF6,"
+          }
+        ],
+        "digest": "3d7221a0efe63e7369716dded18a0661b3af7bb98e566a473043dab6a1467818"
+      }
     },
     {
       "key": "0xFFF8",
@@ -76,7 +109,18 @@
           "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_IRQ",
           "cites": "\t\tVECTOR_IRQ          = 0xFFF8,"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_IRQ",
+            "line": "\t\tVECTOR_IRQ          = 0xFFF8,"
+          }
+        ],
+        "digest": "b6f78a4374c8d114175ee72c899fc140726b91c7535945e396bf2774b6e50295"
+      }
     },
     {
       "key": "0xFFFA",
@@ -94,7 +138,18 @@
           "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI",
           "cites": "\t\tVECTOR_SWI          = 0xFFFA,"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI",
+            "line": "\t\tVECTOR_SWI          = 0xFFFA,"
+          }
+        ],
+        "digest": "f7e34f07b372b9db4b0c65530f96aa933dd0539f696eb59f8a83b044219ef49c"
+      }
     },
     {
       "key": "0xFFFC",
@@ -130,7 +185,18 @@
           "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_RESET_FFFE",
           "cites": "\t\tVECTOR_RESET_FFFE   = 0xFFFE"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_RESET_FFFE",
+            "line": "\t\tVECTOR_RESET_FFFE   = 0xFFFE"
+          }
+        ],
+        "digest": "55008ca60e9b3c631d0c253200138361b773e076e16e41a7abe81e22e4e3a848"
+      }
     }
   ]
 }

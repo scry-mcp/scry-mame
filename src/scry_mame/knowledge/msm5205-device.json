@@ -39,7 +39,18 @@
           "ref": "mame:src/devices/sound/msm5205.cpp DEFINE_DEVICE_TYPE msm5205",
           "cites": "DEFINE_DEVICE_TYPE(MSM5205, msm5205_device, \"msm5205\", \"OKI MSM5205 ADPCM\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.cpp DEFINE_DEVICE_TYPE msm5205",
+            "line": "DEFINE_DEVICE_TYPE(MSM5205, msm5205_device, \"msm5205\", \"OKI MSM5205 ADPCM\")"
+          }
+        ],
+        "digest": "02de6be735f3ba4f183a350214355785c2c7adb48d04e1e3d3a16864cb5ea0bf"
+      }
     }
   ]
 }

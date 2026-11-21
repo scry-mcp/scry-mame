@@ -30,7 +30,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 01",
           "cites": "//           01 xxxxxxxx Test register"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 01",
+            "line": "//           01 xxxxxxxx Test register"
+          }
+        ],
+        "digest": "9eb6ffb688691badb90f4dbb08e7dea9807672571a1a7f58ccaebe062431cade"
+      }
     },
     {
       "key": "0x02",
@@ -46,7 +57,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 02",
           "cites": "//           02 xxxxxxxx Timer A value (4 * OPN)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 02",
+            "line": "//           02 xxxxxxxx Timer A value (4 * OPN)"
+          }
+        ],
+        "digest": "eef35b5c63898a03e74fe2cb4cfcada33d9bdce14c67cd98ec2670097df831a5"
+      }
     },
     {
       "key": "0x03",
@@ -62,7 +84,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 03",
           "cites": "//           03 xxxxxxxx Timer B value"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 03",
+            "line": "//           03 xxxxxxxx Timer B value"
+          }
+        ],
+        "digest": "7baaea93bd2656ded75d034036b9d70a698444d5597efce80919e54a8539d21a"
+      }
     },
     {
       "key": "0x04",
@@ -78,7 +111,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 04",
           "cites": "//           04 x------- RST"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 04",
+            "line": "//           04 x------- RST"
+          }
+        ],
+        "digest": "223ea3729162eb69271b6041ef9299bd3e3b25f8e1cd70989562719bf4762905"
+      }
     },
     {
       "key": "0x08",
@@ -95,7 +139,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 08",
           "cites": "//           08 x------- CSM mode [OPL/OPL2 only]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 08",
+            "line": "//           08 x------- CSM mode [OPL/OPL2 only]"
+          }
+        ],
+        "digest": "d6dc62323152e8ef5968f9031e30f9760d2dda750ed37c40a3a7c2b3c9880357"
+      }
     },
     {
       "key": "0xBD",
@@ -111,7 +166,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 BD",
           "cites": "//           BD x------- AM depth"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 BD",
+            "line": "//           BD x------- AM depth"
+          }
+        ],
+        "digest": "ec500fedd346fccb7e8a1064d4962f78304e255e87ad341fff61dd525bb1dca5"
+      }
     },
     {
       "key": "0xA0..0xA8",
@@ -127,7 +193,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 A0-A8",
           "cites": "//        A0-A8 xxxxxxxx F-number (low 8 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 A0-A8",
+            "line": "//        A0-A8 xxxxxxxx F-number (low 8 bits)"
+          }
+        ],
+        "digest": "1d05bd2a558f5e846359ebaed2b220c02151df2aa4d048ea1be82f7934fe4172"
+      }
     },
     {
       "key": "0xB0..0xB8",
@@ -144,7 +221,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 B0-B8",
           "cites": "//        B0-B8 --x----- Key on"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 B0-B8",
+            "line": "//        B0-B8 --x----- Key on"
+          }
+        ],
+        "digest": "30fd5a84b64f3b2d7568f163443dd64d495598ff7611f147b1dd4794cb0d4beb"
+      }
     },
     {
       "key": "0xC0..0xC8",
@@ -161,7 +249,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 ch_feedback",
           "cites": "\tuint32_t ch_feedback(uint32_t choffs) const      { return byte(0xc0, 1, 3, choffs); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 ch_feedback",
+            "line": "\tuint32_t ch_feedback(uint32_t choffs) const      { return byte(0xc0, 1, 3, choffs); }"
+          }
+        ],
+        "digest": "26ab8f638b3dc533dad00422156692661f4df5a7b9bd5fe9dbe940c142a7efc9"
+      }
     },
     {
       "key": "0x20..0x35",
@@ -177,7 +276,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 20-35",
           "cites": "//        20-35 x------- AM enable"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 20-35",
+            "line": "//        20-35 x------- AM enable"
+          }
+        ],
+        "digest": "d64096a6314da516600eadcd46caa09697bd4ff47ad62bfe0096d9f2856f9666"
+      }
     },
     {
       "key": "0x40..0x55",
@@ -193,7 +303,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 40-55",
           "cites": "//        40-55 xx------ Key scale level (0-3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 40-55",
+            "line": "//        40-55 xx------ Key scale level (0-3)"
+          }
+        ],
+        "digest": "561a4a9f0fdb712db765216aa08e61447f1a60406975ada418b71b2ef5e34b10"
+      }
     },
     {
       "key": "0x60..0x75",
@@ -209,7 +330,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 60-75",
           "cites": "//        60-75 xxxx---- Attack rate (0-15)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 60-75",
+            "line": "//        60-75 xxxx---- Attack rate (0-15)"
+          }
+        ],
+        "digest": "4e0226afd810fdd4e48bef3f3451890bcaa7f9738ba834e4995184c1d3eb32a3"
+      }
     },
     {
       "key": "0x80..0x95",
@@ -225,7 +357,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 80-95",
           "cites": "//        80-95 xxxx---- Sustain level (0-15)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h opl_registers_base ym3526 80-95",
+            "line": "//        80-95 xxxx---- Sustain level (0-15)"
+          }
+        ],
+        "digest": "99a0b0b55657f9a1b3b76759b8dc0edbbc5aa54d85ca05c03beb7ffe68de4f4f"
+      }
     }
   ]
 }

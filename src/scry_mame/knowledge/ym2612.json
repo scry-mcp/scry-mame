@@ -64,7 +64,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x21",
           "cites": "\tuint32_t test() const                       { return byte(0x21, 0, 8); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x21",
+            "line": "\tuint32_t test() const                       { return byte(0x21, 0, 8); }"
+          }
+        ],
+        "digest": "2ad37d588e12f230ec1774adbfecae12d23cfef78bcbb6e90a95a06bb6a9d573"
+      }
     },
     {
       "key": "0x22",
@@ -96,7 +107,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x24",
           "cites": "//           24 xxxxxxxx Timer A value (upper 8 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x24",
+            "line": "//           24 xxxxxxxx Timer A value (upper 8 bits)"
+          }
+        ],
+        "digest": "3b3c7ff7da223ec4cd450eab48e5f1113fba4f03d61f0dcff88f7419d71b4682"
+      }
     },
     {
       "key": "0x25",
@@ -111,7 +133,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x25",
           "cites": "//           25 ------xx Timer A value (lower 2 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x25",
+            "line": "//           25 ------xx Timer A value (lower 2 bits)"
+          }
+        ],
+        "digest": "cc75991feacb644b052ff3488a55e16279a033f928d0572f6694275868e41b86"
+      }
     },
     {
       "key": "0x26",
@@ -126,7 +159,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x26",
           "cites": "//           26 xxxxxxxx Timer B value"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x26",
+            "line": "//           26 xxxxxxxx Timer B value"
+          }
+        ],
+        "digest": "8139fcce55fb8cc74b1e871ce243f8fa62a74e79935b3094946153beaecbeb4d"
+      }
     },
     {
       "key": "0x27",
@@ -143,7 +187,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x27",
           "cites": "//           27 xx------ CSM/Multi-frequency mode for channel #2"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x27",
+            "line": "//           27 xx------ CSM/Multi-frequency mode for channel #2"
+          }
+        ],
+        "digest": "28738079f3bb5b4ff5731c72b1306c5c3ee130dbcd9c1a0456f127dd702976c7"
+      }
     },
     {
       "key": "0x28",
@@ -160,7 +215,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x28",
           "cites": "//           28 x------- Key on/off operator 4"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x28",
+            "line": "//           28 x------- Key on/off operator 4"
+          }
+        ],
+        "digest": "24699078af2fe603a6778b1374a10920ba39ed4925ae8d89a20443cf53647683"
+      }
     },
     {
       "key": "0x2A",
@@ -175,7 +241,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2612::write_data register 0x2A",
           "cites": "\t\t// 2A: DAC data (most significant 8 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2612::write_data register 0x2A",
+            "line": "\t\t// 2A: DAC data (most significant 8 bits)"
+          }
+        ],
+        "digest": "1c81bd75dfa84e44902d74561829737747e308fb2d5a1e07e322123fceafe0ef"
+      }
     },
     {
       "key": "0x2B",
@@ -192,7 +269,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2612::write_data register 0x2B",
           "cites": "\t\t// 2B: DAC enable (bit 7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2612::write_data register 0x2B",
+            "line": "\t\t// 2B: DAC enable (bit 7)"
+          }
+        ],
+        "digest": "5453e79d04fd47836e687cc56be9fc670fdd94cdfb065d314b41bba9f5839186"
+      }
     },
     {
       "key": "0x2C",
@@ -207,7 +295,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2612::write_data register 0x2C",
           "cites": "\t\t// 2C: test/low DAC bit"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp ym2612::write_data register 0x2C",
+            "line": "\t\t// 2C: test/low DAC bit"
+          }
+        ],
+        "digest": "ce5b27273aa7fd7da59bedfc56fcc322bde68fbd256bf535ced642cf8f794cc2"
+      }
     },
     {
       "key": "0x30..0x3F",
@@ -222,7 +321,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x30..0x3F",
           "cites": "//        30-3F -xxx---- Detune value (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x30..0x3F",
+            "line": "//        30-3F -xxx---- Detune value (0-7)"
+          }
+        ],
+        "digest": "16df897142977b29ca3597e0af58f55301c7f67ad105a175352871859ed736fd"
+      }
     },
     {
       "key": "0x40..0x4F",
@@ -237,7 +347,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x40..0x4F",
           "cites": "//        40-4F -xxxxxxx Total level (0-127)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x40..0x4F",
+            "line": "//        40-4F -xxxxxxx Total level (0-127)"
+          }
+        ],
+        "digest": "183061b38f52a4f5843b3e57ebc4fbb9c36d8a949d43251b64f0e788231bcb7a"
+      }
     },
     {
       "key": "0x50..0x5F",
@@ -252,7 +373,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x50..0x5F",
           "cites": "//        50-5F xx------ Key scale rate (0-3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x50..0x5F",
+            "line": "//        50-5F xx------ Key scale rate (0-3)"
+          }
+        ],
+        "digest": "23ab4930c6dd5256cc23bdbe6f300f26587dcea9698bd204cabe126164356d21"
+      }
     },
     {
       "key": "0x60..0x6F",
@@ -267,7 +399,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x60..0x6F",
           "cites": "//        60-6F x------- LFO AM enable [OPNA]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x60..0x6F",
+            "line": "//        60-6F x------- LFO AM enable [OPNA]"
+          }
+        ],
+        "digest": "fadafcf062781a6386897205dbf21ec93a3837249a0a22bf071ea879f2d79e92"
+      }
     },
     {
       "key": "0x70..0x7F",
@@ -282,7 +425,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x70..0x7F",
           "cites": "//        70-7F ---xxxxx Sustain rate (0-31)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x70..0x7F",
+            "line": "//        70-7F ---xxxxx Sustain rate (0-31)"
+          }
+        ],
+        "digest": "6b1d562edf8c62b985bcd1a3dea07f4f799f83a56f4885aacabdf623f8d2614c"
+      }
     },
     {
       "key": "0x80..0x8F",
@@ -297,7 +451,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x80..0x8F",
           "cites": "//        80-8F xxxx---- Sustain level (0-15)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x80..0x8F",
+            "line": "//        80-8F xxxx---- Sustain level (0-15)"
+          }
+        ],
+        "digest": "0f5a15c240ed2b3035807000227ae7ea644e84baad9217bb5404244c39363e40"
+      }
     },
     {
       "key": "0x90..0x9F",
@@ -314,7 +479,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x90..0x9F",
           "cites": "//        90-9F ----x--- SSG-EG enable"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x90..0x9F",
+            "line": "//        90-9F ----x--- SSG-EG enable"
+          }
+        ],
+        "digest": "4109a948e4c907a3676f4f15b390c95e70e8dc08d0ae1714d9f83aa509f69cbb"
+      }
     },
     {
       "key": "0xA0..0xA3",
@@ -329,7 +505,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xA0..0xA3",
           "cites": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xA0..0xA3",
+            "line": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
+          }
+        ],
+        "digest": "a3312546a1daff1c38a3bcda2423fb5a38254c5dd141eb4558372759f30e646a"
+      }
     },
     {
       "key": "0xA4..0xA7",
@@ -359,7 +546,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xA8..0xAB",
           "cites": "//        A8-AB xxxxxxxx Frequency number lower 8 bits"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xA8..0xAB",
+            "line": "//        A8-AB xxxxxxxx Frequency number lower 8 bits"
+          }
+        ],
+        "digest": "eddd76e5fc24826437e526e9a61bd97def7dcc9c4103215576604a2cefabb322"
+      }
     },
     {
       "key": "0xAC..0xAF",
@@ -374,7 +572,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xAC..0xAF",
           "cites": "//        AC-AF --xxx--- Block (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xAC..0xAF",
+            "line": "//        AC-AF --xxx--- Block (0-7)"
+          }
+        ],
+        "digest": "fbb4efdc6488cffa1959deda9673bc868b683fcb6913b14f1bdeb93350d13f38"
+      }
     },
     {
       "key": "0xB0..0xB3",
@@ -389,7 +598,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xB0..0xB3",
           "cites": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xB0..0xB3",
+            "line": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
+          }
+        ],
+        "digest": "b7e4b982075f85f2c671812df2a7ad404a4a721e9e6a8d582cd1c9beb97043d2"
+      }
     },
     {
       "key": "0xB4..0xB7",
@@ -406,7 +626,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xB4..0xB7",
           "cites": "//        B4-B7 x------- Pan left [OPNA]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0xB4..0xB7",
+            "line": "//        B4-B7 x------- Pan left [OPNA]"
+          }
+        ],
+        "digest": "a0f421ccd82ac57555adce9704329d114d6bd84279aeb1632a2516f47affacda"
+      }
     },
     {
       "key": "0x130..0x13F",
@@ -421,7 +652,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x130..0x13F",
           "cites": "//        30-3F -xxx---- Detune value (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x130..0x13F",
+            "line": "//        30-3F -xxx---- Detune value (0-7)"
+          }
+        ],
+        "digest": "072a119b60ef4041d269862eb393203f9780dc0d8859616db6ef74b0fca83d16"
+      }
     },
     {
       "key": "0x140..0x14F",
@@ -436,7 +678,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x140..0x14F",
           "cites": "//        40-4F -xxxxxxx Total level (0-127)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x140..0x14F",
+            "line": "//        40-4F -xxxxxxx Total level (0-127)"
+          }
+        ],
+        "digest": "cc2854f5ffb20785788b92311714be8f76cef081188baee7e7f07586ebbc0cfb"
+      }
     },
     {
       "key": "0x150..0x15F",
@@ -451,7 +704,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x150..0x15F",
           "cites": "//        50-5F xx------ Key scale rate (0-3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x150..0x15F",
+            "line": "//        50-5F xx------ Key scale rate (0-3)"
+          }
+        ],
+        "digest": "de677811d41497089de530dbc0ba0a3f38d285bbaefbad3c8340fb45b95f4926"
+      }
     },
     {
       "key": "0x160..0x16F",
@@ -481,7 +745,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x170..0x17F",
           "cites": "//        70-7F ---xxxxx Sustain rate (0-31)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x170..0x17F",
+            "line": "//        70-7F ---xxxxx Sustain rate (0-31)"
+          }
+        ],
+        "digest": "1035040d85744107fc2d0916faf3c7d84f14ed0ab35b94924b394c38686f8b07"
+      }
     },
     {
       "key": "0x180..0x18F",
@@ -496,7 +771,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x180..0x18F",
           "cites": "//        80-8F xxxx---- Sustain level (0-15)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x180..0x18F",
+            "line": "//        80-8F xxxx---- Sustain level (0-15)"
+          }
+        ],
+        "digest": "e287b8b5c3024cd259113abecdd948408886669ef2c89303584e01ab5a6fba71"
+      }
     },
     {
       "key": "0x190..0x19F",
@@ -513,7 +799,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x190..0x19F",
           "cites": "//        90-9F ----x--- SSG-EG enable"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x190..0x19F",
+            "line": "//        90-9F ----x--- SSG-EG enable"
+          }
+        ],
+        "digest": "7d4b892fd3a556d0e3261dfded06b1658fdf450dfb06d972ff94cc5d734117d9"
+      }
     },
     {
       "key": "0x1A0..0x1A3",
@@ -528,7 +825,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x1A0..0x1A3",
           "cites": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x1A0..0x1A3",
+            "line": "//        A0-A3 xxxxxxxx Frequency number lower 8 bits"
+          }
+        ],
+        "digest": "c3aefedfdb8179f054eec5aceef9ff31d9584f9ec13faf7169655dce6d5910fe"
+      }
     },
     {
       "key": "0x1A4..0x1A7",
@@ -558,7 +866,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x1B0..0x1B3",
           "cites": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x1B0..0x1B3",
+            "line": "//        B0-B3 --xxx--- Feedback level for operator 1 (0-7)"
+          }
+        ],
+        "digest": "9aadeca28e34e7c26e12ebb58a30684122cbb7489b2597f723b3dcd632916348"
+      }
     },
     {
       "key": "0x1B4..0x1B7",
@@ -575,7 +894,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x1B4..0x1B7",
           "cites": "//        B4-B7 x------- Pan left [OPNA]"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h opn_registers_base ym2612 register 0x1B4..0x1B7",
+            "line": "//        B4-B7 x------- Pan left [OPNA]"
+          }
+        ],
+        "digest": "5fd9d039538c935f3664b12ad8298465f7acc506ef7701cac56fa37a0effc2e7"
+      }
     }
   ]
 }

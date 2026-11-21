@@ -39,7 +39,18 @@
           "ref": "mame:src/devices/sound/upd7759.cpp DEFINE_DEVICE_TYPE upd7759",
           "cites": "DEFINE_DEVICE_TYPE(UPD7759, upd7759_device, \"upd7759\", \"NEC uPD7759\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/upd7759.cpp DEFINE_DEVICE_TYPE upd7759",
+            "line": "DEFINE_DEVICE_TYPE(UPD7759, upd7759_device, \"upd7759\", \"NEC uPD7759\")"
+          }
+        ],
+        "digest": "ea46ea48b8bb03f75cfa08a207cc109e9e83d82820afa220c81b4383114d5055"
+      }
     }
   ]
 }

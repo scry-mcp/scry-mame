@@ -43,7 +43,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x10..0x1F",
           "cites": "\tcase 1: /* Reset MR pointer. Causes the channel MR pointer to point to MR1 */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x10..0x1F",
+            "line": "\tcase 1: /* Reset MR pointer. Causes the channel MR pointer to point to MR1 */"
+          }
+        ],
+        "digest": "1cde968bf259ac2aa9b662045203e3f0db48265fc4e1c974bf2a498dbbb2069e"
+      }
     },
     {
       "key": "0x20..0x2F",
@@ -77,7 +88,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x30..0x3F",
           "cites": "\tcase 3: /* Reset channel transmitter */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x30..0x3F",
+            "line": "\tcase 3: /* Reset channel transmitter */"
+          }
+        ],
+        "digest": "f9e6add40e878e1d437058135774e3def569b552197673f0d0af664f32ed9861"
+      }
     },
     {
       "key": "0x40..0x4F",
@@ -94,7 +116,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x40..0x4F",
           "cites": "\tcase 4: /* Reset Error Status */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x40..0x4F",
+            "line": "\tcase 4: /* Reset Error Status */"
+          }
+        ],
+        "digest": "4bd79ec69a56e57ffd8317e5b602a3f9c69dbc9170474ecaad5cdb98704eb806"
+      }
     },
     {
       "key": "0x50..0x5F",
@@ -111,7 +144,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x50..0x5F",
           "cites": "\tcase 5: /* Reset Channel break change interrupt */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x50..0x5F",
+            "line": "\tcase 5: /* Reset Channel break change interrupt */"
+          }
+        ],
+        "digest": "ad0903e959ac2bfc6314d397c138ceb4c8b9e60276bbec4ef50f2c0bb5a2bd79"
+      }
     },
     {
       "key": "0x60..0x6F",
@@ -128,7 +172,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x60..0x6F",
           "cites": "\tcase 6: /* Start Tx break */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x60..0x6F",
+            "line": "\tcase 6: /* Start Tx break */"
+          }
+        ],
+        "digest": "a87e913a514997b8239e546c073cf84c6df6c7d4caeff324c62280e9abe5279c"
+      }
     },
     {
       "key": "0x70..0x7F",
@@ -145,7 +200,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x70..0x7F",
           "cites": "\tcase 7: /* Stop tx break */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_channel::write_CR command 0x70..0x7F",
+            "line": "\tcase 7: /* Stop tx break */"
+          }
+        ],
+        "digest": "96bbbd799d902b1148c1b59dc1edcb51f8bc9c5e5bb1143bc5808bf771de4166"
+      }
     },
     {
       "key": "0x80..0xBF",
@@ -162,7 +228,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0x80..0xBF",
           "cites": "\t\tcase 0x08: /* set RX extend bit */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0x80..0xBF",
+            "line": "\t\tcase 0x08: /* set RX extend bit */"
+          }
+        ],
+        "digest": "c889b7b1e97dae49272a7dd92709de50027bcd86ff3e8f787863217944c1f910"
+      }
     },
     {
       "key": "0xC0..0xFF",
@@ -179,7 +256,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0xC0..0xFF",
           "cites": "\t\tcase 0x0c: /* enter low power mode TODO: unimplemented */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp xr68c681_device::write command 0xC0..0xFF",
+            "line": "\t\tcase 0x0c: /* enter low power mode TODO: unimplemented */"
+          }
+        ],
+        "digest": "985b87d712d2b6418926bbb005e510b890249029a10e64383ec395218d1b8eaf"
+      }
     }
   ]
 }

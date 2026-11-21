@@ -40,7 +40,18 @@
           "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x00",
           "cites": "\t\tif (output_selected(m_ctl_a))"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x00",
+            "line": "\t\tif (output_selected(m_ctl_a))"
+          }
+        ],
+        "digest": "f647325a7bb70cea176b57c3fc6ab94d56f9b0180e38cce6d85a516dc8f68d5a"
+      }
     },
     {
       "key": "0x01",
@@ -57,7 +68,18 @@
           "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x01",
           "cites": "\t\tret = control_a_r();"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x01",
+            "line": "\t\tret = control_a_r();"
+          }
+        ],
+        "digest": "c4f28987dcc117cda555d0dca367ebc9635256bf0b65c2e057efa34250895490"
+      }
     },
     {
       "key": "0x01",
@@ -74,7 +96,18 @@
           "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x01",
           "cites": "\t\tcontrol_a_w(data);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x01",
+            "line": "\t\tcontrol_a_w(data);"
+          }
+        ],
+        "digest": "5ca859f81900541ccb2249e315b55809bc60ebeae9ae71107c96ca21b65f0905"
+      }
     },
     {
       "key": "0x02",
@@ -92,7 +125,18 @@
           "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x02",
           "cites": "\t\tret = output_selected(m_ctl_b) ? port_b_r() : ddr_b_r();"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x02",
+            "line": "\t\tret = output_selected(m_ctl_b) ? port_b_r() : ddr_b_r();"
+          }
+        ],
+        "digest": "d50743ba53417c7c0acfba58854ff1baa37d07028bc875b3a759ad4163f5fcb3"
+      }
     },
     {
       "key": "0x02",
@@ -110,7 +154,18 @@
           "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x02",
           "cites": "\t\tif (output_selected(m_ctl_b))"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x02",
+            "line": "\t\tif (output_selected(m_ctl_b))"
+          }
+        ],
+        "digest": "4247e06a92dddd9c65bf7b7783815f6ddd1c74906d2e104921f45aff064d9733"
+      }
     },
     {
       "key": "0x03",
@@ -127,7 +182,18 @@
           "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x03",
           "cites": "\t\tret = control_b_r();"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::read case 0x03",
+            "line": "\t\tret = control_b_r();"
+          }
+        ],
+        "digest": "30f91919f6267dd6e350dd0ec4def6297dcc2e4fef771aec71258b873f54dd18"
+      }
     },
     {
       "key": "0x03",
@@ -144,7 +210,18 @@
           "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x03",
           "cites": "\t\tcontrol_b_w(data);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/6821pia.cpp pia6821_device::write case 0x03",
+            "line": "\t\tcontrol_b_w(data);"
+          }
+        ],
+        "digest": "38d6863e9075bde25315f5973b15ba96e4e57319937dfd9c4a381116944d38b2"
+      }
     }
   ]
 }

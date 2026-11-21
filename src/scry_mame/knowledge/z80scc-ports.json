@@ -89,7 +89,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::da_r",
           "cites": "\tuint8_t da_r(offs_t offset);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::da_r",
+            "line": "\tuint8_t da_r(offs_t offset);"
+          }
+        ],
+        "digest": "7ad3bf0f55d02f6844dcab8057f882a10e8d656680c8484c16f3bc5417cdb077"
+      }
     },
     {
       "key": "0x102",
@@ -106,7 +117,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::da_w",
           "cites": "\tvoid da_w(offs_t offset, uint8_t data);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::da_w",
+            "line": "\tvoid da_w(offs_t offset, uint8_t data);"
+          }
+        ],
+        "digest": "fb027f8254958e3cd64802d25569a574a74f683af6a9dc67819f4b998458486b"
+      }
     },
     {
       "key": "0x103",
@@ -123,7 +145,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::db_r",
           "cites": "\tuint8_t db_r(offs_t offset);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::db_r",
+            "line": "\tuint8_t db_r(offs_t offset);"
+          }
+        ],
+        "digest": "c060478a7cc4556fc0434a9bafc773e690e375d08166c8f315fe2b11d26524b1"
+      }
     },
     {
       "key": "0x103",
@@ -140,7 +173,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::db_w",
           "cites": "\tvoid db_w(offs_t offset, uint8_t data);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::db_w",
+            "line": "\tvoid db_w(offs_t offset, uint8_t data);"
+          }
+        ],
+        "digest": "40d83f16056720acbcc6b7ee1320e5876e23cebdaa31d24090073dbd3243cedc"
+      }
     },
     {
       "key": "0x104",
@@ -157,7 +201,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ca_r",
           "cites": "\tuint8_t ca_r(offs_t offset)            { return m_chanA->control_read(); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ca_r",
+            "line": "\tuint8_t ca_r(offs_t offset)            { return m_chanA->control_read(); }"
+          }
+        ],
+        "digest": "5eaf056bdba88856a33a62518973f08c677024fe987a6026a37454d482af3e3f"
+      }
     },
     {
       "key": "0x104",
@@ -174,7 +229,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ca_w",
           "cites": "\tvoid ca_w(offs_t offset, uint8_t data) { m_chanA->control_write(data); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::ca_w",
+            "line": "\tvoid ca_w(offs_t offset, uint8_t data) { m_chanA->control_write(data); }"
+          }
+        ],
+        "digest": "26c88b56584ca26079583242fed8e4fb94e9aaea650e247e1a4b570e9b8d2544"
+      }
     },
     {
       "key": "0x105",
@@ -191,7 +257,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::cb_r",
           "cites": "\tuint8_t cb_r(offs_t offset)            { return m_chanB->control_read(); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::cb_r",
+            "line": "\tuint8_t cb_r(offs_t offset)            { return m_chanB->control_read(); }"
+          }
+        ],
+        "digest": "60b109505d4cf23429df9b4d8359e1a51f9d87763f594df932f9949b28aafe27"
+      }
     },
     {
       "key": "0x105",
@@ -208,7 +285,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::cb_w",
           "cites": "\tvoid cb_w(offs_t offset, uint8_t data) { m_chanB->control_write(data); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::cb_w",
+            "line": "\tvoid cb_w(offs_t offset, uint8_t data) { m_chanB->control_write(data); }"
+          }
+        ],
+        "digest": "4fe2f2ae542c5a56f79e26a628f65ae1426db64f7775d353ed2f7cb6ce306d4c"
+      }
     },
     {
       "key": "0x106",
@@ -225,7 +313,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::zbus_r",
           "cites": "\tuint8_t zbus_r(offs_t offset);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::zbus_r",
+            "line": "\tuint8_t zbus_r(offs_t offset);"
+          }
+        ],
+        "digest": "4280364edf6915f37099b51193ef94a21659fc573097c0c98ec51086b69e5426"
+      }
     },
     {
       "key": "0x106",
@@ -242,7 +341,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::zbus_w",
           "cites": "\tvoid zbus_w(offs_t offset, uint8_t data);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::zbus_w",
+            "line": "\tvoid zbus_w(offs_t offset, uint8_t data);"
+          }
+        ],
+        "digest": "d688288d49bf2ab07ca32f3720a6975aafb6b80b4911c1b9d7e977ad7b7e9d9d"
+      }
     },
     {
       "key": "0x107",
@@ -259,7 +369,18 @@
           "ref": "mame:src/devices/machine/z80scc.h z80scc_device::m1_r",
           "cites": "\tint m1_r();"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.h z80scc_device::m1_r",
+            "line": "\tint m1_r();"
+          }
+        ],
+        "digest": "229adc31773487f4be65c28a48e2e2aa8a12d3dd2d740af6d01a6395e95ad801"
+      }
     }
   ]
 }

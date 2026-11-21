@@ -21,7 +21,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x00",
           "cites": "\t\tcase MODE_REGISTER_HOLD:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x00",
+            "line": "\t\tcase MODE_REGISTER_HOLD:"
+          }
+        ],
+        "digest": "cb856e897eb4b04b239dad16341c5b76b582e4fab84019a4c69ef1daf1df5a97"
+      }
     },
     {
       "key": "0x01",
@@ -55,7 +66,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x02",
           "cites": "\t\tcase MODE_TIME_SET:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x02",
+            "line": "\t\tcase MODE_TIME_SET:"
+          }
+        ],
+        "digest": "fd6974a2bd36e74b7af497fc4b84d102a8a9f1f861e86d7b996771145b98c189"
+      }
     },
     {
       "key": "0x03",
@@ -72,7 +94,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x03",
           "cites": "\t\tcase MODE_TIME_READ:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x03",
+            "line": "\t\tcase MODE_TIME_READ:"
+          }
+        ],
+        "digest": "721042d2ed34c2da4ae107582767e7b76b5e31e6a6261b2383874dc8017f3675"
+      }
     },
     {
       "key": "0x04",
@@ -157,7 +190,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x08",
           "cites": "\t\tcase MODE_TP_1S_INT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x08",
+            "line": "\t\tcase MODE_TP_1S_INT:"
+          }
+        ],
+        "digest": "09caf19e132fa0892529c111cd5889faa0a0e674063865000b6f3b8dec834eca"
+      }
     },
     {
       "key": "0x09",
@@ -174,7 +218,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x09",
           "cites": "\t\tcase MODE_TP_10S_INT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x09",
+            "line": "\t\tcase MODE_TP_10S_INT:"
+          }
+        ],
+        "digest": "09614954bd5aa645d36bbce06a79d4259a6f75d3b21674328c54a6d8cea3b25f"
+      }
     },
     {
       "key": "0x0A",
@@ -191,7 +246,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0A",
           "cites": "\t\tcase MODE_TP_30S_INT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0A",
+            "line": "\t\tcase MODE_TP_30S_INT:"
+          }
+        ],
+        "digest": "1eade75c4d78993c318fe4f11efa9db54be66f6b80ad4bfa431e3c787d0c92fd"
+      }
     },
     {
       "key": "0x0B",
@@ -208,7 +274,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0B",
           "cites": "\t\tcase MODE_TP_60S_INT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0B",
+            "line": "\t\tcase MODE_TP_60S_INT:"
+          }
+        ],
+        "digest": "e5bb160fe704da014205f96182c992172f5556950d465af709dff23db40f3e13"
+      }
     },
     {
       "key": "0x0C",
@@ -225,7 +302,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0C",
           "cites": "\t\tcase MODE_INT_RESET_OUTPUT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0C",
+            "line": "\t\tcase MODE_INT_RESET_OUTPUT:"
+          }
+        ],
+        "digest": "8bf5b08f62b5f07d701e93ba4a249cbe97c171f92c81538b04d30fcbba681d0c"
+      }
     },
     {
       "key": "0x0D",
@@ -242,7 +330,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0D",
           "cites": "\t\tcase MODE_INT_RUN_CLOCK:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0D",
+            "line": "\t\tcase MODE_INT_RUN_CLOCK:"
+          }
+        ],
+        "digest": "46afc14e88943937470bb2db5a99612c34246c1945ee21606be7bfcc39d49b9a"
+      }
     },
     {
       "key": "0x0E",
@@ -259,7 +358,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0E",
           "cites": "\t\tcase MODE_INT_STOP_CLOCK:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0E",
+            "line": "\t\tcase MODE_INT_STOP_CLOCK:"
+          }
+        ],
+        "digest": "caa530f867a6b63871f4975222df8a2f491de781745422b79bbf6eb6cc4088a4"
+      }
     },
     {
       "key": "0x0F",
@@ -276,7 +386,18 @@
           "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0F",
           "cites": "\t\tcase MODE_TEST:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.cpp upd1990a_device::stb_w case 0x0F",
+            "line": "\t\tcase MODE_TEST:"
+          }
+        ],
+        "digest": "c4bab2a60d9a94f735dfe23b17c1e4476dcf161901d6f49e34cc4bb2b529f6b7"
+      }
     }
   ]
 }

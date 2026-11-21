@@ -21,7 +21,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_A",
           "cites": "\tcase PORT_A:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_A",
+            "line": "\tcase PORT_A:"
+          }
+        ],
+        "digest": "139c9abe4e70d1741fbe855e2405ee19e84cfc1cad0df03462f9d2a3357d14ec"
+      }
     },
     {
       "key": "0x00",
@@ -38,7 +49,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_A",
           "cites": "\tcase PORT_A:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_A",
+            "line": "\tcase PORT_A:"
+          }
+        ],
+        "digest": "4ddc4b56e9dea14544e1782671b90a1b441da6fe30bc31fe2bb9da679802febb"
+      }
     },
     {
       "key": "0x01",
@@ -55,7 +77,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_B",
           "cites": "\tcase PORT_B:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case PORT_B",
+            "line": "\tcase PORT_B:"
+          }
+        ],
+        "digest": "6d8c846a02d3b9f50a3bbec441123ce7e0c01cd8af59c6c89e01ffc35cd97b8c"
+      }
     },
     {
       "key": "0x01",
@@ -72,7 +105,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_B",
           "cites": "\tcase PORT_B:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case PORT_B",
+            "line": "\tcase PORT_B:"
+          }
+        ],
+        "digest": "50672a41e872ec923a7ac245d1d54ff0d32a44a35bfdb185eced043c1955236f"
+      }
     },
     {
       "key": "0x02",
@@ -124,7 +168,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case CONTROL",
           "cites": "\tcase CONTROL:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::read case CONTROL",
+            "line": "\tcase CONTROL:"
+          }
+        ],
+        "digest": "8d2522740ae26e35592a6baf6ed5438df1a458513b68545324d4a2da9a42695c"
+      }
     },
     {
       "key": "0x03",
@@ -142,7 +197,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case CONTROL",
           "cites": "\tcase CONTROL:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write case CONTROL",
+            "line": "\tcase CONTROL:"
+          }
+        ],
+        "digest": "7e9ad72d7f1df1edf48e17efa22396cb1640c381146fa2290985b9118fbcd675"
+      }
     }
   ]
 }

@@ -22,7 +22,18 @@
           "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device oe_w",
           "cites": "\tvoid oe_w(int state);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device oe_w",
+            "line": "\tvoid oe_w(int state);"
+          }
+        ],
+        "digest": "1dc1611b0b29cbb4773081686dd77c693407d9181f0628049a7fc6500ef1a07f"
+      }
     },
     {
       "key": "0x01",
@@ -39,7 +50,18 @@
           "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device cs_w",
           "cites": "\tvoid cs_w(int state);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device cs_w",
+            "line": "\tvoid cs_w(int state);"
+          }
+        ],
+        "digest": "f1db9babdae3617900ee192c0ef87b09f06980f1095c8ce98bab51747f159914"
+      }
     },
     {
       "key": "0x02",
@@ -57,7 +79,18 @@
           "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device stb_w",
           "cites": "\tvoid stb_w(int state);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device stb_w",
+            "line": "\tvoid stb_w(int state);"
+          }
+        ],
+        "digest": "664c2f289e6d71f2f4175140011712a5e9b689ff5f68ecc041bbbfe7d143ae44"
+      }
     },
     {
       "key": "0x03",
@@ -126,7 +159,18 @@
           "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c2_w",
           "cites": "\tvoid c2_w(int state);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device c2_w",
+            "line": "\tvoid c2_w(int state);"
+          }
+        ],
+        "digest": "4f85c5045af2f7d97470af380482a02ab745967520edce74fb631d08e1dfb0cb"
+      }
     },
     {
       "key": "0x07",
@@ -178,7 +222,18 @@
           "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device tp_r",
           "cites": "\tint tp_r();"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/upd1990a.h upd1990a_device tp_r",
+            "line": "\tint tp_r();"
+          }
+        ],
+        "digest": "d5f4053cd2f042917e173f5ec5f9a4206206138e31073096dcf97b3aa82979fe"
+      }
     }
   ]
 }

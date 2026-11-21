@@ -22,7 +22,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x00 read",
           "cites": "\tcase 0x00: /* MR1A/MR2A */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x00 read",
+            "line": "\tcase 0x00: /* MR1A/MR2A */"
+          }
+        ],
+        "digest": "5f45fc45cde7c0436e87d4d723da716412eeb3d6551128a3254e3f8c64390373"
+      }
     },
     {
       "key": "0x00",
@@ -57,7 +68,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x01 read",
           "cites": "\tcase 0x01: /* SRA */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x01 read",
+            "line": "\tcase 0x01: /* SRA */"
+          }
+        ],
+        "digest": "086e66a09a1fa59950808d36adcf295779c6245c74ed7fc11d23ade3caf28fff"
+      }
     },
     {
       "key": "0x01",
@@ -91,7 +113,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x02 read",
           "cites": "\t\tLOG(\"Reading unhandled 68681 reg %x\\n\", offset);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x02 read",
+            "line": "\t\tLOG(\"Reading unhandled 68681 reg %x\\n\", offset);"
+          }
+        ],
+        "digest": "afcb22f9a0e13c31fabb1deb8567df0cd16385226abede0bd2e4a1be94277c64"
+      }
     },
     {
       "key": "0x02",
@@ -108,7 +141,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x02 write",
           "cites": "\tcase 0x02: /* CRA */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x02 write",
+            "line": "\tcase 0x02: /* CRA */"
+          }
+        ],
+        "digest": "af519bfd0bd6cc2197e04f90f8c3ce60afedf438fe14bd763b30a960372d741f"
+      }
     },
     {
       "key": "0x03",
@@ -159,7 +203,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x04 read",
           "cites": "\tcase 0x04: /* IPCR */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x04 read",
+            "line": "\tcase 0x04: /* IPCR */"
+          }
+        ],
+        "digest": "cca280b74fb8459f864dfaed1fbded8471a348190f996b9d8209c9a9db46797c"
+      }
     },
     {
       "key": "0x04",
@@ -176,7 +231,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x04 write",
           "cites": "\tcase 0x04: /* ACR */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x04 write",
+            "line": "\tcase 0x04: /* ACR */"
+          }
+        ],
+        "digest": "731d16fe049f198bea2e198b25b25469f6a857f27db25651b92a9484d254c599"
+      }
     },
     {
       "key": "0x05",
@@ -193,7 +259,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x05 read",
           "cites": "\tcase 0x05: /* ISR */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x05 read",
+            "line": "\tcase 0x05: /* ISR */"
+          }
+        ],
+        "digest": "9fd9138da66d5b998a29376ec2615d372c035ad50b4fb1479c99ca87f20f991b"
+      }
     },
     {
       "key": "0x05",
@@ -210,7 +287,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x05 write",
           "cites": "\tcase 0x05: /* IMR */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x05 write",
+            "line": "\tcase 0x05: /* IMR */"
+          }
+        ],
+        "digest": "6df4050b16be1c3493264a9cdbce7065d49ea8b01672ce1c77f5d31b8886f694"
+      }
     },
     {
       "key": "0x06",
@@ -227,7 +315,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x06 read",
           "cites": "\tcase 0x06: /* CUR */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x06 read",
+            "line": "\tcase 0x06: /* CUR */"
+          }
+        ],
+        "digest": "0d445fa7b257bb39c1b9fd939971fae8d9e83f1f0eee4b91f165830b66503c86"
+      }
     },
     {
       "key": "0x06",
@@ -261,7 +360,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x07 read",
           "cites": "\tcase 0x07: /* CLR */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x07 read",
+            "line": "\tcase 0x07: /* CLR */"
+          }
+        ],
+        "digest": "aaddfbd0a5dddccd62a0254792bec3845e1c68a8bc679fe5f80c5a8ac6f500fb"
+      }
     },
     {
       "key": "0x07",
@@ -296,7 +406,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x08 read",
           "cites": "\tcase 0x08: /* MR1B/MR2B */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x08 read",
+            "line": "\tcase 0x08: /* MR1B/MR2B */"
+          }
+        ],
+        "digest": "f3f8ae3e955fba370e0a4cee5313f185bc1818b2c0ee37f6eabac831e2b1c948"
+      }
     },
     {
       "key": "0x08",
@@ -331,7 +452,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x09 read",
           "cites": "\tcase 0x09: /* SRB */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x09 read",
+            "line": "\tcase 0x09: /* SRB */"
+          }
+        ],
+        "digest": "ac6c2896ffc1761ed256ad581e3636a64e691308f5fee5f5e4ebf9aae79a33be"
+      }
     },
     {
       "key": "0x09",
@@ -365,7 +497,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0A read",
           "cites": "\tcase 0x0a: /* 1X/16X Test */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0A read",
+            "line": "\tcase 0x0a: /* 1X/16X Test */"
+          }
+        ],
+        "digest": "80769e114430c5ff30e223fce0ecb768398ae89409ef679bba14dbf850ea7107"
+      }
     },
     {
       "key": "0x0A",
@@ -382,7 +525,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0A write",
           "cites": "\tcase 0x0a: /* CRB */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0A write",
+            "line": "\tcase 0x0a: /* CRB */"
+          }
+        ],
+        "digest": "68bbc3475262d1f2bb08a49fab118f112d278ec3572959ea9ac2ad6aec257f54"
+      }
     },
     {
       "key": "0x0B",
@@ -433,7 +587,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp mc68681_device::read register 0x0C read",
           "cites": "\tif (offset == 0x0c)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp mc68681_device::read register 0x0C read",
+            "line": "\tif (offset == 0x0c)"
+          }
+        ],
+        "digest": "5043cc52f924e320a74cdef2d80ff683a3cc0a59b1fd5b6fa1894935ea340f9e"
+      }
     },
     {
       "key": "0x0C",
@@ -450,7 +615,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp mc68681_device::write register 0x0C write",
           "cites": "\tif (offset == 0x0c)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp mc68681_device::write register 0x0C write",
+            "line": "\tif (offset == 0x0c)"
+          }
+        ],
+        "digest": "2459e17aa5a17ded1962cee46bd62e5ad4aab7ef331d4cfa46ef88637c86e33a"
+      }
     },
     {
       "key": "0x0D",
@@ -467,7 +643,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0D read",
           "cites": "\tcase 0x0d: /* IP */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0D read",
+            "line": "\tcase 0x0d: /* IP */"
+          }
+        ],
+        "digest": "26b1d10f769daff06f278a39c1b268fca0cebda94e9d44759930d6f41d9de0e7"
+      }
     },
     {
       "key": "0x0D",
@@ -484,7 +671,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0D write",
           "cites": "\tcase 0x0d: /* OPCR */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0D write",
+            "line": "\tcase 0x0d: /* OPCR */"
+          }
+        ],
+        "digest": "3682cd168c0eb4417b142e894b432177d80748f53fce0412da5de7d61d02d1f0"
+      }
     },
     {
       "key": "0x0E",
@@ -501,7 +699,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0E read",
           "cites": "\tcase 0x0e: /* Start counter command */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0E read",
+            "line": "\tcase 0x0e: /* Start counter command */"
+          }
+        ],
+        "digest": "840e6043d058572d74dbcbf7949a3c727e290cf50fa9b72763d6a8b07ecd5765"
+      }
     },
     {
       "key": "0x0E",
@@ -518,7 +727,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0E write",
           "cites": "\tcase 0x0e: /* Set Output Port Bits */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0E write",
+            "line": "\tcase 0x0e: /* Set Output Port Bits */"
+          }
+        ],
+        "digest": "ffeee5fc31384e1723d163188b8cac7410e7fc22ccabbf83b676de269d73199f"
+      }
     },
     {
       "key": "0x0F",
@@ -535,7 +755,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0F read",
           "cites": "\tcase 0x0f: /* Stop counter command */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::read register 0x0F read",
+            "line": "\tcase 0x0f: /* Stop counter command */"
+          }
+        ],
+        "digest": "3de98038ad1e587e18e094e35a256feec2dd949cf61e5944e6b1968c81b2ba41"
+      }
     },
     {
       "key": "0x0F",
@@ -552,7 +783,18 @@
           "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0F write",
           "cites": "\tcase 0x0f: /* Reset Output Port Bits */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/mc68681.cpp duart_base_device::write register 0x0F write",
+            "line": "\tcase 0x0f: /* Reset Output Port Bits */"
+          }
+        ],
+        "digest": "cd43d2c9eb43f5055cd1fd3c5e0d0be4907c97293570ea0b2b816915d981e6b6"
+      }
     }
   ]
 }

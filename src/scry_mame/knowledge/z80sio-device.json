@@ -93,7 +93,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE z80sio",
           "cites": "DEFINE_DEVICE_TYPE(Z80SIO,          z80sio_device,      \"z80sio\",          \"Z80 SIO\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp DEFINE_DEVICE_TYPE z80sio",
+            "line": "DEFINE_DEVICE_TYPE(Z80SIO,          z80sio_device,      \"z80sio\",          \"Z80 SIO\")"
+          }
+        ],
+        "digest": "7146cc0f7a187ca9582a18aa44db2af9e7b403fad94ab9e0209186f1fade4fcd"
+      }
     }
   ]
 }

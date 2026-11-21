@@ -26,7 +26,18 @@
           "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0x00",
           "cites": "\t\t\t\t\tm_state = (m_block_header == 0 && m_first_valid_header) ? STATE_IDLE : STATE_BLOCK_HEADER;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0x00",
+            "line": "\t\t\t\t\tm_state = (m_block_header == 0 && m_first_valid_header) ? STATE_IDLE : STATE_BLOCK_HEADER;"
+          }
+        ],
+        "digest": "616660adf3d24efa45602a54d4a3714b19d46268ff0b6f375f4961177a3ce51f"
+      }
     },
     {
       "key": "0x01..0x3F",
@@ -43,7 +54,18 @@
           "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state silence length",
           "cites": "\t\t\t\t\tm_clocks_left = 1024 * ((m_block_header & 0x3f) + 1);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state silence length",
+            "line": "\t\t\t\t\tm_clocks_left = 1024 * ((m_block_header & 0x3f) + 1);"
+          }
+        ],
+        "digest": "42989507c3df308fd6a26ba1517734f329a8c76f6a3f67b3999e134026820831"
+      }
     },
     {
       "key": "0x40..0x7F",
@@ -60,7 +82,18 @@
           "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0x40",
           "cites": "\t\t\t\tcase 0x40:  // 256 nibbles"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0x40",
+            "line": "\t\t\t\tcase 0x40:  // 256 nibbles"
+          }
+        ],
+        "digest": "7ccdfb1ff5cf30b3363a8bc7bd6cbb1bbc79a90003c0c5013eb80c4922361d16"
+      }
     },
     {
       "key": "0x80..0xBF",
@@ -77,7 +110,18 @@
           "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0x80",
           "cites": "\t\t\t\tcase 0x80:  // n nibbles"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0x80",
+            "line": "\t\t\t\tcase 0x80:  // n nibbles"
+          }
+        ],
+        "digest": "99216e5b917e1482071d65d86f66f31e86c7b36e5d30bbe29bce9e3ed5a606a7"
+      }
     },
     {
       "key": "0xC0..0xFF",
@@ -95,7 +139,18 @@
           "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0xc0",
           "cites": "\t\t\t\tcase 0xc0:  // repeat loop"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/upd7759.cpp upd775x_device::advance_state header 0xc0",
+            "line": "\t\t\t\tcase 0xc0:  // repeat loop"
+          }
+        ],
+        "digest": "074e036a34d51240f1aba1084058792b910dcb26c1aa31086715d72cf8c1fe41"
+      }
     }
   ]
 }

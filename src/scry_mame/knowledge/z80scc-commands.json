@@ -30,7 +30,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset null",
           "cites": "\tcase WR0_CRC_RESET_NULL:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset null",
+            "line": "\tcase WR0_CRC_RESET_NULL:"
+          }
+        ],
+        "digest": "e8f419115fb8754db6665681d1cc51135fcafe755ec3ed1bc4576c2bc0f46979"
+      }
     },
     {
       "key": "0x40..0x7F",
@@ -47,7 +58,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset receive",
           "cites": "\tcase WR0_CRC_RESET_RX: /* In Synchronous mode: all Os (zeros) (CCITT-O CRC-16) */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset receive",
+            "line": "\tcase WR0_CRC_RESET_RX: /* In Synchronous mode: all Os (zeros) (CCITT-O CRC-16) */"
+          }
+        ],
+        "digest": "6591280d5bb718402aed5c74cd6c67f8ee417a57cebd6abf4c4f349bbf6d67b0"
+      }
     },
     {
       "key": "0x80..0xBF",
@@ -64,7 +86,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset transmit",
           "cites": "\tcase WR0_CRC_RESET_TX: /* In HDLC mode: all 1s (ones) (CCITT-1) */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset transmit",
+            "line": "\tcase WR0_CRC_RESET_TX: /* In HDLC mode: all 1s (ones) (CCITT-1) */"
+          }
+        ],
+        "digest": "14c740e23ee6895a5b63b3513841cc61d5dcd510e47c3af1386dc9aee0518810"
+      }
     },
     {
       "key": "0xC0..0xFF",
@@ -81,7 +114,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset underrun",
           "cites": "\tcase WR0_CRC_RESET_TX_UNDERRUN: /* Resets Tx underrun/EOM bit (D6 of the RRO register) */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 CRC reset underrun",
+            "line": "\tcase WR0_CRC_RESET_TX_UNDERRUN: /* Resets Tx underrun/EOM bit (D6 of the RRO register) */"
+          }
+        ],
+        "digest": "65b67da3020030bad47f5b081a62ba6671b1cad54a03ce7b603570feee50426b"
+      }
     },
     {
       "key": "0x100",
@@ -98,7 +142,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 0",
           "cites": "\tcase WR0_NULL: // Do nothing"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 0",
+            "line": "\tcase WR0_NULL: // Do nothing"
+          }
+        ],
+        "digest": "f395a25b0efd9cdb1b75c199e014e4745dac44031f00652888eabeced752d37f"
+      }
     },
     {
       "key": "0x108",
@@ -115,7 +170,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 1",
           "cites": "\tcase WR0_POINT_HIGH:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 1",
+            "line": "\tcase WR0_POINT_HIGH:"
+          }
+        ],
+        "digest": "536eccde0a4df92815ed2ac63566210413dd875393414a2987595f8bb160ee24"
+      }
     },
     {
       "key": "0x110",
@@ -149,7 +215,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 3",
           "cites": "\tcase WR0_SEND_ABORT: // Flush transmitter and Send 8-13 bits of '1's, used with SDLC"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 3",
+            "line": "\tcase WR0_SEND_ABORT: // Flush transmitter and Send 8-13 bits of '1's, used with SDLC"
+          }
+        ],
+        "digest": "bef2d98f510a4c6143e16e149cfb7cad0c8a512ec0dd8c563c8c62f88bb2ea19"
+      }
     },
     {
       "key": "0x120",
@@ -166,7 +243,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 4",
           "cites": "\tcase WR0_ENABLE_INT_NEXT_RX: // enable interrupt on next receive character"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 4",
+            "line": "\tcase WR0_ENABLE_INT_NEXT_RX: // enable interrupt on next receive character"
+          }
+        ],
+        "digest": "543b5337a38dc24f9df68f38af0b2d50bd4003a4425af48757974278b7c80579"
+      }
     },
     {
       "key": "0x128",
@@ -183,7 +271,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 5",
           "cites": "\tcase WR0_RESET_TX_INT: // reset transmitter interrupt pending"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 5",
+            "line": "\tcase WR0_RESET_TX_INT: // reset transmitter interrupt pending"
+          }
+        ],
+        "digest": "17b2fb59ca4f0c3e5a484a8d98c94e1cab4f6a9f0cba665e0da53ee9ad939a94"
+      }
     },
     {
       "key": "0x130",
@@ -200,7 +299,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 6",
           "cites": "\tcase WR0_ERROR_RESET:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr0 command 6",
+            "line": "\tcase WR0_ERROR_RESET:"
+          }
+        ],
+        "digest": "5170223151883e953816ac8686fa75332333ac182fe4b7721a10da1d44a1bb62"
+      }
     },
     {
       "key": "0x138",
@@ -234,7 +344,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset no reset",
           "cites": "\tcase WR9_CMD_NORESET:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset no reset",
+            "line": "\tcase WR9_CMD_NORESET:"
+          }
+        ],
+        "digest": "046059dbaaf41f6e85710e039065b99a9e00f9b3b8fb77078e5a395ad5817d5c"
+      }
     },
     {
       "key": "0x240..0x27F",
@@ -268,7 +389,18 @@
           "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset reset channel A",
           "cites": "\tcase WR9_CMD_CHNA_RESET:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80scc.cpp z80scc_channel::do_sccreg_wr9 reset reset channel A",
+            "line": "\tcase WR9_CMD_CHNA_RESET:"
+          }
+        ],
+        "digest": "173c5ade5d0a4df02fec6428c2243e11831bd35b653e39db211d819bb9587332"
+      }
     },
     {
       "key": "0x2C0..0x2FF",

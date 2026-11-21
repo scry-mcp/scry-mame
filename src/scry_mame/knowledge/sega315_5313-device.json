@@ -33,7 +33,18 @@
           "ref": "mame:src/devices/video/315_5313.cpp DEFINE_DEVICE_TYPE sega315_5313",
           "cites": "DEFINE_DEVICE_TYPE(SEGA315_5313, sega315_5313_device, \"sega315_5313\", \"Sega 315-5313 Megadrive VDP\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp DEFINE_DEVICE_TYPE sega315_5313",
+            "line": "DEFINE_DEVICE_TYPE(SEGA315_5313, sega315_5313_device, \"sega315_5313\", \"Sega 315-5313 Megadrive VDP\")"
+          }
+        ],
+        "digest": "c59e60838372049bd5fa5909a37d9fef02360cab5251c8693c92c059a3d6bb95"
+      }
     }
   ]
 }

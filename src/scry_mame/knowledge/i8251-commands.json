@@ -24,7 +24,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp command_w m_command",
           "cites": "\tm_command = data;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp command_w m_command",
+            "line": "\tm_command = data;"
+          }
+        ],
+        "digest": "220d9a04b45706d38953db19ffd126eb81b29654eadde58b607ad8dd1091bf96"
+      }
     },
     {
       "key": "0x20..0x3F",
@@ -38,7 +49,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp command_w rts",
           "cites": "\tm_rts_handler(!BIT(data, 5));"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp command_w rts",
+            "line": "\tm_rts_handler(!BIT(data, 5));"
+          }
+        ],
+        "digest": "e9a9422a8379e28d17848f0c0600c9454d5587773f7afea8a3d699cbb556b3c5"
+      }
     },
     {
       "key": "0x40..0x5F",
@@ -52,7 +74,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp command_w ir",
           "cites": "\tif (BIT(data, 6))"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp command_w ir",
+            "line": "\tif (BIT(data, 6))"
+          }
+        ],
+        "digest": "f6f8fd858874c0227068ee430f98b093b9cc95c0e5d5a56df263f5c80451dd12"
+      }
     },
     {
       "key": "0x60..0x7F",
@@ -80,7 +113,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp command_w hunt",
           "cites": "\t\tm_hunt_on = BIT(data, 7);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp command_w hunt",
+            "line": "\t\tm_hunt_on = BIT(data, 7);"
+          }
+        ],
+        "digest": "a15c8d03b319fbaedb49ec3152f97943b0b52349c291e8c16f7e5fd38783d682"
+      }
     },
     {
       "key": "0xA0..0xBF",
@@ -108,7 +152,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp mode_w sync pin",
           "cites": "\t\tm_syndet_pin = BIT(data, 6);"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp mode_w sync pin",
+            "line": "\t\tm_syndet_pin = BIT(data, 6);"
+          }
+        ],
+        "digest": "6fc07991b8ee8ccd663ad202aa52bf9fbc74239ce3f83474bbb9707add910b44"
+      }
     },
     {
       "key": "0xE0..0xFF",

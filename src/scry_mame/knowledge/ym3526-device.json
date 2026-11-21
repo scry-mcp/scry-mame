@@ -31,7 +31,18 @@
           "ref": "mame:src/devices/sound/ymopl.cpp DEFINE_DEVICE_TYPE ym3526 device",
           "cites": "DEFINE_DEVICE_TYPE(YM3526, ym3526_device, \"ym3526\", \"YM3526 OPL\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ymopl.cpp DEFINE_DEVICE_TYPE ym3526 device",
+            "line": "DEFINE_DEVICE_TYPE(YM3526, ym3526_device, \"ym3526\", \"YM3526 OPL\")"
+          }
+        ],
+        "digest": "9de051ec26bccb466cc52beeaa7fd2252df3e33e173cc777d5af2bcc3fa720b9"
+      }
     }
   ]
 }

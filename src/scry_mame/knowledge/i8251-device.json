@@ -47,7 +47,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp DEFINE_DEVICE_TYPE i8251",
           "cites": "DEFINE_DEVICE_TYPE(I8251,   i8251_device,  \"i8251\",    \"Intel 8251 USART\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp DEFINE_DEVICE_TYPE i8251",
+            "line": "DEFINE_DEVICE_TYPE(I8251,   i8251_device,  \"i8251\",    \"Intel 8251 USART\")"
+          }
+        ],
+        "digest": "a13b1a8efaa1c9466ada495d62ad735b911cec74058a5b9a67196b45014f1c00"
+      }
     }
   ]
 }

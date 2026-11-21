@@ -20,7 +20,18 @@
           "ref": "mame:src/devices/sound/msm5205.h msm5205_device::set_prescaler_selector",
           "cites": "\tvoid set_prescaler_selector(int select)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.h msm5205_device::set_prescaler_selector",
+            "line": "\tvoid set_prescaler_selector(int select)"
+          }
+        ],
+        "digest": "4ff04a6a90e6f650898a3718aa219fb535867a7a740e5665eb6ce3387356ed97"
+      }
     },
     {
       "key": "0x01",
@@ -37,7 +48,18 @@
           "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_callback",
           "cites": "\tauto vck_callback() { return m_vck_cb.bind(); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_callback",
+            "line": "\tauto vck_callback() { return m_vck_cb.bind(); }"
+          }
+        ],
+        "digest": "e8424758d1611e89fec56de1b619b04ed653967f5e8b02dd31f7a797afa241b6"
+      }
     },
     {
       "key": "0x02",
@@ -53,7 +75,18 @@
           "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_legacy_callback",
           "cites": "\tauto vck_legacy_callback() { return m_vck_legacy_cb.bind(); }"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.h msm5205_device::vck_legacy_callback",
+            "line": "\tauto vck_legacy_callback() { return m_vck_legacy_cb.bind(); }"
+          }
+        ],
+        "digest": "ab3d73c6486bf6ba7cb7f0d57cd3e23d64e8f0b0fdfeee479962f9d4689129bc"
+      }
     },
     {
       "key": "0x03",
@@ -70,7 +103,18 @@
           "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::reset_w",
           "cites": "void msm5205_device::reset_w(int state)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::reset_w",
+            "line": "void msm5205_device::reset_w(int state)"
+          }
+        ],
+        "digest": "f65cb99129577eb8191ef28faa4be3c32103c91e8a44c9a3becd301db9c02ba9"
+      }
     },
     {
       "key": "0x04",
@@ -87,7 +131,18 @@
           "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::data_w",
           "cites": "void msm5205_device::data_w(u8 data)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::data_w",
+            "line": "void msm5205_device::data_w(u8 data)"
+          }
+        ],
+        "digest": "2d7bbb45a6d3cb2bb3607bf875c5437f8f4e39ca79ddbbb0d3d1aaf08db6e40c"
+      }
     },
     {
       "key": "0x05",
@@ -104,7 +159,18 @@
           "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::vclk_w",
           "cites": "void msm5205_device::vclk_w(int state)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::vclk_w",
+            "line": "void msm5205_device::vclk_w(int state)"
+          }
+        ],
+        "digest": "d63bded7d405694abe4a67e92ceccc431a18b35e3653ac68ec2eafe714669827"
+      }
     },
     {
       "key": "0x06",
@@ -139,7 +205,18 @@
           "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s1_w",
           "cites": "void msm5205_device::s1_w(int state)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s1_w",
+            "line": "void msm5205_device::s1_w(int state)"
+          }
+        ],
+        "digest": "9c257912ab30a2c126e7136e2e13704c550b55fd3f8764d27b518ec6e481a539"
+      }
     },
     {
       "key": "0x08",
@@ -156,7 +233,18 @@
           "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s2_w",
           "cites": "void msm5205_device::s2_w(int state)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/msm5205.cpp msm5205_device::s2_w",
+            "line": "void msm5205_device::s2_w(int state)"
+          }
+        ],
+        "digest": "72f5102447b9ecd615270f04c349c122819968a8b8952962db614822cad85f64"
+      }
     }
   ]
 }

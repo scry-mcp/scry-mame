@@ -21,7 +21,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_read",
           "cites": "u8 sega315_5124_device::data_read()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_read",
+            "line": "u8 sega315_5124_device::data_read()"
+          }
+        ],
+        "digest": "f30c5e8c1274abbeafb51348222e0210b2d6590929f29999912d8ce5d1fc5ec1"
+      }
     },
     {
       "key": "0x00",
@@ -38,7 +49,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_write",
           "cites": "void sega315_5124_device::data_write(u8 data)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::data_write",
+            "line": "void sega315_5124_device::data_write(u8 data)"
+          }
+        ],
+        "digest": "2024fbe64c94a37ca67db5437a50216cfc1aede61a2529ef662f17af1edbfc33"
+      }
     },
     {
       "key": "0x01",
@@ -56,7 +78,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_read",
           "cites": "u8 sega315_5124_device::control_read()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::control_read",
+            "line": "u8 sega315_5124_device::control_read()"
+          }
+        ],
+        "digest": "a454654da67ce2495f6a3bb2da9f1026e40c6ded135db05d13d8fcb1c934830d"
+      }
     },
     {
       "key": "0x01",
@@ -91,7 +124,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::vcount_read",
           "cites": "u8 sega315_5124_device::vcount_read()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::vcount_read",
+            "line": "u8 sega315_5124_device::vcount_read()"
+          }
+        ],
+        "digest": "24153e1e5a369e9ae8b0787303310ca62e6e86f51d8282a35dc40d0d4ee9c802"
+      }
     },
     {
       "key": "0x03",
@@ -108,7 +152,18 @@
           "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::hcount_read",
           "cites": "u8 sega315_5124_device::hcount_read()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5124.cpp sega315_5124_device::hcount_read",
+            "line": "u8 sega315_5124_device::hcount_read()"
+          }
+        ],
+        "digest": "3ed4d8782b6c8eaec737368c89ffb7d3d5a38f128a3824b6f58df9835c87fda2"
+      }
     }
   ]
 }

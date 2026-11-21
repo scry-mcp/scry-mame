@@ -50,7 +50,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x01",
           "cites": "//           01 xxxxxx-x Test register"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x01",
+            "line": "//           01 xxxxxx-x Test register"
+          }
+        ],
+        "digest": "8fabe0e823eeb4535c99a2d8ae0eb623e251b81a6af7620f31999e986803c7d7"
+      }
     },
     {
       "key": "0x08",
@@ -66,7 +77,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x08",
           "cites": "//           08 -x------ Key on/off operator 4"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x08",
+            "line": "//           08 -x------ Key on/off operator 4"
+          }
+        ],
+        "digest": "f209aa1a4392ccc28511020c5cdcd6e4835123fec2c31282814e464e50b038b8"
+      }
     },
     {
       "key": "0x0F",
@@ -83,7 +105,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x0F",
           "cites": "//           0F x------- Noise enable"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x0F",
+            "line": "//           0F x------- Noise enable"
+          }
+        ],
+        "digest": "0997ea6237d33e3fc0a1fcd334a44b8d1665ed49d9a78d1c1d3af4a3156ae4b9"
+      }
     },
     {
       "key": "0x10",
@@ -99,7 +132,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x10",
           "cites": "//           10 xxxxxxxx Timer A value (upper 8 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x10",
+            "line": "//           10 xxxxxxxx Timer A value (upper 8 bits)"
+          }
+        ],
+        "digest": "78ca5f66c9aafa1cf8d334438be655f3dbdf266e215a6c7f73e9903e877369fe"
+      }
     },
     {
       "key": "0x11",
@@ -115,7 +159,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x11",
           "cites": "//           11 ------xx Timer A value (lower 2 bits)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x11",
+            "line": "//           11 ------xx Timer A value (lower 2 bits)"
+          }
+        ],
+        "digest": "a0174f76d6a2fdd4bc916d254f21cf917adb2ffd5a00577ec21f57727e349b28"
+      }
     },
     {
       "key": "0x12",
@@ -131,7 +186,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x12",
           "cites": "//           12 xxxxxxxx Timer B value"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x12",
+            "line": "//           12 xxxxxxxx Timer B value"
+          }
+        ],
+        "digest": "f5316f6e80348a4fe0548711f88c2c71b7eecf54f5e446f91e784020678ef277"
+      }
     },
     {
       "key": "0x14",
@@ -148,7 +214,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x14",
           "cites": "//           14 x------- CSM mode"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x14",
+            "line": "//           14 x------- CSM mode"
+          }
+        ],
+        "digest": "75fe68c99ef35299f977bf3e0807a8efec86f39aead0cc03fd37686c91e68fbd"
+      }
     },
     {
       "key": "0x18",
@@ -164,7 +241,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x18",
           "cites": "//           18 xxxxxxxx LFO frequency"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x18",
+            "line": "//           18 xxxxxxxx LFO frequency"
+          }
+        ],
+        "digest": "e11b61dad0b42af452ad39de200fa3a568442dbe4b281a68f8e51a91b82e66fb"
+      }
     },
     {
       "key": "0x19",
@@ -181,7 +269,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x19",
           "cites": "//           19 0xxxxxxx AM LFO depth"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x19",
+            "line": "//           19 0xxxxxxx AM LFO depth"
+          }
+        ],
+        "digest": "19413ec5ce561d4c60723a8a2c6f6fdec5ab6d9c6a392c5c338c6799fc2a9b6a"
+      }
     },
     {
       "key": "0x1A",
@@ -197,7 +296,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x1A",
           "cites": "//           1A -xxxxxxx PM depth"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x1A",
+            "line": "//           1A -xxxxxxx PM depth"
+          }
+        ],
+        "digest": "86e7dcf271cc0cccf497f3a4a085abfdaead26bdac39bccbda373b08d9d5b492"
+      }
     },
     {
       "key": "0x1B",
@@ -214,7 +324,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x1B",
           "cites": "//           1B xx------ CT (2 output data lines)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x1B",
+            "line": "//           1B xx------ CT (2 output data lines)"
+          }
+        ],
+        "digest": "b47388f611edf733a288660dce79aa0883767b6c263f9fa44548ed71414044d0"
+      }
     },
     {
       "key": "0x20..0x27",
@@ -230,7 +351,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x20..0x27",
           "cites": "//        20-27 x------- Pan right"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x20..0x27",
+            "line": "//        20-27 x------- Pan right"
+          }
+        ],
+        "digest": "284567f48f65cfcd8d30db8c9cc28631f3931af7f0aff36715a14a1b191cad10"
+      }
     },
     {
       "key": "0x28..0x2F",
@@ -246,7 +378,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x28..0x2F",
           "cites": "//        28-2F -xxxxxxx Key code"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x28..0x2F",
+            "line": "//        28-2F -xxxxxxx Key code"
+          }
+        ],
+        "digest": "f6ae8ea92145af409ad65dbe1cb40940a306cae8c1fb77fde8d9c133a2b15d15"
+      }
     },
     {
       "key": "0x30..0x37",
@@ -262,7 +405,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x30..0x37",
           "cites": "//        30-37 xxxxxx-- Key fraction"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x30..0x37",
+            "line": "//        30-37 xxxxxx-- Key fraction"
+          }
+        ],
+        "digest": "ceb5739e874f626fdc3ed1084681eb17a79d9eb6f600b314cc8f2a5aeb48ca3a"
+      }
     },
     {
       "key": "0x38..0x3F",
@@ -278,7 +432,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x38..0x3F",
           "cites": "//        38-3F -xxx---- LFO PM sensitivity"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x38..0x3F",
+            "line": "//        38-3F -xxx---- LFO PM sensitivity"
+          }
+        ],
+        "digest": "bd19a3882c6a9ccff2f20f743dceca1281c1e43e8c04bc8668608b6f0e191ffd"
+      }
     },
     {
       "key": "0x40..0x5F",
@@ -310,7 +475,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x60..0x7F",
           "cites": "//        60-7F -xxxxxxx Total level (0-127)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x60..0x7F",
+            "line": "//        60-7F -xxxxxxx Total level (0-127)"
+          }
+        ],
+        "digest": "461a59663664f69d0df99332fa30858cd4a4491ade68666216de4d1c808691e6"
+      }
     },
     {
       "key": "0x80..0x9F",
@@ -326,7 +502,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x80..0x9F",
           "cites": "//        80-9F xx------ Key scale rate (0-3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0x80..0x9F",
+            "line": "//        80-9F xx------ Key scale rate (0-3)"
+          }
+        ],
+        "digest": "18e5b197b173fb47dc0925031a2b89add9c7c1d84e08bb9a25d0eb3090e27ce4"
+      }
     },
     {
       "key": "0xA0..0xBF",
@@ -342,7 +529,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xA0..0xBF",
           "cites": "//        A0-BF x------- LFO AM enable"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xA0..0xBF",
+            "line": "//        A0-BF x------- LFO AM enable"
+          }
+        ],
+        "digest": "f6f78e30a135a6eacd5678ad869c0d7938c2169ea56aca7f41113b4dc39bde5a"
+      }
     },
     {
       "key": "0xC0..0xDF",
@@ -358,7 +556,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xC0..0xDF",
           "cites": "//        C0-DF xx------ Detune 2 value (0-3)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xC0..0xDF",
+            "line": "//        C0-DF xx------ Detune 2 value (0-3)"
+          }
+        ],
+        "digest": "1a71c62ec57071d4e36af2eb5f6b0c612316a79ced05e416364f196800018224"
+      }
     },
     {
       "key": "0xE0..0xFF",
@@ -374,7 +583,18 @@
           "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xE0..0xFF",
           "cites": "//        E0-FF xxxx---- Sustain level (0-15)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h opm_registers register map 0xE0..0xFF",
+            "line": "//        E0-FF xxxx---- Sustain level (0-15)"
+          }
+        ],
+        "digest": "02a0fc076503a77a69023557ad2a8b5386df918efd8cc6cafef58fbfae3b7f3a"
+      }
     }
   ]
 }

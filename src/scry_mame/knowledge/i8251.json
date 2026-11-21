@@ -21,7 +21,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp i8251_device::data_r",
           "cites": "uint8_t i8251_device::data_r()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp i8251_device::data_r",
+            "line": "uint8_t i8251_device::data_r()"
+          }
+        ],
+        "digest": "d3bd014ad9591c0faa13096699af1a06b45459ff7c9f8deb865b9e6aaf3d4ad6"
+      }
     },
     {
       "key": "0x00",
@@ -55,7 +66,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp i8251_device::status_r",
           "cites": "uint8_t i8251_device::status_r()"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp i8251_device::status_r",
+            "line": "uint8_t i8251_device::status_r()"
+          }
+        ],
+        "digest": "abed9bb908296b37658c28d6de8053dd99ee3c15518e5161cedb49de07a629f2"
+      }
     },
     {
       "key": "0x01",
@@ -72,7 +94,18 @@
           "ref": "mame:src/devices/machine/i8251.cpp i8251_device::control_w",
           "cites": "void i8251_device::control_w(uint8_t data)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8251.cpp i8251_device::control_w",
+            "line": "void i8251_device::control_w(uint8_t data)"
+          }
+        ],
+        "digest": "492b72c3c38e21bbd75a20af98881b6e81ab19b70b024ae5a7a9ff79fcfcc53d"
+      }
     }
   ]
 }

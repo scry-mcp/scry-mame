@@ -58,7 +58,18 @@
           "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_NMI_VECTOR",
           "cites": "\tNEC_NMI_VECTOR      = 2,"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_NMI_VECTOR",
+            "line": "\tNEC_NMI_VECTOR      = 2,"
+          }
+        ],
+        "digest": "d93343c9eb1cf064441cefcad0e79f2a82035d9e2fb23eed9b30adc4aae64664"
+      }
     },
     {
       "key": "4",
@@ -77,7 +88,18 @@
           "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_BRKV_VECTOR",
           "cites": "\tNEC_BRKV_VECTOR     = 4,"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_BRKV_VECTOR",
+            "line": "\tNEC_BRKV_VECTOR     = 4,"
+          }
+        ],
+        "digest": "47020c554fc2eb08d00ce678d476c2708e2ed0a7217abcf67ccffc23008b5883"
+      }
     },
     {
       "key": "5",
@@ -96,7 +118,18 @@
           "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_CHKIND_VECTOR",
           "cites": "\tNEC_CHKIND_VECTOR   = 5"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4a",
+        "against": [
+          {
+            "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_CHKIND_VECTOR",
+            "line": "\tNEC_CHKIND_VECTOR   = 5"
+          }
+        ],
+        "digest": "b58055e9f3d27bd1b4ccf699f1928d1a52b859909b622111bf748a94a90a659c"
+      }
     }
   ]
 }

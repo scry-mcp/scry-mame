@@ -30,7 +30,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x00",
           "cites": "\tcase WR0_NULL:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x00",
+            "line": "\tcase WR0_NULL:"
+          }
+        ],
+        "digest": "d93e28ba2f3fa6c07f42581fed6d063643ff5da0b119dced38aea126434b336b"
+      }
     },
     {
       "key": "0x08",
@@ -44,7 +55,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x08",
           "cites": "\tcase WR0_SEND_ABORT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x08",
+            "line": "\tcase WR0_SEND_ABORT:"
+          }
+        ],
+        "digest": "1f870e56d50e11ebe83380e50f32e5c849a6b86c0b4cdbce13784019acac7415"
+      }
     },
     {
       "key": "0x10",
@@ -93,7 +115,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x20",
           "cites": "\tcase WR0_ENABLE_INT_NEXT_RX:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x20",
+            "line": "\tcase WR0_ENABLE_INT_NEXT_RX:"
+          }
+        ],
+        "digest": "9d9c9e823c4632c5e0af46742abd0001084588308dd645b35dda7e9ba9a1fca8"
+      }
     },
     {
       "key": "0x28",
@@ -110,7 +143,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x28",
           "cites": "\tcase WR0_RESET_TX_INT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x28",
+            "line": "\tcase WR0_RESET_TX_INT:"
+          }
+        ],
+        "digest": "58f26cc63722cea914abcd6e5895beb31ee8dc926c9651eb1193690c11eac03c"
+      }
     },
     {
       "key": "0x30",
@@ -124,7 +168,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x30",
           "cites": "\tcase WR0_ERROR_RESET:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x30",
+            "line": "\tcase WR0_ERROR_RESET:"
+          }
+        ],
+        "digest": "094525cbbb8bce45331d00bdd92814781aa0f07600d120900acfe2627aaaefd8"
+      }
     },
     {
       "key": "0x38",
@@ -142,7 +197,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x38",
           "cites": "\tcase WR0_RETURN_FROM_INT:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0 command 0x38",
+            "line": "\tcase WR0_RETURN_FROM_INT:"
+          }
+        ],
+        "digest": "6cc25a957f436f50cf78d4457d5a15b93e9d207e858e0e93686a2d02a1ca1a43"
+      }
     },
     {
       "key": "0x40",
@@ -159,7 +225,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x40",
           "cites": "\tcase WR0_CRC_RESET_RX: /* In Synchronous mode: all Os (zeros) (CCITT-O CRC-16) */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x40",
+            "line": "\tcase WR0_CRC_RESET_RX: /* In Synchronous mode: all Os (zeros) (CCITT-O CRC-16) */"
+          }
+        ],
+        "digest": "a50182fe8c67c5ed1daee917fea5943b6921b757c32f61b48ea9abed02a5c1ab"
+      }
     },
     {
       "key": "0x80",
@@ -176,7 +253,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x80",
           "cites": "\tcase WR0_CRC_RESET_TX: /* In HDLC mode: all 1s (ones) (CCITT-1) */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0x80",
+            "line": "\tcase WR0_CRC_RESET_TX: /* In HDLC mode: all 1s (ones) (CCITT-1) */"
+          }
+        ],
+        "digest": "e83c508594532bf2d6918468ffb1c962ab2a1b783a137e07fd7ef70987346d11"
+      }
     },
     {
       "key": "0xC0",
@@ -194,7 +282,18 @@
           "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0xC0",
           "cites": "\tcase WR0_CRC_RESET_TX_UNDERRUN: /* Resets Tx underrun/EOM bit (D6 of the SRO register) */"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/z80sio.cpp z80sio_channel::do_sioreg_wr0_resets command 0xC0",
+            "line": "\tcase WR0_CRC_RESET_TX_UNDERRUN: /* Resets Tx underrun/EOM bit (D6 of the SRO register) */"
+          }
+        ],
+        "digest": "bc24eaa790f1f731f930201b96de478b1fc04f53a767b2a0c59631189e41d475"
+      }
     }
   ]
 }

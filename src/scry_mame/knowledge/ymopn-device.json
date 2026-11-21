@@ -45,7 +45,18 @@
           "ref": "mame:src/devices/sound/ymopn.cpp DEFINE_DEVICE_TYPE ym2203",
           "cites": "DEFINE_DEVICE_TYPE(YM2203, ym2203_device, \"ym2203\", \"YM2203 OPN\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ymopn.cpp DEFINE_DEVICE_TYPE ym2203",
+            "line": "DEFINE_DEVICE_TYPE(YM2203, ym2203_device, \"ym2203\", \"YM2203 OPN\")"
+          }
+        ],
+        "digest": "802286c62362f7398077d4add95dc721bdb6f76fc3da67558a569ae70b6131fb"
+      }
     },
     {
       "key": "ym2608",
@@ -143,7 +154,18 @@
           "ref": "mame:src/devices/sound/ymopn.cpp DEFINE_DEVICE_TYPE ym2612",
           "cites": "DEFINE_DEVICE_TYPE(YM2612, ym2612_device, \"ym2612\", \"YM2612 OPN2\")"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/sound/ymopn.cpp DEFINE_DEVICE_TYPE ym2612",
+            "line": "DEFINE_DEVICE_TYPE(YM2612, ym2612_device, \"ym2612\", \"YM2612 OPN2\")"
+          }
+        ],
+        "digest": "ef9699809e4df667ce8704c6b4e648aab0d8284b2310f970a2b0056a794a8aad"
+      }
     }
   ]
 }

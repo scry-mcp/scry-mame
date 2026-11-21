@@ -26,7 +26,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write mode set",
           "cites": "\t\tif (data & CONTROL_MODE_SET)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write mode set",
+            "line": "\t\tif (data & CONTROL_MODE_SET)"
+          }
+        ],
+        "digest": "8cc0a0f5f8d8526f6eb0df1a26876820755a2027e70623f1375ad1b393a6dfc4"
+      }
     },
     {
       "key": "0x00..0x7F",
@@ -43,7 +54,18 @@
           "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write bit set reset",
           "cites": "\t\t\tint bit = (data >> 1) & 0x07;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/machine/i8255.cpp i8255_device::write bit set reset",
+            "line": "\t\t\tint bit = (data >> 1) & 0x07;"
+          }
+        ],
+        "digest": "5e7b5fd15935c64a5a940bb3cdfc1f6220ad1f5a387e61ff76dad5fe513b5dd8"
+      }
     }
   ]
 }

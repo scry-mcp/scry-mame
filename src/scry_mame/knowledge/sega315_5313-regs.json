@@ -21,7 +21,18 @@
           "cites": " $00 - Mode Set Register No. 1"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x00 (0x100)",
+            "line": " $00 - Mode Set Register No. 1"
+          }
+        ],
+        "digest": "aff78ce6682383d54f3a4f51bb9e289cbd3051da1d6c77322f548a3dce6874a0"
+      }
     },
     {
       "key": "0x101",
@@ -55,7 +66,18 @@
           "cites": "#define MEGADRIVE_REG02_PATTERN_ADDR_A  ((m_regs[0x02] & 0x38) >> 3)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x02 (0x102)",
+            "line": "#define MEGADRIVE_REG02_PATTERN_ADDR_A  ((m_regs[0x02] & 0x38) >> 3)"
+          }
+        ],
+        "digest": "67fe2d84fa9e9ac5d91a66da333676ef8fd0627669034b8412fa1b21a71bf844"
+      }
     },
     {
       "key": "0x103",
@@ -72,7 +94,18 @@
           "cites": "#define MEGADRIVE_REG03_PATTERN_ADDR_W  ((m_regs[0x03] & 0x3e) >> 1)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x03 (0x103)",
+            "line": "#define MEGADRIVE_REG03_PATTERN_ADDR_W  ((m_regs[0x03] & 0x3e) >> 1)"
+          }
+        ],
+        "digest": "f6176b524211219b99637c5521d71518360eeb9545b3302445fd4d1dde41fb1c"
+      }
     },
     {
       "key": "0x104",
@@ -89,7 +122,18 @@
           "cites": "#define MEGADRIVE_REG04_PATTERN_ADDR_B  ((m_regs[0x04] & 0x07) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x04 (0x104)",
+            "line": "#define MEGADRIVE_REG04_PATTERN_ADDR_B  ((m_regs[0x04] & 0x07) >> 0)"
+          }
+        ],
+        "digest": "b02a4e2e49f35b3fad8e9193cc2710f5682ea91cbf440cdaa64110214356bc71"
+      }
     },
     {
       "key": "0x105",
@@ -121,7 +165,18 @@
           "cites": "/* 6? */"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x06 (0x106)",
+            "line": "/* 6? */"
+          }
+        ],
+        "digest": "efbdcab15d593b71c1854ad5af571958aecb73ea1ba082531e4ddb25a88a7633"
+      }
     },
     {
       "key": "0x107",
@@ -138,7 +193,18 @@
           "cites": "#define MEGADRIVE_REG07_BGCOLOUR        ((m_regs[0x07] & 0x3f) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x07 (0x107)",
+            "line": "#define MEGADRIVE_REG07_BGCOLOUR        ((m_regs[0x07] & 0x3f) >> 0)"
+          }
+        ],
+        "digest": "ec4b84b87a7b433c56cf48bc86f85f1df8c0401fd3d996d67c819ad7d17165fa"
+      }
     },
     {
       "key": "0x108",
@@ -153,7 +219,18 @@
           "cites": "/* 8? */"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x08 (0x108)",
+            "line": "/* 8? */"
+          }
+        ],
+        "digest": "286aa8b4518ca9681e4b753b1c2ee53ca271192732d61a2b88cf4cff7b00af52"
+      }
     },
     {
       "key": "0x109",
@@ -168,7 +245,18 @@
           "cites": "/* 9? */"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x09 (0x109)",
+            "line": "/* 9? */"
+          }
+        ],
+        "digest": "2ec53aaed016f0b36d88ef0ea4e9b74051e697f1dfa6f5f62869ed276a34103b"
+      }
     },
     {
       "key": "0x10A",
@@ -203,7 +291,18 @@
           "cites": "#define MEGADRIVE_REG0B_HSCROLL_MODE    ((m_regs[0x0b] & 0x03) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0B (0x10B)",
+            "line": "#define MEGADRIVE_REG0B_HSCROLL_MODE    ((m_regs[0x0b] & 0x03) >> 0)"
+          }
+        ],
+        "digest": "1468ebce95f4fced66198b65391eff9a5395732d131d8122e1c714a95c65f827"
+      }
     },
     {
       "key": "0x10C",
@@ -237,7 +336,18 @@
           "cites": "#define MEGADRIVE_REG0D_HSCROLL_ADDR    ((m_regs[0x0d] & 0x3f) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0D (0x10D)",
+            "line": "#define MEGADRIVE_REG0D_HSCROLL_ADDR    ((m_regs[0x0d] & 0x3f) >> 0)"
+          }
+        ],
+        "digest": "85a5c97e6f6e6c9972c3f2a609efa2f17a42e7e43e98d11ce4ab766bad0fd465"
+      }
     },
     {
       "key": "0x10E",
@@ -252,7 +362,18 @@
           "cites": "/* e? */"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x0E (0x10E)",
+            "line": "/* e? */"
+          }
+        ],
+        "digest": "6084dc4ed031f320d848dd46a3fa3654b9a64f0716b5f43b56b379e9f4e7c8cf"
+      }
     },
     {
       "key": "0x10F",
@@ -286,7 +407,18 @@
           "cites": "#define MEGADRIVE_REG10_VSCROLL_SIZE    ((m_regs[0x10] & 0x30) >> 4)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x10 (0x110)",
+            "line": "#define MEGADRIVE_REG10_VSCROLL_SIZE    ((m_regs[0x10] & 0x30) >> 4)"
+          }
+        ],
+        "digest": "1d4e54e625faaa91c896e5942a3d8360c277df1b27062d16963fce0fe3b4dd4b"
+      }
     },
     {
       "key": "0x111",
@@ -303,7 +435,18 @@
           "cites": "#define MEGADRIVE_REG11_WINDOW_HPOS     ((m_regs[0x11] & 0x1f) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x11 (0x111)",
+            "line": "#define MEGADRIVE_REG11_WINDOW_HPOS     ((m_regs[0x11] & 0x1f) >> 0)"
+          }
+        ],
+        "digest": "75325d3ca5e0b22a2c0893636e22aa72b3f1a1f3dc9cf9fdfd8a55ed32e4e812"
+      }
     },
     {
       "key": "0x112",
@@ -320,7 +463,18 @@
           "cites": "#define MEGADRIVE_REG12_WINDOW_VPOS     ((m_regs[0x12] & 0x1f) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x12 (0x112)",
+            "line": "#define MEGADRIVE_REG12_WINDOW_VPOS     ((m_regs[0x12] & 0x1f) >> 0)"
+          }
+        ],
+        "digest": "1a8640398bc26eca7a6ffb50bf4d63ae55d65ebb8da8f8e5756b42b879c9f474"
+      }
     },
     {
       "key": "0x113",
@@ -371,7 +525,18 @@
           "cites": "#define MEGADRIVE_REG15_DMASOURCE1      ((m_regs[0x15] & 0xff) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x15 (0x115)",
+            "line": "#define MEGADRIVE_REG15_DMASOURCE1      ((m_regs[0x15] & 0xff) >> 0)"
+          }
+        ],
+        "digest": "3ef71f4f04d2fc162e2915247533342044ce56995ba55b5dcc8f58e53e1a395e"
+      }
     },
     {
       "key": "0x116",
@@ -388,7 +553,18 @@
           "cites": "#define MEGADRIVE_REG16_DMASOURCE2      ((m_regs[0x16] & 0xff) >> 0)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x16 (0x116)",
+            "line": "#define MEGADRIVE_REG16_DMASOURCE2      ((m_regs[0x16] & 0xff) >> 0)"
+          }
+        ],
+        "digest": "aa0759dd4f03ac6a2687cbe3ce5299d2807d47f90920e4c7831cb06a12eac52d"
+      }
     },
     {
       "key": "0x117",
@@ -406,7 +582,18 @@
           "cites": "#define MEGADRIVE_REG17_DMATYPE         ((m_regs[0x17] & 0xc0) >> 6)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp VDP register 0x17 (0x117)",
+            "line": "#define MEGADRIVE_REG17_DMATYPE         ((m_regs[0x17] & 0xc0) >> 6)"
+          }
+        ],
+        "digest": "534a0b2dc52e0d05c9efda447e9bccb143524ce99665ebb4b453614188536600"
+      }
     },
     {
       "key": "0x118..0x11F",
@@ -440,7 +627,18 @@
           "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w register-set word (0x200)",
           "cites": "\t\tif ((data & 0xc000) == 0x8000)"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w register-set word (0x200)",
+            "line": "\t\tif ((data & 0xc000) == 0x8000)"
+          }
+        ],
+        "digest": "ddf5e413c7614382ae94b6ee253374b17869bb22bd449707aec6475b68fb9731"
+      }
     },
     {
       "key": "0x201",
@@ -457,7 +655,18 @@
           "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w command first word (0x201)",
           "cites": "\t\t\tm_command_pending = 1;"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_w command first word (0x201)",
+            "line": "\t\t\tm_command_pending = 1;"
+          }
+        ],
+        "digest": "bb2ef13a73c04db2d1419c7205d820313e8bf16bea4a44f33da3f9fd40ae7db0"
+      }
     },
     {
       "key": "0x202",

@@ -21,7 +21,18 @@
           "cites": "u16 sega315_5313_device::data_port_r()"
         }
       ],
-      "access": "read"
+      "access": "read",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::data_port_r",
+            "line": "u16 sega315_5313_device::data_port_r()"
+          }
+        ],
+        "digest": "0ef362728796bb0f53e3049368a3e9d01f71c9909853cfda785d893b0037a13c"
+      }
     },
     {
       "key": "0x00..0x03",
@@ -38,7 +49,18 @@
           "cites": "void sega315_5313_device::data_port_w(int data)"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::data_port_w",
+            "line": "void sega315_5313_device::data_port_w(int data)"
+          }
+        ],
+        "digest": "02755111cfeadc16bc1a472cd1c3105c8d6015c355d8c43c9e90e7c34869813f"
+      }
     },
     {
       "key": "0x04..0x07",
@@ -56,7 +78,18 @@
           "cites": "u16 sega315_5313_device::ctrl_port_r()"
         }
       ],
-      "access": "read"
+      "access": "read",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::ctrl_port_r",
+            "line": "u16 sega315_5313_device::ctrl_port_r()"
+          }
+        ],
+        "digest": "a0c201086f1dbe00e23b8bfb097f8ed459cc32e9e51ae07a802e836382967e06"
+      }
     },
     {
       "key": "0x04..0x07",
@@ -92,7 +125,18 @@
           "cites": "u16 sega315_5313_device::megadriv_read_hv_counters()"
         }
       ],
-      "access": "read"
+      "access": "read",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::megadriv_read_hv_counters",
+            "line": "u16 sega315_5313_device::megadriv_read_hv_counters()"
+          }
+        ],
+        "digest": "5ae2bcf5d2ff5b4845b740490d02d38f3a9a07ca5059993767faee30599bb54e"
+      }
     },
     {
       "key": "0x08..0x0F",
@@ -107,7 +151,18 @@
           "cites": "\t\t\tlogerror(\"Attempt to Write to HV counters!!\\n\");"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_w HV counter",
+            "line": "\t\t\tlogerror(\"Attempt to Write to HV counters!!\\n\");"
+          }
+        ],
+        "digest": "5e1993ab8b488739eaf6b80e024178acfe415ccb30d71c8e6081186062c108c6"
+      }
     },
     {
       "key": "0x10..0x17",
@@ -124,7 +179,18 @@
           "cites": "\t\t\t\tpsg_w(data & 0xff);"
         }
       ],
-      "access": "write"
+      "access": "write",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_w PSG",
+            "line": "\t\t\t\tpsg_w(data & 0xff);"
+          }
+        ],
+        "digest": "e91aaa06719e36277f3a0130656959261e5231297609696f273afd89b312107f"
+      }
     },
     {
       "key": "0x10..0x17",
@@ -139,7 +205,18 @@
           "cites": "\t\t\t\tlogerror(\"Attempting to read PSG!\\n\");"
         }
       ],
-      "access": "read"
+      "access": "read",
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_r PSG",
+            "line": "\t\t\t\tlogerror(\"Attempting to read PSG!\\n\");"
+          }
+        ],
+        "digest": "f5e175d5fa48d6d8f60e3863a0ec278aa4eea668addaf93261c18c8e9527ef4c"
+      }
     },
     {
       "key": "0x18..0x1F",
@@ -153,7 +230,18 @@
           "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_w default",
           "cites": "\t\tdefault:"
         }
-      ]
+      ],
+      "checked": {
+        "by": "phase K4bc1",
+        "writer": "phase K4b",
+        "against": [
+          {
+            "ref": "mame:src/devices/video/315_5313.cpp sega315_5313_device::vdp_w default",
+            "line": "\t\tdefault:"
+          }
+        ],
+        "digest": "9cd6034d362ccc8e4e9a466131b5131604ffbe1e732d51a3ca35afd3bb9331df"
+      }
     }
   ]
 }
