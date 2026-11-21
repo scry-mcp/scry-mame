@@ -73,7 +73,7 @@
     "overlay": "Marks over the border, on by default: `calls` names each call, `keys` the fields held, `pause` a stopped machine, `record` a recording. `place` is `top`, `bottom` or `auto`.",
     "view": "What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.",
     "profile": "A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.",
-    "names": "`false` leaves a reply's numbers bare, with no `names` field and no name in its summary; the window's captions still name them."
+    "names": "`false` leaves a reply's numbers bare, with no `names` field, no name in its summary and no note on a disassembled line; the window's captions still name them."
    },
    "returns": {
     "rom_check": "`OK` when the 16 bytes read from the machine equal the image's. A start whose check fails is refused.",

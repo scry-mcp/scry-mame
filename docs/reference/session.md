@@ -141,7 +141,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `presence` (boolean, default `true`): Draws a border around the emulator's window while the session is open, brighter while a call runs the machine. `false` leaves it off.
 - `overlay` (any, default `{"calls": true, "keys": true, "pointer": true, "pause": true, "record": true, "place": "auto"}`): Marks over the border, on by default: `calls` names each call, `keys` the fields held, `pause` a stopped machine, `record` a recording. `place` is `top`, `bottom` or `auto`.
 - `view` (string, default `""`): What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.
-- `names` (boolean, default `true`): `false` leaves a reply's numbers bare, with no `names` field and no name in its summary; the window's captions still name them.
+- `names` (boolean, default `true`): `false` leaves a reply's numbers bare, with no `names` field, no name in its summary and no note on a disassembled line; the window's captions still name them.
 - `profile` (string, default `""`): A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.
 
 ### What comes back
@@ -352,7 +352,7 @@ overlay: Layers drawn over the presence edge, each on by default: `calls` a capt
 
 view: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
 
-names: Name the numbers a reply shows: a port, interrupt, address or key gets its name in the reply's `names` and in its summary. `false` leaves replies bare; the window's captions keep their names.
+names: Name the numbers a reply shows: a port, interrupt, address or key gets its name in the reply's `names`, its summary and a disassembled line's note. `false` leaves replies bare; the window's captions keep their names.
 ```
 
 </details>

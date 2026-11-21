@@ -283,30 +283,30 @@ What the machine says about itself (inputs, devices, the memory map) was read at
 <details><summary>The contract your client receives</summary>
 
 ```text
-What a number is called on this machine, and what the base knows about it: a port, an
-interrupt vector, a DOS or BIOS call, an IRQ line, a fixed memory address, an input, a device
-and its registers and commands. Rows first (`id`, `kind`, `key`, `name`); one match, or an
-`id`, answers the whole entry: `description`, `behaviour` (what reading, writing or calling it
-does), `aliases`, `device`, and the public `sources` it was checked against, with what the
-emulator does where they differ. Answers with no session, except the kinds read from the
-running machine.
+What a number is called on this machine, and what the base knows of it: a port, interrupt
+vector, DOS or BIOS call, IRQ, memory address, input, device, its registers and commands. One
+match, or an `id`, answers the whole entry (`description`, `behaviour`, `sources`); more,
+rows. No session is needed except for a device by tag, inputs and memory.
 
-`id`: an entry's id, as another reply cites it. `kind`: one of `vector`, `call`, `error`,
-`port`, `irq`, `memory`, `input`, `device`, `register`, `command`; empty searches every kind.
-`key`: the number as a reply prints it (`0x3C8`, `0x21`, `0x21/0x4C` for a function of an
-interrupt, `0040:0049`), or a range (`0x3C0..0x3CF`). `text`: words looked for in names,
-aliases and descriptions; a word ending in `*` matches by prefix. `device`: everything that
-belongs to that device. Give `id`, `key`, `text`, `device`, or only `kind` to list it.
-`scope`: the system, cpu or device the answer is for; empty, the live session's. `limit` 1..50.
+`id`: an entry's id. `kind`: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`,
+`device`, `register` or `command`; empty searches all. `key`: the number as a reply prints it,
+or a range. `text`: words in names, aliases, descriptions; `*` ends a prefix. `device`: all of
+that device. `scope`: the system, cpu or device; empty, the live session's. `limit` 1..50.
 
-Refused (INVALID): none of `id`, `kind`, `key`, `text`, `device` (`bad_argument`); a `key`
-that is no number or range of that kind (`bad_argument`); an `id` or a `device` the base does
-not hold (`unknown_ref`, naming the nearest); a kind this server holds nothing of
-(`no_channel`, naming the kinds it has); a kind read from the machine with no session
-(`no_session`); a `scope` it does not support (`bad_argument`, naming them).
+Examples: `key=0x3C8`; `kind=port key=0x3C0..0x3CF`; `kind=vector key=0xFFF8 scope=<scope>`;
+`kind=call key=0x21/0x4C`, and its variant by a register `kind=call key=0x10/0x12/BL=0x36`;
+a device of the running machine by its tag `kind=device key=:maincpu`; its registers
+`kind=register device=<device>`; `text=palette*`.
 
-Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`; nothing matched
-answers with no entry, `nearest` and a `note`: it stays a number.
+Refused (INVALID): nothing to look up, a bad `key`, or a `scope` it lacks, naming those it has
+(`bad_argument`; `6809` is read as `m6809`, and the reply says so); an `id` or `device` it
+lacks (`unknown_ref`); a kind it holds none of (`no_channel`); a tag or live kind with no
+session (`no_session`).
+
+Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`; nothing matched:
+no entry, `nearest` and a `note`: it stays a number.
+
+Scopes: acia6850, am9517a, ay8910, chip, i8251, i8255, ins8250, m68000, m6809, mc146818, mc6845, mc68681, msm5205, okim6295, pia6821, pic8259, pit8253, saa1099, sega315_5124, sega315_5313, sn76496, upd1990a, upd7759, v30, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, z80, z80scc, z80sio.
 
 Reference: REFERENCE.md, Names for numbers.
 ```

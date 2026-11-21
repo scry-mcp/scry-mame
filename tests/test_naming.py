@@ -121,6 +121,65 @@ def test_a_chips_handler_names_the_chip_and_a_write_to_its_index_names_the_regis
                                                                   "data_hex": "0c"})
 
 
+def chip_at(monkeypatch: pytest.MonkeyPatch, handler: str) -> naming.MameNamer:
+    """The board with `handler` (as MAME prints a delegate) behind 0x900000, and its namer."""
+    board(monkeypatch)
+    row = next(r for r in STATE.machine_map["address_map"] if r["start"] == "0x00900000")
+    row["write"] = f"delegate/{handler}"
+    return naming.MAMENAMER
+
+
+@pytest.mark.parametrize(("handler", "data", "named"), [
+    ("ymf262_device::address_w", 0x25, "ymf262:register:0x20..0x35"),
+    ("ymf262_device::address_hi_w", 0x25, "ymf262:register:0x120..0x135"),
+    ("ymf262_device::address_hi_w", 0x05, "ymf262:register:0x105"),
+    ("ymf262_device::address_w", 0x05, None),
+    ("ymf262_device::data_w", 0x25, None),
+    ("ay8910_device::address_w", 0x03, "ay8910:register:0x00..0x05"),
+    ("ym2608_device::address_w", 0xFF, None),
+    ("ym2608_device::address_w", 0x2D, "ym2608:register:0x2D:write"),
+])
+def test_an_index_handler_that_is_a_list_selects_a_bank_and_a_range_names_its_registers(
+        monkeypatch: pytest.MonkeyPatch, handler: str, data: int, named: str | None) -> None:
+    got = chip_at(monkeypatch, handler).register(0x900000, ":maincpu", data)
+    assert (got.id if got else None) == named
+
+
+@pytest.mark.parametrize(("access", "named"), [
+    ("write", "mixer and port control"), ("read", "mixer readback")])
+def test_a_register_told_apart_by_access_is_named_for_the_access_of_the_call(
+        monkeypatch: pytest.MonkeyPatch, access: str, named: str) -> None:
+    namer = chip_at(monkeypatch, "ay8910_device::address_w")
+    got = namer.register(0x900000, ":maincpu", 0x07, access)
+    assert got is not None and got.name == named
+    written = namer.arguments("write", {"ref": "0x900000", "data_hex": "07"})["data_hex"]
+    assert written.name == "mixer and port control"
+
+
+def test_a_register_is_found_in_the_dictionary_that_holds_it_not_in_the_first_one(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    import dataclasses
+
+    chip_at(monkeypatch, "ym3526_device::address_w")
+    real = naming.base()
+
+    class FirstWithoutReached:
+        """A chip whose first register comes from a dictionary that says nothing of `reached`."""
+
+        def __getattr__(self, name: str) -> Any:
+            return getattr(real, name)
+
+        def search(self, *a: Any, **k: Any) -> Any:
+            found = real.search(*a, **k)
+            found.entries = [dataclasses.replace(e, reached=None) if e.key == "0x01" else e
+                             for e in found.entries]
+            return found
+
+    namer = naming.MameNamer(FirstWithoutReached())  # type: ignore[arg-type]
+    assert namer.register(0x900000, ":maincpu", 0x08) is not None
+    assert namer.register(0x900000, ":maincpu", 0x01) is None
+
+
 def test_a_stops_pc_is_named_and_a_typed_symbols_address_is_not_repeated(
         monkeypatch: pytest.MonkeyPatch) -> None:
     board(monkeypatch, symbols={"COUNT_COIN": 0x20B583})
@@ -208,6 +267,16 @@ def test_knowledge_find_reads_the_inputs_the_devices_and_the_map_from_the_machin
     assert live.rows("memory", "not a key", "") == []
 
 
+def test_a_device_is_asked_by_its_tag_in_either_spelling_and_answers_the_same(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    board(monkeypatch, guarded=False)
+    by_key = s.knowledge_find(kind="device", key=":crtc")
+    by_device = s.knowledge_find(device=":crtc")
+    assert by_key["entries"] == by_device["entries"] != []
+    assert by_key["entries"][0]["key"] == ":crtc"
+    assert by_key["entries"][0]["chip_entry"]["id"] == "chip:device:mc6845"
+
+
 def test_the_reply_of_knowledge_find_names_a_vector_with_no_session() -> None:
     reply = s.knowledge_find(kind="vector", key="2", scope="m68000")
     assert reply["entries"][0]["id"] == "m68000:vector:2"
@@ -231,7 +300,7 @@ def test_what_an_instruction_states_outright_is_named(cpu: str, text: str,
                                                       expected: str) -> None:
     scope = naming.MAMENAMER.scope_of_type(cpu)
     assert scope is not None
-    found = notes.note(naming.base(), scope, line_notes.operands(cpu, text))
+    found = notes.note(naming.base(), scope, line_notes.operands(cpu, text), names_on=True)
     assert found is not None and found.text == expected and not found.live
 
 
@@ -245,7 +314,7 @@ def test_what_an_instruction_states_outright_is_named(cpu: str, text: str,
 def test_what_a_register_or_nothing_holds_is_left_as_it_is(cpu: str, text: str) -> None:
     scope = naming.MAMENAMER.scope_of_type(cpu)
     ops = line_notes.operands(cpu, text)
-    assert scope is None or notes.note(naming.base(), scope, ops) is None
+    assert scope is None or notes.note(naming.base(), scope, ops, names_on=True) is None
 
 
 def test_a_listing_line_carries_its_note_apart_from_a_persons_comment(
@@ -259,6 +328,18 @@ def test_a_listing_line_carries_its_note_apart_from_a_persons_comment(
                                     ":maincpu")
     assert row["note"] == "TRAP #0 (0x80)" and row["comment"] == "a person's words"
     assert cpus.cpu_type(":maincpu") == "m68000"
+
+
+def test_with_the_names_off_a_disassembled_line_carries_no_note(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    from scry_mame import read
+    board(monkeypatch)
+    lines = ["000560: 4E40           trap    #$0 // a person's words"]
+    monkeypatch.setattr(STATE, "names", False)
+    assert line_notes.of_listing(lines, ":maincpu") == []
+    row = line_notes.on_instruction(read.stop_instruction(lines[0], 0x560, ":maincpu"),
+                                    ":maincpu")
+    assert "note" not in row and row["comment"] == "a person's words"
 
 
 def test_disassemble_answers_line_notes_only_for_the_lines_the_base_names(

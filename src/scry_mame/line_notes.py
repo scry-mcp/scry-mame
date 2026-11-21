@@ -10,6 +10,7 @@ from typing import Any
 from scry_core import notes
 
 from scry_mame import cpus, naming, read
+from scry_mame.state import STATE
 
 #: 68000 absolute operands (`$202e84.l`, `$7e0000.w`) and TRAP's number (`trap    #$0`).
 _ABSOLUTE_68K = re.compile(r"(?<![#\w])\$([0-9A-Fa-f]+)\.[wl]\b")
@@ -61,7 +62,7 @@ def note(text: str, cpu: str | None) -> str | None:
     scope = naming.MAMENAMER.scope(cpu)
     if scope is None:
         return None
-    found = notes.note(naming.base(), scope, operands(kind, text))
+    found = notes.note(naming.base(), scope, operands(kind, text), names_on=STATE.names)
     return None if found is None else found.text
 
 

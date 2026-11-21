@@ -42,6 +42,11 @@ NUMBER_FIELDS: dict[str, tuple[Field, ...]] = {
 STOP_FIELDS = (Field("watch_hit.writer_pc", _PC), Field("watch_hit.writes[].pc", _PC),
                Field("regpoint_hit.pc", _PC))
 
+#: More registers than any chip holds, and the span of one register bank (OPL3's second bank
+#: starts at 0x100).
+ALL_REGISTERS = 1000
+BANK = 0x100
+
 _BYTE = re.compile(r"[0-9A-Fa-f]{2}")
 _HANDLER_CLASS = re.compile(r"([A-Za-z0-9_]+)::([A-Za-z0-9_]+)$")
 
@@ -138,21 +143,41 @@ class MameNamer:
         tag = row.get("share") or row.get("region")
         return Named("memory", tag.lstrip(":"), number) if tag else None
 
-    def register(self, addr: int, cpu: str | None, data: int) -> Named | None:
-        """The register a one-byte write selects, when `addr` is a shared chip's index handler."""
+    @staticmethod
+    def _handlers(reached: object) -> tuple[str, ...]:
+        """The handler names a dictionary's `reached` word holds, one or a list."""
+        if isinstance(reached, str):
+            return (reached,)
+        return tuple(reached) if isinstance(reached, list | tuple) else ()
+
+    def _bank(self, chip: str, method: str) -> int | None:
+        """Which 0x100-register bank the index handler `method` of `chip` selects: its place in
+        the `reached.index` list of whichever of the chip's dictionaries holds one."""
+        held = self._base.search(kind="register", scopes=(chip,), limit=ALL_REGISTERS).entries
+        lists = sorted({self._handlers(e.reached.get("index")) for e in held if e.reached})
+        return next((one.index(method) for one in lists if method in one), None)
+
+    def register(self, addr: int, cpu: str | None, data: int, access: str = "write"
+                 ) -> Named | None:
+        """The register a one-byte `access` selects, when `addr` is a shared chip's index handler.
+        The key is looked up across every register dictionary of the chip, as an entry of that
+        `access` (else one with no access), reached through that handler."""
         row = self._entry(cpu, addr) if cpu is not None else None
         chip = self.chip(row.get("write", "")) if row is not None else None
         if chip is None:
             return None
         entry, method = chip
-        first = self._base.search(kind="register", scopes=(entry.key,), limit=1).entries
-        if not first or first[0].reached is None or first[0].reached.get("index") != method:
+        bank = self._bank(entry.key, method)
+        if bank is None:
             return None
         try:
-            key = keyspelling.canonical("register", f"0x{data:X}")
+            key = keyspelling.canonical("register", f"0x{bank * BANK + data:X}")
         except KeyFault:
             return None
-        found = self._base.get("register", key, entry.key)
+        covering = [e for e in self._base.search(kind="register", key=key, scopes=(entry.key,),
+                                                 limit=ALL_REGISTERS).entries
+                    if e.reached and method in self._handlers(e.reached.get("index"))]
+        found = next((e for want in (access, "") for e in covering if e.access == want), None)
         return None if found is None else Named("register", found.name, f"0x{data:02X}", 0,
                                                 found.id, entry.key)
 
@@ -177,7 +202,7 @@ class MameNamer:
         data = given.get("data_hex")
         byte = data.replace(" ", "") if isinstance(data, str) else ""
         if tool == "write" and _BYTE.fullmatch(byte) and (
-                register := self.register(typed, cpu, int(byte, 16))) is not None:
+                register := self.register(typed, cpu, int(byte, 16), "write")) is not None:
             out["data_hex"] = register
         return out
 

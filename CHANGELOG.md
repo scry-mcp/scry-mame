@@ -16,6 +16,9 @@ What a client of the server notices.
 - `knowledge_find` asks what a number is called and what the server knows about it, with the
   public source each fact was read from. With a session it also lists the machine's input
   fields, its devices and its memory map.
+- A write to a chip's index handler names the register it selects for the chips whose registers
+  are told apart by direction (the AY-3-8910's mixer), sit in a range (its tone periods) or in a
+  second bank (the OPL3's). With `names=false` a disassembled line carries no note either.
 - `disassemble` gains `line_notes` for an instruction that states an operand the base names, and
   the stop's `instruction` a `note`. They are apart from `comment_list`'s comments.
 - `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a long

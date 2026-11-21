@@ -3762,20 +3762,21 @@
   },
   {
    "id": "m223",
-   "prompt": "What does the 6809 call its vector at hex FFF8, and what does it do when it is taken?",
+   "prompt": "What does the 6809 call its vector at hex FFF6, and what does it do when it is taken?",
    "tool": "knowledge_find",
    "args": {
     "kind": "vector",
     "key": {
      "any_of": [
-      "0xFFF8",
-      "0xfff8"
+      "0xFFF6",
+      "0xfff6"
      ]
     },
     "scope": "m6809"
    },
    "grammar": [
-    "vector"
+    "vector",
+    "m6809"
    ]
   },
   {
@@ -3797,11 +3798,17 @@
   },
   {
    "id": "m226",
-   "prompt": "On the running machine, what is the device at the tag :maincpu?",
+   "prompt": "On the running machine, what is the device at the tag :ymsnd?",
    "tool": "knowledge_find",
    "args": {
-    "device": ":maincpu"
-   }
+    "any_of": [
+     {"device": ":ymsnd"},
+     {"kind": "device", "key": ":ymsnd"}
+    ]
+   },
+   "grammar": [
+    "device"
+   ]
   }
  ]
 }
