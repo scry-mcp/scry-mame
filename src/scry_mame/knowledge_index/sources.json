@@ -1,0 +1,160 @@
+{
+  "format": "scry-knowledge-sources/1",
+  "pins": {
+    "mame": "mame0289"
+  },
+  "rows": {
+    "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn chk": {
+      "line": "    macro_tvn = (6 if (ir & 0xf040) == 0x4000 else",
+      "key": "6"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn fallback": {
+      "line": "                5)",
+      "key": "5"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn trapv": {
+      "line": "                7 if (ir & 0xf060) == 0x4060 else",
+      "key": "7"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states address_error": {
+      "line": "    [0x003, \"address_error\", 3, True],",
+      "key": "3"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states bus_error": {
+      "line": "    [0x003, \"bus_error\", 2, True],",
+      "key": "2"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states illegal": {
+      "line": "    [0x1c0, \"illegal\", 4, False],",
+      "key": "4"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states linea": {
+      "line": "    [0x1c0, \"linea\", 10, False],",
+      "key": "10"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states linef": {
+      "line": "    [0x1c0, \"linef\", 11, False]",
+      "key": "11"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states priviledge": {
+      "line": "    [0x1c0, \"priviledge\", 8, False],",
+      "key": "8"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states reset": {
+      "line": "    [0x002, \"reset\", 0, True],",
+      "key": "0"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py states trace": {
+      "line": "    [0x1c0, \"trace\", 9, False],",
+      "key": "9"
+    },
+    "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn": {
+      "line": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+    },
+    "mame:src/devices/cpu/m68000/m68kcommon.h autovector": {
+      "line": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+    },
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_FIRQ": {
+      "line": "\t\tVECTOR_FIRQ         = 0xFFF6,",
+      "key": "0xFFF6"
+    },
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_IRQ": {
+      "line": "\t\tVECTOR_IRQ          = 0xFFF8,",
+      "key": "0xFFF8"
+    },
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_NMI": {
+      "line": "\t\tVECTOR_NMI          = 0xFFFC,",
+      "key": "0xFFFC"
+    },
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_RESET_FFFE": {
+      "line": "\t\tVECTOR_RESET_FFFE   = 0xFFFE",
+      "key": "0xFFFE"
+    },
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI": {
+      "line": "\t\tVECTOR_SWI          = 0xFFFA,",
+      "key": "0xFFFA"
+    },
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI2": {
+      "line": "\t\tVECTOR_SWI2         = 0xFFF4,",
+      "key": "0xFFF4"
+    },
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI3": {
+      "line": "\t\tVECTOR_SWI3         = 0xFFF2,",
+      "key": "0xFFF2"
+    },
+    "mame:src/devices/cpu/nec/necpriv.ipp NEC_BRKV_VECTOR": {
+      "line": "\tNEC_BRKV_VECTOR     = 4,",
+      "key": "4"
+    },
+    "mame:src/devices/cpu/nec/necpriv.ipp NEC_CHKIND_VECTOR": {
+      "line": "\tNEC_CHKIND_VECTOR   = 5",
+      "key": "5"
+    },
+    "mame:src/devices/cpu/nec/necpriv.ipp NEC_DIVIDE_VECTOR": {
+      "line": "\tNEC_DIVIDE_VECTOR   = 0,",
+      "key": "0"
+    },
+    "mame:src/devices/cpu/nec/necpriv.ipp NEC_NMI_VECTOR": {
+      "line": "\tNEC_NMI_VECTOR      = 2,",
+      "key": "2"
+    },
+    "mame:src/devices/cpu/nec/necpriv.ipp NEC_TRAP_VECTOR": {
+      "line": "\tNEC_TRAP_VECTOR     = 1,",
+      "key": "1"
+    }
+  },
+  "lists": {
+    "mame:src/devices/cpu/m68000/m68000gen.py vectors": [
+      "0",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47"
+    ],
+    "mame:src/devices/cpu/nec/necpriv.ipp NEC_*_VECTOR": [
+      "0",
+      "1",
+      "2",
+      "4",
+      "5"
+    ],
+    "mame:src/devices/cpu/m6809/m6809.h VECTOR_*": [
+      "0xFFF2",
+      "0xFFF4",
+      "0xFFF6",
+      "0xFFF8",
+      "0xFFFA",
+      "0xFFFC",
+      "0xFFFE"
+    ]
+  }
+}

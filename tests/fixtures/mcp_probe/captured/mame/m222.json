@@ -1,0 +1,34 @@
+{
+ "task": {
+  "id": "m222",
+  "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. I will read every reply as plain numbers, so no reply should call a number by a name.",
+  "tool": "start",
+  "args": {
+   "binary": "{anchor}opt/fury/mamed",
+   "system": "spacefury",
+   "rompath": "{anchor}opt/fury/roms",
+   "reference_rom": "{anchor}opt/fury/roms/fury.bin",
+   "names": false
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "m222: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"names\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m222: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"names\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m222: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"names\": false}}"
+   ],
+   "right": true
+  }
+ ]
+}

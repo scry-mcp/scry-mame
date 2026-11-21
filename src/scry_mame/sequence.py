@@ -71,7 +71,7 @@ NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export", "windo
 RUNNING_OK_OPS = {"status", "cpu_info", "stop", "log", "log_wait", "snapshot",
                   "state_list", "captures", "breakpoint_at", "declaration_list",
                   "declaration_clear", "watch_add", "regpoint_add", "comment_list",
-                  "comment_write", "symbols_find", "throttle",
+                  "comment_write", "symbols_find", "knowledge_find", "throttle",
                   "machine_map", "gfx_load", "palette_log", "gfx_film", "scan", "screen_map_write",
                   *media_tools.TOOLS}
 #: The methods of a fold that answer on a running machine; its others need a stop.
@@ -150,6 +150,8 @@ MACHINE_JUDGES = frozenset({
     "comment_list",
     "state_list", "captures", "stop", "status", "reset", "cpu_info",
     "screen_map_find",
+    # Its judge runs in the body `scry_core.knowledge_tool` gives every server.
+    "knowledge_find",
 })
 
 def check_perform(settle_seconds: float = 30.0, summaries: bool = False, until_frame: int = 0,

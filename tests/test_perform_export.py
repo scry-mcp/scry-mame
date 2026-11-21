@@ -94,8 +94,8 @@ DECLARED = {
     "promote": "drop",
     # The readers dropped by default, named so a reader that turns into a step is seen.
     **dict.fromkeys(("declaration_list", "captures", "comment_list", "cpu_info", "disassemble",
-                     "find", "history", "log", "log_wait", "machine_map", "rom_check",
-                     "state_list", "status", "symbols_find"), "drop"),
+                     "find", "history", "knowledge_find", "log", "log_wait", "machine_map",
+                     "rom_check", "state_list", "status", "symbols_find"), "drop"),
 }
 
 

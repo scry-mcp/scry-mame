@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "m224",
+  "prompt": "Show me the whole entry the base holds under the id m68000:vector:2.",
+  "tool": "knowledge_find",
+  "args": {
+   "id": "m68000:vector:2"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"m68000:vector:2\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"m68000:vector:2\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"m68000:vector:2\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

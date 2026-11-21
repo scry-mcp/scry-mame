@@ -35,6 +35,13 @@ DUMP_NAME = "machine.txt"
 BEGIN = "MAME_MCP_MACHINE_BEGIN"
 END = "MAME_MCP_MACHINE_END"
 FAILED = "MAME_MCP_MACHINE_ERROR"
+# The names the machine gives (devices, input fields, handlers), gathered into a dump of their own.
+NAMES_DUMP_NAME = "names.txt"
+NAMES_BEGIN = "MAME_MCP_NAMES_BEGIN"
+NAMES_END = "MAME_MCP_NAMES_END"
+NAMES_FAILED = "MAME_MCP_NAMES_ERROR"
+#: Cache keys of what that dump holds; not sections of `machine_map`.
+DEVICES, INPUTS = "devices_read", "inputs_read"
 
 
 _CPU = re.compile(r"^CPU (\S+) type=(\S+) name=(.*) spaces=(\S*)$")
@@ -46,6 +53,9 @@ _ENTRY = re.compile(r"^ENTRY (\S+) (\S+) (\d+) start=([0-9a-f]+) end=([0-9a-f]+)
                     r"region_offset=(\d+)$")
 _BLOCK = re.compile(r"^(REGION|SHARE) (\S+) size=(\d+) bytewidth=(\d+) endianness=(\S+)$")
 _SCREEN = re.compile(r"^SCREEN (\S+) width=(\d+) height=(\d+) refresh=([0-9.]+)$")
+_DEVICE = re.compile(r"^DEVICE\t([^\t]+)\t([^\t]*)\t(.*)$")
+_INPUT = re.compile(r"^INPUT\t([^\t]+)\t([^\t]+)\t([0-9a-f]+)$")
+_HANDLER = re.compile(r"^HANDLER\t([^\t]+)\t([^\t]+)\t(\d+)\t([^\t]+)\t([^\t]+)$")
 _VIEW = re.compile(r"^(VIEW|SNAPVIEW)(?: (.*))?$")
 VIEWS, SNAPVIEW = "views", "snapview"
 
@@ -56,6 +66,38 @@ LIVE_SECTIONS = ("cpus", "spaces", "address_map", "regions", "shares", "screens"
 def harness(dump: Path) -> str:
     """The gather, as Lua text for the boot script."""
     return lua_source.render("inventory", begin=BEGIN, end=END, failed=FAILED, dump=str(dump))
+
+
+def names_harness(dump: Path) -> str:
+    """The gather of the names the machine gives, as Lua text for the boot script."""
+    return lua_source.render("names-inventory", begin=NAMES_BEGIN, end=NAMES_END,
+                             failed=NAMES_FAILED, dump=str(dump))
+
+
+def parse_names(text: str) -> dict[str, Any]:
+    """The names dump as `devices`, `inputs` and `handlers` (by cpu, space and row index);
+    raises `LookupError` on a dump that is not whole."""
+    if text.startswith(NAMES_FAILED):
+        raise LookupError(f"the boot harness could not read the names: "
+                          f"{text[len(NAMES_FAILED):].strip()}")
+    lines = [line for line in text.splitlines() if line.strip()]
+    if not lines or lines[0] != NAMES_BEGIN or lines[-1] != NAMES_END:
+        raise LookupError("the names dump is not whole: it does not open and close with the "
+                          "gather's own lines")
+    devices: list[dict[str, str]] = []
+    fields: list[dict[str, str]] = []
+    handlers: dict[tuple[str, str, int], tuple[str, str]] = {}
+    for line in lines[1:-1]:
+        if (m := _DEVICE.match(line)) is not None:
+            devices.append({"tag": m.group(1), "shortname": m.group(2), "name": m.group(3)})
+        elif (m := _INPUT.match(line)) is not None:
+            fields.append({"port": m.group(1), "field": m.group(2), "mask": m.group(3)})
+        elif (m := _HANDLER.match(line)) is not None:
+            handlers[m.group(1), m.group(2), int(m.group(3))] = (m.group(4), m.group(5))
+        else:
+            raise LookupError(f"the names dump carries a line the gather does not write: "
+                              f"{line!r}")
+    return {"devices": devices, "inputs": fields, "handlers": handlers}
 
 
 def _none_if_absent(name: str) -> str | None:
@@ -370,6 +412,7 @@ def cache(scratch: Path, static: tuple[dict[str, list[dict[str, Any]]], str]) ->
     The `-listxml` half arrives gathered so its caller-side failure refuses the start early.
     """
     sections, live_failure = live(scratch)
+    named, names_failure = names(scratch)
     listed, xml_failure = static
     notes = [MAP_NOTE, BANKING_NOTE, STALE_NOTE]
     sources: dict[str, list[str]] = {name: ["live"] for name in LIVE_SECTIONS}
@@ -381,8 +424,35 @@ def cache(scratch: Path, static: tuple[dict[str, list[dict[str, Any]]], str]) ->
         notes += clashes
     for name in XML_ONLY:
         sections[name] = listed[name]
-    notes += [note for note in (live_failure, xml_failure) if note]
-    return {**sections, "sources": sources, "note": st.join_notes(*notes)}
+    with_handlers(sections["address_map"], named["handlers"])
+    notes += [note for note in (live_failure, xml_failure, names_failure) if note]
+    return {**sections, DEVICES: named["devices"], INPUTS: named["inputs"],
+            "sources": sources, "note": st.join_notes(*notes)}
+
+
+def with_handlers(rows: list[dict[str, Any]],
+                  handlers: dict[tuple[str, str, int], tuple[str, str]]) -> None:
+    """Each address-map row gains `read` and `write`: the handler MAME names for it, as its kind
+    and, where it has one, its name (`delegate/mc6845_device::address_w`)."""
+    for row in rows:
+        found = handlers.get((row["cpu"], row["space"], row["index"]), ("-", "-"))
+        for way, spelled in zip(("read", "write"), found, strict=True):
+            if spelled != "-":
+                row[way] = spelled
+
+
+def names(scratch: Path) -> tuple[dict[str, Any], str]:
+    """What the machine names: devices, input fields and the handlers of the address map. A
+    failed gather gives none and says why; the names fall back to numbers, never guesses."""
+    empty: dict[str, Any] = {"devices": [], "inputs": [], "handlers": {}}
+    try:
+        return parse_names((scratch / NAMES_DUMP_NAME).read_text(
+            encoding="utf-8", errors="replace")), ""
+    except OSError as e:
+        return empty, (f"the boot harness wrote no names ({e.__class__.__name__}: {e}), so "
+                       "no device, input or handler is named here")
+    except LookupError as e:
+        return empty, f"the boot harness's names could not be read: {e}"
 
 
 

@@ -72,7 +72,8 @@
     "presence": "Draws a border around the emulator's window while the session is open, brighter while a call runs the machine. `false` leaves it off.",
     "overlay": "Marks over the border, on by default: `calls` names each call, `keys` the fields held, `pause` a stopped machine, `record` a recording. `place` is `top`, `bottom` or `auto`.",
     "view": "What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.",
-    "profile": "A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out."
+    "profile": "A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.",
+    "names": "`false` leaves a reply's numbers bare, with no `names` field and no name in its summary; the window's captions still name them."
    },
    "returns": {
     "rom_check": "`OK` when the 16 bytes read from the machine equal the image's. A start whose check fails is refused.",
@@ -3969,6 +3970,55 @@
     "perform_export",
     "perform",
     "close"
+   ]
+  },
+  "knowledge_find": {
+   "what": "Ask what a number is called on this machine and what the server knows about it: a vector, a chip register, an input, a device.",
+   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, a board with a 6809. The base needs no session for what is written.",
+   "ask": "What is the 6809's vector at 0xFFF8?",
+   "call": {
+    "kind": "vector",
+    "key": "0xFFF8",
+    "scope": "m6809"
+   },
+   "shows": [
+    "summary",
+    "entries_total",
+    "examined"
+   ],
+   "reads": "One entry matches, so `entries` answers it whole: the IRQ vector, what MAME's core does when it is taken, and the source line it was read from.",
+   "arguments": {
+    "id": "An entry's id, as another reply cites it, such as `m6809:vector:0xFFF8`. Answers that entry whole.",
+    "kind": "What the number is: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`, `device`, `register` or `command`. Left empty, every kind.",
+    "key": "The number as a reply prints it, or a range such as `0x3C0..0x3CF`; for an `input`, `:IN1/Coin 1`.",
+    "text": "Words looked for in names, aliases, descriptions and behaviour. A word ending in `*` matches by prefix.",
+    "device": "A chip's key, or a tag of the running machine such as `:ymsnd`: everything that belongs to it.",
+    "scope": "A cpu or a chip: `m68000`, `v30`, `m6809`, `mc6845`. Left empty, the session's cpus and chips; with no session, all.",
+    "limit": "How many entries are listed: 1 to 50. Left out, 10."
+   },
+   "returns": {
+    "entries": "Rows with `id`, `kind`, `key`, `name`; one match, or an `id`, answers whole with `description`, `behaviour` and `sources`. A machine's own row has `live: true`.",
+    "entries_total": "How many entries matched.",
+    "truncated": "`true` when more matched than `entries` lists.",
+    "examined": "How many entries were searched, so a zero says what it is a zero of.",
+    "nearest": "When nothing matched: the entries next to the number or the words.",
+    "note": "When nothing matched: that the number stays a number."
+   },
+   "refuses": [
+    "None of `id`, `kind`, `key`, `text`, `device` (`bad_argument`).",
+    "A `key` that is no number or range of that `kind`, or a `scope` the server does not hold (`bad_argument`).",
+    "An `id` or a `device` the base does not hold (`unknown_ref`).",
+    "A kind read from the machine with no session (`no_session`)."
+   ],
+   "why": [
+    "The base is written once from MAME's source at one release and checked line by line, so an answer says where it was read. It is the server's own copy: it answers while the program runs.",
+    "What the machine says about itself (inputs, devices, the memory map) was read at `start` and is never asked of MAME again, so it cannot slow a call."
+   ],
+   "related": [
+    "symbols_find",
+    "machine_map",
+    "read_memory",
+    "disassemble"
    ]
   }
  }

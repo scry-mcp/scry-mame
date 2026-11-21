@@ -4,6 +4,18 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Replies and captions call a number by its name where the server knows one: `bus error (0x8)`,
+  `IRQ (0xfff8)`. A reply lists each in `names` and in its `summary`; `names=false` on `start`
+  leaves replies bare, and the window's captions keep their names. A program's symbols come
+  first, then the vectors of the 68000, the V30 and the 6809, then the shared chips, then the
+  memory the machine's map names.
+- `knowledge_find` asks what a number is called and what the server knows about it, with the
+  public source each fact was read from. With a session it also lists the machine's input
+  fields, its devices and its memory map.
+- `disassemble` gains `line_notes` for an instruction that states an operand the base names, and
+  the stop's `instruction` a `note`. They are apart from `comment_list`'s comments.
+- `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a long
+  caption is cut and the record mark stays lit.
 - The orange edge can carry a caption naming each call and its arguments, a keycap for each
   input field held and a pause mark while the session holds the machine stopped. `start` takes
   `overlay` to choose them and where they go, and `start` and `status` answer with an `overlay`

@@ -122,11 +122,22 @@ def test_a_closed_lists_items_publish_the_judges_words_or_range(
     assert items.items() >= published().items(), items
 
 
+#: Published by a tool scry-core registers, whose own judge words its refusal and whose own tests
+#: hold the pair: `scry_core.knowledge_tool.judge`.
+SHARED_JUDGE = {("knowledge_find", "kind")}
+
+
+def test_the_shared_judge_refuses_a_kind_outside_the_enum_it_publishes() -> None:
+    reply = test_envelope_seam._call("knowledge_find", {"kind": "zz"})[1]
+    assert reply.get("code") == "bad_argument" and "kind='zz'" in reply["message"], reply
+
+
 def test_no_argument_publishes_an_enum_no_judge_holds() -> None:
     """An `enum` in a schema with no row above would be a list nobody checks."""
     published = {(tool, arg) for tool, schema in _schemas().items()
                  for arg, prop in schema["properties"].items() if _enums(prop)}
-    rows = {(t, a) for t, a, _ in CLOSED} | {(t, a) for t, a, _, row in ITEMS if "enum" in row()}
+    rows = ({(t, a) for t, a, _ in CLOSED} | {(t, a) for t, a, _, row in ITEMS if "enum" in row()}
+            | SHARED_JUDGE)
     assert published == rows, published ^ rows
 
 

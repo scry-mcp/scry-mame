@@ -156,6 +156,13 @@ def vector(reply: Reply, run: Run) -> str:
     return "the IRQ vector points at 0xfd80, which the symbols name irq"
 
 
+def base_vector(reply: Reply, run: Run) -> str:
+    entry = reply["entries"][0]
+    expect(reply["entries_total"] == 1 and entry["id"] == "m6809:vector:0xFFF8",
+           f"entries {reply['entries']}")
+    return f"the base names the IRQ vector {entry['name']}, read at {entry['sources'][0]['ref']}"
+
+
 def one_writer(reply: Reply, run: Run) -> str:
     expect(reply["hits"] == [gridlee.COIN_BIN_PC], f"hits {reply['hits']}")
     return f"one INC $042B in the ROMs, at {reply['hits'][0]}"
@@ -555,6 +562,8 @@ STEPS = [
          volatile={"summary": "quotes the wall-clock time a query took"}),
     Step("names", "symbols_find", {"name": "cred"}, named),
     Step("irq vector", "read_memory", {"ref": "0xfff8", "length": 2}, vector),
+    Step("base", "knowledge_find", {"kind": "vector", "key": "0xFFF8", "scope": "m6809"},
+         base_vector),
     Step("coin routine", "disassemble", {"ref": "count_coin", "length": 12}, gridlee.listed),
     Step("find", "find", {"data_hex": INC_CREDITS, "ref": ROM_BASE, "length": ROM_BYTES},
          one_writer),

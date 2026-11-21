@@ -22,6 +22,7 @@ from scry_mame import args, arming, docs, idle, inputs, running, sequence, summa
 from scry_mame import declarations as dec
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
+from scry_mame import naming as mnaming
 from scry_mame import presence as mpresence
 from scry_mame import state as st
 from scry_mame.state import STATE
@@ -49,7 +50,7 @@ _ANSWERS_WHILE_RUNNING = roster.answers_while_running(
 ROSTER = roster.Roster(families=(
     ("Session", ("start", "status", "window", "close", "cpu_focus", "rom_check")),
     ("Machine", ("cpu_info", "machine_map", "log", "log_wait")),
-    ("Names", ("symbols_find",)),
+    ("Names", ("symbols_find", "knowledge_find")),
     ("Run", ("run_to", "run_for", "step", "resume", "stop", "trace", "screen_wait")),
     ("Breakpoints", ("breakpoint_at", "regpoint_add", "watch_add", "declaration_list",
                       "declaration_clear")),
@@ -82,6 +83,8 @@ mcp = envelope.Envelope(
         "`memdump`, `snapshot` answer with a PATH. A cancelled call ends as at its bound; "
         "the next reply says `cancelled`.\n\n"
         "CPUS: no `cpu` acts on the VISIBLE one, lists or clears all.\n\n"
+        "NAMES: a reply names the numbers it shows, in `names` and in its `summary`; "
+        "`knowledge_find` says what a number is.\n\n"
         "ADDRESSES are `0x`, a condition as typed; any other ref is a symbol, bare hex "
         "naming none refused. Breakpoints are PLACES, never expressions.\n\n"
         "EVERY REPLY carries `summary`, `status` (`ok`, or `INVALID` with `code` and "
@@ -200,7 +203,8 @@ BOUNDARY = boundary.Boundary(
     refusal_line=summaries.refusal, session_block=menvelope.session_block,
     take_cancelled=STATE.take_cancelled, keep_cancelled=_keep_cancelled, doc=docs.filled,
     give_back=_keep_accounts, recorder=RECORDER,
-    listener=mpresence.Listener(lambda: STATE.presence.held, STATE.holds_stopped))
+    listener=mpresence.Listener(lambda: STATE.presence.held, STATE.holds_stopped),
+    namer=mnaming.GUARD, names_on=lambda: STATE.names)
 
 
 def tool(

@@ -1,0 +1,102 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "v30-vectors",
+  "kind": "vector",
+  "scope": "v30",
+  "covers": "The V30's own vectors, the five the core names; INT n and INT3 take a number the program gives",
+  "complete_against": "mame:src/devices/cpu/nec/necpriv.ipp NEC_*_VECTOR",
+  "entries": [
+    {
+      "key": "0",
+      "name": "divide error",
+      "aliases": [
+        "DIV0"
+      ],
+      "description": "Where a divide by zero or a quotient that does not fit goes.",
+      "behaviour": "The divide instructions call nec_interrupt(NEC_DIVIDE_VECTOR, BRK) for a zero divisor (after clearing the carry and overflow values) or a quotient the destination cannot hold (the DIVUB, DIVB macros and their word forms). nec_interrupt pushes the flags, clears TF and IF, reads the new IP from linear address 4n and PS from 4n+2, pushes the old PS and IP, and jumps.",
+      "address": 0,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_DIVIDE_VECTOR",
+          "cites": "\tNEC_DIVIDE_VECTOR   = 0,"
+        }
+      ]
+    },
+    {
+      "key": "1",
+      "name": "single-step trap",
+      "aliases": [
+        "TF trap"
+      ],
+      "description": "Where POPF goes when it leaves the trap flag set.",
+      "behaviour": "Only nec_trap raises it: it runs one more instruction, then calls nec_interrupt(NEC_TRAP_VECTOR, BRK), and the only caller is POPF (0x9D) with TF set. The core does not check TF between other instructions. nec_interrupt pushes the flags, clears TF and IF, reads the new IP from linear address 4n and PS from 4n+2, pushes the old PS and IP, and jumps.",
+      "address": 4,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_TRAP_VECTOR",
+          "cites": "\tNEC_TRAP_VECTOR     = 1,"
+        }
+      ]
+    },
+    {
+      "key": "2",
+      "name": "NMI",
+      "aliases": [
+        "non-maskable interrupt"
+      ],
+      "description": "Where the non-maskable interrupt goes.",
+      "behaviour": "external_int calls nec_interrupt(NEC_NMI_VECTOR, NMI_IRQ) when the NMI line was raised (set_nmi_line, any state but clear), whatever the IF flag. nec_interrupt pushes the flags, clears TF and IF, reads the new IP from linear address 4n and PS from 4n+2, pushes the old PS and IP, and jumps.",
+      "address": 8,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_NMI_VECTOR",
+          "cites": "\tNEC_NMI_VECTOR      = 2,"
+        }
+      ]
+    },
+    {
+      "key": "4",
+      "name": "overflow",
+      "aliases": [
+        "INTO",
+        "BRKV"
+      ],
+      "description": "Where INTO goes when the overflow flag is set.",
+      "behaviour": "INTO (0xCE) calls nec_interrupt(NEC_BRKV_VECTOR, BRK) when OF is set and costs 3 cycles otherwise. nec_interrupt pushes the flags, clears TF and IF, reads the new IP from linear address 4n and PS from 4n+2, pushes the old PS and IP, and jumps.",
+      "address": 16,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_BRKV_VECTOR",
+          "cites": "\tNEC_BRKV_VECTOR     = 4,"
+        }
+      ]
+    },
+    {
+      "key": "5",
+      "name": "bound check",
+      "aliases": [
+        "CHKIND",
+        "bound"
+      ],
+      "description": "Where CHKIND goes when its register is out of bounds.",
+      "behaviour": "CHKIND (0x62) reads a low and a high word from its memory operand and calls nec_interrupt(NEC_CHKIND_VECTOR, BRK) when the register is below the first or above the second. nec_interrupt pushes the flags, clears TF and IF, reads the new IP from linear address 4n and PS from 4n+2, pushes the old PS and IP, and jumps.",
+      "address": 20,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/nec/necpriv.ipp NEC_CHKIND_VECTOR",
+          "cites": "\tNEC_CHKIND_VECTOR   = 5"
+        }
+      ]
+    }
+  ]
+}

@@ -314,9 +314,11 @@ def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int,
     """Write the one `-autoboot_script` (MAME takes a single one) and return its path.
 
     Inventory first, inside its own `pcall` so an unfamiliar board cannot stop the rest, then the
-    throttle, the presence drawer, and the caller's harness through `dofile`.
+    names the machine gives, then the throttle, the presence drawer, and the caller's harness
+    through `dofile`.
     """
     text = machine.harness(scratch / machine.DUMP_NAME)
+    text += machine.names_harness(scratch / machine.NAMES_DUMP_NAME)
     if throttle_from_frame:
         text += lua_source.render("autoboot-throttle", var=THROTTLE_FRAME_VAR, mark=THROTTLE_MARK)
     if presence:

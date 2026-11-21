@@ -1,0 +1,40 @@
+{
+ "task": {
+  "id": "m223",
+  "prompt": "What does the 6809 call its vector at hex FFF8, and what does it do when it is taken?",
+  "tool": "knowledge_find",
+  "args": {
+   "kind": "vector",
+   "key": {
+    "any_of": [
+     "0xFFF8",
+     "0xfff8"
+    ]
+   },
+   "scope": "m6809"
+  },
+  "grammar": [
+   "vector"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "m223: {\"tool\": \"knowledge_find\", \"args\": {\"kind\": \"vector\", \"key\": \"0xFFF8\", \"scope\": \"6809\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "m223: {\"tool\": \"knowledge_find\", \"args\": {\"kind\": \"vector\", \"key\": \"0xFFF8\", \"scope\": \"6809\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "m223: {\"tool\": \"knowledge_find\", \"args\": {\"kind\": \"vector\", \"key\": \"0xFFF8\", \"scope\": \"m6809\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1007,7 +1007,7 @@ def test_every_tool_declares_a_title_and_the_readers_a_read_only_hint() -> None:
                  if t.annotations is not None and t.annotations.read_only_hint}
     assert read_only == {"status", "read_memory", "disassemble", "find", "history", "log",
                          "log_wait", "registers", "declaration_list", "rom_check",
-                         "symbols_find", "state_list", "captures",
+                         "symbols_find", "knowledge_find", "state_list", "captures",
                          "cpu_info", "comment_list", "audio_compare"}, read_only
     idempotent = {n for n, t in tools.items()
                   if t.annotations is not None and t.annotations.idempotent_hint}

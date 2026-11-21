@@ -1,0 +1,616 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "m68000-vectors",
+  "kind": "vector",
+  "scope": "m68000",
+  "covers": "The vectors the m68000 device type (the generated core, not Musashi) names: its special states, CHK, TRAPV and the divide trap, the seven autovectors and the sixteen TRAPs. Vector 1, which no state names, and 12 to 24 and 48 to 255 are left out of it",
+  "complete_against": "mame:src/devices/cpu/m68000/m68000gen.py vectors",
+  "entries": [
+    {
+      "key": "0",
+      "name": "reset",
+      "aliases": [
+        "RESET"
+      ],
+      "description": "The vector number the core's reset state uses.",
+      "behaviour": "device_reset puts the cpu in the S_RESET state, which the generator's states table gives vector number 0. A handler that loads a vector number puts it in FTU shifted left by two, so a vector sits at four times its number.",
+      "address": 0,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states reset",
+          "cites": "    [0x002, \"reset\", 0, True],"
+        }
+      ]
+    },
+    {
+      "key": "2",
+      "name": "bus error",
+      "aliases": [
+        "BERR"
+      ],
+      "description": "Where the cpu goes on a bus error.",
+      "behaviour": "The S_BUS_ERROR state, vector number 2. do_post_run enters it when PR_BERR is pending and charges 10 cycles; trigger_bus_error, a write to berr_w and a read of berr_r (unless side effects are disabled) request it.",
+      "address": 8,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states bus_error",
+          "cites": "    [0x003, \"bus_error\", 2, True],"
+        }
+      ]
+    },
+    {
+      "key": "3",
+      "name": "address error",
+      "description": "Where the cpu goes on a word or long access at an odd address.",
+      "behaviour": "The S_ADDRESS_ERROR state, vector number 3. Generated bus-access code enters it when m_aob is odd, after 4 cycles; an access the generator flags enters S_DOUBLE_FAULT instead, which has no vector number.",
+      "address": 12,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states address_error",
+          "cites": "    [0x003, \"address_error\", 3, True],"
+        }
+      ]
+    },
+    {
+      "key": "4",
+      "name": "illegal instruction",
+      "aliases": [
+        "ILLEGAL"
+      ],
+      "description": "Where an opcode that is not an instruction goes.",
+      "behaviour": "The S_ILLEGAL state, vector number 4. init_decode_table fills the 64K opcode table with it, and the generator leaves opcode 0x4AFC (ILLEGAL) out of the decoded ones, so both end here.",
+      "address": 16,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states illegal",
+          "cites": "    [0x1c0, \"illegal\", 4, False],"
+        }
+      ]
+    },
+    {
+      "key": "5",
+      "name": "divide by zero",
+      "aliases": [
+        "ZERO DIVIDE"
+      ],
+      "description": "Where a trapping instruction other than CHK, TRAP and TRAPV goes.",
+      "behaviour": "The generator's fallback (macro_tvn) when the opcode is not CHK, TRAP or TRAPV, so it is the vector of the instructions whose microcode traps and are none of those: DIVU.W and DIVS.W are in the instruction list. The vector's address is five times four.",
+      "address": 20,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn fallback",
+          "cites": "                5)"
+        }
+      ]
+    },
+    {
+      "key": "6",
+      "name": "CHK",
+      "aliases": [
+        "CHK exception"
+      ],
+      "description": "Where the CHK instruction goes when its register is out of bounds.",
+      "behaviour": "macro_tvn gives vector number 6 to an opcode whose top four bits are 4 and whose bit 6 is clear (mask 0xF040 equals 0x4000), which are the CHK encodings.",
+      "address": 24,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn chk",
+          "cites": "    macro_tvn = (6 if (ir & 0xf040) == 0x4000 else"
+        }
+      ]
+    },
+    {
+      "key": "7",
+      "name": "TRAPV",
+      "aliases": [
+        "TRAPV exception"
+      ],
+      "description": "Where TRAPV goes when the overflow flag is set.",
+      "behaviour": "macro_tvn gives vector number 7 when the opcode masked with 0xF060 equals 0x4060, which is the TRAPV encoding, 0x4E76.",
+      "address": 28,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py macro_tvn trapv",
+          "cites": "                7 if (ir & 0xf060) == 0x4060 else"
+        }
+      ]
+    },
+    {
+      "key": "8",
+      "name": "privilege violation",
+      "aliases": [
+        "PRIV"
+      ],
+      "description": "Where a privileged instruction goes in user mode.",
+      "behaviour": "The S_PRIVILEDGE state (the source's spelling), vector number 8. A generated handler that carries the priv step enters it, before doing anything else, when the SR_S bit of the status register is clear.",
+      "address": 32,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states priviledge",
+          "cites": "    [0x1c0, \"priviledge\", 8, False],"
+        }
+      ]
+    },
+    {
+      "key": "9",
+      "name": "trace",
+      "description": "Where the cpu goes after an instruction when the trace flag is set.",
+      "behaviour": "The S_TRACE state, vector number 9. Generated handlers set the next state to it when SR_T is set (set_trace and next_trace), and a clear_trace step drops it again while it is still pending.",
+      "address": 36,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states trace",
+          "cites": "    [0x1c0, \"trace\", 9, False],"
+        }
+      ]
+    },
+    {
+      "key": "10",
+      "name": "line 1010 emulator",
+      "aliases": [
+        "LINEA"
+      ],
+      "description": "Where an opcode starting with 0xA goes.",
+      "behaviour": "The S_LINEA state, vector number 10. The decode table maps every opcode whose top four bits are 0xA (mask 0xF000, value 0xA000) to it.",
+      "address": 40,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states linea",
+          "cites": "    [0x1c0, \"linea\", 10, False],"
+        }
+      ]
+    },
+    {
+      "key": "11",
+      "name": "line 1111 emulator",
+      "aliases": [
+        "LINEF"
+      ],
+      "description": "Where an opcode starting with 0xF goes.",
+      "behaviour": "The S_LINEF state, vector number 11. The decode table maps every opcode whose top four bits are 0xF (mask 0xF000, value 0xF000) to it.",
+      "address": 44,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py states linef",
+          "cites": "    [0x1c0, \"linef\", 11, False]"
+        }
+      ]
+    },
+    {
+      "key": "25",
+      "name": "autovector level 1",
+      "aliases": [
+        "IRQ 1 autovector"
+      ],
+      "description": "The vector an interrupt at level 1 takes when the device gives none.",
+      "behaviour": "default_autovectors_map answers the interrupt acknowledge of level 1 with autovector(1), 0x18 + 1, which is this vector number. An interrupt is taken when its level is above the SR interrupt mask; a device that answers with its own byte gets that byte shifted left by two as the vector's address.",
+      "address": 100,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+          "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+        }
+      ]
+    },
+    {
+      "key": "26",
+      "name": "autovector level 2",
+      "aliases": [
+        "IRQ 2 autovector"
+      ],
+      "description": "The vector an interrupt at level 2 takes when the device gives none.",
+      "behaviour": "default_autovectors_map answers the interrupt acknowledge of level 2 with autovector(2), 0x18 + 2, which is this vector number. An interrupt is taken when its level is above the SR interrupt mask; a device that answers with its own byte gets that byte shifted left by two as the vector's address.",
+      "address": 104,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+          "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+        }
+      ]
+    },
+    {
+      "key": "27",
+      "name": "autovector level 3",
+      "aliases": [
+        "IRQ 3 autovector"
+      ],
+      "description": "The vector an interrupt at level 3 takes when the device gives none.",
+      "behaviour": "default_autovectors_map answers the interrupt acknowledge of level 3 with autovector(3), 0x18 + 3, which is this vector number. An interrupt is taken when its level is above the SR interrupt mask; a device that answers with its own byte gets that byte shifted left by two as the vector's address.",
+      "address": 108,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+          "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+        }
+      ]
+    },
+    {
+      "key": "28",
+      "name": "autovector level 4",
+      "aliases": [
+        "IRQ 4 autovector"
+      ],
+      "description": "The vector an interrupt at level 4 takes when the device gives none.",
+      "behaviour": "default_autovectors_map answers the interrupt acknowledge of level 4 with autovector(4), 0x18 + 4, which is this vector number. An interrupt is taken when its level is above the SR interrupt mask; a device that answers with its own byte gets that byte shifted left by two as the vector's address.",
+      "address": 112,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+          "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+        }
+      ]
+    },
+    {
+      "key": "29",
+      "name": "autovector level 5",
+      "aliases": [
+        "IRQ 5 autovector"
+      ],
+      "description": "The vector an interrupt at level 5 takes when the device gives none.",
+      "behaviour": "default_autovectors_map answers the interrupt acknowledge of level 5 with autovector(5), 0x18 + 5, which is this vector number. An interrupt is taken when its level is above the SR interrupt mask; a device that answers with its own byte gets that byte shifted left by two as the vector's address.",
+      "address": 116,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+          "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+        }
+      ]
+    },
+    {
+      "key": "30",
+      "name": "autovector level 6",
+      "aliases": [
+        "IRQ 6 autovector"
+      ],
+      "description": "The vector an interrupt at level 6 takes when the device gives none.",
+      "behaviour": "default_autovectors_map answers the interrupt acknowledge of level 6 with autovector(6), 0x18 + 6, which is this vector number. An interrupt is taken when its level is above the SR interrupt mask; a device that answers with its own byte gets that byte shifted left by two as the vector's address.",
+      "address": 120,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+          "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+        }
+      ]
+    },
+    {
+      "key": "31",
+      "name": "autovector level 7",
+      "aliases": [
+        "IRQ 7 autovector"
+      ],
+      "description": "The vector an interrupt at level 7 takes when the device gives none.",
+      "behaviour": "default_autovectors_map answers the interrupt acknowledge of level 7 with autovector(7), 0x18 + 7, which is this vector number. An interrupt is taken when its level is above the SR interrupt mask; a device that answers with its own byte gets that byte shifted left by two as the vector's address.",
+      "address": 124,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68kcommon.h autovector",
+          "cites": "\tstatic constexpr u8 autovector(int level) { return 0x18 + level; }"
+        }
+      ]
+    },
+    {
+      "key": "32",
+      "name": "TRAP #0",
+      "aliases": [
+        "TRAP 0"
+      ],
+      "description": "Where the TRAP #0 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 128,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "33",
+      "name": "TRAP #1",
+      "aliases": [
+        "TRAP 1"
+      ],
+      "description": "Where the TRAP #1 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 132,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "34",
+      "name": "TRAP #2",
+      "aliases": [
+        "TRAP 2"
+      ],
+      "description": "Where the TRAP #2 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 136,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "35",
+      "name": "TRAP #3",
+      "aliases": [
+        "TRAP 3"
+      ],
+      "description": "Where the TRAP #3 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 140,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "36",
+      "name": "TRAP #4",
+      "aliases": [
+        "TRAP 4"
+      ],
+      "description": "Where the TRAP #4 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 144,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "37",
+      "name": "TRAP #5",
+      "aliases": [
+        "TRAP 5"
+      ],
+      "description": "Where the TRAP #5 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 148,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "38",
+      "name": "TRAP #6",
+      "aliases": [
+        "TRAP 6"
+      ],
+      "description": "Where the TRAP #6 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 152,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "39",
+      "name": "TRAP #7",
+      "aliases": [
+        "TRAP 7"
+      ],
+      "description": "Where the TRAP #7 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 156,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "40",
+      "name": "TRAP #8",
+      "aliases": [
+        "TRAP 8"
+      ],
+      "description": "Where the TRAP #8 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 160,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "41",
+      "name": "TRAP #9",
+      "aliases": [
+        "TRAP 9"
+      ],
+      "description": "Where the TRAP #9 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 164,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "42",
+      "name": "TRAP #10",
+      "aliases": [
+        "TRAP 10"
+      ],
+      "description": "Where the TRAP #10 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 168,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "43",
+      "name": "TRAP #11",
+      "aliases": [
+        "TRAP 11"
+      ],
+      "description": "Where the TRAP #11 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 172,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "44",
+      "name": "TRAP #12",
+      "aliases": [
+        "TRAP 12"
+      ],
+      "description": "Where the TRAP #12 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 176,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "45",
+      "name": "TRAP #13",
+      "aliases": [
+        "TRAP 13"
+      ],
+      "description": "Where the TRAP #13 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 180,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "46",
+      "name": "TRAP #14",
+      "aliases": [
+        "TRAP 14"
+      ],
+      "description": "Where the TRAP #14 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 184,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    },
+    {
+      "key": "47",
+      "name": "TRAP #15",
+      "aliases": [
+        "TRAP 15"
+      ],
+      "description": "Where the TRAP #15 instruction goes.",
+      "behaviour": "The TRAP #n instructions (opcodes 0x4E40 to 0x4E4F) take vector number 32 + n; the generator computes the vector's address as 0x80 | ((m_ird & 0xf) << 2).",
+      "address": 188,
+      "length": 4,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m68000/m68000gen.py trap-tvn",
+          "cites": "                return \"0x80 | ((m_ird & 0xf) << 2)\""
+        }
+      ]
+    }
+  ]
+}

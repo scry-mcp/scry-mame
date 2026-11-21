@@ -52,6 +52,7 @@ from mcp.server.mcpserver import Context
 from pydantic import Field
 from scry_core import (  # noqa: E402
     given,
+    knowledge_tool,  # noqa: E402
     log_marks,
     media_tools,
     methods,
@@ -63,6 +64,7 @@ from scry_core import (  # noqa: E402
     screen_map,
     signalled_end,
 )
+from scry_core import naming as scry_naming  # noqa: E402
 from scry_core import overlay as scry_overlay  # noqa: E402
 from scry_core import presence as scry_presence  # noqa: E402
 from scry_core import promote as core_promote  # noqa: E402
@@ -89,6 +91,7 @@ from scry_mame import (
     inputs,  # noqa: E402
     iotaps,  # noqa: E402
     launch,  # noqa: E402
+    line_notes,  # noqa: E402
     machine,  # noqa: E402
     manifest,  # noqa: E402
     read,  # noqa: E402
@@ -113,6 +116,7 @@ from scry_mame import locate as mlocate  # noqa: E402
 from scry_mame import lua as mlua  # noqa: E402
 from scry_mame import map as mmap  # noqa: E402
 from scry_mame import maps as mmaps  # noqa: E402
+from scry_mame import naming as mnaming  # noqa: E402
 from scry_mame import palette as mpalette  # noqa: E402
 from scry_mame import promote as mpromote  # noqa: E402
 from scry_mame import ramdac as mramdac  # noqa: E402
@@ -167,6 +171,7 @@ def start(
     overlay: Annotated[scry_overlay.Overlay,
                        Field(description=scry_overlay.ARGUMENT)] = scry_overlay.OVERLAY,
     view: Annotated[str, Field(description=launch.VIEW_ARGUMENT)] = "",
+    names: scry_naming.Switch = True,
     profile: str = "",
     ctx: Context[Any, Any] | None = None,
 ) -> dict[str, Any]:
@@ -232,6 +237,8 @@ def start(
                symbols=params["symbols"], inipath=params["inipath"],
                boot_lua=params["boot_lua"], state_dir=params["state_dir"], cfg=params["cfg"],
                types=params["types"], view=params["view"], profile=profile)
+    kept = STATE.names
+    STATE.names = bool(params["names"])
     with mpromote.launching(str(block["file"]) if block is not None else ""):
         reply = launch.start(binary=params["binary"], system=params["system"],
                              rompath=params["rompath"],
@@ -248,6 +255,8 @@ def start(
                              overlay=asked,
                              view=params["view"], display=params["display"],
                              size=params["size"], progress=bridge(ctx))
+    if reply.get("status") != "ok":
+        STATE.names = kept
     return mpromote.after_start(reply, params, block=block, defaults=_START_DEFAULTS)
 
 
@@ -271,7 +280,10 @@ def status() -> dict[str, Any]:
 
     Reference: REFERENCE.md, The session.
     """
-    return msession.status()
+    reply = msession.status()
+    if (failed := mnaming.GUARD.failed()) is not None:
+        reply["names_failed"] = dict(failed)
+    return reply
 
 
 @tool("Close the session", summary=summaries.close, body_session=True, on_cancel="kill")
@@ -708,6 +720,10 @@ def symbols_find(name: str = "", linear: inputs.NumberArg | None = None,
     return read.symbols_find(name, linear, limit, kind, on)
 
 
+knowledge_find = knowledge_tool.register(tool, menvelope.envelope, mnaming.base(),
+                                         mnaming.Live())
+
+
 @tool("Map the machine", summary=summaries.machine_map, replay="drop", names_file="dest")
 def machine_map(cpu: str = "",
                 sections: list[Annotated[str, vocab.enum(machine.MAP_SECTIONS)]] | None = None,
@@ -809,7 +825,8 @@ def disassemble(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)]
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("disassemble", ref=ref, length=length)
-    return menvelope.with_ref(read.disassemble(*stopped("a disassembly"), ref, length, cpu), ref)
+    shown = line_notes.on_disassembly(read.disassemble(*stopped("a disassembly"), ref, length, cpu))
+    return menvelope.with_ref(shown, ref)
 
 
 @tool("Find bytes in memory", summary=summaries.find, read_only=True)

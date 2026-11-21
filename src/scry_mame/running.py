@@ -13,7 +13,17 @@ from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
-from scry_mame import arming, breakpoints, cpus, files, iotaps, read, regpoints, watches
+from scry_mame import (
+    arming,
+    breakpoints,
+    cpus,
+    files,
+    iotaps,
+    line_notes,
+    read,
+    regpoints,
+    watches,
+)
 from scry_mame import declarations as dec
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
@@ -137,7 +147,8 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     following: list[str] = []
     try:
         listing = read.dasm_lines(ses, scratch, pc, DASM_BYTES)
-        instruction, following = read.stop_instruction(listing[0], pc, cpu), listing[1:]
+        instruction = line_notes.on_instruction(read.stop_instruction(listing[0], pc, cpu), cpu)
+        following = listing[1:]
     except gs.SessionError as e:
         instruction = unavailable(str(e))
     from_mark = STATE.errorlog_mark

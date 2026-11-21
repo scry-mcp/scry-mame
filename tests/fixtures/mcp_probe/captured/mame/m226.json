@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "m226",
+  "prompt": "On the running machine, what is the device at the tag :maincpu?",
+  "tool": "knowledge_find",
+  "args": {
+   "device": ":maincpu"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "m226: {\"tool\": \"knowledge_find\", \"args\": {\"kind\": \"device\", \"key\": \":maincpu\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "m226: {\"tool\": \"knowledge_find\", \"args\": {\"kind\": \"device\", \"key\": \":maincpu\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "m226: {\"tool\": \"knowledge_find\", \"args\": {\"kind\": \"device\", \"key\": \":maincpu\"}}"
+   ],
+   "right": false
+  }
+ ]
+}

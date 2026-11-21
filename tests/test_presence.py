@@ -98,10 +98,11 @@ def test_a_line_of_the_state_file_is_printable_ascii_whatever_it_was_given() -> 
 def test_the_reply_names_the_layers_drawn_and_says_why_mame_has_no_pointer() -> None:
     assert mpresence.overlay_reply(overlay.OVERLAY) == {
         "layers": ["edge", "keys", "calls", "pause", "record"], "place": "auto",
-        "lacking": {"pointer": mpresence.LACKING["pointer"]}}
+        "lacking": {"pointer": mpresence.LACKING["pointer"]},
+        "notes": mpresence.STOPPED_LIMITS}
     off = overlay.Overlay(pointer=False, keys=False, place="bottom")
     assert mpresence.overlay_reply(off) == {"layers": ["edge", "calls", "pause", "record"],
-                                            "place": "bottom"}
+                                            "place": "bottom", "notes": mpresence.STOPPED_LIMITS}
 
 
 def test_the_listener_tells_the_presence_when_the_machine_is_held_stopped() -> None:
@@ -351,9 +352,10 @@ def test_overlay_is_in_the_reply_only_with_a_presence_that_is_on() -> None:
     state.presence = presence.Shown(refused={"available": False, "why": "x"})
     assert state.overlay_field() == {}
     state.presence = presence.Shown(held=_Drawn())  # type: ignore[arg-type]
-    assert state.overlay_field() == {"overlay": {"layers": ["edge", "calls", "pause", "record"],
-                                                 "place": "auto", "lacking": {
-                                                     "pointer": mpresence.LACKING["pointer"]}}}
+    assert state.overlay_field() == {"overlay": {
+        "layers": ["edge", "calls", "pause", "record"], "place": "auto",
+        "lacking": {"pointer": mpresence.LACKING["pointer"]},
+        "notes": mpresence.STOPPED_LIMITS}}
 
 
 def test_the_session_holds_the_machine_stopped_only_while_alive_whole_and_not_running() -> None:

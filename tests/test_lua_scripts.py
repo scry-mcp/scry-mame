@@ -95,6 +95,7 @@ def scripts() -> dict[str, str]:
         "autoboot": machine.harness(Path("/s/machine.txt")) + lua_source.render(
             "autoboot-throttle", var=launch.THROTTLE_FRAME_VAR, mark=launch.THROTTLE_MARK)
         + presence.drawer(Path("/s")),
+        "names": machine.names_harness(Path("/s/names.txt")),
         "audio": lua_source.render("audio", path="/s/a.wav", frames=5, mark="M#1",
                                    no_screen=mrec.NO_SCREEN)
         + mrec.armed("M#1"),

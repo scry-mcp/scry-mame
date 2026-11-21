@@ -106,6 +106,9 @@ class State:
         self.start_seq = 0
         # A cancelled call's record rides on the next closing reply. Not in `_reset`.
         self.cancelled: cancel.Cancelled | None = None
+        # Whether replies name their numbers: `start`'s `names`, kept after `close` so the
+        # closing reply is judged as the session was. Not in `_reset`.
+        self.names = True
         # Outlives a session: what `promote` would write, and the map's file layer.
         self.drafts = core_promote.Drafts()
         self.maps = screen_map.Maps()

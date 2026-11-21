@@ -25,8 +25,8 @@ STILL_TOOLS = frozenset({
     "screen_map_find", "screen_map_write", "memdump", "palette", "palette_log", "perform_export",
     "read_block",
     "read_memory", "registers", "regpoint_add", "rom_check", "scan", "screen_signature",
-    "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "watch_add",
-    "window", "promote"})
+    "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "knowledge_find",
+    "watch_add", "window", "promote"})
 
 
 #: Seconds between state-file reads while running.
@@ -102,10 +102,22 @@ def encode(state: presence.State, payload: presence.Payload) -> str:
     return "\n".join(lines) + "\n"
 
 
+#: What a layer is drawn without while the machine is stopped: the console command that repaints
+#: it is the only animation clock there, and the server sends none.
+STOPPED_LIMITS: dict[overlay.Layer, str] = {
+    "calls": "a stopped machine is not repainted to animate, so a caption wider than the window "
+             "is cut with `..` and not scrolled",
+    "record": "a stopped machine is not repainted to animate, so the mark stays lit and does "
+              "not blink"}
+
+
 def overlay_reply(asked: overlay.Overlay) -> overlay.OverlayReply:
     """`start`'s and `status`'s `overlay`; `auto` stays `auto`, the drawer samples itself."""
-    return overlay.reply(asked, {layer: why for layer, why in LACKING.items()
-                                 if layer in asked.asked()}, asked.place)
+    wanted = asked.asked()
+    return overlay.reply(asked, {layer: why for layer, why in LACKING.items() if layer in wanted},
+                         asked.place,
+                         {layer: why for layer, why in STOPPED_LIMITS.items()
+                          if layer in wanted and layer not in LACKING})
 
 
 class Listener(presence.Slot):

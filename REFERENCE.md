@@ -13,7 +13,7 @@ A path in an example that starts with `./` stands for the folder of your clone, 
 <!-- scry-reference:begin index -->
 - [Session](docs/reference/session.md): Starting a MAME session, asking what state it is in, finding its window, choosing a cpu and ending it. [`start`](docs/reference/session.md#start), [`status`](docs/reference/session.md#status), [`window`](docs/reference/session.md#window), [`close`](docs/reference/session.md#close), [`cpu_focus`](docs/reference/session.md#cpu_focus), [`rom_check`](docs/reference/session.md#rom_check)
 - [Machine](docs/reference/machine.md): What the emulated machine is made of, how the debugger holds each cpu, and what MAME writes to its logs. [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
-- [Names](docs/reference/names.md): Symbol names for addresses: look up a name or an address in the symbol table of your program. [`symbols_find`](docs/reference/names.md#symbols_find)
+- [Names](docs/reference/names.md): Symbol names for addresses: look up a name or an address in the symbol table of your program. [`symbols_find`](docs/reference/names.md#symbols_find), [`knowledge_find`](docs/reference/names.md#knowledge_find)
 - [Run](docs/reference/run.md): The tools that let the program run and stop it again. [`run_to`](docs/reference/run.md#run_to), [`run_for`](docs/reference/run.md#run_for), [`step`](docs/reference/run.md#step), [`resume`](docs/reference/run.md#resume), [`stop`](docs/reference/run.md#stop), [`trace`](docs/reference/run.md#trace), [`screen_wait`](docs/reference/run.md#screen_wait)
 - [Breakpoints](docs/reference/breakpoints.md): Breakpoints and watches the server saves by name and sets again in later sessions. [`breakpoint_at`](docs/reference/breakpoints.md#breakpoint_at), [`regpoint_add`](docs/reference/breakpoints.md#regpoint_add), [`watch_add`](docs/reference/breakpoints.md#watch_add), [`declaration_list`](docs/reference/breakpoints.md#declaration_list), [`declaration_clear`](docs/reference/breakpoints.md#declaration_clear)
 - [Read](docs/reference/read.md): Reading what the stopped program holds: memory, registers, code, and which of its screens is showing. [`read_memory`](docs/reference/read.md#read_memory), [`read_block`](docs/reference/read.md#read_block), [`registers`](docs/reference/read.md#registers), [`disassemble`](docs/reference/read.md#disassemble), [`find`](docs/reference/read.md#find), [`history`](docs/reference/read.md#history), [`memdump`](docs/reference/read.md#memdump), [`screen_map_find`](docs/reference/read.md#screen_map_find), [`screen_map_write`](docs/reference/read.md#screen_map_write)
@@ -74,6 +74,8 @@ Every reply has the same outer fields, whichever tool answers, so you read any a
 - `omitted` (array of string)
 - `how` (string)
 - `note` (string)
+- `names` (array of NameItem)
+- `names_cut` (integer)
 - `cancelled` (object)
 - `session` (object)
 - `answers_while_running` (array)
@@ -164,7 +166,7 @@ A call cancelled while it waited its turn did nothing and leaves no record. One 
 |---|---|---|
 | `stop` | The program stopped, as `stop` leaves it; a stop the call had already reached is recorded as its own. | `step`, `run_to`, `run_for`, `screen_wait`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
 | `kill` | MAME ended: asked to quit first when a session is up, which writes `cfg/` and `nvram/`, and killed at once while still booting. | `start`, `close` |
-| `none` | The machine as the call found it. | `status`, `window`, `cpu_focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `regpoint_add`, `watch_add`, `declaration_list`, `declaration_clear`, `comment_list`, `comment_write`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `screen_map_find`, `screen_map_write`, `image_compare`, `audio_compare`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `captures`, `state_list`, `state_write`, `promote` |
+| `none` | The machine as the call found it. | `status`, `window`, `cpu_focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `regpoint_add`, `watch_add`, `declaration_list`, `declaration_clear`, `comment_list`, `comment_write`, `symbols_find`, `knowledge_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `screen_map_find`, `screen_map_write`, `image_compare`, `audio_compare`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `captures`, `state_list`, `state_write`, `promote` |
 
 The tools: every one in the [Index](#index).
 
@@ -181,6 +183,19 @@ An address argument, `ref` in most tools, is a `0x` number or a symbol of your p
 - **Two tools have their own grammar.** A condition or a `debug` line reaches MAME's console as typed, where a bare number is hex. In a `lua` script it is decimal.
 
 The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakpoints.md), [Read](docs/reference/read.md).
+
+## Names for numbers
+
+A reply and a caption call a number by its name where the server knows one, so you do not look it up. Each name carries its number: `bus error (0x8)`.
+
+- **Where a name comes from.** Your program's symbols come first, then the vector slot of the cpu the address belongs to (`m68000`, `v30` and `m6809` have theirs written), then the chip whose handler the address map gives for it, then the memory region or share the map names. What the server cannot name stays a number.
+- **Where the reply says it.** `names` lists each named number with its `field`, its `kind`, its `name` and, for a name from the base, the `id` of its entry; `names_cut` counts what did not fit. The one-line `summary` carries the same names, and a call's own arguments are named under `given.<argument>`. A board with several cpus and a call that names none gets no name, because a name for the wrong cpu is worse than none.
+- **`names=false` on `start`** leaves replies bare. It is a profile key like any other. The window's captions keep their names.
+- **`knowledge_find`** asks the base directly: by `id`, by `kind` and `key`, by words, or by `device`. It answers with no session for what is written (the vectors, the shared chips and their registers); with a session it also lists what the machine says about itself: its `input` fields, its `device` tags and the `memory` its map names.
+- **A disassembled line's note.** `disassemble` gains `line_notes`, one `{line, note}` for each line whose instruction states an operand the base names (a `TRAP` number, `SWI`, an absolute address inside a vector table). The instruction at a stop carries the same as `instruction.note`. These are never a person's comments and never touch `comment_list`. A register operand is never guessed.
+- **A stopped machine keeps its overlay still.** `overlay.notes` says so: a long caption is cut with `..`, and the record mark stays lit without blinking.
+
+The tool: [Names](docs/reference/names.md).
 
 ## Breakpoints and watches
 

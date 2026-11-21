@@ -1,0 +1,136 @@
+{
+  "format": "scry-knowledge/1",
+  "dictionary": "m6809-vectors",
+  "kind": "vector",
+  "scope": "m6809",
+  "covers": "The vector slots at the top of the 6809's memory; 0xFFF0 is reserved and no code reads it",
+  "complete_against": "mame:src/devices/cpu/m6809/m6809.h VECTOR_*",
+  "entries": [
+    {
+      "key": "0xFFF2",
+      "name": "SWI3",
+      "aliases": [
+        "SWI3 vector"
+      ],
+      "description": "Where the SWI3 instruction goes.",
+      "behaviour": "SWI3 sets the effective address to this vector, runs SOFTWARE_INTERRUPT, which sets the E flag and pushes every register on S, and does not change the I and F flags. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
+      "address": 65522,
+      "length": 2,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI3",
+          "cites": "\t\tVECTOR_SWI3         = 0xFFF2,"
+        }
+      ]
+    },
+    {
+      "key": "0xFFF4",
+      "name": "SWI2",
+      "aliases": [
+        "SWI2 vector"
+      ],
+      "description": "Where the SWI2 instruction goes.",
+      "behaviour": "SWI2 sets the effective address to this vector, runs SOFTWARE_INTERRUPT, which sets the E flag and pushes every register on S, and does not change the I and F flags. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
+      "address": 65524,
+      "length": 2,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI2",
+          "cites": "\t\tVECTOR_SWI2         = 0xFFF4,"
+        }
+      ]
+    },
+    {
+      "key": "0xFFF6",
+      "name": "FIRQ",
+      "aliases": [
+        "FIRQ vector"
+      ],
+      "description": "Where a fast interrupt request goes.",
+      "behaviour": "Taken before an instruction when the F flag is clear and the FIRQ line is asserted. It clears E and pushes the partial state (firq_saves_entire_state is false), sets I and F, and the standard interrupt callback runs. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
+      "address": 65526,
+      "length": 2,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_FIRQ",
+          "cites": "\t\tVECTOR_FIRQ         = 0xFFF6,"
+        }
+      ]
+    },
+    {
+      "key": "0xFFF8",
+      "name": "IRQ",
+      "aliases": [
+        "IRQ vector"
+      ],
+      "description": "Where an interrupt request goes.",
+      "behaviour": "Taken before an instruction when the I flag is clear and the IRQ line is asserted, after NMI and FIRQ. It sets E, pushes every register, sets I and not F, and the standard interrupt callback runs. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
+      "address": 65528,
+      "length": 2,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_IRQ",
+          "cites": "\t\tVECTOR_IRQ          = 0xFFF8,"
+        }
+      ]
+    },
+    {
+      "key": "0xFFFA",
+      "name": "SWI",
+      "aliases": [
+        "SWI vector"
+      ],
+      "description": "Where the SWI instruction goes.",
+      "behaviour": "SWI sets E, pushes every register and sets I and F, so it inhibits IRQ and FIRQ, unlike SWI2 and SWI3. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
+      "address": 65530,
+      "length": 2,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_SWI",
+          "cites": "\t\tVECTOR_SWI          = 0xFFFA,"
+        }
+      ]
+    },
+    {
+      "key": "0xFFFC",
+      "name": "NMI",
+      "aliases": [
+        "NMI vector"
+      ],
+      "description": "Where a non-maskable interrupt goes.",
+      "behaviour": "Taken before an instruction while m_nmi_asserted is set, ahead of FIRQ and IRQ. It clears that flag, sets E, pushes every register, sets I and F, and the standard interrupt callback runs. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
+      "address": 65532,
+      "length": 2,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_NMI",
+          "cites": "\t\tVECTOR_NMI          = 0xFFFC,"
+        }
+      ]
+    },
+    {
+      "key": "0xFFFE",
+      "name": "reset",
+      "aliases": [
+        "RESET vector"
+      ],
+      "description": "Where the cpu starts after a reset.",
+      "behaviour": "device_reset clears the direct page register, sets the I and F flags, points the effective address at this vector (VECTOR_RESET_FFFE) and resets the sub-instruction state.",
+      "address": 65534,
+      "length": 2,
+      "sources": [
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_RESET_FFFE",
+          "cites": "\t\tVECTOR_RESET_FFFE   = 0xFFFE"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+ "task": {
+  "id": "m225",
+  "prompt": "Which entries of the knowledge base mention an overflow? List at most 5.",
+  "tool": "knowledge_find",
+  "args": {
+   "text": "overflow",
+   "limit": 5
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "m225: {\"tool\": \"knowledge_find\", \"args\": {\"text\": \"overflow\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m225: {\"tool\": \"knowledge_find\", \"args\": {\"text\": \"overflow\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m225: {\"tool\": \"knowledge_find\", \"args\": {\"text\": \"overflow\", \"limit\": 5}}"
+   ],
+   "right": true
+  }
+ ]
+}

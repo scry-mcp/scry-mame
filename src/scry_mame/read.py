@@ -220,7 +220,7 @@ def stop_instruction(line: str, pc: int, cpu: str | None) -> dict[str, Any]:
     (unavailable when the line carries none), its text, and the symbol that places `pc`."""
     listed = _LISTED.match(line)
     if listed is None:
-        bare = _LISTED_AT.match(line)
+        bare = LISTED_AT.match(line)
         address, rest = (bare.group(1), line[bare.end():].strip()) if bare else ("", line)
         raw, text = None, rest
     else:
@@ -263,7 +263,7 @@ def disassemble(ses: gs.Session, scratch: Path, ref: str, length: int,
     return menvelope.envelope(reply)
 
 
-_LISTED_AT = re.compile(r"^([0-9A-Fa-f]+):")
+LISTED_AT = re.compile(r"^([0-9A-Fa-f]+):")
 
 
 def flows(ses: gs.Session, scratch: Path, addr: int, length: int, on: str | None,
@@ -285,7 +285,7 @@ def flows(ses: gs.Session, scratch: Path, addr: int, length: int, on: str | None
     except gs.SessionError as e:
         return _unclassified(lines, f"the listing without opcode bytes did not come out ({e}), "
                                     "so no line is classified")
-    addresses = [m.group(1) if (m := _LISTED_AT.match(line)) else "" for line in lines]
+    addresses = [m.group(1) if (m := LISTED_AT.match(line)) else "" for line in lines]
     classes = flow.classify_listing(bare, addresses, kind)
     if classes is None:
         return _unclassified(lines, "the listing without opcode bytes did not decode the same "

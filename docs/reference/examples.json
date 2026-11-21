@@ -2016,6 +2016,62 @@
    "errorlog": "<volatile>"
   }
  },
+ "knowledge_find": {
+  "from": "docs/reference/tour/tour.py: step `base`, run in process because it needs no machine; the tour's next run replaces it",
+  "call": {
+   "kind": "vector",
+   "key": "0xFFF8",
+   "scope": "m6809"
+  },
+  "reply": {
+   "summary": "kind vector key 0xFFF8: IRQ",
+   "status": "ok",
+   "query": {
+    "kind": "vector",
+    "key": "0xFFF8"
+   },
+   "scope": [
+    "m6809"
+   ],
+   "entries_total": 1,
+   "entries": [
+    {
+     "id": "m6809:vector:0xFFF8",
+     "kind": "vector",
+     "key": "0xFFF8",
+     "name": "IRQ",
+     "scope": "m6809",
+     "aliases": [
+      "IRQ vector"
+     ],
+     "description": "Where an interrupt request goes.",
+     "behaviour": "Taken before an instruction when the I flag is clear and the IRQ line is asserted, after NMI and FIRQ. It sets E, pushes every register, sets I and not F, and the standard interrupt callback runs. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
+     "address": "0x00FFF8",
+     "length": 2,
+     "sources": [
+      {
+       "role": "emulator",
+       "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_IRQ",
+       "cites": "\t\tVECTOR_IRQ          = 0xFFF8,",
+       "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/m6809/m6809.h"
+      }
+     ]
+    }
+   ],
+   "truncated": false,
+   "examined": 7,
+   "session": {
+    "alive": false,
+    "running": false,
+    "altered": false,
+    "omitted": [
+     "altering_writes",
+     "console"
+    ],
+    "how": "call `status`"
+   }
+  }
+ },
  "log": {
   "from": "docs/reference/tour/TRANSCRIPT.md: call 19",
   "call": {

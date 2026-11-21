@@ -17,7 +17,7 @@ start(system="", rompath="", reference_rom="", symbols="", reference_addr=0, ini
     bases=null, reference_base=0, stub_port=0, state_dir="", throttle_from_frame=0, types="",
     cfg="", binary="", presence=true,
     overlay={"calls": true, "keys": true, "pointer": true, "pause": true, "record": true, "place": "auto"},
-    view="", profile="")
+    view="", names=true, profile="")
 ```
 
 ### Try it
@@ -141,6 +141,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `presence` (boolean, default `true`): Draws a border around the emulator's window while the session is open, brighter while a call runs the machine. `false` leaves it off.
 - `overlay` (any, default `{"calls": true, "keys": true, "pointer": true, "pause": true, "record": true, "place": "auto"}`): Marks over the border, on by default: `calls` names each call, `keys` the fields held, `pause` a stopped machine, `record` a recording. `place` is `top`, `bottom` or `auto`.
 - `view` (string, default `""`): What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.
+- `names` (boolean, default `true`): `false` leaves a reply's numbers bare, with no `names` field and no name in its summary; the window's captions still name them.
 - `profile` (string, default `""`): A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.
 
 ### What comes back
@@ -350,6 +351,8 @@ presence: Draw an edge around the emulator's window while this session is open: 
 overlay: Layers drawn over the presence edge, each on by default: `calls` a caption naming each call and its arguments, abbreviated (paths by their last name); `keys` the keys or fields held down; `pointer` the guest's mouse pointer; `pause` a mark while the session holds the machine stopped; `record` a blinking mark while it records video or audio. `place`: where the captions go, `top`, `bottom`, or `auto`, the band of the picture that shows less. Ignored with `presence=false`.
 
 view: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
+
+names: Name the numbers a reply shows: a port, interrupt, address or key gets its name in the reply's `names` and in its summary. `false` leaves replies bare; the window's captions keep their names.
 ```
 
 </details>
@@ -448,7 +451,7 @@ Takes no argument.
 - `in_debugger`: What MAME's debugger holds now: `breakpoints`, `watches` and `regpoints` (registerpoints, stops on a register condition), each by its `ref`, a symbol or an address, and its `cpu`.
 - `fingerprint`: A hash of the system, the reference image and the symbol file. A breakpoint or watch saved under another one is not trusted; `fingerprints` has one per cpu.
 
-<details><summary>All 20 reply fields</summary>
+<details><summary>All 21 reply fields</summary>
 
 - `cfg` (object)
 - `console_pending` (integer)
@@ -470,6 +473,7 @@ Takes no argument.
 - `tallies_pending_removal` (array)
 - `threads` (object)
 - `throttles_pending` (array)
+- `names_failed` (object)
 
 </details>
 

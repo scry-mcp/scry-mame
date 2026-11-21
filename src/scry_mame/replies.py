@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Required
 
-from scry_core import media_replies, tool_replies
+from scry_core import knowledge_tool, media_replies, tool_replies
 from scry_core import promote as core_promote
 from scry_core import sequence_account as account
 from scry_core.instruction import StopInstruction
@@ -155,6 +155,7 @@ class DisassembleReply(MameEnvelope, total=False):
     flow: Required[list[Any]]
     flow_source: Required[str]
     length: int
+    line_notes: Annotated[list[Any], When("the base names an operand")]
     lines: Required[list[Any]]
     ref: Required[str]
     resolved: Annotated[list[Any], When("relocated board")]
@@ -1025,6 +1026,7 @@ class StatusReply(MameEnvelope, total=False):
     threads: dict[str, Any]
     throttles_pending: Annotated[list[Any], OmitEmpty]
     broken: Annotated[str, When("can no longer be trusted")]
+    names_failed: Annotated[dict[str, Any], When("a namer failed")]
 
 
 class StepReply(MameEnvelope, total=False):
@@ -1296,6 +1298,7 @@ MODELS: dict[str, type] = {
     "step": StepReply,
     "stop": StopReply,
     "symbols_find": SymbolsFindReply,
+    "knowledge_find": knowledge_tool.KnowledgeFindReply,
     "throttle": ThrottleReply,
     "trace": TraceReply,
     "watch_add": WatchAddReply,

@@ -914,9 +914,10 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
     fresh = mstate.State()
     # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,
     # for the next reply to say. `maps` and `drafts` are the server's: a map file loaded and what
-    # a session learned outlive a session, until `promote` or the next session's start.
+    # a session learned outlive a session, until `promote` or the next session's start. `names`
+    # is the switch the last `start` set: the closing reply of that session is judged by it.
     untouched = sorted(set(vars(fresh)) - set(dirty) - {"ses", "proc", "start_seq", "cancelled",
-                                                        "maps", "drafts"})
+                                                        "maps", "drafts", "names"})
     assert untouched == [], f"fields this test does not dirty: {untouched}"
     for name, value in dirty.items():
         setattr(mstate.STATE, name, value)
@@ -927,7 +928,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
     Path(tmp_log).unlink(missing_ok=True)
     assert dirty["guard"].poll() is not None, "the guardian outlived the session it watched"
     stale = {name: getattr(mstate.STATE, name) for name in vars(fresh)
-             if name not in ("start_seq", "maps")
+             if name not in ("start_seq", "maps", "names")
              and getattr(mstate.STATE, name) != getattr(fresh, name)}
     assert stale == {}, f"fields a killed session left behind: {stale}"
 

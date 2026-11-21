@@ -92,7 +92,7 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
         "run_to",
         "captures", "rom_check", "set_register", "snapshot", "start", "state_list", "state_write",
         "status",
-        "step", "stop", "symbols_find", "throttle", "watch_add",
+        "step", "stop", "symbols_find", "knowledge_find", "throttle", "watch_add",
         "write", "scan", "window",
     ]), f"the registered surface changed: {registered}"
 

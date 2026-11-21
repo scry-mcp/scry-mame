@@ -515,13 +515,14 @@ Five instructions from `0xb583`: the routine adds one to `$042B`, then to the de
 - `resolved`: Only when `start` was given `bases`: each direct memory operand as the address the board uses. Rows carry `line`, `operand`, `offset`, `class`, `linear`, `symbol` and `delta`.
 - `addr`: The address `ref` resolved to.
 
-<details><summary>All 8 reply fields</summary>
+<details><summary>All 9 reply fields</summary>
 
 - `addr` (string)
 - `cpu` (string or object)
 - `flow` (array)
 - `flow_source` (string)
 - `length` (integer)
+- `line_notes` (array)
 - `lines` (array)
 - `ref` (string)
 - `resolved` (array)
