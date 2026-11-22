@@ -6,13 +6,12 @@ A demo declares the layers that exist for it: the call captions and the keycaps.
 
 from __future__ import annotations
 
-import contextlib
-from collections.abc import Iterator, Mapping, Sequence
-from pathlib import Path
+from collections.abc import Mapping, Sequence
+from dataclasses import replace
 from typing import Any
 
 from scry_core import demo as core
-from scry_core import motion, timeline
+from scry_core import motion
 from scry_core import overlay as ov
 from scry_core.verdict import Invalid
 
@@ -36,16 +35,6 @@ def declared(layers: Sequence[ov.Layer]) -> None:
             raise ValueError(f"a MAME demo declares `calls` and `keys`, not {layer!r}")
 
 
-def _drawing() -> Any:
-    """`scry_core.decorate`, which needs the extra; `Invalid` naming it when it is not installed."""
-    try:
-        from scry_core import decorate
-    except ImportError as e:
-        raise Invalid("a demo's loop is decorated with Pillow and numpy, scry-core's `decorate` "
-                      "extra: install it (`uv sync --extra decorate`)") from e
-    return decorate
-
-
 def passes(document: Mapping[str, Any], demo: core.Demo) -> list[dict[str, Any]]:
     """The timeline per moment: the calls up to the step that ends it. A state load rewinds the
     frame count, so one frame number belongs to two passes of a run."""
@@ -63,7 +52,7 @@ def decorator(demo: core.Demo, run: core.Run, document: Mapping[str, Any],
               layers: Sequence[ov.Layer]) -> motion.Decorator:
     """What `motion.build` draws each cut with: cut `n` starts at the frame its `record` began."""
     declared(layers)
-    decorate = _drawing()
+    from scry_core import decorate  # the `decorate` extra: only the making of a loop needs it
     style = decorate.Style.of(ov.Overlay(calls="calls" in layers, keys="keys" in layers,
                                          pointer=False, pause=False, record=False))
     tools = {step.name: step.tool for step in demo.steps}
@@ -85,40 +74,8 @@ def decorator(demo: core.Demo, run: core.Run, document: Mapping[str, Any],
     return each
 
 
-@contextlib.contextmanager
-def _replaced(owner: Any, name: str, value: Any) -> Iterator[None]:
-    old = getattr(owner, name)
-    setattr(owner, name, value)
-    try:
-        yield
-    finally:
-        setattr(owner, name, old)
-
-
 def main(demo: core.Demo, layers: Sequence[ov.Layer], argv: Sequence[str] | None = None) -> int:
-    """The demo's command line with its loop drawn in `layers`; the runner has no seam for a
-    decorator, so for the run it is handed this module's."""
+    """The demo's command line with its loop drawn in `layers`."""
     declared(layers)
-    real_execute, real_build = core.execute, motion.build
-
-    def execute(demo_: core.Demo, run: core.Run, transcript: Path,
-                update_readme: bool = False) -> int:
-        if update_readme and demo_.moments:
-            _drawing()  # before the emulator runs, not after
-
-        def build(cuts: Sequence[motion.Cut], work: Path,
-                  decorate: motion.Decorator | None = None) -> motion.Built:
-            # The runner names its files from the transcript's stem and exports no name for it.
-            written = core._beside(transcript).timeline
-            if not written.is_file():
-                raise Invalid(f"the run wrote no timeline at {written}, and a clip is decorated "
-                              "only from its run's timeline")
-            document = timeline.loads(written.read_text(encoding="utf-8"))
-            return real_build(cuts, work, decorator(demo_, run, document, layers))
-
-        with _replaced(motion, "build", build):
-            return real_execute(demo_, run, transcript, update_readme)
-
-    with _replaced(core, "execute", execute):
-        return core.main(demo, argv)
-
+    return core.main(replace(demo, decorator=lambda demo_, run, document: decorator(
+        demo_, run, document, layers)), argv)

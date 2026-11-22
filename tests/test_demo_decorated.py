@@ -11,12 +11,12 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from demo_transcripts import timeline_of  # noqa: E402
 from scry_core import demo as core
 from scry_core import motion, timeline
+from scry_core.committed_run import timeline_of
 from scry_core.demo import Demo, Moment, Reply, Run, Step
 from scry_core.overlay import Layer
-from scry_core.verdict import EXIT_INVALID, EXIT_PASS, Invalid
+from scry_core.verdict import EXIT_PASS, Invalid
 
 from demos import decorated
 from demos.gridlee import demo as gridlee
@@ -84,6 +84,25 @@ def test_a_moment_whose_step_the_timeline_does_not_hold_is_refused() -> None:
         _draw(0, gone)
 
 
+def _timeline_with_a_key() -> dict[str, Any]:
+    made = timeline.Builder("t")
+    made.add("start", "start", {}, "ok", (None, 100))
+    made.add("film A", "record", {"dest": "a.avi"}, "ok", (100, 160),
+             [timeline.key("a", True, 120), timeline.key("a", False, 130)])
+    return timeline.loads(made.dumps())
+
+
+def test_a_layer_not_declared_draws_nothing_and_one_declared_draws_its_events() -> None:
+    one = _demo(moments=1)
+    keyed = _timeline_with_a_key()
+    keyless = {**keyed, "calls": [{**call, "events": []} for call in keyed["calls"]]}
+    calls: tuple[Layer, ...] = ("calls",)
+    keys: tuple[Layer, ...] = ("keys",)
+    assert _draw(0, keyed, one, calls) == _draw(0, keyless, one, calls), "keys drawn undeclared"
+    assert _draw(0, keyed, one, keys) != _draw(0, keyless, one, keys), "declared keys not drawn"
+    assert _draw(0, keyless, one, calls) != _draw(0, keyless, one, keys), "captions not drawn"
+
+
 def test_a_clip_decorated_twice_is_the_same_bytes() -> None:
     assert _draw(0) == _draw(0)
 
@@ -122,35 +141,6 @@ def test_a_demo_declares_the_layers_its_run_has_something_to_draw_for(name: str)
     assert "calls" in module.LAYERS
 
 
-def test_a_loop_is_made_only_with_the_pillow_the_decorate_extra_brings(
-        monkeypatch: pytest.MonkeyPatch) -> None:
-    import scry_core
-    monkeypatch.delattr(scry_core, "decorate", raising=False)
-    monkeypatch.setitem(sys.modules, "scry_core.decorate", None)
-    with pytest.raises(Invalid, match="`decorate` extra"):
-        decorated.decorator(_demo(), _run(), _timeline(), ("calls",))
-
-
-def test_a_missing_extra_refuses_the_update_before_the_emulator_runs(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
-        ) -> None:
-    import scry_core
-    handed = _seams(monkeypatch, wrote=True)
-    ran: list[bool] = []
-
-    def execute(*args: Any) -> int:
-        ran.append(True)
-        return EXIT_PASS
-
-    monkeypatch.setattr(core, "execute", execute)
-    monkeypatch.delattr(scry_core, "decorate", raising=False)
-    monkeypatch.setitem(sys.modules, "scry_core.decorate", None)
-    code = decorated.main(_demo(), ("calls",), ["--transcript", str(tmp_path / "t.md"),
-                                                "--update-readme"])
-    assert (code, ran, handed) == (EXIT_INVALID, [], [])
-    assert "`decorate` extra" in capsys.readouterr().out
-
-
 @pytest.mark.parametrize("name", sorted(DEMOS))
 def test_every_moment_of_a_demo_ends_at_a_step_its_committed_run_holds(name: str) -> None:
     module = DEMOS[name]
@@ -172,46 +162,30 @@ def test_the_server_and_the_demo_runner_load_neither_pillow_nor_numpy() -> None:
         (0, "[]"), (0, "['PIL', 'numpy']")], [r.stderr for r in ran]
 
 
-def _seams(monkeypatch: pytest.MonkeyPatch, wrote: bool) -> list[Any]:
-    """A runner of the test's own that makes the loop as `execute` does, with a `build` that
-    says what it was handed."""
-    handed: list[Any] = []
+def test_the_demo_main_hands_the_runner_is_the_demo_with_a_decorator_that_draws_its_layers(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    handed: list[Demo] = []
 
-    def build(cuts: Any, work: Path, decorate: Any = None) -> motion.Built:
-        handed.append(decorate)
-        return motion.Built(b"", (), True, BOX)
-
-    def execute(demo: Demo, run: Run, transcript: Path, update_readme: bool = False) -> int:
-        run.replies.update(_run().replies)
-        if wrote:
-            core._beside(transcript).timeline.write_text(  # noqa: SLF001
-                _json(_timeline()), encoding="utf-8")
-        motion.build([], run.dir)
+    def main(demo: Demo, argv: Any = None) -> int:
+        handed.append(demo)
         return EXIT_PASS
 
-    monkeypatch.setattr(motion, "build", build)
-    monkeypatch.setattr(core, "execute", execute)
-    return handed
+    monkeypatch.setattr(core, "main", main)
+    original = _demo()
+    assert decorated.main(original, ("calls",), ["--update-readme"]) == EXIT_PASS
+    (given,) = handed
+    assert original.decorator is None and given.decorator is not None
+    each = given.decorator(given, _run(), _timeline())
+    again = given.decorator(given, _run(), _timeline())
+    assert [p.rgb for p in each(0, range(30), _pictures(), RATE, BOX)] == [
+        p.rgb for p in again(0, range(30), _pictures(), RATE, BOX)], "two runs, two clips"
+    plain = [p.rgb for p in _pictures()]
+    assert [p.rgb for p in each(0, range(30), _pictures(), RATE, BOX)] != plain, \
+        "the clip was handed back as it was recorded"
 
 
-def _json(document: dict[str, Any]) -> str:
-    import json
-    return json.dumps(document)
-
-
-def test_the_loop_is_built_with_the_decorator_and_the_runner_is_put_back(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    handed = _seams(monkeypatch, wrote=True)
-    built, ran = motion.build, core.execute
-    code = decorated.main(_demo(), ("calls",), ["--transcript", str(tmp_path / "t.md")])
-    assert (code, len(handed), callable(handed[0])) == (EXIT_PASS, 1, True)
-    assert (motion.build, core.execute) == (built, ran)
-
-
-def test_a_loop_with_no_timeline_beside_its_run_is_refused(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
-        ) -> None:
-    handed = _seams(monkeypatch, wrote=False)
-    code = decorated.main(_demo(), ("calls",), ["--transcript", str(tmp_path / "t.md")])
-    assert (code, handed) == (EXIT_INVALID, [])
-    assert "the run wrote no timeline" in capsys.readouterr().out
+def test_a_layer_a_mame_demo_cannot_declare_is_refused_before_the_runner_starts(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(core, "main", lambda *a: pytest.fail("the runner started"))
+    with pytest.raises(ValueError, match="no pointer"):
+        decorated.main(_demo(), ("pointer",), [])
