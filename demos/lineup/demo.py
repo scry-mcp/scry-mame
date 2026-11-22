@@ -101,7 +101,7 @@ BINDING = Binding(
 
 DEMO = Demo(
     name="lineup", root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
-    readme=HERE / "README.md", steps=lineup.steps(BINDING),
+    readme=HERE / "README.md", steps=free_set.fired(lineup.steps(BINDING)),
     capture=lambda run: run.dir / "screen.png",
     moments=lineup.filmed(BINDING),
     alt="LineUp played on the arcade board: three shots, each from another column or colour",

@@ -128,7 +128,7 @@ STEPS = [
 
 DEMO = Demo(
     name=SYSTEM, root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
-    readme=HERE / "README.md", steps=STEPS,
+    readme=HERE / "README.md", steps=free_set.fired(STEPS),
     capture=lambda run: run.dir / "screen.png",
     moments=(Moment("no credits", "plays",
                     "`run_to` stopped where the attract demo starts, and `record` films it.",
