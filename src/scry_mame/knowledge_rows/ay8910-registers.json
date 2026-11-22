@@ -1,6 +1,7 @@
 {
  "format": "scry-knowledge/2",
  "dictionary": "ay8910-registers",
+ "title": "The sixteen AY-3-8910 registers",
  "kind": "register",
  "scope": "ay8910",
  "covers": "the 16 registers of the AY-3-8910 as General Instrument's data manual describes them, and MAME's write and read of each",
@@ -25,7 +26,6 @@
  ],
  "engine": [
   "set_period",
-  "set_shape",
   "set_volume",
   "m_port_a_write_cb",
   "m_port_b_write_cb",
@@ -264,23 +264,44 @@
      "n": "10",
      "on": "write",
      "of": "mame",
-     "vs": "extra",
-     "text": "On the AY8930 in expanded mode the coarse tune register keeps all 8 bits; otherwise it keeps its lower 4 bits.",
+     "vs": "differs",
+     "row": "3A",
+     "text": "MAME hands channel A's period to its setter with register 0x01 masked to 8 bits in expanded mode, and to 4 bits otherwise.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.cpp",
-       "lines": "929",
-       "sha": "388710ac7c4c1535bf6e16e2371793b5afe0c233ecb6715cd380402a57296020"
-      },
+       "lines": "929-930",
+       "sha": "afe05d589e8cb13e80e83d2555cf24ef2099d3ff58ce60da2f187156dcd2b617"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3B",
+     "text": "MAME hands channel B's period to its setter with register 0x03 masked to 8 bits in expanded mode, and to 4 bits otherwise.",
+     "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.cpp",
-       "lines": "934",
-       "sha": "3e57e93a9713ebd263f6ff3d54e12c013afc22fcfec8ec0b14652a3c4a7858b9"
-      },
+       "lines": "934-935",
+       "sha": "63840f5b2d3f840e8fc45a5463ec3c011470abd9a3fece20b920198266d0d29d"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3C",
+     "text": "MAME hands channel C's period to its setter with register 0x05 masked to 8 bits in expanded mode, and to 4 bits otherwise.",
+     "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.cpp",
-       "lines": "939",
-       "sha": "c14393fd08f8fd2b8940824c00326e306178d99e53f35aafad799ecc1ef78b88"
+       "lines": "939-940",
+       "sha": "58a6b995f93eab9fd0c47402d8ac16d06c9b9595a574feccaff34dbec0c91bca"
       }
      ]
     }
@@ -320,24 +341,6 @@
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "938",
      "as": "decode"
-    },
-    {
-     "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "930",
-     "as": "agrees",
-     "row": "3A"
-    },
-    {
-     "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "935",
-     "as": "agrees",
-     "row": "3B"
-    },
-    {
-     "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "940",
-     "as": "agrees",
-     "row": "3C"
     }
    ]
   },
@@ -467,15 +470,21 @@
      "n": "9",
      "on": "write",
      "of": "mame",
-     "vs": "extra",
-     "text": "On the AY8930 in expanded mode the noise period keeps all 8 bits of R6, where the AY-3-8910 keeps 5.",
+     "vs": "differs",
+     "text": "MAME takes no action when 0x06 is written; its accessor reads the noise period from it as 8 bits in expanded mode, 5 bits otherwise.",
      "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "942-944",
+       "sha": "3343188c358604c57fe1cbce6a81f1b7d8c130214373e294feb57780cb84e8d7"
+      },
       {
        "ref": "mame:src/devices/sound/ay8910.h",
        "lines": "283",
        "sha": "4a5a897c68813f4338e0a8b3bd507560d3c6b8ec3ba2e17a3abe836187501692"
       }
-     ]
+     ],
+     "row": "2"
     }
    ],
    "closed": [
@@ -497,8 +506,7 @@
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "925",
-     "as": "agrees",
-     "row": "2"
+     "as": "decode"
     }
    ]
   },
@@ -608,14 +616,20 @@
     },
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "959-971",
-     "as": "agrees",
+     "lines": "972",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "959-964",
+     "as": "unfollowed",
      "row": "3"
     },
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "972",
-     "as": "structure"
+     "lines": "966-971",
+     "as": "unfollowed",
+     "row": "3"
     }
    ]
   },
@@ -719,13 +733,29 @@
      "n": "6",
      "on": "write",
      "of": "mame",
-     "vs": "extra",
-     "text": "In expanded mode the AY8930 keeps a 5-bit fixed level and takes the mode from bit 5; a chip with extended envelope has a 2-bit mode.",
+     "vs": "differs",
+     "row": "2",
+     "text": "In expanded mode MAME keeps a 5-bit fixed level, where the document gives L3 to L0, 4 bits.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.h",
-       "lines": "277-278",
-       "sha": "108ac353d7111b8c06dc658d184adb8189f6aa4fd07436e3ee047ca6d9a494f4"
+       "lines": "277",
+       "sha": "a186a0d40c94c6db2491a39981b1080fb6a876884bb0689be59b94e397b68880"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "In expanded mode MAME takes the envelope mode from bit 5; a chip with extended envelope keeps a 2-bit mode, not the 1-bit M.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "278",
+       "sha": "ab9578f8fbbe144f223a21c08f199035d850b8b861807a6d1b1cba9fd6cd42d0"
       }
      ]
     }
@@ -750,18 +780,6 @@
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "925",
      "as": "decode"
-    },
-    {
-     "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "946-952",
-     "as": "agrees",
-     "row": "2"
-    },
-    {
-     "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "946-952",
-     "as": "agrees",
-     "row": "3"
     }
    ]
   },
@@ -925,7 +943,7 @@
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "955-956",
-     "as": "agrees",
+     "as": "unfollowed",
      "row": "2"
     }
    ]
@@ -947,6 +965,10 @@
      "case": [
       "AY_EASHAPE"
      ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "function": "set_shape"
     }
    ],
    "rows": [
@@ -1046,7 +1068,7 @@
      "on": "write",
      "of": "mame",
      "vs": "extra",
-     "text": "On the AY8930 a write to R15 keeps a mode in bits 7 to 4, and entering or leaving expanded mode clears registers 0x00 to 0x0C and 0x10 to 0x1C.",
+     "text": "On the AY8930 a write to 0x0D keeps a mode in bits 7 to 4, and entering or leaving expanded mode clears registers 0x00 to 0x0C and 0x10 to 0x1C.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.cpp",
@@ -1095,6 +1117,18 @@
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "993",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "lines": "245-251",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "lines": "252-259",
      "as": "agrees",
      "row": "2"
     }
@@ -1164,16 +1198,6 @@
        "ref": "datasheet:AY-3-8910.raw.txt",
        "lines": "939-944",
        "sha": "af2c47e258033855960dd00a9ebc419f0918557a979b929743b127b9964bc2a5"
-      },
-      {
-       "ref": "datasheet:AY-3-8910.raw.txt",
-       "lines": "692-694",
-       "sha": "c4c4909562b23a75cfb55f08a74b301462f1799cd6b5b81d5879b073d2159c91"
-      },
-      {
-       "ref": "datasheet:AY-3-8910.raw.txt",
-       "lines": "711-717",
-       "sha": "db2ae4f12cbecfe5df5f1255ae1962c2a7a81848687939e230b9c4388a709f4c"
       }
      ]
     },
@@ -1192,16 +1216,6 @@
        "ref": "datasheet:AY-3-8910.raw.txt",
        "lines": "955-958",
        "sha": "39d45c05d8839f3df75103529e736a6f77a99fcf1307669dad9a979f3fd0d3ce"
-      },
-      {
-       "ref": "datasheet:AY-3-8910.raw.txt",
-       "lines": "692-694",
-       "sha": "c4c4909562b23a75cfb55f08a74b301462f1799cd6b5b81d5879b073d2159c91"
-      },
-      {
-       "ref": "datasheet:AY-3-8910.raw.txt",
-       "lines": "711-717",
-       "sha": "db2ae4f12cbecfe5df5f1255ae1962c2a7a81848687939e230b9c4388a709f4c"
       }
      ]
     },
@@ -1222,15 +1236,26 @@
      "n": "5",
      "on": "read",
      "of": "mame",
-     "vs": "extra",
-     "text": "MAME returns the data at the port A pins on a read even when R7 sets port A to output, and logs a warning.",
+     "vs": "differs",
+     "text": "A read of 0x0E or 0x0F takes the data from the port's read callback when set, even in output mode, where MAME also logs a warning.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.cpp",
-       "lines": "1406-1415",
-       "sha": "dd19a3d7865049a84c1993eeb2094aadb016d1c10685ca25909cdbc0057b7d5a"
+       "lines": "1404-1405",
+       "sha": "7166d4fd60be2f9f754a0ba94a842b8254f5f65813e26f81acb0a9899bca809d"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1416-1417",
+       "sha": "bb20195b340c80e5fa5a425e9ea73398577dc79c515f3e4d0bb6d70d4a8e1595"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1422-1425",
+       "sha": "b737ddc803163c3f22beb179b0c400887141614e785d923f627b31bb46c82fe4"
       }
-     ]
+     ],
+     "row": "3"
     }
    ],
    "closed": [
@@ -1246,12 +1271,6 @@
     },
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "996-1018",
-     "as": "agrees",
-     "row": "2"
-    },
-    {
-     "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "1393",
      "as": "parent",
      "owner": "ay8910:device:ay8910"
@@ -1263,14 +1282,25 @@
     },
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "1404-1405",
+     "lines": "996-1007",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1008-1018",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1418-1419",
      "as": "log"
     },
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "1416-1427",
-     "as": "agrees",
-     "row": "3"
+     "lines": "1426-1427",
+     "as": "log"
     }
    ]
   }

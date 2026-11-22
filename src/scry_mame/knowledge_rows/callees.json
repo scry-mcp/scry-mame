@@ -3,7 +3,7 @@
  "callees": {
   "mame:is_expanded_mode": "none:accessor",
   "mame:set_period": "engine",
-  "mame:set_shape": "engine",
+  "mame:set_shape": "open",
   "mame:set_volume": "engine",
   "mame:LOGMASKED": "none:log",
   "mame:describe_context": "none:log",

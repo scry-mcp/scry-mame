@@ -1,6 +1,7 @@
 {
  "format": "scry-knowledge/2",
  "dictionary": "x1010-device",
+ "title": "The Seta X1-010 sound chip as a device",
  "kind": "device",
  "scope": "x1010",
  "covers": "the Seta X1-010 as a device as MAME's source defines it; no official document was found",
@@ -103,7 +104,7 @@
      "on": "reset",
      "of": "mame",
      "vs": "extra",
-     "text": "MAME has no reset: device_start zeroes the 0x2000-byte register area and each channel's sample and envelope offsets once.",
+     "text": "MAME has no reset: the class overrides device_start and device_clock_changed and no device_reset, and device_start zeroes the register area and each channel's offsets once.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -114,6 +115,11 @@
        "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "122-123",
        "sha": "c01973e7d759bc4ee42e2052a7f07049640222f321363a92f91f4ae585049dbb"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.h",
+       "lines": "24-26",
+       "sha": "7cf293c717fd532ec6da9c77d93f61b1a85934ff98540ee34b5bca410c553433"
       }
      ]
     },
@@ -157,6 +163,11 @@
      "vs": "extra",
      "text": "A change of the ROM bank brings the sound stream up to date first.",
      "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "152",
+       "sha": "54a7f31f3408720d2f3d08d7caba83715f3f8e7a944b8413fab3ba01ea1910a1"
+      },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "154",
@@ -213,6 +224,16 @@
        "ref": "mame:src/devices/sound/x1_010.h",
        "lines": "15-21",
        "sha": "b5b68ef9f31f1f3f52f755f084f66bb033180d44d3fc208e9e97ed633dc50e70"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "163",
+       "sha": "64febdf8f9f8f710c143ac436b3f5de1da33d7bfd33f9de33dc6d7e2b0672333"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "186",
+       "sha": "0d2303a2cb487074054057bd806b568f5d3f948273298dbc02150f4e6aed0138"
       }
      ]
     }

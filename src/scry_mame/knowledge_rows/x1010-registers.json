@@ -1,6 +1,7 @@
 {
  "format": "scry-knowledge/2",
  "dictionary": "x1010-registers",
+ "title": "The Seta X1-010 registers and memory areas",
  "kind": "register",
  "scope": "x1010",
  "covers": "the registers and memory areas of the Seta X1-010 as MAME's source defines them; no official document was found",
@@ -121,7 +122,7 @@
      "on": "write",
      "of": "mame",
      "vs": "extra",
-     "text": "A write that sets bit 0 of R0 on a channel below 16 restarts that channel's sample and envelope offsets at 0.",
+     "text": "A write that changes bit 0 of R0 from 0 to 1 on a channel below 16 restarts that channel's sample and envelope offsets at 0.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -184,6 +185,16 @@
        "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "252-253",
        "sha": "6ef1249b77ce10ba24c041bd81f467aefa23170aaf1995ec68284854b095389a"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "245",
+       "sha": "46859616bfde0637aa8c888e711212952052279f55616a88f02e16b5d9c145fa"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "280",
+       "sha": "9c3632a85021326b17ceca471044d2374c5d296392c4792494ea30baf9b197e7"
       }
      ]
     },
@@ -227,6 +238,16 @@
        "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "218",
        "sha": "eb65f86eb689155e78658d88e348ed54ab8a4375b664fb2d0c101fe34ad08128"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "226",
+       "sha": "2db39cbe35fd2794535f09aac0c43b84735159e82ae5250e12728948341ed868"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "256",
+       "sha": "a437479f87fc72c772285b0598c3bfd3beab61dea2e679fa37c665a0d3d67794"
       }
      ]
     },
@@ -386,6 +407,45 @@
        "sha": "9d72e14e2efcb28a129eee826f1f5e57ad4d19c4d316931ccf7f2a76cfee624d"
       }
      ]
+    },
+    {
+     "n": "18",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each stream update starts a channel at its saved sample position and, for a waveform, envelope position, and saves them again when it ends.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "209",
+       "sha": "ec8f168cb59c25e7d67569498e5e0a54f38bd53b0dc1de067da8206a096560d0"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "225",
+       "sha": "392f4e04189e5dd65f532f723d71a6bca51cb88cee0447244e1e2cd399103cba"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "250",
+       "sha": "15e5f643d7f19156b9ba06c2bae8ab4817811ae3dc8f91f798e5a1079220236d"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "255",
+       "sha": "392f4e04189e5dd65f532f723d71a6bca51cb88cee0447244e1e2cd399103cba"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "260",
+       "sha": "38391bc828dd128aa96c0782a3ffe3a071e7fae2cdd55faaaa899486a93d217f"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "286-287",
+       "sha": "dba447958017c8d90fa1c32b27fe4117a907751da57217d5ee4de22272a09642"
+      }
+     ]
     }
    ],
    "closed": [
@@ -406,22 +466,12 @@
     },
     {
      "ref": "mame:src/devices/sound/x1_010.cpp",
-     "lines": "250",
-     "as": "structure"
-    },
-    {
-     "ref": "mame:src/devices/sound/x1_010.cpp",
      "lines": "263-267",
      "as": "log"
     },
     {
      "ref": "mame:src/devices/sound/x1_010.cpp",
      "lines": "268",
-     "as": "structure"
-    },
-    {
-     "ref": "mame:src/devices/sound/x1_010.cpp",
-     "lines": "286-287",
      "as": "structure"
     }
    ]
