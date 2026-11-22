@@ -1,0 +1,101 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "v30-vectors",
+ "title": "Vectors of the V30",
+ "kind": "vector",
+ "scope": "v30",
+ "covers": "FIXTURE of a test: a few vectors of the V30, each with its slot",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "maker",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "index",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  }
+ ],
+ "entries": [
+  {
+   "key": "4",
+   "name": "overflow",
+   "address": 16,
+   "length": 4,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "overflow is a vector of the V30.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "10-10"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 4 bytes at 0x10.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "11-11"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "5",
+   "name": "bound check",
+   "address": 20,
+   "length": 4,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "bound check is a vector of the V30.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "12-12"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 4 bytes at 0x14.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "13-13"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

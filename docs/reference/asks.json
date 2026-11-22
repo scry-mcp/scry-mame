@@ -154,7 +154,7 @@
     "`status` answers in every state: with no session, while the machine runs and once the session is broken. It is where you learn why another tool does not answer."
    ],
    "why_more": [
-    "- With no session the reply is `last_stop` and, when there is one to give, a `note`. After MAME exited under the session it is `exit_code` and a `note`.\n- `debugger.note` says a capture at a stop can land one frame from an autoboot reference capture; `start` says why.\n- `threads` is empty on a MAME without the gdbstub thread patch, which gives each cpu a debugger thread. `cpu_tags` only names the cpus; what each is doing is `cpu_info`'s.\n- `console_pending` counts Lua lines sent and not yet run. `throttles_pending` lists speed switches asked and not yet applied (`tag`, `on`).\n- `tallies_pending_removal` lists write counts waiting to be removed (`tally_id`, `call`); a row that leaves is a removal done.\n- `presence` is `true` when the border is drawn, `false` when it was asked off, or the reason it is not drawn.\n- `overlay` is there with the border on, as `start` gave it: the `layers` drawn, the `place` in effect and, in `lacking`, why a layer is not.\n- `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.\n- `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.\n- `knowledge` counts the entries of the base the names come from (`served`) and those held back because no second check confirmed them (`held_back`); a held-back entry stays a number."
+    "- With no session the reply is `last_stop` and, when there is one to give, a `note`. After MAME exited under the session it is `exit_code` and a `note`.\n- `debugger.note` says a capture at a stop can land one frame from an autoboot reference capture; `start` says why.\n- `threads` is empty on a MAME without the gdbstub thread patch, which gives each cpu a debugger thread. `cpu_tags` only names the cpus; what each is doing is `cpu_info`'s.\n- `console_pending` counts Lua lines sent and not yet run. `throttles_pending` lists speed switches asked and not yet applied (`tag`, `on`).\n- `tallies_pending_removal` lists write counts waiting to be removed (`tally_id`, `call`); a row that leaves is a removal done.\n- `presence` is `true` when the border is drawn, `false` when it was asked off, or the reason it is not drawn.\n- `overlay` is there with the border on, as `start` gave it: the `layers` drawn, the `place` in effect and, in `lacking`, why a layer is not.\n- `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.\n- `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.\n- `knowledge` counts the entries of the base the names come from (`served`) and those not served yet (`held_back`), whose numbers stay numbers."
    ],
    "related": [
     "start",
@@ -3973,45 +3973,45 @@
    ]
   },
   "knowledge_find": {
-   "what": "Ask what a number is called on this machine and what the server knows about it: a vector, a chip register, an input, a device.",
-   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The base needs no session for what it holds, so it answers about a Z80 too.",
-   "ask": "What does the Z80 do at 0x66?",
+   "what": "Ask what a number is called on this machine and what its documentation says it does: a vector, a chip register, an input, a device.",
+   "on": "Needs no session and no program: the base answers from its own copy, for any chip it holds.",
+   "ask": "What do registers 8 to 10 of the AY-3-8910 do, and does MAME follow the manual?",
    "call": {
-    "kind": "vector",
-    "key": "0x66",
-    "scope": "z80"
+    "kind": "register",
+    "key": "0x08",
+    "scope": "ay8910"
    },
    "shows": [
     "summary",
     "entries_total",
     "examined"
    ],
-   "reads": "One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 does when it is taken, and its source lines. `served` and `held_back` count what the base serves and holds back.",
+   "reads": "One entry matches, so it comes whole: the manual's rows first, with MAME's verdict where it gave one, then MAME's own notes. Each row cites its lines, and `sources` links each document once.",
    "arguments": {
-    "id": "An entry's id, as another reply cites it, such as `z80:vector:0x66`. Answers that entry whole.",
+    "id": "An entry's id, as another reply cites it, such as `ay8910:register:0x07`: that entry whole. `<id>#<n>`, such as `ay8910:register:0x07#1`, answers its row `n`, with a link to each line.",
     "kind": "What the number is: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`, `device`, `register` or `command`. Left empty, every kind.",
     "key": "The number as a reply prints it, or a range such as `0x3C0..0x3CF`; for an `input`, `:IN1/Coin 1`.",
-    "text": "Words looked for in names, aliases, descriptions and behaviour. A word ending in `*` matches by prefix.",
+    "text": "Words looked for in names, aliases and the rows' text. A word ending in `*` matches by prefix.",
     "device": "A chip's key, or a tag of the running machine such as `:ymsnd`: everything that belongs to it.",
-    "scope": "A cpu or a chip: `z80`, `mc6845`. Left empty, the session's cpus and chips; with no session, all.",
+    "scope": "A chip or a cpu: `ay8910`, `pic8259`. Left empty, the session's cpus and chips; with no session, all.",
     "limit": "How many entries are listed: 1 to 50. Left out, 10."
    },
    "returns": {
-    "entries": "Rows with `id`, `kind`, `key`, `name`; one match, or an `id`, answers whole with `description`, `behaviour` and `sources`. A machine's own row has `live: true`.",
+    "entries": "Rows with `id`, `kind`, `key`, `name`, and `live: true` on the machine's own. One match or an `id` answers whole: `rows`, the document's first with `verdicts`, then MAME's notes.",
     "entries_total": "How many entries matched.",
     "truncated": "`true` when more matched than `entries` lists.",
     "examined": "How many entries were searched, so a zero says what it is a zero of.",
     "nearest": "When nothing matched: the entries next to the number or the words.",
-    "note": "When nothing matched, or an entry is held back: that the number stays a number."
+    "note": "When nothing matched: that the number stays a number."
    },
    "refuses": [
     "None of `id`, `kind`, `key`, `text`, `device` (`bad_argument`).",
     "A `key` that is no number or range of that `kind`, or a `scope` the server does not hold (`bad_argument`).",
-    "An `id` or a `device` the base does not hold (`unknown_ref`); one whose entry is held back is no refusal: it answers `unconfirmed`.",
+    "An `id`, a row `<id>#<n>` or a `device` the base does not hold (`unknown_ref`).",
     "A kind read from the machine with no session (`no_session`)."
    ],
    "why": [
-    "Each entry was checked against its source, and an answer says where it was read. A key the base has not confirmed answers `unconfirmed` and stays a number. The base is the server's own copy: it answers while the program runs.",
+    "An entry says what the chip's or the cpu's documentation says, and MAME's code where it differs, with the lines each row was read from. The base is the server's own copy: it answers while the program runs.",
     "What the machine says about itself (inputs, devices, the memory map) was read at `start` and is never asked of MAME again, so it cannot slow a call."
    ],
    "related": [

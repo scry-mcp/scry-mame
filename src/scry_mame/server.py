@@ -277,7 +277,7 @@ def status() -> dict[str, Any]:
     (`breakpoints`, `watches`, `regpoints`: each `ref`, `cpu`), `console_pending`,
     `throttles_pending`, `tallies_pending_removal`, and `broken` when the session can no longer
     be trusted: `close`, then `start`. Always `knowledge` (`served`, `held_back`): the entries of
-    the base the replies name from, and those held back as not confirmed.
+    the base the replies name from, and those not served yet.
 
     Reference: REFERENCE.md, The session.
     """

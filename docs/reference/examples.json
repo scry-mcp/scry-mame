@@ -2017,67 +2017,141 @@
   }
  },
  "knowledge_find": {
-  "from": "docs/reference/tour/tour.py: step `base`, run in process because it needs no machine; the tour's next run replaces it",
+  "from": "tests/knowledge_example.py: the pilot's dictionaries of rows, read unsealed: knowledge_find",
   "call": {
-   "kind": "vector",
-   "key": "0x66",
-   "scope": "z80"
+   "kind": "register",
+   "key": "0x08",
+   "scope": "ay8910"
   },
   "reply": {
-   "summary": "kind vector key 0x66: NMI",
+   "summary": "kind register key 0x08: channel amplitude",
    "status": "ok",
    "query": {
-    "kind": "vector",
-    "key": "0x66"
+    "kind": "register",
+    "key": "0x08"
    },
    "scope": [
-    "z80"
+    "ay8910"
    ],
    "entries_total": 1,
    "entries": [
     {
-     "id": "z80:vector:0x66",
-     "kind": "vector",
-     "key": "0x66",
-     "name": "NMI",
-     "scope": "z80",
-     "aliases": [
-      "non-maskable interrupt"
-     ],
-     "description": "Target of a non-maskable interrupt.",
-     "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter and jumps here. RETN copies the second flip-flop back into the first.",
-     "address": "0x000066",
-     "length": 1,
-     "checked": true,
-     "sources": [
+     "id": "ay8910:register:0x08..0x0A",
+     "kind": "register",
+     "key": "0x08..0x0A",
+     "name": "channel amplitude",
+     "scope": "ay8910",
+     "rows": [
       {
-       "role": "documentation",
-       "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
-       "cites": "restart at location 0066h."
+       "n": "1",
+       "on": "is",
+       "of": "doc",
+       "text": "R10, R11 and R12 are the amplitude registers of channels A, B and C; the lower 5 bits, B4 to B0, determine the amplitude.",
+       "cites": [
+        {
+         "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+         "lines": "721-724"
+        },
+        {
+         "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+         "lines": "725-729"
+        }
+       ]
       },
       {
-       "role": "emulator",
-       "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
-       "cites": "\tPC = 0x0066;",
-       "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
+       "n": "2",
+       "on": "write",
+       "of": "doc",
+       "text": "A write to an amplitude register sets, in bits L3 to L0, the fixed amplitude level, which counts only when M is 0.",
+       "cites": [
+        {
+         "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+         "lines": "736-743"
+        }
+       ],
+       "verdicts": {
+        "mame": "differs"
+       }
+      },
+      {
+       "n": "3",
+       "on": "write",
+       "of": "doc",
+       "text": "A write to an amplitude register sets the mode bit M: 0 selects a fixed level amplitude and 1 the envelope generator's output.",
+       "cites": [
+        {
+         "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+         "lines": "734-735"
+        },
+        {
+         "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+         "lines": "744-750"
+        }
+       ],
+       "verdicts": {
+        "mame": "differs"
+       }
+      },
+      {
+       "n": "5",
+       "on": "is",
+       "of": "doc",
+       "text": "A fixed level amplitude is one of the 16 levels, set by the decimal value of bits L3 to L0.",
+       "cites": [
+        {
+         "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+         "lines": "780-784"
+        }
+       ]
+      },
+      {
+       "n": "6",
+       "on": "write",
+       "of": "mame",
+       "vs": "differs",
+       "row": "2",
+       "text": "In expanded mode MAME keeps a 5-bit fixed level, where the document gives L3 to L0, 4 bits.",
+       "cites": [
+        {
+         "file": "src/devices/sound/ay8910.h",
+         "lines": "277"
+        }
+       ]
+      },
+      {
+       "n": "7",
+       "on": "write",
+       "of": "mame",
+       "vs": "differs",
+       "row": "3",
+       "text": "In expanded mode MAME takes the envelope mode from bit 5; a chip with extended envelope keeps a 2-bit mode, not the 1-bit M.",
+       "cites": [
+        {
+         "file": "src/devices/sound/ay8910.h",
+         "lines": "278"
+        }
+       ]
+      }
+     ],
+     "aliases": [
+      "volume"
+     ],
+     "sources": [
+      {
+       "where": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+       "url": "https://archive.org/download/GI_AY-3-8910_Feb-1979/GI_AY-3-8910_Feb-1979_text.pdf"
+      },
+      {
+       "where": "src/devices/sound/ay8910.h",
+       "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/sound/ay8910.h"
       }
      ]
     }
    ],
    "truncated": false,
-   "examined": 9,
-   "served": 75,
-   "held_back": 647,
-   "session": {
-    "alive": false,
-    "running": false,
-    "altered": false,
-    "omitted": [
-     "altering_writes",
-     "console"
-    ],
-    "how": "call `status`"
-   }
+   "examined": 7,
+   "served": 31,
+   "held_back": 0
   }
  },
  "log": {

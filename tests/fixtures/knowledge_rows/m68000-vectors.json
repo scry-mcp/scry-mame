@@ -1,0 +1,203 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "m68000-vectors",
+ "title": "Vectors of the 68000",
+ "kind": "vector",
+ "scope": "m68000",
+ "covers": "FIXTURE of a test: a few vectors of the 68000, each with its slot",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "maker",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "index",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  }
+ ],
+ "entries": [
+  {
+   "key": "2",
+   "name": "bus error",
+   "address": 8,
+   "length": 4,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "bus error is a vector of the 68000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "10-10"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 4 bytes at 0x8.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "11-11"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "6",
+   "name": "CHK",
+   "address": 24,
+   "length": 4,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "CHK is a vector of the 68000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "12-12"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 4 bytes at 0x18.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "13-13"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "7",
+   "name": "TRAPV",
+   "address": 28,
+   "length": 4,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "TRAPV is a vector of the 68000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "14-14"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 4 bytes at 0x1C.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "15-15"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "32",
+   "name": "TRAP #0",
+   "address": 128,
+   "length": 4,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "TRAP #0 is a vector of the 68000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "16-16"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 4 bytes at 0x80.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "17-17"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "47",
+   "name": "TRAP #15",
+   "address": 188,
+   "length": 4,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "TRAP #15 is a vector of the 68000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "18-18"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 4 bytes at 0xBC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "19-19"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,6 +1,6 @@
 """The names MAME's replies and captions carry: what the namer gives for an address, a typed
-symbol, a stop's pc and a chip's register, that it never asks the emulator, what `knowledge_find`
-reads from the machine, and the note a disassembled line carries."""
+symbol and a stop's pc, that it never asks the emulator, what `knowledge_find` reads from the
+machine, and the note a disassembled line carries."""
 
 from __future__ import annotations
 
@@ -11,13 +11,18 @@ from typing import Any
 import pytest
 from scry_core import naming as core_naming
 from scry_core import notes
+from scry_core.knowledge import sealed
+from scry_core.knowledge.base import Base, Served
 
 from scry_mame import cpus, line_notes, machine, naming, presence
 from scry_mame import gdb_session as gs
 from scry_mame import server as s
+from scry_mame.knowledge import support
 from scry_mame.state import STATE
 
 ROOT = Path(__file__).resolve().parent.parent
+#: Dictionaries of rows of a few vectors of each cpu, each with the slot it sits at.
+VECTORS = Path(__file__).resolve().parent / "fixtures" / "knowledge_rows"
 CHIP_HANDLER = "delegate/mc6845_device::address_w"
 SINGLE = """MAME_MCP_MACHINE_BEGIN
 CPU :maincpu type=m68000 name=Motorola MC68000 spaces=program
@@ -66,14 +71,38 @@ def board(monkeypatch: pytest.MonkeyPatch, text: str = SINGLE, symbols: dict[str
         monkeypatch.setitem(STATE.tables, ":maincpu", gs.SymbolTable(symbols, {}, "yaml"))
 
 
-@pytest.fixture
-def every_entry(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The namer over every entry of the dictionaries, held back or not: how a name is found,
-    judged apart from the filter, which has its own cases."""
-    whole = naming.base().unfiltered()
+class Placed(Base):
+    """This server's dictionaries of rows and the vector fixtures, the entries `lock` seals (every
+    one with none), each vector at the slot its fixture gives. The core places no entry of rows at
+    an address yet (`Index.at` answers nothing over them), so these cases place the fixtures to
+    judge what the server does with a vector it finds: the namer's order and the notes'
+    plumbing."""
+
+    def __init__(self, lock: sealed.Lock | None = None) -> None:
+        super().__init__((*support.SOURCES, VECTORS), lock)
+        self._slots = [(d["scope"], e["address"], e["length"], e["key"])
+                       for f in sorted(VECTORS.glob("*.json"))
+                       for d in [json.loads(f.read_text(encoding="utf-8"))] for e in d["entries"]]
+
+    def at(self, address: int, scope: str = "") -> tuple[Served, int] | None:
+        for of, lo, length, key in self._slots:
+            if scope in ("", of) and lo <= address < lo + length:
+                found = self.get("vector", key, of)
+                return None if found is None else (found, address - lo)
+        return None
+
+
+def place_vectors(monkeypatch: pytest.MonkeyPatch, lock: sealed.Lock | None = None) -> None:
+    whole = Placed(lock)
     monkeypatch.setattr(naming, "base", lambda: whole)
     monkeypatch.setattr(naming.MAMENAMER, "_base", whole)
-    monkeypatch.setattr(naming.MAMENAMER, "_by_class", naming.MameNamer(whole)._by_class)
+
+
+@pytest.fixture
+def every_entry(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The namer over every entry, served or not, with the vectors placed: how a name is found,
+    judged apart from the filter, which has its own cases."""
+    place_vectors(monkeypatch)
 
 
 @pytest.mark.usefixtures("every_entry")
@@ -119,111 +148,26 @@ def test_a_board_with_two_cpus_and_no_cpu_named_gets_no_name(
     assert naming.MAMENAMER.arguments("read_memory", {"ref": "0x8", "cpu": "maincpu"})
 
 
-def test_a_chips_handler_names_the_chip_and_a_write_to_its_index_names_the_register(
+def test_a_vector_is_unnamed_until_it_is_served_and_the_machine_still_names_the_address(
         monkeypatch: pytest.MonkeyPatch) -> None:
+    place_vectors(monkeypatch, support.rows_lock())
     board(monkeypatch)
-    chip = naming.MAMENAMER.arguments("write", {"ref": "0x900000"})["ref"]
-    assert (chip.kind, chip.id) == ("device", "chip:device:mc6845")
-    both = naming.MAMENAMER.arguments("write", {"ref": "0x900000", "data_hex": "0d"})
-    register = both["data_hex"]
-    assert register.kind == "register" and register.id == "mc6845:register:0x0D"
-    assert "data_hex" not in naming.MAMENAMER.arguments("write", {"ref": "0x900000",
-                                                                  "data_hex": "0d0d"})
-    assert "data_hex" not in naming.MAMENAMER.arguments("write", {"ref": "0x1000",
-                                                                  "data_hex": "0d"})
-
-
-def chip_at(monkeypatch: pytest.MonkeyPatch, handler: str) -> naming.MameNamer:
-    """The board with `handler` (as MAME prints a delegate) behind 0x900000, and its namer."""
-    board(monkeypatch)
-    row = next(r for r in STATE.machine_map["address_map"] if r["start"] == "0x00900000")
-    row["write"] = f"delegate/{handler}"
-    return naming.MAMENAMER
-
-
-@pytest.mark.parametrize(("handler", "data", "named"), [
-    ("ymf262_device::address_w", 0x25, "ymf262:register:0x20..0x35"),
-    ("ymf262_device::address_hi_w", 0x25, "ymf262:register:0x120..0x135"),
-    ("ymf262_device::address_hi_w", 0x05, "ymf262:register:0x105"),
-    ("ymf262_device::address_w", 0x05, None),
-    ("ymf262_device::data_w", 0x25, None),
-    ("ay8910_device::address_w", 0x03, "ay8910:register:0x00..0x05"),
-    ("ym2608_device::address_w", 0xFF, None),
-    ("ym2608_device::address_w", 0x2D, "ym2608:register:0x2D:write"),
-])
-@pytest.mark.usefixtures("every_entry")
-def test_an_index_handler_that_is_a_list_selects_a_bank_and_a_range_names_its_registers(
-        monkeypatch: pytest.MonkeyPatch, handler: str, data: int, named: str | None) -> None:
-    got = chip_at(monkeypatch, handler).register(0x900000, ":maincpu", data)
-    assert (got.id if got else None) == named
-
-
-@pytest.mark.parametrize(("access", "named"), [
-    ("write", "mixer and port control"), ("read", "mixer readback")])
-@pytest.mark.usefixtures("every_entry")
-def test_a_register_told_apart_by_access_is_named_for_the_access_of_the_call(
-        monkeypatch: pytest.MonkeyPatch, access: str, named: str) -> None:
-    namer = chip_at(monkeypatch, "ay8910_device::address_w")
-    got = namer.register(0x900000, ":maincpu", 0x07, access)
-    assert got is not None and got.name == named
-    written = namer.arguments("write", {"ref": "0x900000", "data_hex": "07"})["data_hex"]
-    assert written.name == "mixer and port control"
-
-
-@pytest.mark.usefixtures("every_entry")
-def test_a_register_is_found_in_the_dictionary_that_holds_it_not_in_the_first_one(
-        monkeypatch: pytest.MonkeyPatch) -> None:
-    import dataclasses
-
-    chip_at(monkeypatch, "ym3526_device::address_w")
-    real = naming.base()
-
-    class FirstWithoutReached:
-        """A chip whose first register comes from a dictionary that says nothing of `reached`."""
-
-        def __getattr__(self, name: str) -> Any:
-            return getattr(real, name)
-
-        def search(self, *a: Any, **k: Any) -> Any:
-            found = real.search(*a, **k)
-            found.entries = [dataclasses.replace(e, reached=None) if e.key == "0x01" else e
-                             for e in found.entries]
-            return found
-
-    namer = naming.MameNamer(FirstWithoutReached())  # type: ignore[arg-type]
-    assert namer.register(0x900000, ":maincpu", 0x08) is not None
-    assert namer.register(0x900000, ":maincpu", 0x01) is None
-
-
-def z80_board(monkeypatch: pytest.MonkeyPatch, guarded: bool = True) -> None:
-    board(monkeypatch, SINGLE.replace("type=m68000", "type=z80"), guarded=guarded)
-
-
-def test_a_vector_is_unnamed_until_it_is_confirmed_and_the_machine_still_names_the_address(
-        monkeypatch: pytest.MonkeyPatch) -> None:
-    board(monkeypatch)
+    assert naming.base().by_id("m68000:vector:2") is None
     held = naming.MAMENAMER.address(8, ":maincpu", "0x8")
     assert held is not None and (held.kind, held.name) == ("memory", "maincpu")
     board(monkeypatch, symbols={"START": 0x0})
     held = naming.MAMENAMER.address(8, ":maincpu", "0x8")
     assert held is not None and (held.kind, held.name, held.delta) == ("symbol", "START", 8)
-    z80_board(monkeypatch)
-    assert naming.MAMENAMER.address(0x66, ":maincpu", "0x66") == core_naming.Named(
-        "vector", "NMI", "0x66", 0, "z80:vector:0x66")
-
-
-def test_a_register_of_a_chip_held_back_is_not_named_and_one_confirmed_is(
-        monkeypatch: pytest.MonkeyPatch) -> None:
-    assert naming.base().by_id("ay8910:register:0x00..0x05") is None
-    assert chip_at(monkeypatch, "ay8910_device::address_w").register(
-        0x900000, ":maincpu", 0x03) is None
-    got = chip_at(monkeypatch, "mc146818_device::address_w").register(0x900000, ":maincpu", 0x00)
-    assert got is not None and got.id == "mc146818:register:0x00"
+    place_vectors(monkeypatch)
+    board(monkeypatch)
+    assert naming.MAMENAMER.address(8, ":maincpu", "0x8") == core_naming.Named(
+        "vector", "bus error", "0x8", 0, "m68000:vector:2")
 
 
 def test_a_trap_line_carries_no_note_while_its_vector_is_held_back(
         monkeypatch: pytest.MonkeyPatch) -> None:
     from scry_mame import read
+    place_vectors(monkeypatch, support.rows_lock())
     board(monkeypatch)
     line = "000560: 4E40           trap    #$0"
     assert line_notes.of_listing([line], ":maincpu") == []
@@ -234,29 +178,31 @@ def test_a_trap_line_carries_no_note_while_its_vector_is_held_back(
 def test_the_boundary_names_no_held_back_entry_in_a_reply_or_its_summary(
         monkeypatch: pytest.MonkeyPatch) -> None:
     from scry_mame import mcp
+    place_vectors(monkeypatch, support.rows_lock())
     board(monkeypatch, guarded=False)
     given = {"ref": "0x8"}
     closed = mcp.BOUNDARY.finished("read_memory", given, dict(READ),
                                    named=naming.GUARD.arguments("read_memory", given))
     assert "bus error" not in closed["summary"]
     assert not [i for i in closed.get("names", []) if "id" in i]
-    z80_board(monkeypatch, guarded=False)
-    nmi = {**READ, "ref": "0x66", "addr": "0x00000066"}
-    given = {"ref": "0x66"}
-    closed = mcp.BOUNDARY.finished("read_memory", given, nmi,
+    place_vectors(monkeypatch)
+    closed = mcp.BOUNDARY.finished("read_memory", given, dict(READ),
                                    named=naming.GUARD.arguments("read_memory", given))
-    assert "(NMI)" in closed["summary"]
-    assert [i["id"] for i in closed["names"] if "id" in i] == ["z80:vector:0x66"] * 2
+    assert "(bus error)" in closed["summary"]
+    assert [i["id"] for i in closed["names"] if "id" in i] == ["m68000:vector:2"] * 2
 
 
-def test_a_device_names_its_chip_only_when_that_chip_is_confirmed(
+def test_a_device_names_its_chip_only_when_that_chip_is_served(
         monkeypatch: pytest.MonkeyPatch) -> None:
     board(monkeypatch)
     STATE.machine_map[machine.DEVICES].append(
         {"tag": ":psg", "name": "AY-3-8910", "shortname": "ay8910"})
+    assert naming.base().by_id("ay8910:device:ay8910") is None
     rows = {r["key"]: r for r in naming.Live().rows("device", "", "") or []}
-    assert rows[":crtc"]["chip"] == "chip:device:mc6845"
     assert "chip" not in rows[":psg"]
+    place_vectors(monkeypatch)
+    rows = {r["key"]: r for r in naming.Live().rows("device", "", "") or []}
+    assert rows[":psg"]["chip"] == "ay8910:device:ay8910"
 
 
 def test_a_stops_pc_is_named_and_a_typed_symbols_address_is_not_repeated(
@@ -269,6 +215,8 @@ def test_a_stops_pc_is_named_and_a_typed_symbols_address_is_not_repeated(
     assert naming.MAMENAMER.reply("read_memory", typed) == []
     untyped = {"ref": "0x20b583", "addr": "0x0020b583", "cpu": ":maincpu"}
     assert [p for p, _ in naming.MAMENAMER.reply("read_memory", untyped)] == ["addr"]
+    assert naming.MAMENAMER.reply("read_memory", {"addr": 0x20B583, "cpu": ":maincpu"}) == [
+        ("addr", core_naming.Named("symbol", "COUNT_COIN", "0x20B583"))]
 
 
 @pytest.mark.usefixtures("every_entry")
@@ -340,7 +288,7 @@ def test_knowledge_find_reads_the_inputs_the_devices_and_the_map_from_the_machin
         {"kind": "input", "key": ":IN1/Coin 1", "name": "Coin 1", "scope": ":IN1"}]
     crtc = live.rows("device", ":crtc", "")
     assert crtc == [{"kind": "device", "key": ":crtc", "name": "Motorola MC6845",
-                     "type": "mc6845", "chip": "chip:device:mc6845"}]
+                     "type": "mc6845"}]
     assert live.scopes() == ("m68000",)
     held = live.rows("memory", "0x200010", "") or []
     assert [r["name"] for r in held] == ["mainram"]
@@ -354,13 +302,6 @@ def test_a_device_is_asked_by_its_tag_in_either_spelling_and_answers_the_same(
     by_device = s.knowledge_find(device=":crtc")
     assert by_key["entries"] == by_device["entries"] != []
     assert by_key["entries"][0]["key"] == ":crtc"
-    assert by_key["entries"][0]["chip_entry"]["id"] == "chip:device:mc6845"
-
-
-def test_the_reply_of_knowledge_find_names_a_confirmed_vector_with_no_session() -> None:
-    reply = s.knowledge_find(kind="vector", key="0x66", scope="z80")
-    assert reply["entries"][0]["id"] == "z80:vector:0x66"
-    assert reply["entries"][0]["sources"][0]["ref"].startswith("datasheet:")
 
 
 @pytest.mark.parametrize(("cpu", "text", "expected"), [

@@ -188,20 +188,19 @@ The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakp
 
 ## Knowledge base
 
-A reply and a caption call a number by its name where the server knows one, so you do not look it up. A caption reads `NMI (0x66)`; a reply's `names` field gives the number and its name.
+A reply and a caption call a number by its name where the server knows one, so you do not look it up. A caption reads `credits (0x042B)`; a reply's `names` field gives the number and its name.
 
-- **Where a name comes from.** A symbol you typed as a `ref` keeps its name. An address is named by its cpu's vector, else the nearest symbol, else the chip behind the map's handler, else the memory region or share the map names.
-- **What the base holds.** Cpu vectors, and the registers and commands of chips, where it has an entry. A number it has no entry for stays a number, and `status` counts the entries it serves, in `knowledge`.
-- **Each entry is checked against its source.** It cites the chip's or the cpu's documentation where one is public, and MAME's own source line. Checked against its source is not complete: an entry says what its source says.
-- **A write to a chip's index handler** also names the register the byte selects, in `given.data_hex`, when the base holds the chip and the register.
+- **Where a name comes from.** A symbol you typed as a `ref` keeps its name. An address is named by the nearest symbol, else the memory region or share the map names.
+- **What the base holds.** The devices, registers and commands of chips. A number it has no entry for stays a number.
+- **An entry says what the documentation says.** Its `rows` give the chip's or the cpu's own document first, with MAME's verdict where it gave one: as documented, differs, absent or unfollowed. MAME's notes follow, each naming the row it differs from.
+- **Each row says where it was read.** Its `cites` give the document's title or MAME's file, and the lines. An entry no public document answers says so in `source`, and its rows are MAME's.
 - **Where the reply says it.** `names` lists each named number with its `field`, its `kind`, its `name` and, for a name from the base, the `id` of its entry; `names_cut` counts what did not fit. The one-line `summary` carries the same names, and a call's own arguments are named under `given.<argument>`.
 - **A board with several cpus** and a call that names none gets no name, because a name for the wrong cpu is worse than none.
 - **`names=false` on `start`** leaves replies bare and a disassembled line with no note. It is a profile key like any other, and the window's captions keep their names.
 - **`knowledge_find`** asks the base directly: by `id`, by `kind` and `key`, by words, or by `device`. It needs no session for what the base holds, and answers while the program runs.
+- **One row, with links.** `id=<entry id>#<n>` answers that row alone, and each cited line comes with the URL that opens it: the document, or MAME's file at the release the base was read at.
 - **A running machine adds what it says about itself.** `knowledge_find` lists its `input` fields, its `device` tags and the `memory` its map names. Ask a device by its tag, with `kind=device key=:ymsnd` or `device=:ymsnd`.
-- **A disassembled line's note** is one `{line, note}` in `line_notes` for each line whose instruction states an operand the base names, such as a `TRAP` number. The stop's `instruction` carries `note`. Your own comments stay apart, and a register operand is never guessed.
-
-Where the base is going: an entry states the documented behaviour, with what MAME does as a note beside it where the two differ. Its fields will change with this.
+- **A disassembled line's note** is one `{line, note}` in `line_notes` for each line whose instruction states an operand the base names. The stop's `instruction` carries `note`. Your own comments stay apart, and a register operand is never guessed.
 
 The tool: [Names](docs/reference/names.md).
 

@@ -6,19 +6,17 @@ What a client of the server notices.
 
 - Replies and captions call a number by its name where the server knows one. A reply lists
   each in `names` and in its `summary`; `names=false` on `start` leaves replies bare, and the
-  window's captions keep their names. A symbol you typed names itself; an address is named by a
-  vector, else by the nearest symbol, else by a shared chip, else by the memory the map names.
-- Each entry of the knowledge base is checked against the source it cites. The Z80's vectors and
-  the chips both servers share are named; any other number stays a number. `status` answers
-  `knowledge` with the entries the base serves.
-- The reference has a Knowledge base section: what the base answers, that each entry is checked
-  against its source, and where the base is going.
-- `knowledge_find` asks what a number is called and what the server knows about it, with the
-  public source each fact was read from. A key the base has no checked entry for stays a number;
-  one whose entry is held back answers its id in `unconfirmed`, never its text.
-  With a session it also lists the machine's input fields, its devices and its memory map.
-- A write to a chip's index handler names the register it selects, whether the register is told
-  apart by direction, sits in a range or in a second bank. With `names=false` a disassembled line carries no note either.
+  window's captions keep their names. A symbol you typed names itself; an address is named by the
+  nearest symbol, else by the memory the map names. With `names=false` a
+  disassembled line carries no note either.
+- An entry of the knowledge base says what the chip's or the cpu's own document says, row by row,
+  with MAME's verdict on each row it judged (as documented, differs, absent, unfollowed) and
+  MAME's own notes after them. Each row cites the lines it was read from; a chip with no public
+  document is answered from MAME's source, and says so. Any other number stays a number.
+- The reference has a Knowledge base section: what the base holds and what an entry says.
+- `knowledge_find` asks what a number is called and what the base says of it: one match, or an
+  `id`, answers the entry whole, and `id=<entry id>#<n>` one row, with a link to each line it
+  cites. With a session it also lists the machine's input fields, its devices and its memory map.
 - `disassemble` gains `line_notes` for an instruction that states an operand the base names, and
   the stop's `instruction` a `note`. They are apart from `comment_list`'s comments.
 - `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a long

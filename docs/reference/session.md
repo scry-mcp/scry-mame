@@ -493,7 +493,7 @@ Takes no argument.
 - `overlay` is there with the border on, as `start` gave it: the `layers` drawn, the `place` in effect and, in `lacking`, why a layer is not.
 - `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.
 - `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.
-- `knowledge` counts the entries of the base the names come from (`served`) and those held back because no second check confirmed them (`held_back`); a held-back entry stays a number.
+- `knowledge` counts the entries of the base the names come from (`served`) and those not served yet (`held_back`), whose numbers stay numbers.
 
 </details>
 
@@ -519,7 +519,7 @@ session, unavailable once a session has ended; with no session also a
 (`breakpoints`, `watches`, `regpoints`: each `ref`, `cpu`), `console_pending`,
 `throttles_pending`, `tallies_pending_removal`, and `broken` when the session can no longer
 be trusted: `close`, then `start`. Always `knowledge` (`served`, `held_back`): the entries of
-the base the replies name from, and those held back as not confirmed.
+the base the replies name from, and those not served yet.
 
 Reference: REFERENCE.md, The session.
 ```
