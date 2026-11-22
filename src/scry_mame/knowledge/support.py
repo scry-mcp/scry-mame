@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+from importlib import resources
 from pathlib import Path
 
 import scry_core
-from scry_core.knowledge import Base, Chip, Scope, Support, shared
+from scry_core.knowledge import Base, Chip, Confirmation, Scope, Support, shared
+from scry_core.knowledge.lock import parse_lock
 
 #: The first tier of MAME's chips. A chip's key is MAME's short name of the family's base type;
 #: `types` are the short names whose register layout was read and is the same.
@@ -52,5 +54,15 @@ SUPPORT = Support(
 _CORE = Path(scry_core.__file__).parent / "knowledge"
 
 
+def confirmation() -> Confirmation:
+    """The shared dictionaries' confirmation plus this server's lock. It has no second-check
+    file of its own, so none of its own entries is confirmed."""
+    own = (resources.files("scry_mame") / "knowledge_index" / "lock.json").read_text(
+        encoding="utf-8")
+    return Confirmation.of((*shared.locks(), parse_lock(own, "lock.json")),
+                           (shared.second_check(),))
+
+
 def load(fts5: bool | None = None) -> Base:
-    return Base.load("scry_mame", _CORE / "chips", _CORE / "cpus", fts5=fts5, pins=shared.PINS)
+    return Base.load("scry_mame", _CORE / "chips", _CORE / "cpus", fts5=fts5, pins=shared.PINS,
+                     confirmation=confirmation())

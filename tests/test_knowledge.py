@@ -9,7 +9,16 @@ from pathlib import Path
 import pytest
 import scry_core
 from scry_core import conformance
-from scry_core.knowledge import Base, Lock, SourceIndex, Support, read_index, read_lock
+from scry_core.knowledge import (
+    Base,
+    Lock,
+    SecondCheck,
+    SourceIndex,
+    Support,
+    read_index,
+    read_lock,
+    shared,
+)
 
 from scry_mame.knowledge import support
 
@@ -36,6 +45,9 @@ class MameKnowledge:
                      for name in ("shared-lock.json", "cpus-lock.json")
                      for id_, held in read_lock(CORE_INDEX / name).checked.items()} | dict(
             read_lock(INDEX / "lock.json").checked))
+
+    def second_check(self) -> SecondCheck:
+        return shared.second_check()
 
     def code_scopes(self) -> Iterable[str]:
         return CODE_SCOPES

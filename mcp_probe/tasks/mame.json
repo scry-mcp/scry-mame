@@ -3781,10 +3781,10 @@
   },
   {
    "id": "m224",
-   "prompt": "Show me the whole entry the base holds under the id m68000:vector:2.",
+   "prompt": "Show me the whole entry the base holds under the id mc6845:register:0x0D.",
    "tool": "knowledge_find",
    "args": {
-    "id": "m68000:vector:2"
+    "id": "mc6845:register:0x0D"
    }
   },
   {

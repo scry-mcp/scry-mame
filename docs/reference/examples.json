@@ -2020,46 +2020,54 @@
   "from": "docs/reference/tour/tour.py: step `base`, run in process because it needs no machine; the tour's next run replaces it",
   "call": {
    "kind": "vector",
-   "key": "0xFFF8",
-   "scope": "m6809"
+   "key": "0x66",
+   "scope": "z80"
   },
   "reply": {
-   "summary": "kind vector key 0xFFF8: IRQ",
+   "summary": "kind vector key 0x66: NMI",
    "status": "ok",
    "query": {
     "kind": "vector",
-    "key": "0xFFF8"
+    "key": "0x66"
    },
    "scope": [
-    "m6809"
+    "z80"
    ],
    "entries_total": 1,
    "entries": [
     {
-     "id": "m6809:vector:0xFFF8",
+     "id": "z80:vector:0x66",
      "kind": "vector",
-     "key": "0xFFF8",
-     "name": "IRQ",
-     "scope": "m6809",
+     "key": "0x66",
+     "name": "NMI",
+     "scope": "z80",
      "aliases": [
-      "IRQ vector"
+      "non-maskable interrupt"
      ],
-     "description": "Where an interrupt request goes.",
-     "behaviour": "Taken before an instruction when the I flag is clear and the IRQ line is asserted, after NMI and FIRQ. It sets E, pushes every register, sets I and not F, and the standard interrupt callback runs. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
-     "address": "0x00FFF8",
-     "length": 2,
+     "description": "Target of a non-maskable interrupt.",
+     "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter and jumps here. RETN copies the second flip-flop back into the first.",
+     "address": "0x000066",
+     "length": 1,
+     "checked": true,
      "sources": [
       {
+       "role": "documentation",
+       "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
+       "cites": "restart at location 0066h."
+      },
+      {
        "role": "emulator",
-       "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_IRQ",
-       "cites": "\t\tVECTOR_IRQ          = 0xFFF8,",
-       "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/m6809/m6809.h"
+       "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
+       "cites": "\tPC = 0x0066;",
+       "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
       }
      ]
     }
    ],
    "truncated": false,
-   "examined": 7,
+   "examined": 9,
+   "served": 75,
+   "held_back": 647,
    "session": {
     "alive": false,
     "running": false,

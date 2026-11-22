@@ -160,63 +160,71 @@ knowledge_find(id="", kind="", key="", text="", device="", scope="", limit=10)
 
 ### Try it
 
-On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, a board with a 6809. The base needs no session for what is written.
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The base needs no session for what it holds, so it answers about a Z80 too.
 
 Ask:
 
-> What is the 6809's vector at 0xFFF8?
+> What does the Z80 do at 0x66?
 
 Call:
 
 ```text
-knowledge_find(kind="vector", key="0xFFF8", scope="m6809")
+knowledge_find(kind="vector", key="0x66", scope="z80")
 ```
 
-Reply, 3 of 9 fields:
+Reply, 3 of 11 fields:
 
 ```json
 {
-  "summary": "kind vector key 0xFFF8: IRQ",
+  "summary": "kind vector key 0x66: NMI",
   "entries_total": 1,
-  "examined": 7
+  "examined": 9
 }
 ```
 
-One entry matches, so `entries` answers it whole: the IRQ vector, what MAME's core does when it is taken, and the source line it was read from.
+One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 does when it is taken, and its source lines. `served` and `held_back` count what the base serves and holds back.
 
 <details><summary>The whole reply</summary>
 
 ```json
 {
-  "summary": "kind vector key 0xFFF8: IRQ",
+  "summary": "kind vector key 0x66: NMI",
   "status": "ok",
-  "query": {"kind": "vector", "key": "0xFFF8"},
-  "scope": ["m6809"],
+  "query": {"kind": "vector", "key": "0x66"},
+  "scope": ["z80"],
   "entries_total": 1,
   "entries": [
     {
-      "id": "m6809:vector:0xFFF8",
+      "id": "z80:vector:0x66",
       "kind": "vector",
-      "key": "0xFFF8",
-      "name": "IRQ",
-      "scope": "m6809",
-      "aliases": ["IRQ vector"],
-      "description": "Where an interrupt request goes.",
-      "behaviour": "Taken before an instruction when the I flag is clear and the IRQ line is asserted, after NMI and FIRQ. It sets E, pushes every register, sets I and not F, and the standard interrupt callback runs. INTERRUPT_VECTOR then reads the new PC, high byte from the vector and low byte from the next.",
-      "address": "0x00FFF8",
-      "length": 2,
+      "key": "0x66",
+      "name": "NMI",
+      "scope": "z80",
+      "aliases": ["non-maskable interrupt"],
+      "description": "Target of a non-maskable interrupt.",
+      "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter and jumps here. RETN copies the second flip-flop back into the first.",
+      "address": "0x000066",
+      "length": 1,
+      "checked": true,
       "sources": [
         {
+          "role": "documentation",
+          "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
+          "cites": "restart at location 0066h."
+        },
+        {
           "role": "emulator",
-          "ref": "mame:src/devices/cpu/m6809/m6809.h VECTOR_IRQ",
-          "cites": "\t\tVECTOR_IRQ          = 0xFFF8,",
-          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/m6809/m6809.h"
+          "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
+          "cites": "\tPC = 0x0066;",
+          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
         }
       ]
     }
   ],
   "truncated": false,
-  "examined": 7,
+  "examined": 9,
+  "served": 75,
+  "held_back": 647,
   "session": {
     "alive": false,
     "running": false,
@@ -231,12 +239,12 @@ One entry matches, so `entries` answers it whole: the IRQ vector, what MAME's co
 
 ### Arguments
 
-- `id` (string, default `""`): An entry's id, as another reply cites it, such as `m6809:vector:0xFFF8`. Answers that entry whole.
+- `id` (string, default `""`): An entry's id, as another reply cites it, such as `z80:vector:0x66`. Answers that entry whole.
 - `kind` (one of `""`, `"vector"`, `"call"`, `"error"`, `"port"`, `"irq"`, `"memory"`, `"input"`, `"device"`, `"register"`, `"command"`, default `""`): What the number is: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`, `device`, `register` or `command`. Left empty, every kind.
 - `key` (string, default `""`): The number as a reply prints it, or a range such as `0x3C0..0x3CF`; for an `input`, `:IN1/Coin 1`.
 - `text` (string, default `""`): Words looked for in names, aliases, descriptions and behaviour. A word ending in `*` matches by prefix.
 - `device` (string, default `""`): A chip's key, or a tag of the running machine such as `:ymsnd`: everything that belongs to it.
-- `scope` (string, default `""`): A cpu or a chip: `m68000`, `v30`, `m6809`, `mc6845`. Left empty, the session's cpus and chips; with no session, all.
+- `scope` (string, default `""`): A cpu or a chip: `z80`, `mc6845`. Left empty, the session's cpus and chips; with no session, all.
 - `limit` (integer, default `10`): How many entries are listed: 1 to 50. Left out, 10.
 
 ### What comes back
@@ -246,17 +254,20 @@ One entry matches, so `entries` answers it whole: the IRQ vector, what MAME's co
 - `truncated`: `true` when more matched than `entries` lists.
 - `examined`: How many entries were searched, so a zero says what it is a zero of.
 - `nearest`: When nothing matched: the entries next to the number or the words.
-- `note`: When nothing matched: that the number stays a number.
+- `note`: When nothing matched, or an entry is held back: that the number stays a number.
 
-<details><summary>All 7 reply fields</summary>
+<details><summary>All 10 reply fields</summary>
 
 - `entries` (array of object)
 - `entries_total` (integer)
 - `examined` (integer)
+- `held_back` (integer)
 - `nearest` (array of object)
 - `query` (object)
 - `scope` (array of string)
+- `served` (integer)
 - `truncated` (boolean)
+- `unconfirmed` (array of string)
 
 </details>
 
@@ -264,12 +275,12 @@ One entry matches, so `entries` answers it whole: the IRQ vector, what MAME's co
 
 - None of `id`, `kind`, `key`, `text`, `device` (`bad_argument`).
 - A `key` that is no number or range of that `kind`, or a `scope` the server does not hold (`bad_argument`).
-- An `id` or a `device` the base does not hold (`unknown_ref`).
+- An `id` or a `device` the base does not hold (`unknown_ref`); one whose entry is held back is no refusal: it answers `unconfirmed`.
 - A kind read from the machine with no session (`no_session`).
 
 ### Why it works this way
 
-The base is written once from MAME's source at one release and checked line by line, so an answer says where it was read. It is the server's own copy: it answers while the program runs.
+The base serves an entry only once a second check confirmed it against MAME's source at one release, and an answer says where it was read. A key whose entry is held back says so (`unconfirmed`) and stays a number. The base is the server's own copy: it answers while the program runs.
 
 What the machine says about itself (inputs, devices, the memory map) was read at `start` and is never asked of MAME again, so it cannot slow a call.
 
@@ -294,19 +305,20 @@ or a range. `text`: words in names, aliases, descriptions; `*` ends a prefix. `d
 that device. `scope`: the system, cpu or device; empty, the live session's. `limit` 1..50.
 
 Examples: `key=0x3C8`; `kind=port key=0x3C0..0x3CF`; `kind=vector key=0xFFF8 scope=<scope>`;
-`kind=call key=0x21/0x4C`, and its variant by a register `kind=call key=0x10/0x12/BL=0x36`;
-a device of the running machine by its tag `kind=device key=:maincpu`; its registers
+`kind=call key=0x21/0x4C`, its variant by a register `kind=call key=0x10/0x12/BL=0x36`;
+a running machine's device by tag `kind=device key=:maincpu`; its registers
 `kind=register device=<device>`; `text=palette*`.
 
-Refused (INVALID): nothing to look up, a bad `key`, or a `scope` it lacks, naming those it has
-(`bad_argument`; `6809` is read as `m6809`, and the reply says so); an `id` or `device` it
+Refused (INVALID): nothing to look up, a bad `key`, or a `scope` it lacks
+(`bad_argument`; `6809` is read as `m6809`); an `id` or `device` it
 lacks (`unknown_ref`); a kind it holds none of (`no_channel`); a tag or live kind with no
 session (`no_session`).
 
-Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`; nothing matched:
-no entry, `nearest` and a `note`: it stays a number.
+Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`, `served`,
+`held_back`; nothing matched: no entry, `nearest` and a `note`: it stays a number.
+`unconfirmed` lists ids held back.
 
-Scopes: acia6850, am9517a, ay8910, chip, i8251, i8255, ins8250, m68000, m6809, mc146818, mc6845, mc68681, msm5205, okim6295, pia6821, pic8259, pit8253, saa1099, sega315_5124, sega315_5313, sn76496, upd1990a, upd7759, v30, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, z80, z80scc, z80sio.
+Scopes: am9517a, chip, ins8250, mc146818, mc6845, pic8259, saa1099, sn76496, ym3812, ymf262, z80.
 
 Reference: REFERENCE.md, Names for numbers.
 ```

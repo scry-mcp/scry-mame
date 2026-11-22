@@ -1027,6 +1027,7 @@ class StatusReply(MameEnvelope, total=False):
     throttles_pending: Annotated[list[Any], OmitEmpty]
     broken: Annotated[str, When("can no longer be trusted")]
     names_failed: Annotated[dict[str, Any], When("a namer failed")]
+    knowledge: Required[dict[str, Any]]
 
 
 class StepReply(MameEnvelope, total=False):

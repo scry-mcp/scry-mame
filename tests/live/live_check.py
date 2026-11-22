@@ -172,17 +172,20 @@ check("an address is placed inside the nearest symbol below it",
 
 print("\n== knowledge_find(): the base, and what the machine says about itself")
 r = s.knowledge_find(kind="vector", key="2", scope="m68000")
-check("the 68000's bus error vector answers whole, with the MAME source it was read from",
-      r.get("entries_total") == 1 and r["entries"][0].get("id") == "m68000:vector:2"
-      and r["entries"][0]["sources"][0]["ref"].startswith("mame:"), str(r.get("summary")))
+check("the 68000's bus error vector says it exists and is not confirmed, and is not served",
+      r.get("entries") == [] and r.get("unconfirmed") == ["m68000:vector:2"], str(r.get("summary")))
+r = s.knowledge_find(kind="vector", key="0x66", scope="z80")
+check("a confirmed vector answers whole, with the source it was read from",
+      r.get("entries_total") == 1 and r["entries"][0].get("id") == "z80:vector:0x66"
+      and r["entries"][0]["sources"], str(r.get("summary")))
 r = s.knowledge_find(kind="input")
 check("the machine's input fields are listed from the inventory `start` read, none an entry",
       r.get("entries_total", 0) >= 1 and all(e.get("live") and "id" not in e
                                              for e in r.get("entries", [])), str(r.get("summary")))
 r = s.read_memory(ref="0x8", length=4, cpu=":maincpu")
-check("a read of the vector slot names it in `names` and in its summary",
-      any(n.get("name") == "bus error" and n.get("id") == "m68000:vector:2"
-          for n in r.get("names", [])) and "(bus error)" in r.get("summary", ""),
+check("a read of a vector slot whose entry is held back names no vector",
+      not any(n.get("id") for n in r.get("names", []))
+      and "(bus error)" not in r.get("summary", ""),
       f"{r.get('summary')} {r.get('names')}")
 
 print("\n== the readers over the console, and the writes: one live call each")

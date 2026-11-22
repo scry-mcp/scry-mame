@@ -451,7 +451,7 @@ Takes no argument.
 - `in_debugger`: What MAME's debugger holds now: `breakpoints`, `watches` and `regpoints` (registerpoints, stops on a register condition), each by its `ref`, a symbol or an address, and its `cpu`.
 - `fingerprint`: A hash of the system, the reference image and the symbol file. A breakpoint or watch saved under another one is not trusted; `fingerprints` has one per cpu.
 
-<details><summary>All 21 reply fields</summary>
+<details><summary>All 22 reply fields</summary>
 
 - `cfg` (object)
 - `console_pending` (integer)
@@ -474,6 +474,7 @@ Takes no argument.
 - `threads` (object)
 - `throttles_pending` (array)
 - `names_failed` (object)
+- `knowledge` (object)
 
 </details>
 
@@ -492,6 +493,7 @@ Takes no argument.
 - `overlay` is there with the border on, as `start` gave it: the `layers` drawn, the `place` in effect and, in `lacking`, why a layer is not.
 - `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.
 - `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.
+- `knowledge` counts the entries of the base the names come from (`served`) and those held back because no second check confirmed them (`held_back`); a held-back entry stays a number.
 
 </details>
 
@@ -516,7 +518,8 @@ session, unavailable once a session has ended; with no session also a
 `debugger`, `fingerprint` (`fingerprints` per cpu), `errorlog_path`, `pc`, `in_debugger`
 (`breakpoints`, `watches`, `regpoints`: each `ref`, `cpu`), `console_pending`,
 `throttles_pending`, `tallies_pending_removal`, and `broken` when the session can no longer
-be trusted: `close`, then `start`.
+be trusted: `close`, then `start`. Always `knowledge` (`served`, `held_back`): the entries of
+the base the replies name from, and those held back as not confirmed.
 
 Reference: REFERENCE.md, The session.
 ```

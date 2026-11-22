@@ -24,9 +24,10 @@ def test_every_tool_publishes_each_field_as_its_value_or_unavailable() -> None:
 
 
 def test_a_real_tools_reply_with_a_field_its_model_does_not_name_fails() -> None:
-    reply_schema.check("status", {"status": "ok", "pid": 1})
+    counts = {"served": 1, "held_back": 0}
+    reply_schema.check("status", {"status": "ok", "pid": 1, "knowledge": counts})
     with pytest.raises(ValueError):
-        reply_schema.check("status", {"status": "ok", "pid": 1, "stray": 1})
+        reply_schema.check("status", {"status": "ok", "pid": 1, "knowledge": counts, "stray": 1})
 
 
 def test_a_reply_that_carries_the_stop_the_console_left_takes_its_watches() -> None:

@@ -1,28 +1,28 @@
 {
  "task": {
   "id": "m224",
-  "prompt": "Show me the whole entry the base holds under the id m68000:vector:2.",
+  "prompt": "Show me the whole entry the base holds under the id mc6845:register:0x0D.",
   "tool": "knowledge_find",
   "args": {
-   "id": "m68000:vector:2"
+   "id": "mc6845:register:0x0D"
   }
  },
  "runs": [
   {
    "lines": [
-    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"m68000:vector:2\"}}"
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"mc6845:register:0x0D\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"m68000:vector:2\"}}"
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"mc6845:register:0x0D\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"m68000:vector:2\"}}"
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"mc6845:register:0x0D\"}}"
    ],
    "right": true
   }

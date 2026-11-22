@@ -4,21 +4,22 @@ What a client of the server notices.
 
 ## Unreleased
 
-- Replies and captions call a number by its name where the server knows one: `bus error (0x8)`,
-  `IRQ (0xfff8)`. A reply lists each in `names` and in its `summary`; `names=false` on `start`
-  leaves replies bare, and the window's captions keep their names. A program's symbols come
-  first, then the vectors of the 68000, the V30 and the 6809, then the shared chips, then the
-  memory the machine's map names.
-- The first tier of MAME's chips is in the base, each with its registers and, where it takes
-  them, its commands: the AY-3-8910 family, the MSM6295, the YM2151, the OPN family, the YM3526,
-  the MSM5205, the uPD7759, Sega's 315-5313 and 315-5124 video chips, the 8255, the 8251, the
-  Z80 SIO and SCC, the uPD4990A, the 6821, the 68681 and the 6850.
+- Replies and captions call a number by its name where the server knows one and has confirmed
+  it. A reply lists each in `names` and in its `summary`; `names=false` on `start` leaves
+  replies bare, and the window's captions keep their names. A program's symbols come first, then
+  a confirmed vector, then a confirmed shared chip, then the memory the machine's map names.
+- The base holds an entry back until a second check, which quotes the source's own lines, has
+  confirmed it. None of the 68000's, the V30's and the 6809's vectors and none of the first
+  tier of MAME's own chips is confirmed yet, so those numbers stay numbers; the shared chips and
+  the Z80's vectors that were confirmed are served. `status` answers `knowledge` with how many
+  entries are `served` and how many are `held_back`.
 - `knowledge_find` asks what a number is called and what the server knows about it, with the
-  public source each fact was read from. With a session it also lists the machine's input
-  fields, its devices and its memory map.
-- A write to a chip's index handler names the register it selects for the chips whose registers
-  are told apart by direction (the AY-3-8910's mixer), sit in a range (its tone periods) or in a
-  second bank (the OPL3's). With `names=false` a disassembled line carries no note either.
+  public source each fact was read from. A key whose entry is held back answers that an entry
+  exists and is not confirmed (`unconfirmed`), never "nothing known". With a session it also
+  lists the machine's input fields, its devices and its memory map.
+- A write to a chip's index handler names the register it selects once the chip and the register
+  are both served, whether the register is told apart by direction, sits in a range or in a
+  second bank. With `names=false` a disassembled line carries no note either.
 - `disassemble` gains `line_notes` for an instruction that states an operand the base names, and
   the stop's `instruction` a `note`. They are apart from `comment_list`'s comments.
 - `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a long

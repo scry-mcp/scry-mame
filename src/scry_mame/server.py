@@ -276,11 +276,13 @@ def status() -> dict[str, Any]:
     `debugger`, `fingerprint` (`fingerprints` per cpu), `errorlog_path`, `pc`, `in_debugger`
     (`breakpoints`, `watches`, `regpoints`: each `ref`, `cpu`), `console_pending`,
     `throttles_pending`, `tallies_pending_removal`, and `broken` when the session can no longer
-    be trusted: `close`, then `start`.
+    be trusted: `close`, then `start`. Always `knowledge` (`served`, `held_back`): the entries of
+    the base the replies name from, and those held back as not confirmed.
 
     Reference: REFERENCE.md, The session.
     """
     reply = msession.status()
+    reply["knowledge"] = knowledge_tool.counts(mnaming.base())
     if (failed := mnaming.GUARD.failed()) is not None:
         reply["names_failed"] = dict(failed)
     return reply
