@@ -11,5 +11,10 @@ __pycache__/
 /tmp/
 **/._*
 **/.DS_Store
-# The assistant's local rules: they stay on the owner's machine.
-.claude/
+# What a maintainer's clone keeps to itself and does not publish: plans and their
+# coordination logs, reports, worktrees, machine-specific settings, private notes.
+/.claude/plans/
+/.claude/reports/
+/.claude/worktrees/
+/.claude/settings.local.json
+/CLAUDE.local.md
