@@ -2,7 +2,7 @@
  "families": {
   "Session": "Starting a MAME session, asking what state it is in, finding its window, choosing a cpu and ending it.",
   "Machine": "What the emulated machine is made of, how the debugger holds each cpu, and what MAME writes to its logs.",
-  "Names": "Symbol names for addresses: look up a name or an address in the symbol table of your program.",
+  "Names": "Look up a name or an address in your program's symbol table, and ask the knowledge base what a number is called.",
   "Run": "The tools that let the program run and stop it again.",
   "Breakpoints": "Breakpoints and watches the server saves by name and sets again in later sessions.",
   "Read": "Reading what the stopped program holds: memory, registers, code, and which of its screens is showing.",
@@ -4011,7 +4011,7 @@
     "A kind read from the machine with no session (`no_session`)."
    ],
    "why": [
-    "The base serves an entry only once a second check confirmed it against MAME's source at one release, and an answer says where it was read. A key whose entry is held back says so (`unconfirmed`) and stays a number. The base is the server's own copy: it answers while the program runs.",
+    "Each entry was checked against its source, and an answer says where it was read. A key the base has not confirmed answers `unconfirmed` and stays a number. The base is the server's own copy: it answers while the program runs.",
     "What the machine says about itself (inputs, devices, the memory map) was read at `start` and is never asked of MAME again, so it cannot slow a call."
    ],
    "related": [

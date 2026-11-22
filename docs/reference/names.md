@@ -4,6 +4,8 @@ A symbol table gives names to the addresses of a program: its routines and its v
 
 Here `start` loads the table, from the file its `symbols` argument names, one table per cpu. `symbols_find` looks a name or an address up in it.
 
+`knowledge_find` asks the [knowledge base](../../REFERENCE.md#knowledge-base) what a number is called.
+
 <!-- scry-reference:begin symbols_find -->
 ## `symbols_find`
 
@@ -281,7 +283,7 @@ One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 d
 
 ### Why it works this way
 
-The base serves an entry only once a second check confirmed it against MAME's source at one release, and an answer says where it was read. A key whose entry is held back says so (`unconfirmed`) and stays a number. The base is the server's own copy: it answers while the program runs.
+Each entry was checked against its source, and an answer says where it was read. A key the base has not confirmed answers `unconfirmed` and stays a number. The base is the server's own copy: it answers while the program runs.
 
 What the machine says about itself (inputs, devices, the memory map) was read at `start` and is never asked of MAME again, so it cannot slow a call.
 
@@ -321,7 +323,7 @@ Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`, `s
 
 Scopes: am9517a, chip, ins8250, mc146818, mc6845, pic8259, saa1099, sn76496, ym3812, ymf262, z80.
 
-Reference: REFERENCE.md, Names for numbers.
+Reference: REFERENCE.md, Knowledge base.
 ```
 
 </details>

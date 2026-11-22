@@ -13,7 +13,7 @@ A path in an example that starts with `./` stands for the folder of your clone, 
 <!-- scry-reference:begin index -->
 - [Session](docs/reference/session.md): Starting a MAME session, asking what state it is in, finding its window, choosing a cpu and ending it. [`start`](docs/reference/session.md#start), [`status`](docs/reference/session.md#status), [`window`](docs/reference/session.md#window), [`close`](docs/reference/session.md#close), [`cpu_focus`](docs/reference/session.md#cpu_focus), [`rom_check`](docs/reference/session.md#rom_check)
 - [Machine](docs/reference/machine.md): What the emulated machine is made of, how the debugger holds each cpu, and what MAME writes to its logs. [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
-- [Names](docs/reference/names.md): Symbol names for addresses: look up a name or an address in the symbol table of your program. [`symbols_find`](docs/reference/names.md#symbols_find), [`knowledge_find`](docs/reference/names.md#knowledge_find)
+- [Names](docs/reference/names.md): Look up a name or an address in your program's symbol table, and ask the knowledge base what a number is called. [`symbols_find`](docs/reference/names.md#symbols_find), [`knowledge_find`](docs/reference/names.md#knowledge_find)
 - [Run](docs/reference/run.md): The tools that let the program run and stop it again. [`run_to`](docs/reference/run.md#run_to), [`run_for`](docs/reference/run.md#run_for), [`step`](docs/reference/run.md#step), [`resume`](docs/reference/run.md#resume), [`stop`](docs/reference/run.md#stop), [`trace`](docs/reference/run.md#trace), [`screen_wait`](docs/reference/run.md#screen_wait)
 - [Breakpoints](docs/reference/breakpoints.md): Breakpoints and watches the server saves by name and sets again in later sessions. [`breakpoint_at`](docs/reference/breakpoints.md#breakpoint_at), [`regpoint_add`](docs/reference/breakpoints.md#regpoint_add), [`watch_add`](docs/reference/breakpoints.md#watch_add), [`declaration_list`](docs/reference/breakpoints.md#declaration_list), [`declaration_clear`](docs/reference/breakpoints.md#declaration_clear)
 - [Read](docs/reference/read.md): Reading what the stopped program holds: memory, registers, code, and which of its screens is showing. [`read_memory`](docs/reference/read.md#read_memory), [`read_block`](docs/reference/read.md#read_block), [`registers`](docs/reference/read.md#registers), [`disassemble`](docs/reference/read.md#disassemble), [`find`](docs/reference/read.md#find), [`history`](docs/reference/read.md#history), [`memdump`](docs/reference/read.md#memdump), [`screen_map_find`](docs/reference/read.md#screen_map_find), [`screen_map_write`](docs/reference/read.md#screen_map_write)
@@ -59,6 +59,8 @@ MAME's debugger acts on one cpu at a time, the visible one, and every stop makes
 While a session is live MAME's window has an orange edge, so a person at the computer knows it is in use. It is bright while a call that can run or change the program is in progress, and dim otherwise, even over a program `resume` left running. `start(presence=False)` turns it off, and no capture shows it.
 
 Over the edge it can also show a caption naming each call, a keycap for each input field held, and a pause mark while the session holds the machine stopped. `start(overlay=...)` chooses them and where they go. MAME has no pointer, so `start` says that layer is lacking.
+
+A stopped machine keeps its overlay still (`overlay.notes` says so): a long caption is cut with `..`, and the mark of a `record` in progress stays lit.
 
 The tools: [Session](docs/reference/session.md), [Machine](docs/reference/machine.md).
 
@@ -184,16 +186,22 @@ An address argument, `ref` in most tools, is a `0x` number or a symbol of your p
 
 The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakpoints.md), [Read](docs/reference/read.md).
 
-## Names for numbers
+## Knowledge base
 
-A reply and a caption call a number by its name where the server knows one, so you do not look it up. Each name carries its number: `NMI (0x66)`.
+A reply and a caption call a number by its name where the server knows one, so you do not look it up. A caption reads `NMI (0x66)`; a reply's `names` field gives the number and its name.
 
-- **Where a name comes from.** Your program's symbols come first, then the vector slot of the cpu the address belongs to, then the chip whose handler the address map gives for it, then the memory region or share the map names. A vector or a chip is named only when its entry is served, which is when a second check confirmed it; `status` counts them in `knowledge`. What the server cannot name, or holds back, stays a number. A `write` to a chip's index handler also names the register the byte selects, in `given.data_hex`, when the chip and the register are both served.
-- **Where the reply says it.** `names` lists each named number with its `field`, its `kind`, its `name` and, for a name from the base, the `id` of its entry; `names_cut` counts what did not fit. The one-line `summary` carries the same names, and a call's own arguments are named under `given.<argument>`. A board with several cpus and a call that names none gets no name, because a name for the wrong cpu is worse than none.
-- **`names=false` on `start`** leaves replies bare and a disassembled line with no note. It is a profile key like any other. The window's captions keep their names.
-- **`knowledge_find`** asks the base directly: by `id`, by `kind` and `key`, by words, or by `device`; a device of the running machine is asked by its tag, with `kind=device key=:ymsnd` or `device=:ymsnd`. It answers with no session for what is served (the vectors, the chips and their registers and commands that a second check confirmed); a key whose entry is held back answers `unconfirmed` and stays a number, and `served` and `held_back` count the rest; with a session it also lists what the machine says about itself: its `input` fields, its `device` tags and the `memory` its map names.
-- **A disassembled line's note.** `disassemble` gains `line_notes`, one `{line, note}` for each line whose instruction states an operand the base names (a `TRAP` number, `SWI`, an absolute address inside a vector table). The instruction at a stop carries the same as `instruction.note`. These are never a person's comments and never touch `comment_list`. A register operand is never guessed.
-- **A stopped machine keeps its overlay still.** `overlay.notes` says so: a long caption is cut with `..`, and the record mark stays lit without blinking.
+- **Where a name comes from.** A symbol you typed as a `ref` keeps its name. An address is named by its cpu's vector, else the nearest symbol, else the chip behind the map's handler, else the memory region or share the map names.
+- **What the base holds.** Cpu vectors, and the registers and commands of chips, where it has an entry. A number it has no entry for stays a number, and `status` counts the entries it serves, in `knowledge`.
+- **Each entry is checked against its source.** It cites the chip's or the cpu's documentation where one is public, and MAME's own source line. Checked against its source is not complete: an entry says what its source says.
+- **A write to a chip's index handler** also names the register the byte selects, in `given.data_hex`, when the base holds the chip and the register.
+- **Where the reply says it.** `names` lists each named number with its `field`, its `kind`, its `name` and, for a name from the base, the `id` of its entry; `names_cut` counts what did not fit. The one-line `summary` carries the same names, and a call's own arguments are named under `given.<argument>`.
+- **A board with several cpus** and a call that names none gets no name, because a name for the wrong cpu is worse than none.
+- **`names=false` on `start`** leaves replies bare and a disassembled line with no note. It is a profile key like any other, and the window's captions keep their names.
+- **`knowledge_find`** asks the base directly: by `id`, by `kind` and `key`, by words, or by `device`. It needs no session for what the base holds, and answers while the program runs.
+- **A running machine adds what it says about itself.** `knowledge_find` lists its `input` fields, its `device` tags and the `memory` its map names. Ask a device by its tag, with `kind=device key=:ymsnd` or `device=:ymsnd`.
+- **A disassembled line's note** is one `{line, note}` in `line_notes` for each line whose instruction states an operand the base names, such as a `TRAP` number. The stop's `instruction` carries `note`. Your own comments stay apart, and a register operand is never guessed.
+
+Where the base is going: an entry states the documented behaviour, with what MAME does as a note beside it where the two differ. Its fields will change with this.
 
 The tool: [Names](docs/reference/names.md).
 
