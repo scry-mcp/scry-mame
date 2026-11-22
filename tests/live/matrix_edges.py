@@ -7,6 +7,7 @@ from typing import Any
 
 from bench_boards import (
     REFERENCE_ROM,
+    SYMBOLS,
 )
 from live_harness import (
     BOOT,
@@ -603,6 +604,15 @@ NO_SESSION_CASES: list[Case] = [
                and (r.get("window") or {}).get("onscreen") is True),
          before=("start", {**BOOT, "shared": True, "display": 0, "background": True}),
          then="close"),
+    Case("start.names on: a read of a vector slot carries the name the symbols give it",
+         "read_memory", {"ref": "0x8", "length": 4},
+         is_ok(lambda r: any(n.get("name") == "vec_buserr" for n in r.get("names", []))
+               and "vec_buserr" in str(r.get("summary"))),
+         before=("start", {**BOOT, "symbols": SYMBOLS}), then="close"),
+    Case("start.names off: the same read carries no names block and no name in its summary",
+         "read_memory", {"ref": "0x8", "length": 4},
+         is_ok(lambda r: "names" not in r and "vec_buserr" not in str(r.get("summary"))),
+         before=("start", {**BOOT, "symbols": SYMBOLS, "names": False}), then="close"),
     Case("start.throttle_from_frame negative", "start", {**BOOT, "throttle_from_frame": -1},
          is_refused("bad_argument")),
     Case("start.rompath relative", "start", {**BOOT, "rompath": "run/mame_roms"},

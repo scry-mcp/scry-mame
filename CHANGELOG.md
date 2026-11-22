@@ -4,22 +4,21 @@ What a client of the server notices.
 
 ## Unreleased
 
-- Replies and captions call a number by its name where the server knows one and has confirmed
-  it. A reply lists each in `names` and in its `summary`; `names=false` on `start` leaves
-  replies bare, and the window's captions keep their names. A program's symbols come first, then
-  a confirmed vector, then a confirmed shared chip, then the memory the machine's map names.
-- The base holds an entry back until a second check, which quotes the source's own lines, has
-  confirmed it. None of the 68000's, the V30's and the 6809's vectors and none of the first
-  tier of MAME's own chips is confirmed yet, so those numbers stay numbers; the shared chips and
-  the Z80's vectors that were confirmed are served. `status` answers `knowledge` with how many
-  entries are `served` and how many are `held_back`.
+- Replies and captions call a number by its name where the server knows one. A reply lists
+  each in `names` and in its `summary`; `names=false` on `start` leaves replies bare, and the
+  window's captions keep their names. A symbol you typed names itself; an address is named by a
+  vector, else by the nearest symbol, else by a shared chip, else by the memory the map names.
+- Each entry of the knowledge base is checked against the source it cites. The Z80's vectors and
+  the chips both servers share are named; any other number stays a number. `status` answers
+  `knowledge` with the entries the base serves.
+- The reference has a Knowledge base section: what the base answers, that each entry is checked
+  against its source, and where the base is going.
 - `knowledge_find` asks what a number is called and what the server knows about it, with the
-  public source each fact was read from. A key whose entry is held back answers that an entry
-  exists and is not confirmed (`unconfirmed`), never "nothing known". With a session it also
-  lists the machine's input fields, its devices and its memory map.
-- A write to a chip's index handler names the register it selects once the chip and the register
-  are both served, whether the register is told apart by direction, sits in a range or in a
-  second bank. With `names=false` a disassembled line carries no note either.
+  public source each fact was read from. A key the base has no checked entry for stays a number;
+  one whose entry is held back answers its id in `unconfirmed`, never its text.
+  With a session it also lists the machine's input fields, its devices and its memory map.
+- A write to a chip's index handler names the register it selects, whether the register is told
+  apart by direction, sits in a range or in a second bank. With `names=false` a disassembled line carries no note either.
 - `disassemble` gains `line_notes` for an instruction that states an operand the base names, and
   the stop's `instruction` a `note`. They are apart from `comment_list`'s comments.
 - `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a long
@@ -42,7 +41,7 @@ What a client of the server notices.
 - The README opens with what the server lets you ask, its lead demo moving at the page's width
   and one exchange of that demo's run. Its `## Install` section has the lines to paste for ten
   MCP clients and a first question to ask.
-- Takes scry-core 0.120.1.
+- Takes the scry-core release `pyproject.toml` pins.
 - Each tool's reference entry opens with what the tool does and an example to try: what to
   ask, the call and the reply it got. Its arguments, what comes back, what it refuses and why
   follow, each under its own heading.

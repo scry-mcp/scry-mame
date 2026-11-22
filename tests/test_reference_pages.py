@@ -16,6 +16,16 @@ def test_the_reference_pages_agree_with_the_registry() -> None:
         "sentences: docs/reference/asks.json; examples: the tour (CONTRIBUTING.md)"])
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_the_knowledge_base_has_the_section_the_site_links_and_the_tool_names() -> None:
+    headings = re.findall(r"^## (.+)$", (ROOT / "REFERENCE.md").read_text(encoding="utf-8"), re.M)
+    assert "Knowledge base" in headings, headings
+    page = (ROOT / "docs" / "reference" / "names.md").read_text(encoding="utf-8")
+    assert "Reference: REFERENCE.md, Knowledge base." in page
+
+
 README = Path(__file__).resolve().parents[1] / "README.md"
 #: The most words a visitor reads before the install block.
 WORDS_ABOVE_INSTALL = 150
