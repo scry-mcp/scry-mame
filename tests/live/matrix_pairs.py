@@ -825,6 +825,7 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
          "seconds": 10.0},
         {"op": "status"}, {"op": "machine_map"}, {"op": "cpu_info"},
         {"op": "symbols_find", "name": "irq_vblank"},
+        {"op": "knowledge_find", "kind": "vector", "key": "0x66", "scope": "z80"},
         {"op": "read_memory", "ref": "0x400", "length": 4},
         {"op": "read_block", "tag": "maincpu", "length": 4}, {"op": "registers"},
         {"op": "disassemble", "ref": "0x400", "length": 4},
@@ -1051,7 +1052,7 @@ def c12_symbols() -> None:
     call("close")
     r = call("status")
     cell(t[14], ok(r) and r["session"]["alive"] is False and "presence" not in r
-         and "last_stop" in r, said(r))
+         and "overlay" not in r and "last_stop" in r, said(r))
 
 
 C13 = [

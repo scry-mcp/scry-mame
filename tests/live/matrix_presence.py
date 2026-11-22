@@ -36,6 +36,7 @@ from live_harness import (
     zips_missing,
 )
 from presence_leak import leaking_drawer
+from scry_core import overlay_timeline as scry_timeline
 from scry_core import presence as scry_presence
 from scry_core import window_capture
 
@@ -57,10 +58,15 @@ Z_CELLS = [
     "circus: the drawer on the screen's container changes a stopped snapshot: the stills can fail",
     "circus: the bitmap readers and the recordings differ across a moved machine: their "
     "comparison can fail",
-    "circus: start(presence=False) draws nothing, writes no state and says false",
+    "circus: start(presence=False) draws nothing, writes no state, says false and reports no "
+    "overlay",
     "circus: after a driving call that ends stopped and a quiet wait, the state is held and the "
     "held repaints rose; sent by hand, the adapter's repaint draws at least one held frame and "
     "a repaint taken away draws none",
+    "circus: start and status report the overlay: the layers MAME can draw, and the one it "
+    "cannot with its reason",
+    "circus: a caption and a held key are each drawn over the window, the same edge twice is "
+    "the same window, and snapshot, screen_view and screen_signature carry neither",
 ]
 #: Long enough for the session's writer to land a pending state.
 QUIET_S = 0.3
@@ -206,6 +212,12 @@ def _z_circus(t: list[str]) -> None:
          and at_start is not None and at_start["held"] >= 1,
          f"start {started.get('presence')!r}, status {status.get('presence')!r}, "
          f"repaints before any other call {at_start}")
+    drawn = ["edge", "keys", "calls", "pause", "record"]
+    cell(t[9], all(r.get("overlay", {}).get("layers") == drawn
+                   and set(r["overlay"].get("lacking", {})) == {"pointer"}
+                   and r["overlay"]["lacking"]["pointer"].strip() != ""
+                   for r in (started, status)),
+         f"start {started.get('overlay')}, status {status.get('overlay')}")
     call("run_for", frames=60, seconds=10.0)
     before = _frames()
     call("run_for", frames=60, seconds=10.0)
@@ -236,6 +248,7 @@ def _z_circus(t: list[str]) -> None:
     cell(t[3], all(off_stills.values()) and off_stills == acting_stills and drew > 0,
          f"off {off_stills}, acting {acting_stills}, acting repaints between {drew}")
 
+    _z_layers(t[10])
     _z_repaint(t[8])
     call("state_write", method="save", name="z")
     moved_before = {**_stills(), "record": _record("record", "z"),
@@ -255,10 +268,45 @@ def _z_circus(t: list[str]) -> None:
     quiet_status = call("status")
     counts = _frames()
     cell(t[7], quiet.get("presence") is False and quiet_status.get("presence") is False
+         and "overlay" not in quiet and "overlay" not in quiet_status
          and counts == {"held": -1, "acting": -1} and not _state_file().exists(),
          f"start {quiet.get('presence')!r}, status {quiet_status.get('presence')!r}, "
          f"repaints {counts}, state file {_state_file().exists()}")
     call("close")
+
+
+def _z_layers(label: str) -> None:
+    """A caption and a key held, each written as the session writes them, change the window
+    beyond the edge alone and leave every still as it was with the edge off; the edge alone twice
+    is the same window, so what differs is the layer."""
+    caption = scry_timeline.Caption("registers cpu=:maincpu", "read", 0xFFFFFF, 1)
+    payloads = {"edge": scry_presence.Payload(layers=("edge",)),
+                "again": scry_presence.Payload(layers=("edge",)),
+                "calls": scry_presence.Payload(layers=("edge", "calls"), caption=caption),
+                "keys": scry_presence.Payload(layers=("edge", "keys"), keys=("Coin 1",))}
+    windows: dict[str, window_capture.Image | str] = {}
+    with _by_hand():
+        _put(_state_file(), "off")
+        off_stills = _stills()
+        layered_stills = []
+        for name, payload in payloads.items():
+            _put(_state_file(), mpresence.encode("acting", payload).rstrip("\n"))
+            _repaint()
+            windows[name] = _window(name)
+            layered_stills.append(_stills())
+    if refused := [w for w in windows.values() if isinstance(w, str)]:
+        blocked(label, refused[0])
+        return
+    images = {name: w for name, w in windows.items() if not isinstance(w, str)}
+    try:
+        changed = {name: window_capture.difference(images["edge"], shown).changed
+                   for name, shown in images.items() if name != "edge"}
+    except ValueError as e:
+        blocked(label, f"the window changed between its captures: {e}")
+        return
+    cell(label, all(off_stills.values()) and all(held == off_stills for held in layered_stills)
+         and changed["again"] == 0 and changed["calls"] > 0 and changed["keys"] > 0,
+         f"off {off_stills}; window pixels differing from the edge alone: {changed}")
 
 
 def _z_repaint(label: str) -> None:
@@ -279,7 +327,7 @@ def _z_repaint(label: str) -> None:
     after_run = _frames()
     time.sleep(REPAINT_WAIT_S)
     # Before the count: `lua` drives, so the file says `acting` while it runs.
-    word = _state_file().read_text().strip() if _state_file().exists() else ""
+    word = _state_file().read_text().partition("\n")[0] if _state_file().exists() else ""
     rose = _rise(after_run, _frames(), "held")
     assert STATE.scratch is not None
     adapter = mpresence.FileAdapter(STATE.scratch, mstate.LOCK, STATE.repaintable,
@@ -332,7 +380,7 @@ def _z_leak(label: str) -> None:
     call("close")
 
 
-Z_BOARDS = (Board(_z_circus, (0, 1, 2, 3, 5, 6, 7, 8), lambda: zips_missing("circus")),
+Z_BOARDS = (Board(_z_circus, (0, 1, 2, 3, 5, 6, 7, 8, 9, 10), lambda: zips_missing("circus")),
             Board(_z_recordings, (4,), lambda: zips_missing("1942")))
 boards_cover("Z", Z_CELLS, Z_BOARDS)
 

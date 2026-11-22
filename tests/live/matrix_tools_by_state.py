@@ -181,6 +181,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "comment_write load": lambda: {"path": _comment_source()},
     "comment_write delete": lambda: {"ref": "irq_vblank", "cpu": "maincpu"},
     "symbols_find": lambda: {"name": "irq_vblank"},
+    "knowledge_find": lambda: {"kind": "vector", "key": "0x66", "scope": "z80"},
     "machine_map": dict,
     "cpu_info": dict, "window": dict,
     "read_memory": lambda: {"ref": "0x400", "length": 8},
@@ -239,7 +240,8 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
 }
 
 #: What answers on a running machine; everything else but the lifecycle refuses `not_stopped`.
-RUNNING_ANSWERS = {"status", "window", "log", "log_wait", "snapshot", "symbols_find", "throttle",
+RUNNING_ANSWERS = {"status", "window", "log", "log_wait", "snapshot", "symbols_find",
+                   "knowledge_find", "throttle",
                    "breakpoint_at", "declaration_list breakpoint", "declaration_clear breakpoint",
                    "watch_add", "declaration_list watch", "declaration_clear watch", "regpoint_add",
                    "declaration_list regpoint", "declaration_clear regpoint", "comment_list",
@@ -381,10 +383,21 @@ RUNNING_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
 }
 
 
+def _served_nmi(r: dict[str, Any]) -> bool:
+    """The Z80's NMI vector, which the base serves: one entry, whole with its sources."""
+    return [e.get("id") for e in r.get("entries", [])] == ["z80:vector:0x66"] and all(
+        e.get("checked") is True and e.get("sources") for e in r["entries"])
+
+
 def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     """A tool's reply in a state against its contract, and the session block against the machine."""
     if tool in MEDIA_ABSENT:
         good = refused(r, "bad_argument") and "no file at" in str(r.get("message"))
+        agrees = session_is(r, state not in ("none", "closed"), state == "running")
+    elif tool == "knowledge_find":
+        # The base answers with or without a machine: the entry it serves, and the session block
+        # saying what state the machine is in.
+        good = ok(r) and _served_nmi(r)
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
     elif tool == "promote":
         # The draft and the store, never the machine: asked for nothing it refuses in any state.
@@ -480,9 +493,9 @@ def run_state(state: str, tools: list[str]) -> None:
 
 # Calls that leave the machine as found go first, then those that move it, transitions last.
 STOPPED_ORDER = [
-    "status", "window", "rom_check", "machine_map", "cpu_info", "symbols_find", "read_memory",
-    "read_block", "registers", "disassemble", "find", "history", "scan start", "scan filter",
-    "scan clear",
+    "status", "window", "rom_check", "machine_map", "cpu_info", "symbols_find", "knowledge_find",
+    "read_memory", "read_block", "registers", "disassemble", "find", "history", "scan start",
+    "scan filter", "scan clear",
     "cpu_focus", "log", "snapshot", "captures", "state_list", "breakpoint_at",
     "declaration_list breakpoint", "declaration_clear breakpoint", "watch_add",
     "declaration_list watch", "declaration_clear watch", "regpoint_add",
@@ -502,8 +515,8 @@ STOPPED_ORDER = [
 ]
 RUNNING_ORDER = (
     [t for t in STOPPED_ORDER if t not in RUNNING_ANSWERS and t not in ("start", "resume")]
-    + ["status", "window", "log", "log_wait", "snapshot", "symbols_find", "throttle",
-       "breakpoint_at",
+    + ["status", "window", "log", "log_wait", "snapshot", "symbols_find", "knowledge_find",
+       "throttle", "breakpoint_at",
        "declaration_list breakpoint", "declaration_clear breakpoint", "watch_add",
        "declaration_list watch", "declaration_clear watch",
        "regpoint_add", "declaration_list regpoint", "declaration_clear regpoint", "comment_list",
