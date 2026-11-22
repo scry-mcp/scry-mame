@@ -1,0 +1,910 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ay8910-device",
+ "kind": "device",
+ "scope": "ay8910",
+ "covers": "the AY-3-8910 as a device: its register array and address latch, its bus control and reset, and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "AY-3-8910.raw.txt",
+   "variant": "ay8910"
+  },
+  {
+   "name": "YM2149.raw.txt",
+   "variant": "ym2149"
+  }
+ ],
+ "official": {
+  "AY-3-8910.raw.txt": [
+   "223-288",
+   "356-364",
+   "365-431",
+   "463-548"
+  ],
+  "YM2149.raw.txt": [
+   "111-119"
+  ]
+ },
+ "engine": [
+  "update",
+  "set_sample_rate",
+  "reset"
+ ],
+ "entries": [
+  {
+   "key": "ay8910",
+   "name": "AY-3-8910 sound chip",
+   "aliases": [
+    "AY8910",
+    "PSG"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "223-288"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "356-364"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "365-431"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "463-548"
+    },
+    {
+     "ref": "datasheet:YM2149.raw.txt",
+     "lines": "111-119"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_ym"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "preamble": true,
+     "function": "ay8910_device::ay8910_read_ym",
+     "case": [
+      "AY_PORTA"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "preamble": true,
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_AFINE"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_reset_ym"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::address_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::data_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::write_bc1_bc2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::set_pin26_low_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::set_pin26_high_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay_set_clock"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1431-1451"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "lines": "89-107"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The AY-3-8910 is a register oriented programmable sound generator, whose 16 registers are readable and written as memory-mapped I/O.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "228-234",
+       "sha": "38a2e52ad88c4efd0c43b21e53d1d22ba2a2ae25015ec24eadf7ea73a0f386a4"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "All functions of the PSG are controlled through its 16 registers, which once programmed generate and sustain the sounds.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "235-237",
+       "sha": "50eea9bc0884ad35c45066e9b6168460e17cbf46e1fd0d4330919e962816b250"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The 16 registers look to the CPU as a block of memory, a 16 word block out of 1024 possible addresses.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "241-245",
+       "sha": "5e43e70d69ae1e70fe498e25a2c267f150f4027d9489221efb6910ca9c4bc321"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "The four low order address bits select one of the 16 registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "262-263",
+       "sha": "66864444d8902ec1a636db0801b78d9122c87e1e429f2fe455155ebaece99ada"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "When the high order address bits are incorrect, the bidirectional buffers are forced to a high impedance state.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "263-267",
+       "sha": "60b16ec2a5c222986a8fad5a4987507745a5e9524e82f32b401395c79db38619"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "A9 and A8 are fixed to recognise a 01 code, and DA7 to DA4 are programmed to recognise only 0000 unless specified.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "267-271",
+       "sha": "7d6b119eddafa05ba31fb18c19bff3f99e464fa64b6ed859edc4bd222380d2d0"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "A valid high order address latches the register address, which stays valid until a new address arrives.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "271-276",
+       "sha": "240c7f047e06b2717e47ce3ba14cac851ed44b28c2a23ccc598113b43da75fe4"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The Bus Control Decode block conditions the register address latch and the bidirectional buffers for the bus function required.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "281-284",
+       "sha": "fd79c0d0bd3fa51fcfcc98f59d5b4a02524c7dd3276d98f67cd8f17a7b9095f9"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "9",
+     "on": "reset",
+     "of": "doc",
+     "text": "Applying a logic 0 to the Reset pin resets all registers to 0; the pin has an on-chip pull-up resistor.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "358-360",
+       "sha": "63c0ed5a23656f4cc797b2455dc4bd7eba93a364e778177fb26dd3c7d10acad6"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The CLOCK input supplies the timing reference for the tone, noise and envelope generators.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "363-364",
+       "sha": "7547d23c4acb36570633e86378a0caf6cd278680ce49bbc6fd43bd844430b09a"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The bus control signals BDIR, BC2 and BC1 come from the processor or are simulated on its I/O lines; the PSG decodes them.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "368-373",
+       "sha": "fb4691c91f3c6671a6b21251c4883f0d91da2ab6300ed375166dc36eca21e847"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The PSG decodes the eight combinations of BDIR, BC2 and BC1 into inactive, latch address, read and write functions.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "377-382",
+       "sha": "1b66da6068e809f460ecfff266038055e0414dce9bcaa7d9dda308cc76e7fae1"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "387-392",
+       "sha": "d109d5914f16c725feef49188cfbc8694e693b27ad8be6c746e6e1e99f84a6b0"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "397-406",
+       "sha": "77aaf6b081f6027e4f5e6c984297385a94cd710b9d597b6e87d33988a1671b3d"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "13",
+     "on": "when",
+     "of": "doc",
+     "text": "With BDIR high, BC2 BC1 of 00 latch an address, 01 is inactive, 10 writes to the PSG and 11 latches an address.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "383-386",
+       "sha": "06caa5476eee206dd523f99a0267f640607f71e8a9a11412856c5756036048dc"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "393-396",
+       "sha": "808a25ac5256aba5e026a9654742977139536b405ac63dfcedd01d2fe5298e09"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "407-415",
+       "sha": "09a4c5b351c889a4e09a0f3362084d7e78c11a9dfab66e342a13a8e51108f4a5"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "Only four of the eight decoded bus functions are required, so BC2 can be tied to +5V and two bus control signals suffice.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "416-423",
+       "sha": "ce53889b37d7d8629602e9a8485391168449c145b527f8a60889b098f83f2f85"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "With BC2 tied high, BDIR 0 and BC1 0 is inactive.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "421-423",
+       "sha": "ed4e014e23fc40017d0a15ba03f41a68832c3fd741d5cf6ecccc612fbb197f32"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "428",
+       "sha": "2e118a2fb6f1bfea483f258b3d52d3ee4babb5f712c86ce3ffea87429ff7ce1a"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "16",
+     "on": "when",
+     "of": "doc",
+     "text": "With BC2 tied high, BDIR 0 and BC1 1 reads from the PSG.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "421-423",
+       "sha": "ed4e014e23fc40017d0a15ba03f41a68832c3fd741d5cf6ecccc612fbb197f32"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "429",
+       "sha": "851d76c4428b85975d8833e4b6e8c4094755da9b3b6ef68e94fe49c54bc1c045"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "17",
+     "on": "when",
+     "of": "doc",
+     "text": "With BC2 tied high, BDIR 1 and BC1 0 writes to the PSG.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "421-423",
+       "sha": "ed4e014e23fc40017d0a15ba03f41a68832c3fd741d5cf6ecccc612fbb197f32"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "430",
+       "sha": "ef7d7304859d2f01f625f8c66e886e0ca6978e42ab1c4ccf07a9bd58171c3f68"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "18",
+     "on": "when",
+     "of": "doc",
+     "text": "With BC2 tied high, BDIR 1 and BC1 1 latches an address.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "421-423",
+       "sha": "ed4e014e23fc40017d0a15ba03f41a68832c3fd741d5cf6ecccc612fbb197f32"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "431",
+       "sha": "38bf9fb49c7699463694d022776bca38b7ed78f9dc37bb4f888ee0ba40bdecbf"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "The processor defines the state of the common data and address bus with bus control signals, which the PSG decodes.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "463-468",
+       "sha": "530bc6778276c883b31c00a58f3b43bcf28a6c087d1d6a53139bc21d6ecf7f8b"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "20",
+     "on": "is",
+     "of": "doc",
+     "text": "Driving the bus control signals is the same as a processor interacting with memory: an address, then data in or out.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "469-474",
+       "sha": "8db2dc6ecf468239420b2d36cc309b7c6da77927a8693a0708a956f6ae224426"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "21",
+     "on": "is",
+     "of": "doc",
+     "text": "Each of the three state sequences, latch address, write to PSG and read from PSG, is made of operations set by the bus control pattern.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "480-486",
+       "sha": "07011e4b9d88217f978c3f38ca65c3d2f574dba5bc4b1d78abec446811b9b181"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "22",
+     "on": "is",
+     "of": "doc",
+     "text": "The latch address sequence sends inactive, then latch address, puts the address on the bus and sends inactive; the middle two may swap.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "503-509",
+       "sha": "c34f8ca9329d9160ce889a4c9c9233828715f9784e4d1085f15ab819761f9b8c"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "23",
+     "on": "is",
+     "of": "doc",
+     "text": "The write to PSG sequence sends inactive, puts data on the bus, sends write to PSG and sends inactive.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "523-527",
+       "sha": "04684ba70018ba899304e328fc88db8d9ef29a1508a83e174b13a6d6fc519d7e"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "24",
+     "on": "is",
+     "of": "doc",
+     "text": "The read from PSG sequence sends inactive, sends read from PSG, reads the data on the bus and sends inactive.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "534-538",
+       "sha": "b50f6cce1471cd5ad757bd1ac273c67b74b295ff71a823ecf4c846583d53a800"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "25",
+     "on": "is",
+     "of": "doc",
+     "text": "Writing or reading either I/O port is the same as writing or reading any other register, with the same state sequences.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "545-548",
+       "sha": "f021705240a648b8676b13943c85b80f740f69eb17b7d5a0925fdb496e7207c1"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "28",
+     "on": "when",
+     "of": "doc",
+     "text": "Control commands are issued to the PSG by writing to its 16 memory-mapped registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "230-232",
+       "sha": "56ce4cc98a8a1a24cb77ea6ee5781f368bacd4e10afa0812f04bd02e88deed06"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "29",
+     "on": "when",
+     "of": "doc",
+     "text": "Each of the 16 registers is also readable, so the processor can learn present states or stored data values.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "232-234",
+       "sha": "dd2b764421990d466919a4ddb1ac3e194ca04eafdf301a1e21fd75b9404edfa6"
+      }
+     ],
+     "variant": "ay8910"
+    },
+    {
+     "n": "26",
+     "on": "is",
+     "of": "doc",
+     "text": "The CLOCK pin has a 1/2 frequency divider, so a clock of half the input frequency can serve as the master clock.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2149.raw.txt",
+       "lines": "111-114",
+       "sha": "d851ade51edb3dbd79fad7f3d2eb80114c129491bdc80885d7b36d39100b40a5"
+      }
+     ],
+     "variant": "ym2149"
+    },
+    {
+     "n": "27",
+     "on": "when",
+     "of": "doc",
+     "text": "With SEL high the input clock is the master clock; with SEL low it is divided by 2 to give the master clock.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2149.raw.txt",
+       "lines": "115-119",
+       "sha": "36400b4ef80f15247593f52eb449ea98944b7724a6c644a94748986a5b4c7029"
+      }
+     ],
+     "variant": "ym2149"
+    },
+    {
+     "n": "30",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME decodes the address on DA7 to DA4 alone, as 0000, and has no A9 or A8 pins.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1375",
+       "sha": "84ebe2434f74df039ecd8b3500f31aa792525bcb2a838798e5efde1a4e997103"
+      }
+     ],
+     "row": "6"
+    },
+    {
+     "n": "31",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME's reset clears registers 0x00 to 0x0D only; the I/O port registers 0x0E and 0x0F keep their value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1321-1322",
+       "sha": "073f0e085f238bdfc635f62778bc87e97b54e4698e80b460c21a5730e51204b9"
+      }
+     ],
+     "row": "9"
+    },
+    {
+     "n": "32",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After a reset MAME ignores data writes and reads high impedance until an address with a zero high nibble is latched.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1307-1308",
+       "sha": "d671dcc5386af78e8a5cab33eeb8a41dd33ba03edd9ee06231945a7f2d242618"
+      }
+     ]
+    },
+    {
+     "n": "33",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On the AY8930 in expanded mode a bank bit adds 16 to the latched register number.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1362",
+       "sha": "45b1f4c8b37a9a96b3968424e021573d4361f29242fb1e1e93d3d36b0536faca"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1391",
+       "sha": "88b7ef8373f46962560222ca651a5085aefc7463abf27d2e03dc837af29a5ef0"
+      }
+     ]
+    },
+    {
+     "n": "34",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME folds a register number whose low nibble is R15 onto R15, so the AY8930 banks share it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "918-919",
+       "sha": "4d5eed450ff06c96074119450d535d8ddf9c03e2902c56d89961b3a7d8f589c8"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1395-1396",
+       "sha": "4d5eed450ff06c96074119450d535d8ddf9c03e2902c56d89961b3a7d8f589c8"
+      }
+     ]
+    },
+    {
+     "n": "35",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On the AY-3-8910 MAME masks each register on read so its unused bits read back as 0; the AY-3-8914 has its own masks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1431-1442",
+       "sha": "30dfe77b24c923b1d90ff433939875ed09701858e71d7ca48dd3c06b3a1c85e9"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1443-1450",
+       "sha": "0ec6ca797fcafbe535199bf08bf8222df54372478f9f5d944032a01876c085bc"
+      }
+     ]
+    },
+    {
+     "n": "36",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME gives the address latch, the data write and the /RES input as the handlers address_w, data_w and reset_w.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "90-94",
+       "sha": "322765c1c5ff9bde812fd6a88a060ed9628fc8e574ef9e6c3d04dc5cd54d5ec8"
+      }
+     ]
+    },
+    {
+     "n": "37",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "write_bc1_bc2 takes BC1 on A0 and BC2 on A1 of the offset; data_address_w and address_data_w take BC1 on A0 or its inverse.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "100-107",
+       "sha": "2cbb75cbb763a4fc8c0acfbc179edd9cf25840863c1b0cb47028ccf8f23aedc7"
+      }
+     ]
+    },
+    {
+     "n": "38",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "set_pin26_low_w and set_pin26_high_w drive the SEL pin, the clock select of the YM2149.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "96-98",
+       "sha": "dea466f9767c64c783a3ce51ace49a003940c1eb8b0823cd8c977e97033d09bf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "223-227",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "238-240",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "246-261",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "277-280",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "285-288",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "356-357",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "361-362",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "365-367",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "374-376",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "424-427",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "475-478",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "479",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "487-498",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "499-501",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "502",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "510-522",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "528-533",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "539-544",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1358",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1360",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1374",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1364-1368",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1376-1383",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1379",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1393",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "922",
+     "as": "agrees",
+     "row": "28"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1451",
+     "as": "agrees",
+     "row": "29"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1309-1320",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1323",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1324-1339",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1477-1484",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1486-1493",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "lines": "89",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1498-1510",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1515-1531",
+     "as": "agrees",
+     "row": "27"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1342-1349",
+     "as": "agrees",
+     "row": "26"
+    }
+   ]
+  }
+ ]
+}

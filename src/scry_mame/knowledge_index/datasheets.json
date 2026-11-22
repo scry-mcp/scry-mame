@@ -1,0 +1,27 @@
+{
+ "format": "scry-knowledge-datasheets/1",
+ "datasheets": {
+  "AY-3-8910.raw.txt": {
+   "title": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
+   "url": "https://archive.org/download/GI_AY-3-8910_Feb-1979/GI_AY-3-8910_Feb-1979_text.pdf",
+   "archive": "https://archive.org/details/GI_AY-3-8910_Feb-1979",
+   "class": "maker-datasheet",
+   "text": "ocr",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "61e94a614626ecd8ada4826a51d0a829728f9ee05f8c4b50232f99a7f9898dd9",
+   "capture": "3dd85a7f4ab852be3aa148fdcb2294f1ab301ac0c1db6afcd207598be311ac47"
+  },
+  "YM2149.raw.txt": {
+   "title": "Yamaha YM2149 software-controlled sound generator (SSG)",
+   "url": "https://bitsavers.org/components/yamaha/YM2149_199209.pdf",
+   "archive": "http://web.archive.org/web/20260223120018/https://www.bitsavers.org/components/yamaha/YM2149_199209.pdf",
+   "class": "second-source",
+   "text": "ocr",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "a4b946bf525fc1a7c6dec9e7662ce2342d3a3c627f980c7c3b1a396df7e91d20",
+   "capture": "bda0543365098e3faafda2001755016c515dd54d6184ba476ecb0e4d41beaf15"
+  }
+ }
+}
