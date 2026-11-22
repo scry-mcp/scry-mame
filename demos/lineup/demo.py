@@ -11,16 +11,18 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from scry_core.demo import Demo, Lead, Reply, Run, Step, main
+from scry_core.demo import Demo, Lead, Reply, Run, Step
 from scry_core.game_demo import Binding, Press
 from scry_core.games import lineup
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
-from demos import free_set  # noqa: E402
+from demos import decorated, free_set  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "lineup"
+#: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
+LAYERS = decorated.CALLS_AND_KEYS
 #: The game's own `.scry/` folder declares its screen map; `--cwd` is that copy.
 SCREEN_MAP = Path(".scry/maps/lineup-screen-map.json")
 
@@ -120,4 +122,4 @@ DEMO = Demo(
 
 
 if __name__ == "__main__":
-    sys.exit(main(DEMO))
+    sys.exit(decorated.main(DEMO, LAYERS))

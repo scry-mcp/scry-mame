@@ -1,5 +1,4 @@
-"""The committed runs of the demos, read back: each step's call and reply as the run wrote them,
-in the normalised form a README carries. A recorded run stands in for an emulator here."""
+"""The committed runs of the demos read back, standing in for an emulator."""
 
 from __future__ import annotations
 
@@ -26,7 +25,7 @@ class Entry:
 
 
 def read(transcript: Path) -> list[Entry]:
-    """Every step of a committed run, in order; the cleanup call the run adds is not one."""
+    """Every step of a committed run, in order."""
     text = transcript.read_text(encoding="utf-8")
     found = list(ENTRY.finditer(text))
     entries = []
@@ -39,8 +38,7 @@ def read(transcript: Path) -> list[Entry]:
 
 
 def timeline_of(demo: Demo, transcript: Path) -> dict[str, Any]:
-    """The timeline `demo`'s steps would write for the committed run, validated as the runner's
-    own writer validates it."""
+    """The timeline `demo`'s steps would write for the committed run, validated by the writer."""
     steps = {step.name: step for step in demo.steps}
     builder = timeline.Builder(demo.name)
     for entry in read(transcript):

@@ -1197,19 +1197,27 @@ dependencies = [
     { name = "scry-core" },
 ]
 
+[package.optional-dependencies]
+decorate = [
+    { name = "scry-core" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "scry-mame", extra = ["decorate"] },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "mcp", specifier = ">=2.1.0,<3" },
     { name = "scry-core", git = "https://github.com/scry-mcp/scry-core?rev=v0.120.1" },
+    { name = "scry-core", extras = ["decorate"], marker = "extra == 'decorate'", git = "https://github.com/scry-mcp/scry-core?rev=v0.120.1" },
 ]
+provides-extras = ["decorate"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -1217,6 +1225,7 @@ dev = [
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-cov", specifier = ">=5.0" },
     { name = "ruff", specifier = ">=0.6" },
+    { name = "scry-mame", extras = ["decorate"] },
 ]
 
 [[package]]

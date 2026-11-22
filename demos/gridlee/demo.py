@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
-from demos import free_set  # noqa: E402
+from demos import decorated, free_set  # noqa: E402
 from demos.free_set import (  # noqa: E402
     RUN_S,
     Moment,
@@ -21,11 +21,12 @@ from demos.free_set import (  # noqa: E402
     Run,
     Step,
     expect,
-    main,
     recording,
 )
 
 SYSTEM = "gridlee"
+#: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
+LAYERS = decorated.CALLS_AND_KEYS
 #: The first program ROM's CRC: the cpu sees it at 0xA000, which is what `start` checks against.
 REFERENCE_CRC = 0x1C43539E
 #: The first 2 KB of the cpu's space (the `:spriteram` share), where the scan finds the credits.
@@ -244,4 +245,4 @@ DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
 
 
 if __name__ == "__main__":
-    sys.exit(main(DEMO))
+    sys.exit(decorated.main(DEMO, LAYERS))

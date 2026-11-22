@@ -40,7 +40,8 @@ does not take your keyboard.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png`,
   `loop.webp` and the README's example calls, from a run where every step passed. It needs
-  ffmpeg and `img2webp` on your `PATH`.
+  ffmpeg and `img2webp` on your `PATH`, and
+  Pillow and numpy (the `decorate` extra), which draw the call captions and the keys over the loop.
 
 Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
 That last one is a missing ROM, a relative path or a server that did not start.

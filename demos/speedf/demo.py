@@ -8,15 +8,17 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from scry_core.demo import Demo, Moment, Reply, Run, Step, expect, main, recording
+from scry_core.demo import Demo, Moment, Reply, Run, Step, expect, recording
 from scry_core.game_demo import arrived, word_is
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
-from demos import free_set  # noqa: E402
+from demos import decorated, free_set  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "speedf"
+#: The layers that exist for this demo (MAME has no pointer): its calls: it presses nothing.
+LAYERS = decorated.CALLS
 #: What the game's copy holds once built: the start profile, the linker's image and the
 #: romset staged with its map. The profile names the last two as well; the precheck reads them
 #: here so a copy that is not built is refused with its own words before `start` is paid for.
@@ -146,4 +148,4 @@ DEMO = Demo(
 
 
 if __name__ == "__main__":
-    sys.exit(main(DEMO))
+    sys.exit(decorated.main(DEMO, LAYERS))
