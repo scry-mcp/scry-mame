@@ -98,6 +98,12 @@ def place_vectors(monkeypatch: pytest.MonkeyPatch, lock: sealed.Lock | None = No
     monkeypatch.setattr(naming.MAMENAMER, "_base", whole)
 
 
+def held_back(lock: sealed.Lock, *ids: str) -> sealed.Lock:
+    """`lock` without the seals of `ids`, so the cases that need a held-back entry do not depend
+    on which entries the base has sealed today."""
+    return sealed.Lock({k: v for k, v in lock.sealed.items() if k not in ids}, lock.reopened)
+
+
 @pytest.fixture
 def every_entry(monkeypatch: pytest.MonkeyPatch) -> None:
     """The namer over every entry, served or not, with the vectors placed: how a name is found,
@@ -150,7 +156,7 @@ def test_a_board_with_two_cpus_and_no_cpu_named_gets_no_name(
 
 def test_a_vector_is_unnamed_until_it_is_served_and_the_machine_still_names_the_address(
         monkeypatch: pytest.MonkeyPatch) -> None:
-    place_vectors(monkeypatch, support.rows_lock())
+    place_vectors(monkeypatch, held_back(support.rows_lock(), "m68000:vector:2"))
     board(monkeypatch)
     assert naming.base().by_id("m68000:vector:2") is None
     held = naming.MAMENAMER.address(8, ":maincpu", "0x8")
@@ -167,7 +173,7 @@ def test_a_vector_is_unnamed_until_it_is_served_and_the_machine_still_names_the_
 def test_a_trap_line_carries_no_note_while_its_vector_is_held_back(
         monkeypatch: pytest.MonkeyPatch) -> None:
     from scry_mame import read
-    place_vectors(monkeypatch, support.rows_lock())
+    place_vectors(monkeypatch, held_back(support.rows_lock(), "m68000:vector:32"))
     board(monkeypatch)
     line = "000560: 4E40           trap    #$0"
     assert line_notes.of_listing([line], ":maincpu") == []
@@ -178,7 +184,7 @@ def test_a_trap_line_carries_no_note_while_its_vector_is_held_back(
 def test_the_boundary_names_no_held_back_entry_in_a_reply_or_its_summary(
         monkeypatch: pytest.MonkeyPatch) -> None:
     from scry_mame import mcp
-    place_vectors(monkeypatch, support.rows_lock())
+    place_vectors(monkeypatch, held_back(support.rows_lock(), "m68000:vector:2"))
     board(monkeypatch, guarded=False)
     given = {"ref": "0x8"}
     closed = mcp.BOUNDARY.finished("read_memory", given, dict(READ),
@@ -194,6 +200,7 @@ def test_the_boundary_names_no_held_back_entry_in_a_reply_or_its_summary(
 
 def test_a_device_names_its_chip_only_when_that_chip_is_served(
         monkeypatch: pytest.MonkeyPatch) -> None:
+    place_vectors(monkeypatch, held_back(support.rows_lock(), "ay8910:device:ay8910"))
     board(monkeypatch)
     STATE.machine_map[machine.DEVICES].append(
         {"tag": ":psg", "name": "AY-3-8910", "shortname": "ay8910"})
@@ -288,8 +295,8 @@ def test_knowledge_find_reads_the_inputs_the_devices_and_the_map_from_the_machin
         {"kind": "input", "key": ":IN1/Coin 1", "name": "Coin 1", "scope": ":IN1"}]
     crtc = live.rows("device", ":crtc", "")
     assert crtc == [{"kind": "device", "key": ":crtc", "name": "Motorola MC6845",
-                     "type": "mc6845"}]
-    assert live.scopes() == ("m68000",)
+                     "type": "mc6845", "chip": "chip:device:mc6845"}]
+    assert "m68000" in live.scopes()
     held = live.rows("memory", "0x200010", "") or []
     assert [r["name"] for r in held] == ["mainram"]
     assert live.rows("memory", "not a key", "") == []
