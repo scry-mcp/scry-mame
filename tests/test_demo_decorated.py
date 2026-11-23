@@ -87,6 +87,7 @@ def test_a_moment_whose_step_the_timeline_does_not_hold_is_refused() -> None:
 def _timeline_with_a_key() -> dict[str, Any]:
     made = timeline.Builder("t")
     made.add("start", "start", {}, "ok", (None, 100))
+    made.add("press", "send_keys", {"keys": ["a"]}, "ok", (100, 100))
     made.add("film A", "record", {"dest": "a.avi"}, "ok", (100, 160),
              [timeline.key("a", True, 120), timeline.key("a", False, 130)])
     return timeline.loads(made.dumps())

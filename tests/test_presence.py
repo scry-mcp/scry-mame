@@ -71,14 +71,14 @@ def test_the_state_file_carries_the_extended_state_one_line_each() -> None:
         "acting", "paused=1", "place=top", "layers=edge,keys,calls,pause", "serial=7",
         "rgb=FF8C00", "caption=write_memory 0x10 AA..", "key=P1 Left", "key=P1 Button 1"]
     bare = mpresence.encode("held", presence.Payload())
-    assert bare.splitlines() == ["held", "paused=0", "place=auto", "layers=edge"]
+    assert bare.splitlines() == ["held", "paused=0", "place=bottom", "layers=edge"]
 
 
 @pytest.mark.parametrize("recording", ["video", "audio", "both"])
 def test_the_state_file_says_what_is_being_recorded(recording: presence.Recording) -> None:
     text = mpresence.encode("held", presence.Payload(layers=("edge", "record"),
                                                      recording=recording))
-    assert text.splitlines() == ["held", "paused=0", "place=auto", "layers=edge,record",
+    assert text.splitlines() == ["held", "paused=0", "place=bottom", "layers=edge,record",
                                  f"rec={recording}"]
 
 
