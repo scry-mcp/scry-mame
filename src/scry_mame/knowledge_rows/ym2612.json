@@ -444,9 +444,9 @@
    "rows": [
     {
      "n": "1",
-     "on": "write",
+     "on": "is",
      "of": "doc",
-     "text": "The description says $24 to $26 give the times set in timers A and B; the glyphs of the word for time are garbled in the capture.",
+     "text": "The description gives $24 to $26 as one range and names timer A and timer B; the glyphs of the words saying what they set are garbled in the capture.",
      "quotes": [
       {
        "ref": "datasheet:YM3438.raw.txt",
@@ -464,64 +464,58 @@
      "n": "2",
      "on": "write",
      "of": "doc",
-     "text": "The register map comments $24 as Timer-A 8 bits, $25 as Timer-A lower 2 bits and $26 as Timer-B data; the word before the 8 bits is garbled.",
+     "text": "The register map comments $24 as Timer-A's 8 bits.",
      "quotes": [
       {
        "ref": "datasheet:YM3438.raw.txt",
-       "lines": "241-243",
-       "sha": "3eb792c603c11d0dcbc3125342f00905bd4e24c96c5b3c7540bee8f085336077"
+       "lines": "241",
+       "sha": "4e4f8ca6a79cde75a4dd1bbbc456e687abb497ef0d0d7f1209a686a95d607562"
       },
       {
        "ref": "datasheet:YM3438.raw.txt",
-       "lines": "211-213",
-       "sha": "69e78fc8b75db24c8d4ee5bcd7b304cee5119b4623109b4757215a2fe4acc5f9"
+       "lines": "211",
+       "sha": "5fa503445bcd7b0b195880fbfafd649488a7f310ee8e2bb9b1b30be01f904c1d"
       }
      ]
     },
     {
      "n": "3",
-     "on": "is",
+     "on": "write",
      "of": "doc",
-     "text": "The capture lists the map's addresses and its comments as two columns in the same order; the third to fifth of each are $24 to $26 and the Timer comments.",
+     "text": "The register map comments $25 as Timer-A's lower 2 bits.",
      "quotes": [
       {
        "ref": "datasheet:YM3438.raw.txt",
-       "lines": "241-243",
-       "sha": "3eb792c603c11d0dcbc3125342f00905bd4e24c96c5b3c7540bee8f085336077"
+       "lines": "242",
+       "sha": "b91a56a470379c416a8be602c05fd9c5cb014df31e72fb3cfe1edd9aa51361a2"
       },
       {
        "ref": "datasheet:YM3438.raw.txt",
-       "lines": "211-213",
-       "sha": "69e78fc8b75db24c8d4ee5bcd7b304cee5119b4623109b4757215a2fe4acc5f9"
+       "lines": "212",
+       "sha": "dc87435497b604a96b36065050948adebb34e4de9803260015e5967d4b59992b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $26 as Timer-B's data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "243",
+       "sha": "55cb5a6f132c00ccc46dd6ad71a0d1956214b89129902a27e3f996566c0bfd95"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "213",
+       "sha": "88b6e5f651ed1bc24e737c30a78f8174402b594f6115cd9304eb39f4d4547ac2"
       }
      ]
     }
    ],
    "closed": [
-    {
-     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
-     "lines": "2313-2314",
-     "as": "agrees",
-     "row": "1"
-    },
-    {
-     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
-     "lines": "1417",
-     "as": "agrees",
-     "row": "1"
-    },
-    {
-     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
-     "lines": "172-173",
-     "as": "agrees",
-     "row": "1"
-    },
-    {
-     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
-     "lines": "196-197",
-     "as": "agrees",
-     "row": "1"
-    },
     {
      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
      "lines": "2313-2314",
@@ -548,9 +542,15 @@
     },
     {
      "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
      "lines": "197",
      "as": "agrees",
-     "row": "2"
+     "row": "4"
     }
    ]
   },

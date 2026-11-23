@@ -405,7 +405,7 @@
      "n": "4",
      "on": "write",
      "of": "doc",
-     "text": "Port $BE is written to send VDP data.",
+     "text": "This port is written to send VDP data.",
      "quotes": [
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",

@@ -521,6 +521,12 @@
      "lines": "1540-1550",
      "as": "agrees",
      "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1711-1717",
+     "as": "agrees",
+     "row": "9"
     }
    ]
   },
@@ -4033,6 +4039,10 @@
     {
      "ref": "mame:src/devices/machine/mc68681.cpp",
      "function": "duart_base_device::ip3_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_base_device::calc_baud"
     }
    ],
    "rows": [
@@ -4053,7 +4063,7 @@
      "n": "2",
      "on": "write",
      "of": "doc",
-     "text": "ACR is stored; ACR[7] selects one of two sets of baud rates for the baud-rate generator: set 1 if 0, set 2 if 1.",
+     "text": "ACR is stored; ACR[7] selects one of the two sets of baud rates that the baud-rate generator can produce.",
      "quotes": [
       {
        "ref": "datasheet:MC68681.raw.txt",
@@ -4123,7 +4133,7 @@
      "n": "7",
      "on": "write",
      "of": "doc",
-     "text": "ACR[3:0] is stored; each set bit lets a change of the matching IP3 to IP0 input in IPCR set the input change bit ISR[7].",
+     "text": "ACR[3:0] is stored; each set bit lets a change of the matching IP3 to IP0 input in IPCR set the input change bit ISR[7] when IMR[7] is set.",
      "quotes": [
       {
        "ref": "datasheet:MC68681.raw.txt",
@@ -4136,12 +4146,12 @@
      "n": "8",
      "on": "when",
      "of": "doc",
-     "text": "With an ACR[3:0] bit set, a change at the matching input sets ISR[7]; with the bit clear, the change has no effect on ISR[7].",
+     "text": "With an ACR[3:0] bit and IMR[7] set, a change at the matching input sets ISR[7]; with the bit clear, it has no effect on ISR[7].",
      "quotes": [
       {
        "ref": "datasheet:MC68681.raw.txt",
-       "lines": "1946-1950",
-       "sha": "da06991a5dbaab006157dda56ac2c8ee7315799a3338797fd802b7589e4910c7"
+       "lines": "1945-1950",
+       "sha": "229d0f0e02197248d8bfe6e569e28cf7e2e94043a2563861eabc652dc9016c63"
       }
      ]
     },
@@ -4222,6 +4232,101 @@
        "sha": "d9cb88b07aa881d48cecc58c89b5a17bb0d1f1cbab2642964f86ad1b82e6aafe"
       }
      ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME stores ACR and takes the mode and clock source from ACR[6:4], but timer codes 00 and 01 and counter code 00 use the chip clock, not IP2 or IP2/16.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "963",
+       "sha": "4d142e836c138aebb37f60ad89b806b6bece2006d22b1a6d63d99952674e4d7a"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "446-455",
+       "sha": "0ee5f21befe6c75fa87d757a88fbd767104b01d0dcc12825510f54d14eca90a1"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "465-474",
+       "sha": "39d5ecde52f844eade5c706dbd25c310baa5c651e977a000c8820846678a3db4"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "475-483",
+       "sha": "cb6986dcb58b618f2878690c796a9fdc64f8c84570ef7682c2edf711b486e526"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME stores ACR, and a change of a matching input sets ISR[7] when its ACR bit is set, without consulting IMR[7].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "963",
+       "sha": "4d142e836c138aebb37f60ad89b806b6bece2006d22b1a6d63d99952674e4d7a"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1036-1044",
+       "sha": "13eb8a46e51c733fa4daedb3c28b8017fa512f1f683023edeac201363c9e8893"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1053-1061",
+       "sha": "088dfa5df22a1f4f5bea7542687a472457ef6a25f2cb8bb2ffd14ef853c0355e"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1070-1078",
+       "sha": "a5924f9c2faad7acbce84a129c6b677f4b2d552298eff15ac5feef651ced8af7"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1087-1095",
+       "sha": "46d5d2e716505a5f8ffef76c344e3f7d70eff32cd282c14d4c6f77542f16180e"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "MAME sets ISR[7] on a change of a matching input whenever its ACR bit is set, IMR[7] clear or not; with the ACR bit clear the change leaves ISR[7] alone.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1036-1044",
+       "sha": "13eb8a46e51c733fa4daedb3c28b8017fa512f1f683023edeac201363c9e8893"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1053-1061",
+       "sha": "088dfa5df22a1f4f5bea7542687a472457ef6a25f2cb8bb2ffd14ef853c0355e"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1070-1078",
+       "sha": "a5924f9c2faad7acbce84a129c6b677f4b2d552298eff15ac5feef651ced8af7"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1087-1095",
+       "sha": "46d5d2e716505a5f8ffef76c344e3f7d70eff32cd282c14d4c6f77542f16180e"
+      }
+     ]
     }
    ],
    "closed": [
@@ -4230,42 +4335,6 @@
      "lines": "963",
      "as": "agrees",
      "row": "2"
-    },
-    {
-     "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "963",
-     "as": "agrees",
-     "row": "6"
-    },
-    {
-     "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "963",
-     "as": "agrees",
-     "row": "7"
-    },
-    {
-     "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1042-1043",
-     "as": "agrees",
-     "row": "8"
-    },
-    {
-     "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1059-1060",
-     "as": "agrees",
-     "row": "8"
-    },
-    {
-     "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1076-1077",
-     "as": "agrees",
-     "row": "8"
-    },
-    {
-     "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1093-1094",
-     "as": "agrees",
-     "row": "8"
     },
     {
      "ref": "mame:src/devices/machine/mc68681.cpp",
@@ -4279,27 +4348,93 @@
     },
     {
      "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1032-1047",
+     "lines": "1032-1035",
      "as": "parent",
      "owner": "mc68681:register:0x04:read"
     },
     {
      "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1049-1064",
+     "lines": "1045-1047",
      "as": "parent",
      "owner": "mc68681:register:0x04:read"
     },
     {
      "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1066-1081",
+     "lines": "1049-1052",
      "as": "parent",
      "owner": "mc68681:register:0x04:read"
     },
     {
      "ref": "mame:src/devices/machine/mc68681.cpp",
-     "lines": "1083-1098",
+     "lines": "1062-1064",
      "as": "parent",
      "owner": "mc68681:register:0x04:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1066-1069",
+     "as": "parent",
+     "owner": "mc68681:register:0x04:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1079-1081",
+     "as": "parent",
+     "owner": "mc68681:register:0x04:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1083-1086",
+     "as": "parent",
+     "owner": "mc68681:register:0x04:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1096-1098",
+     "as": "parent",
+     "owner": "mc68681:register:0x04:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1135-1137",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1162-1164",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1131-1174",
+     "as": "parent",
+     "owner": "mc68681:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "82",
+     "as": "parent",
+     "owner": "mc68681:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "84",
+     "as": "parent",
+     "owner": "mc68681:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "218",
+     "as": "parent",
+     "owner": "mc68681:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "220",
+     "as": "parent",
+     "owner": "mc68681:register:0x01:write"
     }
    ]
   },

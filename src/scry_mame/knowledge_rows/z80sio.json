@@ -2377,8 +2377,8 @@
      "quotes": [
       {
        "ref": "datasheet:UM0081.raw.txt",
-       "lines": "11251-11257",
-       "sha": "3566f790f7d7a238566c92d73f8c21886f99a93837fefb73dab206e5f4eb3cb0"
+       "lines": "11251-11258",
+       "sha": "6b41111704fa09b7ff0575782fb650e9155d8190a3656868f4b985a2d5839d26"
       }
      ]
     },
@@ -3277,6 +3277,11 @@
        "ref": "datasheet:UM0081.raw.txt",
        "lines": "11431-11435",
        "sha": "3148d79c3aa5112ad4cb6bc4cd61b5542af76c0ca0c010b685edc58dae6acba4"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11397-11398",
+       "sha": "0884166882e03e8a0142131236a97ac2a60de472220b0b0b70de6e0cb1633288"
       }
      ]
     },
