@@ -1,0 +1,977 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "i8251-commands",
+ "title": "The 8251A USART, its command instruction",
+ "kind": "command",
+ "scope": "i8251",
+ "covers": "The command instruction of the 8251A, grouped by bits 7 to 5 (enter hunt, internal reset, request to send)",
+ "source": "official",
+ "documents": [
+  {
+   "name": "8251A.raw.txt",
+   "variant": "8251A"
+  }
+ ],
+ "official": {
+  "8251A.raw.txt": [
+   "167-168",
+   "250-255",
+   "773-774",
+   "804-813",
+   "882-918",
+   "578-582",
+   "751-755",
+   "838-853"
+  ]
+ },
+ "engine": [
+  "update_rx_ready",
+  "update_tx_ready",
+  "m_rxrdy_handler",
+  "m_txrdy_handler",
+  "m_txempty_handler",
+  "m_syndet_handler"
+ ],
+ "handlers": [
+  {
+   "ref": "mame:src/devices/machine/i8251.cpp",
+   "function": "i8251_device::command_w",
+   "value": "data"
+  }
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x1F",
+   "name": "bits 7-5 = 000",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "882-886"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "887-904"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "916-918"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The command instruction figure has a line of bit labels that the capture garbles; only IR, RTS, ER and SBRK are legible.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "882-883",
+       "sha": "a34a252d5f4622ceaf34311032b8b04e5122182fd5e6b628ed0b512795a5323f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Transmit enable: 1 enables the transmitter, 0 disables it.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "887-889",
+       "sha": "160ea97ce2950bb894c2d4591f76b8796dfff52646373c8d23260340910fb052"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Data terminal ready: a high bit forces the DTR output to zero.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "890-894",
+       "sha": "33758cb8c671538780bccc022aae5c6e4eee4717ed0f92fb31d5f27ed32cf1b9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Receive enable: 1 enables the receiver, 0 disables it.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "895-897",
+       "sha": "b4dd9cefc55242d3e4c679d9b2e5661e5061a83442e42530c2184f2febeedd3a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "Send break character: 1 forces TxD low, 0 is normal operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "898-901",
+       "sha": "34a30b54ad8016ee6dfeda18b05351eb39c4f31a82248055c2cdedb729bcdda7"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "Error reset: 1 resets the error flags PE, OE and FE.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "902-904",
+       "sha": "7d58b8e4d4098e60c76f61fbb0dd265972c242a182d087c5dd8f869a558abe56"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Error reset must be performed whenever RxEnable and Enter Hunt are programmed.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "917",
+       "sha": "d103187f2cf745ae553d39e30bbf0a9f82821a871f2a369af8e6d4ebe0e067b8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "884-886",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "916",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "918",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "parent",
+     "owner": "i8251:command:0x20..0x3F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "parent",
+     "owner": "i8251:command:0x80..0x9F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    }
+   ]
+  },
+  {
+   "key": "0x20..0x3F",
+   "name": "bits 7-5 = 001",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "250-255"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "905-907"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The RTS output is a general-purpose, 1-bit inverting output port, normally used as Request to Send; it is set low by programming a bit of the command instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "250-255",
+       "sha": "f178065f0b04743041b64b73b671da6ddec70cf0dac738ab47eb064cede93f68"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Request to send: a \"high\" bit forces the output to a value the capture garbles; RTS is set \"low\" by programming the command bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "905-907",
+       "sha": "189ddc0bc8f01f8a5a74dce458ce6516a9d2110ee70f2a83aad07fea75ab70f6"
+      },
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "252-253",
+       "sha": "55369beeabb0f8ddd7c875cf315c4bd0ff6ae7b58ee040e5471ede4966d0db0a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "parent",
+     "owner": "i8251:command:0x80..0x9F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x5F",
+   "name": "bits 7-5 = 010",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "908-910"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The internal reset bit of the command instruction returns the 8251A to the mode instruction format when it is high.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "908-910",
+       "sha": "3ddba428bc5c0ebd81c8a1fbcf0cd61cfbae96957dc6966af6d687e7640925a8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Internal reset: a high bit returns the 8251A to the Mode Instruction format.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "908-910",
+       "sha": "3ddba428bc5c0ebd81c8a1fbcf0cd61cfbae96957dc6966af6d687e7640925a8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "parent",
+     "owner": "i8251:command:0x20..0x3F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "parent",
+     "owner": "i8251:command:0x80..0x9F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "576",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x60..0x7F",
+   "name": "bits 7-5 = 011",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "167-168"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "A command reset operation is one way to put the device into the Idle state.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "167-168",
+       "sha": "72de47c9469f2be82f89b1b0f010b28a6e09c2fb51d18f448024c86f8552a1b0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A command reset operation also puts the device into the Idle state.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "167-168",
+       "sha": "72de47c9469f2be82f89b1b0f010b28a6e09c2fb51d18f448024c86f8552a1b0"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "On a command reset MAME makes the next control word a mode instruction; its comment says the datasheet means this, not a complete chip reset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "573-576",
+       "sha": "88d2a2bb9bf52061b61b12853e5c99882427457bda0dd113b6c780d831f56ba9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "parent",
+     "owner": "i8251:command:0x20..0x3F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "parent",
+     "owner": "i8251:command:0x80..0x9F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0x9F",
+   "name": "bits 7-5 = 100",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "804-813"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "911-915"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Enter hunt mode is a command instruction bit; its legend notes that it has no effect in asynchronous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "911-915",
+       "sha": "ded25f2b0f3afc5f20f80e80f6f9b52f996224d0ec969e9ac2c992111b95cb35"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Enter hunt mode: 1 enables the search for SYNC characters; it has no effect in asynchronous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "911-915",
+       "sha": "ded25f2b0f3afc5f20f80e80f6f9b52f996224d0ec969e9ac2c992111b95cb35"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The CPU can command the receiver to enter the HUNT mode if synchronization is lost.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "804-805",
+       "sha": "140541aa416125aad336e38a4ef100d321bdb8f84707bb42dd0922af3d4ea6b1"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Entering hunt also sets all the used character bits in the buffer to one, preventing a false SYNDET from data left in the receive buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "805-809",
+       "sha": "2e75b992af7555d01cb40af5bfde0ccb802908b06a68405ca398f3709e93e85f"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The SYNDET flip-flop is reset at each status read, whether internal or external SYNC is programmed; this does not make the 8251A return to HUNT.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "809-813",
+       "sha": "2b2d7d89108bcd5249082e3a0ca984aae4703e51f1202ed94fe48d5e3fdf0d0f"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "row": "4",
+     "text": "Entering hunt does not set the used receive buffer bits to one: the branch taken with hunt on only clears m_ext_syn_set and does not touch the buffer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "584-585",
+       "sha": "6eac7c1a96c1d3c990c48fc08911e3af4f30ad151adfd8df0e97d4088b53d427"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With hunt on, a command write also clears m_ext_syn_set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "584-585",
+       "sha": "6eac7c1a96c1d3c990c48fc08911e3af4f30ad151adfd8df0e97d4088b53d427"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A command write calls update_syndet(false) before the hunt bit is tested.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "581",
+       "sha": "a78446f46f4fe9b9ea11ba9ac6d5d97d687852c01c408a3ff805da8263767511"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "parent",
+     "owner": "i8251:command:0x20..0x3F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    }
+   ]
+  },
+  {
+   "key": "0xA0..0xBF",
+   "name": "bits 7-5 = 101",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "773-774"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "ENTER HUNT is a function of the command instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "773-774",
+       "sha": "363830fd309dceabfab31137f00c912d79de41d8828f0967ebd0eee142b58a88"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "An ENTER HUNT command has no effect in the asynchronous mode of operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "773-774",
+       "sha": "363830fd309dceabfab31137f00c912d79de41d8828f0967ebd0eee142b58a88"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A command write calls update_syndet(false) in asynchronous mode too, before the hunt bit is tested.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "581",
+       "sha": "a78446f46f4fe9b9ea11ba9ac6d5d97d687852c01c408a3ff805da8263767511"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "parent",
+     "owner": "i8251:command:0x20..0x3F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "582-583",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "584-585",
+     "as": "parent",
+     "owner": "i8251:command:0x80..0x9F"
+    }
+   ]
+  },
+  {
+   "key": "0xC0..0xDF",
+   "name": "bits 7-5 = 110",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "578-582"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "751-755"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "In sync mode, an ENTER HUNT command should be included in the first command instruction word written.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "751-755",
+       "sha": "9bb7c35d649fa0716e75b9e54bc591629f96eecc7c3347f24f9a328830a432d5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The master Reset bit of the Command Instruction word initiates an internal Reset, which puts the 8251A back into the Mode Instruction format.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "578-582",
+       "sha": "7582704401fecd3b9b42798067f127a96555bc4f3ef4b92c85f0e79395edfcef"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "On the Reset bit MAME only sets m_flags to I8251_NEXT_MODE, so the next write is a mode instruction; its comment says the chip is not completely reset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "571-577",
+       "sha": "0d73e712894cb21e8822709be46177d273ceee174c155e0a4374f3e2d0f787a4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "parent",
+     "owner": "i8251:command:0x80..0x9F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "parent",
+     "owner": "i8251:command:0x20..0x3F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    }
+   ]
+  },
+  {
+   "key": "0xE0..0xFF",
+   "name": "bits 7-5 = 111",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "838-853"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "On power-up the 8251A may come up in the Mode, Sync character or Command format; the text says it is safest to load three OOH bytes (read as 00H).",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "842-851",
+       "sha": "6a623bb21e5c993098a73b58125a317f70add8384197a14297be0f2909ebe602"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "An Internal Reset command (40H) may then be issued to return the device to the idle state.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "851-853",
+       "sha": "59133769e31d47d613e3bf488cf8c31bbd50dc3e4f469ab330b1e4a27a6dd220"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "An internal Reset operation returns the 8251A to the Mode Instruction format.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "838-840",
+       "sha": "762183400fe8ca46483635363d0eb7df950c42b6ef3d2a6802af5969c6d7970d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "576",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "580-585",
+     "as": "parent",
+     "owner": "i8251:command:0x80..0x9F"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "841",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "562",
+     "as": "parent",
+     "owner": "i8251:command:0x20..0x3F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "563",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "565-568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "587-588",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "553-560",
+     "as": "log"
+    }
+   ]
+  }
+ ]
+}

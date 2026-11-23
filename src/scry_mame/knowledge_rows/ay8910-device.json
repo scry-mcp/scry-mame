@@ -333,6 +333,16 @@
        "ref": "datasheet:AY-3-8910.raw.txt",
        "lines": "397-406",
        "sha": "77aaf6b081f6027e4f5e6c984297385a94cd710b9d597b6e87d33988a1671b3d"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "383-386",
+       "sha": "06caa5476eee206dd523f99a0267f640607f71e8a9a11412856c5756036048dc"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "407-411",
+       "sha": "5938f251e58a59cecf2927eb69f6aa3334c19ac15ba709d6a1592496bd2faa7c"
       }
      ],
      "variant": "ay8910"
@@ -674,7 +684,7 @@
      "on": "reset",
      "of": "mame",
      "vs": "extra",
-     "text": "A reset in MAME clears the flag that says a valid address was latched, and clears the register address latch.",
+     "text": "A reset in MAME stores false in the m_active flag and 0 in the register address latch.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.cpp",
@@ -723,6 +733,11 @@
        "ref": "mame:src/devices/sound/ay8910.cpp",
        "lines": "1395-1396",
        "sha": "4d5eed450ff06c96074119450d535d8ddf9c03e2902c56d89961b3a7d8f589c8"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "165",
+       "sha": "884216d0e30422d59cbbce7f7093683cbde8da09174897c1fc40376273acc09d"
       }
      ]
     },
@@ -742,6 +757,16 @@
        "ref": "mame:src/devices/sound/ay8910.cpp",
        "lines": "1445-1450",
        "sha": "cc883fb51b57261a932d834054d621a04261476d93df9840df456f33162fb291"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1443",
+       "sha": "94b1ae9a862e7e7520cbf50e9c76173fa8176fbd73e4e8d4324311a1b0151b6d"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1451",
+       "sha": "ca9e8ab3d6c727c9e8f3e47234e67ea918a513261691ce2b8a79f089fbdfda2e"
       }
      ]
     },
@@ -801,14 +826,19 @@
      "n": "39",
      "on": "when",
      "of": "mame",
-     "vs": "absent",
+     "vs": "differs",
      "row": "16",
-     "text": "None of MAME's BC1 handlers, data_address_w, address_data_w and write_bc1_bc2, selects a read: each takes a data byte to write.",
+     "text": "MAME's BC1 handlers all take a data byte to write: data_address_w and address_data_w call ay8910_write_ym, and write_bc1_bc2 latches, idles or writes.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/ay8910.h",
        "lines": "100-107",
        "sha": "2cbb75cbb763a4fc8c0acfbc179edd9cf25840863c1b0cb47028ccf8f23aedc7"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1498-1509",
+       "sha": "35a2f94816be6cad8bf609d25bf409cddb7696020cf4e20b8cb2614b93d2ed2d"
       }
      ]
     }
@@ -907,11 +937,6 @@
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "1358",
-     "as": "decode"
-    },
-    {
-     "ref": "mame:src/devices/sound/ay8910.cpp",
-     "lines": "1360",
      "as": "decode"
     },
     {
@@ -1054,6 +1079,17 @@
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "1444",
      "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1375",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1360",
+     "as": "decode"
     }
    ]
   }

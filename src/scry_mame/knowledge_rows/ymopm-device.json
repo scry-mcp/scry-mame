@@ -1,0 +1,670 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ymopm-device",
+ "title": "The YM2151 as a device: bus, reset, status",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "the YM2151 as a device: its address and data ports, reset line, status read and interrupt line, and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "YM2151.raw.txt",
+   "variant": "ym2151"
+  }
+ ],
+ "official": {
+  "YM2151.raw.txt": [
+   "24-30",
+   "82-84",
+   "346-353",
+   "640-688"
+  ]
+ },
+ "engine": [
+  "ymfm_is_busy",
+  "write",
+  "address_w",
+  "data_w",
+  "update",
+  "reset",
+  "status"
+ ],
+ "entries": [
+  {
+   "key": "ym2151",
+   "name": "YM2151 OPM",
+   "aliases": [
+    "OPM",
+    "YM2151"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "24-30"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "82-84"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "346-353"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "640-688"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymopm.cpp",
+     "function": "ym2151_device::write"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymopm.cpp",
+     "function": "ym2151_device::address_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymopm.cpp",
+     "function": "ym2151_device::data_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymopm.cpp",
+     "function": "ym2151_device::reset_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "99"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "108"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "117"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "132"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1444"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1540-1550"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "function": "ym2151::reset"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "function": "ym2151::read_status"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "function": "ym2151::read"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "function": "ym2151::write_address"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "function": "ym2151::write_data"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "function": "ym2151::write"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The YM2151 is an FM-type sound generator with an 8 bit bus line; with the YM3012 D/A converter it gives 8-note, left-right 2-channel audio.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "24-27",
+       "sha": "afe9808b461e8fd9f9755c50b665a2243d6e7517282d23995e491bd9d312d77d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The unit also has noise, vibrato, an amplitude modulation circuit, a sound effects circuit and a timer.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "28-29",
+       "sha": "c3322302c81c5a21514d9d31caf79a95c631bd27cd93bd66620063ac81855ad9"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "From the time a write command is received until the write is completed, the busy flag reads 1; the capture garbles the length of that period.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "82-83",
+       "sha": "f92041ef6ad0fd8bf1183821b0d53a2dd743c5d1c609b475ba75b9aca6b6fd44"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Before writing the next datum in a continuing write, the program must confirm that the busy flag reads 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "83",
+       "sha": "693f24c23674a4b5b7506c5bbce90bdd54aa22e5248ca7ca8fc3c05d81f3e475"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "A read returns two IST bits, which indicate the status of the flag registers, one per timer.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "346-347",
+       "sha": "c0ed1a58207254d7d0d998d78f2f29d266fda6007b729ef5cc1354dffa2c80d6"
+      },
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "352-353",
+       "sha": "5cfa57501eae30ed873b634cba671fd2b591ce1ad593dfc92f0cac4c82d0460a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "When the IRQ pin reads 0, one of the two flag registers indicates an overflow of timer A or timer B; the end of the sentence is garbled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "347-349",
+       "sha": "50d3ea55bae998366d811e7c0c0391c9ab8d197b2116fefd0e9f823e83451ab1"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "When either of the two timer counters carries out, the IRQ output requests an interrupt from the CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "666-668",
+       "sha": "ee1b7814733b87f05bcf77377045c9484b76f74c27f8af82c3ee9676bc74967f"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The IRQ output is open drain and reads level 0 when it requests an interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "666-668",
+       "sha": "ee1b7814733b87f05bcf77377045c9484b76f74c27f8af82c3ee9676bc74967f"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "With the CPU's readout of the data, the unit determines from which timer the interrupt request was made.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "668-669",
+       "sha": "9655fe10f553bb50b96b6ad3cd4a4910b2d4922650a3e0c58086123cf3d54bf2"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "D0 to D7 is a multiplexed address and data bus, carrying 8-bit parallel signals between an external device and the internal register.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "650-652",
+       "sha": "517c4f479eb72910de409a675790985f37c3dbed92a21fb6d76fcd0ca096358d"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "when",
+     "of": "doc",
+     "text": "When A0 is 0 the D0 to D7 signal is processed as an address; at the other level, written I in the capture, as data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "653-655",
+       "sha": "b5e8134f9305422629e256d6430843a2e87a38e77fc4039a336cdf189f76da1a"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "when",
+     "of": "doc",
+     "text": "When there is a write signal, the signals on the bus can be entered.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "656-657",
+       "sha": "9ebf0a4532d5f3363ccb2f181f2c849bb434a437f5b71d03e1e1c23f952e515b"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "when",
+     "of": "doc",
+     "text": "When there is a read signal, the internal signals can be read out via the bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "658-659",
+       "sha": "fc3018b15952a00b4ced994a32c1d980abc97499720028bccb81845bcd04c608"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "when",
+     "of": "doc",
+     "text": "With a chip select signal, A0, WR and RD become operative and bus data can be entered in the internal register or read out.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "660-663",
+       "sha": "6ff69e111eb1e53b3543c3621168682e4c52919316dfac28cd4f02115551e641"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "reset",
+     "of": "doc",
+     "text": "Internal registers and circuits are initialized when the IC terminal reads 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "664-665",
+       "sha": "d5c540e161df64284590c839a1c0febb8c3946804ecb64385f3e49994af5ad5f"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "when",
+     "of": "doc",
+     "text": "CT1 and CT2 are terminals for controlling an external device and should read level 0 at initial condition.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "670-672",
+       "sha": "b0119b9fcb07d17f0bcbee22bba5230a42667538a9420cce45d8ba9d9bad3e42"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "The system clock input drives the YM2151, is divided internally to 1/2 the frequency and is the reference for the tone signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2151.raw.txt",
+       "lines": "679-681",
+       "sha": "a7cef1ae42bc13719413844a37c00dfd886b0f8b91ed3d13d20d07255fd0317c"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME sets busy 32 times the clock prescale of clocks after a data write, not after an address write; a status read sets the busy bit while it lasts.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "437-440",
+       "sha": "90e21f5d4fda94b94111fa71ba2fb44b08945f3ab0f212d5cde9c9b328b17213"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "472-473",
+       "sha": "b4a487011537c45269728dfcd13f4c95075db422eb0032185f7e828ac1438e2c"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "484-495",
+       "sha": "fe0130d3236a310b6c15d6dc639f0fb42a6796f9883c9c80e84318d9e8ac251c"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "108",
+       "sha": "3fa8f354dc51ec4148a28fd26d32054fb4336ec21767caf38e56aa2e1608b4d7"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "117",
+       "sha": "15ed57e23d83c93464d6dd043c6b606208495506cb4abdb4bc7652cb1b50c1d7"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    },
+    {
+     "n": "19",
+     "on": "reset",
+     "of": "mame",
+     "text": "While the reset line is low MAME ignores writes to both ports, and it resets the chip when the line goes high, not while it is low.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ymopm.cpp",
+       "lines": "31-32",
+       "sha": "b508ae605025c957b45bef953af967084f74ca4335b63255fbc371ebba09b1f4"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymopm.cpp",
+       "lines": "38-39",
+       "sha": "b508ae605025c957b45bef953af967084f74ca4335b63255fbc371ebba09b1f4"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymopm.cpp",
+       "lines": "45-46",
+       "sha": "b508ae605025c957b45bef953af967084f74ca4335b63255fbc371ebba09b1f4"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymopm.cpp",
+       "lines": "57-62",
+       "sha": "da32082b1ac46f00063974a78a1f71160957cb83d0409424546736482ee5de7b"
+      }
+     ],
+     "vs": "differs",
+     "row": "15"
+    },
+    {
+     "n": "20",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME's write has no chip select: it dispatches on offset bit 0 alone.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "505-516",
+       "sha": "e2afe79e4826054bada8023e546b6e5f46502a07660e23ee497e1c4e4a02186f"
+      }
+     ],
+     "vs": "absent",
+     "row": "14"
+    },
+    {
+     "n": "21",
+     "on": "when",
+     "of": "mame",
+     "text": "A read at offset 0 returns 0xFF and logs an unexpected read.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "453-455",
+       "sha": "d2535a45d6861825ce6735d62b577c96741458f460a1460398019b559538cf48"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "450",
+       "sha": "91da7a6fbff27949398740298341cd6fc962f344176fffcdbe05c92d2c3efc3f"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "461",
+       "sha": "882101dd8697a52e0480af0873d4640b6bb8b487665fdc6013a1e87120badb76"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "22",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME decodes offset bit 0 in write and in read.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "506-514",
+       "sha": "91d83b5f42fa002bac75e1975abf02b3ce0d0adabae5a0f8d103863a45ed16e1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "451-459",
+       "sha": "2e956ab2050ad6e01fe90794a568af47adf238e742b43a55ed6955a328249514"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "23",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME hands the top two bits of a data written to register 0x1B to its port write handler, through ymfm_external_write.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "488-491",
+       "sha": "fb2d8cb03703112aa1021f6a86bb5414d2c256d1baf3915780076596eab75d52"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "132",
+       "sha": "e31b51fbae1d8df66d0f36ecfa15afd57e0a5b019ba0cbba43b17d1a1df769d0"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "24",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's ym2151 reset only calls the engine's reset and makes no write to the CT1 and CT2 output lines.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+       "lines": "414-417",
+       "sha": "9da3ac6adf8bc51ea9fabc349e26f3cb36df6863e6b1dedac2c778a66b2fd90e"
+      }
+     ],
+     "vs": "absent",
+     "row": "16"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1548",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "440",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1444",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1540-1546",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "440",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1444",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1540-1546",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1549-1550",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "99",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "508-509",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "473",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "512-513",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "485",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "473",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "485",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "457-458",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+     "lines": "440",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "30",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "84",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "350-351",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "640-649",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "673-678",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:YM2151.raw.txt",
+     "lines": "682-688",
+     "as": "electrical"
+    }
+   ]
+  }
+ ]
+}

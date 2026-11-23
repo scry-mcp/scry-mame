@@ -1,0 +1,2241 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "upd1990a-commands",
+ "title": "uPD1990A and uPD4990A command set",
+ "kind": "command",
+ "scope": "upd1990a",
+ "covers": "the commands of the uPD1990A and uPD4990A, chosen by the C pins or the serial command register and latched by STB",
+ "source": "official",
+ "documents": [
+  {
+   "name": "uPD4990A.raw.txt",
+   "variant": "upd4990a"
+  }
+ ],
+ "official": {
+  "uPD4990A.raw.txt": [
+   "329-446",
+   "479",
+   "491-493"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "329",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "330",
+   "as": "elsewhere",
+   "owner": "upd1990a:register:0x04"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "331-332",
+   "as": "elsewhere",
+   "owner": "chip:device:upd1990a"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "333",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "343-345",
+   "as": "elsewhere",
+   "owner": "upd1990a:register:0x05"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "346",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "363",
+   "as": "elsewhere",
+   "owner": "upd1990a:register:0x04"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "365",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "366-367",
+   "as": "elsewhere",
+   "owner": "upd1990a:register:0x06"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "342",
+   "as": "elsewhere",
+   "owner": "upd1990a:register:0x02"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "368-373",
+   "as": "elsewhere",
+   "owner": "chip:device:upd1990a"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "374",
+   "as": "elsewhere",
+   "owner": "upd1990a:register:0x02"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "375",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "408-409",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "364",
+   "as": "layout"
+  }
+ ],
+ "engine": [
+  "adjust",
+  "enable",
+  "remaining",
+  "set_time",
+  "advance_seconds",
+  "timer_alloc",
+  "clock_tick",
+  "tp_tick",
+  "data_out_tick",
+  "test_tick",
+  "from_hz",
+  "from_ticks"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "register hold",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "334"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "347"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "376-382"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_REGISTER_HOLD"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register Hold is selected by C2 C1 C0 = 0 0 0, or by the serial command C3' C2' C1' C0' = 0 0 0 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "376",
+       "sha": "baa7ffac6b72dcc195c832b64e4371b9d5fd3c2e8293cc42babf23f09ac226b1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register Hold makes the DATA OUT pin output a 1 Hz signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "334",
+       "sha": "5bdd7ebf87ee09961d63ed7e91dddf8dfd12d410cd140775071feff655dda96f"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "347",
+       "sha": "da665e9b6921ee293f8b7c5fe83e86c3700b1944413977167444b6ce635e1630"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "382",
+       "sha": "267fdafc4192ac0fc2b35953f5a84e500a192b1b83b29f1853618a54f687dce7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "With the 3-bit command Register Hold holds the 40-bit shift register, and the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "377-378",
+       "sha": "76753e11364237dc06d54e43e85c1abbda31311d04ae5057c50fa8ddd81cf931"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "With the serial command Register Hold holds the 48-bit shift register but not the command register.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "379-381",
+       "sha": "3ba683805f93763e1f24cde68880e79c1e519e543eaec60bd4831155088d3f8f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "224",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "shift",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "335"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "348"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "383-389"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "491"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_SHIFT"
+     ]
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "479"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register Shift is selected by C2 C1 C0 = 0 0 1, or by the serial command C3' C2' C1' C0' = 0 0 0 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "383",
+       "sha": "3edd7f64cdb4ea9b422f608d5878a4480c51bab48329fb24676537400f748329"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register Shift outputs the least significant bit of the shift register on DATA OUT.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "335",
+       "sha": "1297db9f451dad511bf70e1a12ff3ea6759e20d428b18c5f48881878467c8967"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "348",
+       "sha": "2b5f595cf08eabe95c59893a48693c400530e5ec71579c58a7404f77ecfe4900"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "389",
+       "sha": "a8083c28346a0b10c75295b77c3e5df20c48acc751efe8a2e2874c6f73b893ee"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "With the 3-bit command the 40-bit shift register data can be shifted, and the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "384-385",
+       "sha": "b32c5c2ea4130cdde95fb212e3c9074a025db8ffe16297b2537c8db7d1b0d14a"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "With the serial command the 52-bit shift registers, command register included, can be shifted; the command register can always be shifted in serial command transfer mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "386-388",
+       "sha": "5fb3fe5b90d5802e9b9aa1fa4b62f203b803c25e2eb5e526f3bd3430a6e205cd"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "In test mode Register Shift outputs 32 Hz on the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "479",
+       "sha": "54ae80a333c80ea25d133fe87ccf492744aa38b9f6c89ed3a3f313e4bf18d544"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "491",
+       "sha": "787bfd1375064c178c4e7419a3918cbaeb3625c52240b08a9a8baf7c77254afd"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "In test mode Register Shift also has an 8192 Hz signal input to the time counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "479",
+       "sha": "54ae80a333c80ea25d133fe87ccf492744aa38b9f6c89ed3a3f313e4bf18d544"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "491",
+       "sha": "787bfd1375064c178c4e7419a3918cbaeb3625c52240b08a9a8baf7c77254afd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "232",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "236-238",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "240-242",
+     "as": "unfollowed",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "time set",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "336"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "349"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "390-400"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "492"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TIME_SET"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Time Set and Counter Hold is selected by C2 C1 C0 = 0 1 0, or by the serial command C3' C2' C1' C0' = 0 0 1 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "390",
+       "sha": "3ee9601616d3b6bde107ebbce00a9fc7f33a4a6e9deacd52f51c896fce94b42b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With the 3-bit command Time Set transfers the 40-bit shift register to the time counter, and the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "391-392",
+       "sha": "36807f89277b25b76cb8740e026ea6cac2a2abad0df344343982c6d9202de4a4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With the serial command Time Set transfers the 48-bit shift register to the time counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "393-394",
+       "sha": "a99bf4eaa5510a240402f4e2b90c25828692152ef4d8a478d9540c32261023dc"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Time Set outputs the least significant bit of the shift register on DATA OUT.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "336",
+       "sha": "e125310c4b00c4bf629ad264d7d2073a267bf05d537b45d3ab4290a14eb3cdc8"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "349",
+       "sha": "1a4f3bdb1e5c4d5fac1adb8261cbccd33c91ab7ee21fdbea894382e4f7ca1237"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "399",
+       "sha": "bc10f224aa8a74b1c0bbc4bb659840556c696c6f69d12f5a49c81d6dd065e3e8"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "Time Set holds the time counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "395",
+       "sha": "a0d85caf99ab4e9c60073b31d52dc0a272558634eef236ae35a024edf276acd4"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "Time Set resets stages 10 to 15 of the 15 stage binary divider.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "395",
+       "sha": "a0d85caf99ab4e9c60073b31d52dc0a272558634eef236ae35a024edf276acd4"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The 15 stage binary divider is reset and the time counter released by the commands [0,0,0], [0,0,1] and [0,1,1], or serially [0,0,0,0], [0,0,0,1] and [0,0,1,1].",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "396-397",
+       "sha": "dabd08cb45a7f5f44507a746f56a1536d6fe0a710cf16a41681d3ed7f73d242c"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The time setting accuracy is plus or minus 15.625 ms.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "398",
+       "sha": "00544a328ebafb99c1427deea6377fbd8008b4d2c5d5e8f1866492ae9bfc61a7"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "After Time Set the 40-/48-bit shift register is held and its data cannot be shifted.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "400",
+       "sha": "8a1df0e3efc81193ed89cd656d603b8fde0d1953b4e4791e22f0b727a2661a63"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Time Set also hands the time counter to the RTC interface with set_time, using the year byte even with the 3-bit command.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "257-259",
+       "sha": "ac4f91a66b92bc2536b21fa3ae2b60576b6cd92dcd91b903037dfc9258dafa50"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "261-269",
+       "sha": "7337405dcdd71586ded6803df9d348027b07f1baed04b3416c7eab4d71b03763"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "In test mode Time Set holds the TP pin at a low level.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "492",
+       "sha": "2a60a5c30ced3d16fa09ef0ce74a48a3000e9e7a55ee6c9726590987927c00d4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "249",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "252-254",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "257-259",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "257-259",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "272",
+     "as": "unfollowed",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "275-280",
+     "as": "agrees",
+     "row": "11"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "time read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "337"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "350"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "401-407"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "493"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TIME_READ"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Time Read is selected by C2 C1 C0 = 0 1 1, or by the serial command C3' C2' C1' C0' = 0 0 1 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "401",
+       "sha": "d6c6fca89263260ec7ebf3b32ecf1f44d79f308c164ca7828401257ace672afc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With the 3-bit command Time Read transfers the time counter to the 40-bit shift register, and the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "402-403",
+       "sha": "ab010e30abf27bc26b48cdf1f943559212348f2db0beb8f5b16862633e3f26c6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With the serial command Time Read transfers the time counter to the 48-bit shift register.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "404-405",
+       "sha": "8bd01fbaa96c29c63aaf96b190fb60a9ba45204195fce78689577789d4d2537c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Time Read makes the DATA OUT pin output a 1 Hz signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "337",
+       "sha": "72fecaabc9b50bceea9668b5642231425bb104e81d16b7bde96760eca18ff89d"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "350",
+       "sha": "2e322d495aac88f7a0c2051ae90299949d25a6c356b8ea11e8c769d89f5b6896"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "406",
+       "sha": "ac466baf38ec3a95444607ee4e9131ab9c016cf8e74ff060a189601ebc68a4bd"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "After Time Read the 40-/48-bit shift register is held and its data cannot be shifted.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "407",
+       "sha": "c0abe6357b11e0d734ca1c537958e8becd91a9a300bde91c97a649a4b5b6eb59"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "At a 32768 Hz clock MAME gives the uPD4990A type a 1 Hz DATA OUT pulse here, but the uPD1990A type 0.5 Hz, or 512 Hz in test mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "296-304",
+       "sha": "0b2c03cff4c2ef53bfdbb41a9592e99c75be5e32583cb3c42029bc35375e3768"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "145-147",
+       "sha": "374a09650d57b8a89114ba120e3aeb2c78578c0d02441f0fe8e1ff2e35c3864c"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.h",
+       "lines": "37",
+       "sha": "22fb1883e0d805b50132b16ac15eadf39b9a46dd33fb2f8d4b3419846ae05ef8"
+      }
+     ],
+     "row": "4"
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "In the function-mode output table, Time Read outputs 32 Hz on the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "493",
+       "sha": "814970e76a417e41f77cf33f8d803ecc1bd20cd5aed91fd3f3c8320461c1db97"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "In the function-mode output table, Time Read also has an 8192 Hz signal input to the time counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "493",
+       "sha": "814970e76a417e41f77cf33f8d803ecc1bd20cd5aed91fd3f3c8320461c1db97"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "288",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "292-294",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "292-294",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "306-308",
+     "as": "unfollowed",
+     "row": "7"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "TP 64 Hz",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "338"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "351"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "410-412"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_64HZ"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 64 Hz Set Mode is selected by C2 C1 C0 = 1 0 0, or by the serial command C3' C2' C1' C0' = 0 1 0 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "410",
+       "sha": "86d929fc1c931f380cb3a2bc6eadbcc58d46e6f6be8c300ba4ad01f1c95cdad9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command outputs a 64 Hz signal, at 50 % duty, on the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "338",
+       "sha": "05ffcccbff3bb82250ed7e03fb3c5609606ad057527bb509c91a1c80c14b93d3"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "351",
+       "sha": "04f0ffb1461cdcb174fd1f05be3c8d6f77c315af3099f518080a96f6c7a4d867"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "411",
+       "sha": "b27489ca4fbbef80d1feba26b11050c135df32c81229f221fd1439ef17c2b45c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With the 3-bit command the interval timer stops.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "412",
+       "sha": "2178ea1ed436882e5fc8f6f82e912d66958c400cca0b7cfca9735b705b312b3b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "With the 3-bit command the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "412",
+       "sha": "2178ea1ed436882e5fc8f6f82e912d66958c400cca0b7cfca9735b705b312b3b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "313-316",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "319",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "TP 256 Hz",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "339"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "352"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "413-415"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_256HZ"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 256 Hz Set Mode is selected by C2 C1 C0 = 1 0 1, or by the serial command C3' C2' C1' C0' = 0 1 0 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "413",
+       "sha": "0763885300619b2584110473d6b8fb5bba71ee3d098f336aa5d9f71baf87a760"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command outputs a 256 Hz signal, at 50 % duty, on the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "339",
+       "sha": "822af1c50cbc9f2991800ef575ffcd2db9ccb9f99225cafb51458626872dd623"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "352",
+       "sha": "9a13421ce10921a45dc64e959036dde62f87976d33ce0dff189cf3f18f3f092a"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "414",
+       "sha": "6eb5a3a661fda8d74c8513c7cf9dc28e72b511b4e36bef0f176f8215b1270ff3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With the 3-bit command the interval timer stops.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "415",
+       "sha": "2178ea1ed436882e5fc8f6f82e912d66958c400cca0b7cfca9735b705b312b3b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "With the 3-bit command the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "415",
+       "sha": "2178ea1ed436882e5fc8f6f82e912d66958c400cca0b7cfca9735b705b312b3b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "313-316",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "319",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "TP 2048 Hz",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "340"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "353"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "416-418"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_2048HZ"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 2048 Hz Set Mode is selected by C2 C1 C0 = 1 1 0, or by the serial command C3' C2' C1' C0' = 0 1 1 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "416",
+       "sha": "51a5b4ca06e0ec465c5f770d7c1963e4839f52fe6a8dbd469591b2a8cd427201"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command outputs a 2048 Hz signal, at 50 % duty, on the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "340",
+       "sha": "5da4cd5e9ffc963e132bbc8119d3ce213b02ef257f5928d8a067acc5958406e7"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "353",
+       "sha": "31042f29cb23b8c99cc35ca8fb5ba13124174c4b0f2056be93015cda5fdecaae"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "417",
+       "sha": "947402285ae023b5781186d1ddbe9a96c450da446a13e7a70778c3db764f6a0c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With the 3-bit command the interval timer stops.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "418",
+       "sha": "2178ea1ed436882e5fc8f6f82e912d66958c400cca0b7cfca9735b705b312b3b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "With the 3-bit command the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "418",
+       "sha": "2178ea1ed436882e5fc8f6f82e912d66958c400cca0b7cfca9735b705b312b3b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "313-316",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "319",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "TP 4096 Hz",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "354"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "419-421"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_4096HZ"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 4098 Hz Set Mode, as the data sheet text names it, is allowed only for the serial command C3' C2' C1' C0' = 0 1 1 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "419-420",
+       "sha": "e9da1c87a718a3ad6f4a27c73f3febdd9d63e46f889f48fa97514c407c24c8fc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The serial command 0 1 1 1 outputs 4096 Hz on the TP pin, according to the command table.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "354",
+       "sha": "70c3920113f29568966bb7dafcf811e9d3449ff8a30547ef89c80e8fb178d961"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The command text says a 4098 Hz signal, at 50 % duty, is output on the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "421",
+       "sha": "24925081a5b743a5f4c5400d8f419c0fada0f4fcf802148b6a5afa0adafacd52"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The command stops the interval timer.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "421",
+       "sha": "24925081a5b743a5f4c5400d8f419c0fada0f4fcf802148b6a5afa0adafacd52"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME's divisor 8 gives a TP output of clock/8 Hz, 4096 Hz at a 32768 Hz clock, not the 4098 Hz of the text.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "319-320",
+       "sha": "570b5f65aeaba2f64a5119e624c09dc956d1ad9af1f8ed8a57725c5be83a2334"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "139-141",
+       "sha": "2522a6794cbfa833d533314a18d3420a1ec6e9e2fff2c521b916d372f2936c25"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.h",
+       "lines": "37",
+       "sha": "22fb1883e0d805b50132b16ac15eadf39b9a46dd33fb2f8d4b3419846ae05ef8"
+      }
+     ],
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "320",
+     "as": "unfollowed",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "TP 1 s interval",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "355"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "422-423"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_1S_INT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 1 second Interval Set Mode (counter reset & start) is the serial command C3' C2' C1' C0' = 1 0 0 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "422",
+       "sha": "bd08e2ee8d68361e89b1b6beef7513749fb722653d7060dbeabf23a0d5eff279"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command outputs a 1 second interval signal on the TP pin, with the interval counter reset and started.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "355",
+       "sha": "7337a5d30ba1c709ae6188cf6a972244a590f311f8b3d0f276fff93c3e88b234"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "423",
+       "sha": "f22c3ce968e80a9bee406591ef9f23e34bd7b63fa4a842abc3ae54be0b8b9fec"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "326-328",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "333",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "332",
+     "as": "build"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "name": "TP 10 s interval",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "356"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "424-425"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_10S_INT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 10 second Interval Set Mode (counter reset & start) is the serial command C3' C2' C1' C0' = 1 0 0 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "424",
+       "sha": "d7f8add2a914f22bc8cb30fc52925d18eafa2d21e787fb1d215ebefa7979813b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command outputs a 10 second interval signal on the TP pin, with the interval counter reset and started.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "356",
+       "sha": "5803016fa61fb196080d7b339c8c6a9d103ad2c5d6a016a9907cf9601533259b"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "425",
+       "sha": "6aa56e4ea47d56012d0bb22dece6843bf46dc1ce24e2b43bf5ac1a7c66349364"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "327-328",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "333",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "332",
+     "as": "build"
+    }
+   ]
+  },
+  {
+   "key": "0x0A",
+   "name": "TP 30 s interval",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "357"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "426-427"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_30S_INT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 30 second Interval Set Mode (counter reset & start) is the serial command C3' C2' C1' C0' = 1 0 1 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "426",
+       "sha": "844e9ec74e7e7d35e55a50e765437febaecefa7673c32e9b4b4d672077f50818"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command outputs a 30 second interval signal on the TP pin, with the interval counter reset and started.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "357",
+       "sha": "f0c2e66c9176fa6aa8f7255cef3979ba022c4321f633acd17df6966a3d807d06"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "427",
+       "sha": "016de08605868f1b3ae2d9257750a26e461e751cc17b3bcf8dca18c52f037c74"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "328",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "333",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "332",
+     "as": "build"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "name": "TP 60 s interval",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "358"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "428-429"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TP_60S_INT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP = 60-second Interval Set Mode (counter reset & start) has the code [1, 0, 1, 1].",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "428",
+       "sha": "9f442672e52b83034b6b3361795afec60e8c9afce91fbca873980b85c4cd07cd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command outputs a 60 second interval signal on the TP pin, with the interval counter reset and started.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "358",
+       "sha": "20f678eeed2ab7959046edcb35cc4d03b4ab9160494eb25e9b1a8c54a9e271a8"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "429",
+       "sha": "4e4ab3f9068dc7d3a92135a4eab98e0674975fdda1b3f92d548072edd4f58b90"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "333",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "332",
+     "as": "build"
+    }
+   ]
+  },
+  {
+   "key": "0x0C",
+   "name": "INT reset output",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "359"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "430-432"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_INT_RESET_OUTPUT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Interval Output Flag Reset has the code [1, 1, 0, 0].",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "430",
+       "sha": "420ee7b982dd3ff898298c5da97b66c82f0b0b76ef6b57964fd4a9cd581340f1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command resets the interval signal output to the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "359",
+       "sha": "9672e42dbe9c02027fc2cacfb4f964311b3e126d5fdeaa93e2fe4c7ddbf1509d"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "431",
+       "sha": "19976bdf63dbf193d3225c21d9689d2175b7546adda600cf32036eec15e90634"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The interval timer counter continues the operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "432",
+       "sha": "70945f6285823305130f3c67db894a363d8e5e35f2193061fe818686249fa54c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME's case for this command holds only a TODO comment and a break, and does nothing to reset an interval signal.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "338-342",
+       "sha": "88b459e307f2925d6d9d3fa1c0045bb686c5cc71005a51093bf6d413d2f78db0"
+      }
+     ],
+     "vs": "absent",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "338-342",
+     "as": "agrees",
+     "row": "3",
+     "nothing": true
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "name": "INT run clock",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "360"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "433-434"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_INT_RUN_CLOCK"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Interval Timer Clock Run has the code [1, 1, 0, 1].",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "433",
+       "sha": "8f81e97c20adc3f386e67ff0b5907c71c7eda65db8ce34330c021fd7941899a1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command resets the timer that outputs interval signals and then starts it.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "360",
+       "sha": "6470ca0d6563052ef16c6bfe0c1419497bb8161cc9e845c3311e9a45c66fb98a"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "434",
+       "sha": "60d7249bdb4fe905d2740708220a31bfc17e56d59b35d1957ff471e5916b96d2"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME's case for this command holds only a TODO comment and a break, and does not reset or start any interval timer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "339-342",
+       "sha": "e3131aab941d901a68c95b54d8871fd2dbf4ded76453a072092f2665896d65e7"
+      }
+     ],
+     "vs": "absent",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "340",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x0E",
+   "name": "INT stop clock",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "361"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "435-437"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_INT_STOP_CLOCK"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Interval Timer Clock Stop has the code [1, 1, 1, 0].",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "435",
+       "sha": "bcdb5f74c5a17e3932853cf8a2e6add436414ba9c17a8af4d16fa0b07697547c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command stops the timer that outputs interval signals.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "361",
+       "sha": "025aa487b2adb51c3ddb5d801df92bba6fa5f81339cc7a736cedbfb907a71e06"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "436",
+       "sha": "074676987bf0c27ab20f88802d1aba04817177dec3d4b46d073d1cd9480190cc"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The output status does not change.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "437",
+       "sha": "d2c3e0dda5c19b5ea438fe594611c51ccc91ecb1f70bce63e2d95aa40dea309d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME's case for this command holds only a TODO comment and a break, and does not stop any interval timer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "340-342",
+       "sha": "c9304e8f953b5a7fcb963b262e74677d2d6a3d765861781affb20d41c65941b1"
+      }
+     ],
+     "vs": "absent",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "340-342",
+     "as": "agrees",
+     "row": "3",
+     "nothing": true
+    }
+   ]
+  },
+  {
+   "key": "0x0F",
+   "name": "test mode",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "362"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "341"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "438-439"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "440-441"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "442-446"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_TEST"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TEST MODE SET is the serial command C3' C2' C1' C0' = 1 1 1 1, given with C2 C1 C0 = 1 1 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "362",
+       "sha": "efe10814e0a235dd206b2f1b6e67488240a7b36ee15e75d01b2e7aa58b2b5adb"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "440-441",
+       "sha": "8e95f533b8e40a5af09d147c267b6e53c8c96e244898ba208c5185be40351231"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command sets the test mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "362",
+       "sha": "efe10814e0a235dd206b2f1b6e67488240a7b36ee15e75d01b2e7aa58b2b5adb"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "441",
+       "sha": "dc237250553c8f6f8f7dc55b0a8989a533c36e4697337882f0fb77514485a66a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "C2 C1 C0 = 1 1 1 sets the serial command transfer mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "341",
+       "sha": "d6f11f2d80d5c8bf2d76976c2a6688377bb34efce024b404343d019cdbf887b1"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "438-439",
+       "sha": "8d4afe6bde79cc0595cebaaa676323a1c149b9c513eed865670bd666a532d4b0"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "When commands are input through C2, C1 and C0, the year function is ineffective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "442-443",
+       "sha": "bd58075fe0f2c61e3ddebf76858d763fb96b200ca2075686708bf59ab6ddd598"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Generally February has 28 days; the 29th can be set optionally, and the day after February 29 can be set to March 1 automatically.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "444-445",
+       "sha": "d35c8d64c1937ad6e5d21f89c7c6b982ac7a65a2866b11e0b60bd33f0b02d583"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "In the 3-bit command mode the interval timer is in the halt state.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "442",
+       "sha": "392d648dcb7f7e6b10e3d2ce58c68e8c3d1a08bbe0bb29031c094f374336ee79"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "445",
+       "sha": "62d57555413f770cfecef158bc438ee2b750ddd317f4368b60da8d6a8f7d2295"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "The test mode is cancelled by C2 C1 C0 = 0 0 0 to 1 1 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "446",
+       "sha": "f7562801a18430d94b2022ecb2aae65be498340f4647eefd39dee6ed6b421b43"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME also stops its time-counter timer and its DATA OUT pulse timer when it sets the test mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "346-347",
+       "sha": "98ddeb34ce629823b7602406af4f78a66d85407bb4dacd2a0d7cd72b3bcacd1a"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "349-350",
+       "sha": "073c16632f39c01002f463625733bd5e0331937a447001507a84ef63535409c6"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME clears its test-mode flag when the code is 0x00 or from 0x04 to 0x0E, so the 3-bit codes 0x01 to 0x03 do not clear it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.h",
+       "lines": "76-83",
+       "sha": "56c5fe176db05485e8f09f0dbbc764887915eb8e5285d7fa8b468482150a465b"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.h",
+       "lines": "84-91",
+       "sha": "953116051c81f3ea86b6003eec73d97f355ea3b1a91f3a66d3ec17431c78f7a1"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "198-205",
+       "sha": "39b0b3e4ca606fbe1c4afa3e4d1e9d3970e0053d2fd19e293a02318775a015c8"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "210-217",
+       "sha": "990fc6b5c8d49d8027feffc892723a4ab2f7f39412bb2dca947e1aa8177bda54"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "353",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "355",
+     "as": "parent",
+     "owner": "chip:device:upd1990a"
+    }
+   ]
+  }
+ ]
+}

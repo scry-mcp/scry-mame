@@ -1,0 +1,3968 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80scc",
+ "title": "Z80 SCC channel registers",
+ "kind": "register",
+ "scope": "z80scc",
+ "covers": "the control registers of each channel of the Zilog SCC family: write registers WR0 to WR10 and their bits",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SCC-UserManual-1992.raw.txt",
+   "variant": "SCC family"
+  }
+ ],
+ "official": {
+  "SCC-UserManual-1992.raw.txt": [
+   "6242-6253",
+   "6266",
+   "6417",
+   "6479-6488",
+   "6489-6496",
+   "6518-6535",
+   "6577-6675",
+   "6676-6682",
+   "6691-6696",
+   "6709-6811",
+   "6812-6819",
+   "6835-6921",
+   "6922-6928",
+   "6941-6968",
+   "6969-6982",
+   "6983-7031",
+   "7039-7041",
+   "7042-7052",
+   "7060-7069",
+   "7170",
+   "7171-7178",
+   "7188-7264",
+   "7265-7270",
+   "7284-7309",
+   "7318-7421"
+  ]
+ },
+ "closed": [],
+ "engine": [
+  "check_interrupts",
+  "set_dtr",
+  "update_serial",
+  "receive_register_reset",
+  "safe_transmit_register_reset",
+  "data_write",
+  "reset"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "access": "write",
+   "name": "WR0 pointer and command",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6242-6253"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6266"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6417"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6479-6488"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1741-1745"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1755-1759"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1858-1862"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 is the command register and the CRC reset code register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6243-6244",
+       "sha": "267e8986dc345a6f01fdcda71ef309e52519d037e9bede09df4a31a642886f66"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 takes slightly different forms depending on whether the SCC is a Z85X30 or a Z80X30.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6244-6245",
+       "sha": "1a4c486b048ff45a462f21349a60a9fd6c0661aae410509d97ed4a8c8bd4655f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Figure 5-1 shows the Z85X30 form of WR0, with register select bits in addition to the command and reset codes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6246-6248",
+       "sha": "a8734ceaa07b40a94258d49f6dfa70f68ba4945c19c888bbffc38b48bbbbe0be"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Figure 5-2 shows the Z80X30 form of WR0, which includes in Channel B only the address decoding select.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6249-6251",
+       "sha": "ec199d46815a8f09bd10c71c5d51b63b9b00c8f36dedf5066d6d15e9871f852b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The bit description of WR0 is identical for both versions except where specified.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6252-6253",
+       "sha": "56d54d90a78d018684309b12af288cfb60f877096c7e79da0c09a98e3e5e8fa9"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 bits D7 and D6 are CRC Reset Codes 1 and 0; the capture prints the 0 as the letter O.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6266",
+       "sha": "ff4a5435cadc00097bb6ee0366bc65f7dd82321a0f30d122aed5c45d811aad62"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 bits D5 to D3 are the Command Codes for the SCC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6417",
+       "sha": "3444e1f945a4a1366c1372475b8e1477d3254bb4db6ae9a568a06553d7014716"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "On the Z85X30 WR0 stores D2-D0, the register pointer bits, which select registers 0 through 7; with the Point High command, registers 8 through 15 are selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6479-6482",
+       "sha": "93ca1bea302bc45fc03a9acb13f6387385912bbd911057ea56d4943d4d63c904"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "In the multiplexed bus mode of the Z80X30, bit D2 must be programmed as 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6483-6485",
+       "sha": "4b9073757caf28f2d9f4a8f2c02ca2eb7b76054e37e14ad10d2bd762337ef92b"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "In the multiplexed bus mode WR0 stores D1-D0, which select Shift Left (WR0 D1-D0 = 10) or Shift Right (11); the capture prints the 0 as the letter O.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6485-6488",
+       "sha": "007dea5db67ae87d9d27051dbd5b8f2e119a06b31e25cdd66e2e9375bcb2197e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6242",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1743",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1755-1756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1759",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1858-1859",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1862",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1757",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1860-1861",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1744",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1758",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1741",
+     "as": "agrees",
+     "row": "10"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "access": "write",
+   "name": "WR1 interrupt and wait",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6489-6496"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6518-6535"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6577-6675"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::check_dma_request"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1139"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR1 is the control register for the various SCC interrupt and Wait/Request modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6491-6493",
+       "sha": "940d8f3829617bb31c1613489df18ec0a80c316b665c040ecb61bc2370b45532"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D7, WAIT/DMA Request Enable, and D6, WAIT/DMA Request Function; 0 selects the Wait function and 1 the Request function.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6494-6496",
+       "sha": "9b91a6102f561555c8084168a79a22f8b8a6c0065058b7012aa2fb8549e7e614"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6523-6524",
+       "sha": "823f0b9ba9ef3e299a5017862881cb070e6b5461226a84b328021b89154574d0"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6528",
+       "sha": "a8f0f4603f6dd6c15558c97bd545efb7f810f1a77d6827f2826bd28a1c11ccac"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "When D7 is 0 the selected function forces the /W//REQ pin into its inactive state, High for Request and floating for Wait; when 1, D6 sets the pin's activity.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6494-6495",
+       "sha": "391159a2fe7c09b21132bdbfe98044c8d68b736277bd3a387b2426bf43d930cd"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6518-6522",
+       "sha": "ad79bf2ff72e29e5d53e81b0a7fe6f19c50c465705c62a26a3d34927c3e1b9bb"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In the Wait function, D6 = 0, the /W//REQ pin switches from floating to Low when the CPU attempts to transfer data before the SCC is ready.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6524-6527",
+       "sha": "d06cff4f813885574869baea60ad26a6d81a7ef48c4fa0de003aa2af2be06db9"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "In Request mode, D6 = 1, /W//REQ goes Low when the SCC is ready: for the transmit buffer if D5 is 0, for the receive buffer if D5 is 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6528-6533",
+       "sha": "6cc2920e56f756e4467037128e83e071f099ef606b947e0727628c455b161efd"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6577-6581",
+       "sha": "e5879069f96300c96668867d1ab4ba1dc66d5d0e300f95e2bdc054bbfe0ddf6b"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "A transmit request function is available on the /DTR//REQ pin, which allows full-duplex operation under DMA control for both channels.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6534-6535",
+       "sha": "f9d9722009a95b7df39a716a6e721a17d4e28f8c76eb51701a8ed2a865350b1c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The request function occurs only when the SCC is not selected; in synchronous or SDLC transmit mode the request pulses Low one PCLK cycle at the end of CRC transmission.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6582-6591",
+       "sha": "3ab5f784ae643a54f6bcc714caaefe7ce387b4c594cfc8514fff61e06a98b482"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "In Wait On Receive mode the wait pin is active if the CPU reads data not yet received; in Wait On Transmit mode if it writes to a full buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6592-6597",
+       "sha": "f67ce48912316db492b4cf6fcf0c2222a359f33e6878532f8c0c43340073c4cc"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D4-D3, the Receive Interrupt Mode: 00 disabled, 01 first character or special condition, 10 all characters or special condition, 11 special condition only.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6598-6599",
+       "sha": "cd541aac45983938971ed57f5258b5293032a03b0d40692a33b1b81a190b7c1b"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6606-6607",
+       "sha": "4924b7a2364d6dfcc5a4808ef4f0ae5ae03ccc4634cdd5f1338280026919e819"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6629-6630",
+       "sha": "a74eb4feef56b08e94f944ad399428714a412084d8308ef770abbbabf0d2ca93"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6642-6643",
+       "sha": "c3855e3659a4d8c1b12945ae78af60c5f4c5391ffb0cc12ba8b7d59b8a83e778"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "With receive interrupts disabled the receiver cannot request an interrupt, though a special condition can still provide a unique vector status in RR2.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6599-6605",
+       "sha": "22aa288021fe21f8eb1ad9c0649beaca7813cc3df1e265c34670487feb5d4be4"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "On first character or special condition, the receiver requests an interrupt for the first available or stored FIFO character or for a special condition; stripped sync characters cause none.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6606-6611",
+       "sha": "1ef3ad87ac2c75757e85248a21462deb965e7d729795290350b68f00c6180fcf"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "Special receive conditions are receiver overrun, framing error, end of frame, or parity error if selected; the data with the error stays in the Receive FIFO until an Error Reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6612-6616",
+       "sha": "a1b7318acfd41a487a35887478360f50eb28af8ae46259669a2c8b0daf139f53"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "A pending special receive condition remains set until an Error Reset command, a channel or hardware reset, or until receive interrupts are disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6617-6621",
+       "sha": "42a88f827af7f3fd7fa055b44d5375209c71ef82ed4b77882aedb0112147a43e"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "The Receive Interrupt on First Character or Special Condition mode can be re-enabled by the Enable Rx Interrupt on Next Character command in WR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6622-6624",
+       "sha": "5f4163470585ecd3a0f0bdbaf73bbe97b880e85c504e64f3c201a88c842e5826"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "For the ESCC, the description of WR7' says how this function can be changed.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6625-6628",
+       "sha": "e652f476d6ee4522362bd2030e0fe64e1ad4cd7f6c2fc724a1299c474d7d297a"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "On all characters or special condition, every received character interrupts and a unique vector marks a special condition; overrun is always special, parity can be programmed as special.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6629-6637",
+       "sha": "418805114691b57470d78629d8356e9af34d8409d2443240c1c8fe428aef7de4"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "In the all-characters mode, data characters with special receive conditions are not held in the Receive FIFO as they are in the other receive interrupt modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6638-6641",
+       "sha": "5a7b74dc69accbca80d68b2edc185a0c05f245feb2dff0fe60ea9f0c132a0ddf"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "On special condition only, the receiver interrupts only on characters with a special condition, the error data staying in the Receive FIFO until an Error Reset command.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6642-6646",
+       "sha": "192fb8fbe0948b61397791220ceb11f4a373bafcc8f02b33c535bc9eeb588d49"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "With a DMA, the special-condition mode lets the DMA be enabled before any character arrives, so the CPU need not treat the first character specially.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6646-6653",
+       "sha": "7e79541a399c6c5ea202f3916794ba275b73fc088cad6f35aa8a5cdff76f4030"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode with the SDLC Frame Status FIFO enabled, an EOF interrupts with the receive-data-available vector and the Receive FIFO is not locked.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6653-6656",
+       "sha": "18e9a28c164f3bfd44a7c5f5d9f156bf981e2a79646e9eae7af944de69c2662e"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D2, Parity Is Special Condition; when 1, a received character whose parity differs from the WR4 sense gives a Special Receive Condition; ignored if parity is disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6657-6661",
+       "sha": "735d74905574fe92a323e5f3168a5fd05338b3cbc5fb54962b711ceb49c30112"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "is",
+     "of": "doc",
+     "text": "A special condition modifies the status of the interrupt vector stored in WR2, which can be placed on the data bus during an interrupt acknowledge cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6661-6664",
+       "sha": "890df86c24bad7f72f57f7fce8467b81d66d9e3fd1672291b77cfc5d3e2f5f25"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D1, Transmitter Interrupt Enable; when 1, the transmitter requests an interrupt whenever the transmit buffer becomes empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6665-6667",
+       "sha": "9b1e3a99cbea463002b94d941b182b19cdc0919d5ad2db781e7fc8c701dd3853"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D0, the External/Status Master Interrupt Enable, which enables External/Status interrupts; WR15 holds the individual enables of their sources.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6668-6673",
+       "sha": "c8d7b923c080afee0b01d3301a7638a8d76ec9d6b795046968aa6e42ddb6b42f"
+      }
+     ]
+    },
+    {
+     "n": "25",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR1 D0 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6673-6675",
+       "sha": "f093e1fd0e3e928fc98e7194526254a1667dc6907cb7e5b237302e99d4683b02"
+      }
+     ]
+    },
+    {
+     "n": "26",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME drives /W//REQ Low for a received character if D5 is 1, and for an empty transmit buffer if D5 is 0 and register 0x05 D3 enables the transmitter.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "3018-3027",
+       "sha": "266efdbb15f3369f2c01671b1dec2f41d5a0db497a014d36e768a4985d52ead9"
+      }
+     ],
+     "vs": "differs",
+     "row": "5"
+    },
+    {
+     "n": "27",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's channel reset, z80scc_channel::device_reset, keeps WR1 D5 and D2 and clears every other bit, including D7-D6, D4-D3 and D1, with m_wr1 &= 0x24.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1123-1125",
+       "sha": "84ee923c3f71e4cde6f4571155bdaaeecfe372a5b0aa99d9ff05b7a8ecee183c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1139",
+       "sha": "8f98f2952a748fa365cb08f40a2d4c70fba34fd70aecb302877d0c4595346a0d"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6489-6490",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1872",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1872",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1872",
+     "as": "agrees",
+     "row": "21"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1872",
+     "as": "agrees",
+     "row": "23"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1872",
+     "as": "agrees",
+     "row": "24"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1873-1878",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1882-1901",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1139",
+     "as": "agrees",
+     "row": "25"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "3010",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "3016",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "3018",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "3013",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "3024",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "access": "write",
+   "name": "WR2 interrupt vector",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6676-6682"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr2"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR2 is the interrupt vector register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6677",
+       "sha": "646666b46c8190be61e07eceb499a8685fe754249f48da62e5e0f8a04e318514"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Only one vector register exists in the SCC, and WR2 can be written through either channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6677-6679",
+       "sha": "17d11b2d3a4d87d9e51c9175aa4af60619bdd2330a5ef15713ef25eebf858e1d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The interrupt vector can be modified by status information, controlled by the Vector Includes Status and Status High/Status Low bits in WR9.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6679-6681",
+       "sha": "5fcecf9f453a33efa084e4e09a0ef73e5101233085b71df1fc3e3b8baedea66f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The bit positions of WR2 are shown in Figure 5-4.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6682",
+       "sha": "ad962e2ec631e1e4bd0179f2d334b4c73975af04a2d2357e442be80558f15b3e"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME also copies the vector written to WR2 into read register 0x02 of both channels.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1912-1913",
+       "sha": "be5ebcbb1ab217a0f75dd944ede231558c3c1712d1dc15a0446bc2f1e59ba6c4"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6676",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1911",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "access": "write",
+   "name": "WR3 receive control",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6691-6696"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6709-6811"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::get_rx_word_length"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1140"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "236-239"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR3 contains the control bits and parameters for the receiver logic, illustrated in Figure 5-5.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6693-6694",
+       "sha": "af3dc7fd9ed641eaa5cc426317ce8d5d037e3388c4a157e7bdc37df54fb6ec11"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "On the ESCC, with the Extended Read option enabled, WR3 may be read as RR9.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6694-6696",
+       "sha": "c77ab6fe0412d51d242967a07285508910e9fe409ab8154f635e9f6bf3d4c168"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 D7-D6 select the number of bits assembled as a received character: 00 five, 01 seven, 10 six, 11 eight.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6709-6711",
+       "sha": "ce933c964ec3f6270dd34d1b43653406b0a9743ad2d84b656130601e79d8f5c2"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6719-6726",
+       "sha": "09ad8cef0fb817ae69ab8ddc7416e21b64c43a0f4bf72e571ac97b945f23c298"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6728-6732",
+       "sha": "81ba6066c04ada5460a1370387b875d87df8b72f626d867a38ad0a396d123ee6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The number of bits per character can be changed while a character is being assembled, but only before the programmed number of bits is reached.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6712-6714",
+       "sha": "9e36639a0176ff358930af054dc8024345a28bd75cea14dde987a81f89360787"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Unused bits in the Received Data Register (RR8) are set to 1 in asynchronous modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6714-6716",
+       "sha": "7f90bdaa5e59b1a928176900af980c22fe852f1c9008e916d3161b6b32582dce"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "In Synchronous and SDLC modes the SCC merely transfers an 8-bit section of the serial data stream to the Receive FIFO at the appropriate time.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6716-6718",
+       "sha": "2bc23544e89c1d541e3bc8f4a071508eb7a93a5653999bbedfa10d259fb100f5"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D5, Auto Enables; when 1, /CTS becomes the transmitter enable and /DCD the receiver enable, after the Receiver Enable and Transmit Enable bits are set.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6727",
+       "sha": "4bddd517b2f6b3d6425bb426b3c77f782da6f3f4fab60724d62c5fea646ec918"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6733-6738",
+       "sha": "df4f95a9b2237d3249c18d4fb2831aa403877120e0227196ffcdad40ea92f7bc"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "When Auto Enables is 0, the /DCD and /CTS pins are inputs to the corresponding status bits in Read Register 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6738-6740",
+       "sha": "b42b5cc1773b0145321e1b261ac7cc0e6afff3f1a0036890dcc40b794e3fbc04"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The state of /DCD is ignored in Local Loopback mode, and the state of /CTS in both Auto Echo and Local Loopback modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6740-6742",
+       "sha": "e1b57fd0aaa1cded337b9480c7556d9cefde03d8f51b0571f9dc40f98313a569"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D4, Enter Hunt Mode, which forces the comparison of sync characters or flags to assembled receive characters for the purpose of synchronization.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6743-6746",
+       "sha": "2fbdb4ba20eb44cd02c7526d785b3c577d039a11f1c227d2ace6c2deba0d2cb7"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "After reset the SCC automatically enters Hunt mode except in asynchronous mode, and again when an abort condition is received or the receiver is enabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6746-6747",
+       "sha": "4a0a122ec3c99fcafca6c72c7b718d229a460236c0def71b7582c429b8541884"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6751-6752",
+       "sha": "f1487c05028558e263b109681d54d8f902d636a3c8ce09dc00ac18716d80f31c"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "On a flag or sync character match the Sync/Hunt bit in RR0 is reset and, if External/Status Interrupt Enable is set, an interrupt sequence starts.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6747-6750",
+       "sha": "33ec863977277f0e62592544e7a9dcbfec7c5513c566f2ca7e1366a4bb45013c"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D3, Receiver CRC Enable, which starts CRC calculation at the beginning of the last byte moved from the Receiver Shift register to the Receive FIFO.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6753-6757",
+       "sha": "687aea425d2333774124d59140e6f5a90263f783126015ab0c33ac8da7532fd9"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "To exclude a byte from the CRC calculation, reset this bit before the next byte is transferred; eight bits per character must then be selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6757-6763",
+       "sha": "af8cf394f85c018e3367093ea195aaa8a29944e3274e904c08c64390c9a6415f"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "This bit is internally set to 1 in SDLC mode, where the CRC covers all bits except inserted zeros, and it is ignored in asynchronous modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6764-6767",
+       "sha": "af719249c40b1ce73bf137e2ef3e176b23905a451ca46d881a0bfeef83b955f1"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D2, Address Search Mode (SDLC); set in SDLC mode, it rejects messages whose address does not match WR6, and no receiver interrupts occur without a match.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6768-6772",
+       "sha": "ce587c8b6d5121c2386946e2e99d3dee881991a5ebd2a49af496241dd6c38c7b"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "The address matched is unique (1 in 256) or multiple (16 in 256), by the Sync Character Load Inhibit bit; FFH is always global; the bit is ignored outside SDLC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6772-6777",
+       "sha": "738a69f3a9e2481ec7e3a786c8f543730448cff942f07303854fe2494f15cf97"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D1, SYNC Character Load Inhibit; set outside SDLC mode, the SCC compares WR6 with the byte about to enter the FIFO and skips the load if equal.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6778-6781",
+       "sha": "f151ce6e395cfb591f946f9c86a8e84baf135c6be1d875add978515ef658d8ce"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "That compare also occurs in asynchronous mode, and the SCC does not calculate CRC on bytes stripped this way.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6782-6785",
+       "sha": "1095a353c27f6a6e1a8e3cd22380e0ee260604ddb85d3035634d76a0716900da"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "is",
+     "of": "doc",
+     "text": "With the 6-bit sync option in Monosync mode the compare still spans eight bits, so WR6 is programmed for proper operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6785-6788",
+       "sha": "bd017387ba99553122bcebc1fcad3172d963d7deace304a4647e2b4443470725"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode with this bit set, only the four high bits of WR6 must match the address, so the SCC can receive from up to 16 sources.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6794-6799",
+       "sha": "530d6bdfbb2d791fc3b9299595e3015c86c69e0116839ad3d3a049abb3970824"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6800-6801",
+       "sha": "e234a715d65e717a7a5603390018a953bf1f930fca85531eabd7fe33af4043c2"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "is",
+     "of": "doc",
+     "text": "With the 6-bit sync option and this bit set, all sync characters except the one before the data are stripped; in Bisync mode the bit is ignored.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6789-6793",
+       "sha": "2a91bc412bea22ddc76734b9f0fd7bdce152f447d7068ab46f19d726df9ce04c"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "is",
+     "of": "doc",
+     "text": "The address field in the frame is still eight bits long, and address FFH is always recognized as a global address.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6801-6803",
+       "sha": "0f1324e760f52d13d0086c70462eb4660009556bd4010340f6fef561da2b4b9d"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "is",
+     "of": "doc",
+     "text": "The bit is ignored in SDLC mode if Address Search mode has not been selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6804-6805",
+       "sha": "84f67dac0f9d036acf3fcc5afb92bfa2fd0c6525c8ba268eb4e5202908febb03"
+      }
+     ]
+    },
+    {
+     "n": "25",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D0, Receiver Enable; when set to 1, receiver operation begins.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6806-6807",
+       "sha": "fa7075e7f0bdcc12f855364e5fd10f6ed9e94254d7f95651b8d6b2ca608f986a"
+      }
+     ]
+    },
+    {
+     "n": "26",
+     "on": "is",
+     "of": "doc",
+     "text": "The Receiver Enable bit should be set only after all other receiver parameters are established and the receiver is completely initialized.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6807-6809",
+       "sha": "904f1da05ff154798008474f5187c42a95318302a7dbd28245237221208c70d1"
+      }
+     ]
+    },
+    {
+     "n": "27",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset command resets WR3 D0 and disables the receiver.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6809-6811",
+       "sha": "1ace3a85cd6686ee7dab1419c2c70c34f1f8448c8baeb6776919ba56d2a1a210"
+      }
+     ]
+    },
+    {
+     "n": "28",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME sets the Sync/Hunt bit of read register 0x00 when WR3 D4 is 1 or when the receiver is disabled (D0 = 0).",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1937-1940",
+       "sha": "0603d11570fc8bfeb4349fa751a569f2499b4e0a88ba87da09596efa3c633b2a"
+      }
+     ],
+     "vs": "differs",
+     "row": "11"
+    },
+    {
+     "n": "29",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's channel reset, z80scc_channel::device_reset, keeps WR3 D0 and clears every other bit of WR3, with m_wr3 &= 0x01.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1123-1125",
+       "sha": "84ee923c3f71e4cde6f4571155bdaaeecfe372a5b0aa99d9ff05b7a8ecee183c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1140",
+       "sha": "2b7cbf325f0a2e4c7d804d0ef66e4e64d094d7b80675653f445673f6054578aa"
+      }
+     ],
+     "vs": "differs",
+     "row": "27"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6691-6692",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1929-1934",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1935",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1399-1407",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "236-239",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1928",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1928",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1928",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1928",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1928",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1928",
+     "as": "agrees",
+     "row": "25"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "access": "write",
+   "name": "WR4 modes and clock",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6812-6819"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6835-6921"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::get_clock_mode"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1141"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "258-261"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR4 contains the control bits for both the receiver and the transmitter.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6814-6815",
+       "sha": "c99d74f58a1be1dbbfb85516565233f287b81d05b3993777ef24ac620847f836"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "These bits should be set in the transmit and receiver initialization routine before issuing the contents of WR1, WR3, WR6 and WR7.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6815-6817",
+       "sha": "c9ee7c6aa06f6b0f990aaed7533034e5704c86938479b00e55aebfc6e95a6341"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "On the ESCC, with the Extended Read option enabled, this register is read as RR4.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6818-6819",
+       "sha": "b6545d83669e288f7a5d6f8de7b3a6984943f6aa3ce043133e62b7af7e602fce"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 D7-D6 select the Clock Rate, the multiplier between clock and data rates: 00 X1, 01 X16, 10 X32, 11 X64.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6835-6836",
+       "sha": "e548b8eed92a93c3a9e9709aebf1f7f92cb2550c14df2131bc692f8fc9557249"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6840-6841",
+       "sha": "0fc0c0d8d8671aadb1fef89c6cea14be344db36a00f4b0cb763683e46d3e0d5c"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6844-6845",
+       "sha": "d26970e3d466bd0d0cb556fa4b153cc9832576a648559455f184eb3193bf59f3"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6848-6849",
+       "sha": "1b451b267e4ba41c5cfda2adef206d2da0c959e57775adc6fc49fd3036d4b93c"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6854-6855",
+       "sha": "ebdd99fb4f3b94ec44aca9bfa58748a16a764a710485aea67d20261fa37818d3"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "In synchronous modes the 1X mode is forced internally and the Clock Rate bits are ignored, unless External Sync mode is selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6836-6839",
+       "sha": "59eed42d5cbe3d1c942ba841e3629054a0fc77ebe7b599aab9b5aa829263cbca"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode, 1X and 16X specify that only the /SYNC pin achieves character synchronization.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6841-6843",
+       "sha": "dd567a1b87be67919f6d1c190294a1f5788a71e32c8b5937ac73a4cc29175bfe"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6845-6847",
+       "sha": "ea6212f4aec5d63c54ab627c116ef8179d8abdfc2a619dda8f6e96d94150acab"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode, 32X lets either the /SYNC pin or a match with the WR7 character signal synchronization, the sync character being six or eight bits per WR10.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6849-6853",
+       "sha": "3d24a3c5ef8b94881ef359d0092fb579efb63c1552f9812606ab32f3a124f354"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode, 64X puts receiver and transmitter in SDLC mode, with /SYNC used to start or stop a frame as if a flag had arrived.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6855-6860",
+       "sha": "c00d49c3d0a332b9560f3fa52f995c2ab8b2cc402c9d675c74ec29c7de6771fe"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D5-D4, the SYNC Mode selection: 00 Monosync, 01 Bisync, 10 SDLC, 11 External Sync; they are ignored unless synchronous modes are selected in the stop bits field.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6861-6864",
+       "sha": "e248b2ad6d6ba114425e9bfe3ca58dcc551399df8fdd5de64cfb510232974fa6"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6865",
+       "sha": "20fa8d29d1441696d52cfbdc19cfdd33d1a34f210294cce6bd9b17cc28e93b17"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6874",
+       "sha": "beab659f0cd67f5d47363ad3a4e29882014762b89a4db2b9fb0978c087a77cf6"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6879",
+       "sha": "62ea24e299a264acb501a711d188d0ed0f8b0877717183500339bb9e5aa4ee59"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6883",
+       "sha": "6a67b0176e5bb744ce4a769f6604ba4f546add1cda9df78ac9c7a0a9c1c33e84"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "In Monosync mode the receiver synchronizes on the WR7 character, the transmitter uses WR6 as time fill, and the sync character is six or eight bits by WR10.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6865-6870",
+       "sha": "d5c31d29fda08168fc35c627954e36cbac91dc8c4f9f7e1611f6fc311fb577c7"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "In Monosync mode with Sync Character Load Inhibit set, the receiver strips the contents of WR6 from the data stream if received within character boundaries.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6871-6873",
+       "sha": "c2fa7d467d5d0d2cc0f984d7d3271dda94ea9232032a30da4493b227129a3c91"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "In Bisync mode WR7 joined with WR6 is the receive sync and transmit time fill, 12 or 16 bits received by WR10; the transmitted character is always 16 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6874-6878",
+       "sha": "7d35a533d06417043894bd7356da1675a5d61d9f7147ea39c8b080093137cd82"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode a Flag (01111110) must be written to WR7, the receiver address field to WR6, and the SDLC CRC polynomial is selected in WR5.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6879-6882",
+       "sha": "3513f506aa02ebb385313b07a2207c6371c304dd3f940ba023a3c267ff0d675c"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode the SCC expects external logic to signal character synchronization on /SYNC; the crystal oscillator option in WR11 forces the internal /SYNC signal to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6883-6886",
+       "sha": "867efb48b397b02ff60637fc927590e2ca03fa583015e3c7694dfad520506745"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode the transmitter is in Monosync mode using WR6 as time fill, with the sync character length given by the 6-bit/8-bit Sync bit in WR10.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6887-6889",
+       "sha": "d282959af1dfe7eb8eff8daecd7f1b8b05e832c6e5e17ab21a1112f54d4708db"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D3-D2, the Stop Bits selection: 00 synchronous modes enable, 01 one stop bit, 10 one and a half, 11 two stop bits per transmitted character.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6890-6892",
+       "sha": "a2c4d1ea0f5baac033102046358daa75386a28a55e4318fe86c18ba64bb40fe2"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6898-6900",
+       "sha": "843a1e302d9a0347491f0a7adcb569331c9c1b435b6928598a909305b58885a9"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6902-6903",
+       "sha": "6ffd182b866033246273b431682271ec9b0510aa8d18562a76ab7a284189c546"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6904-6905",
+       "sha": "b79a80b0b3b70301024f4be765540b25a7277cd15a2852c61701fba0a43f060b"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6907-6909",
+       "sha": "2a75d111a49927ea69652c25331456d62cc812f7f997b9aaa83d866b10133d73"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "The receiver always checks for one stop bit in asynchronous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6892-6894",
+       "sha": "0e6d0c192cafaf927456097b84c361e0012d453687e78dbe0c2de8c8fdcd7754"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "A special mode specifies that a synchronous mode is selected, in which bits D4, D5, D6 and D7 apply and the 1X clock mode is forced internally.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6894",
+       "sha": "c236c415a47dd0ad930b222c7da7717659e54be74b2a873afe17f57afe983131"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6898-6901",
+       "sha": "f9863cd4a4f5200b3bf0ac3ac8c7155ec97a0cbfb0f1322d46194f7e7d515680"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "The 1 1/2 stop bits mode is not used with the 1X clock mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6904-6906",
+       "sha": "b809769223ca3dd349a7f7586f94d0bfc5f6b0a6cdaa57d901aa44082e9f6e00"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR4 D2 is always set to 1 by a channel or hardware reset, to ensure the /SYNC pin is in a known state after a reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6895-6897",
+       "sha": "d86d8ffa89b151f30454022cbdfc2258ac15baee7f13883c0f2b1fbf821dbdcf"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D1, the Parity Even/Odd select: 1 selects even parity, 0 odd; the bit is ignored if Parity Enable is not set.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6910-6914",
+       "sha": "b957330c8fb23911984aad957eb273f2e639dd72ccd9be1d4c613b30a78ef422"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D0, Parity Enable; when set, an additional bit beyond the bits per character is added to transmitted data and expected in received data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6915-6918",
+       "sha": "60582b276e769fcfb6f9661b5cec0fcf1dd4c1adac786621e40ee9943d893ca5"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "is",
+     "of": "doc",
+     "text": "The received parity bit is transferred to the CPU as part of the data unless eight bits per character is selected in the receiver.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6919-6921",
+       "sha": "55c2a7f5c9ffefa6810dc4300f97731d451fe613707fed4c1d492b1826c025c1"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME's get_clock_mode derives the multiplier from D7-D6 alone, so it does not force 1X for synchronous modes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1319",
+       "sha": "ae2108f7a36bed6ca4b1329b8107015ab7737b1fb637aedf849626f48aba987e"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1321-1331",
+       "sha": "7e0a6394d79986f42b0b7d5323ae8a55a1ef303d0ba4bb6f632359fba6f32b1b"
+      }
+     ],
+     "vs": "differs",
+     "row": "5"
+    },
+    {
+     "n": "25",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's channel reset, z80scc_channel::device_reset, stores 0x04 in the whole of WR4, so every bit but D2 is cleared.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1123-1125",
+       "sha": "84ee923c3f71e4cde6f4571155bdaaeecfe372a5b0aa99d9ff05b7a8ecee183c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1141",
+       "sha": "cc4d34d2d76c341b53c5779f3a6c04d18f6fe351f9f4a27cd13830b4661e51d5"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6812-6813",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1954",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1954",
+     "as": "agrees",
+     "row": "21"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1954",
+     "as": "agrees",
+     "row": "22"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1954",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1954",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1962",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "258-261",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1323-1329",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1331",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1948",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1953",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1955-1956",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1957-1961",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1141",
+     "as": "agrees",
+     "row": "20"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "access": "write",
+   "name": "WR5 transmit control",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6922-6928"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6941-6968"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6969-6982"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6983-7031"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7039-7041"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::update_rts"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::set_rts"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::set_dtr"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::get_tx_word_length"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1142"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "272-275"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR5 contains control bits that affect the operation of the transmitter; D2 affects both the transmitter and the receiver.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6924-6926",
+       "sha": "2acffcad83e7c073c61ba63c9f007b16a2a2288951c1530316a8b58a3c06e1a1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "With the Extended Read option enabled, WR5 is read as RR5.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6926-6928",
+       "sha": "e8285832a3b49c987e6b0e561789445d8a0071c60b5927226b75b538546aa560"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 D7, Data Terminal Ready, controls /DTR//REQ in DTR mode (selected in WR14): set makes /DTR Low, reset High; it is ignored when the pin acts as /REQ.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6941-6945",
+       "sha": "8958819688d4190192a3b5b8a9fd71f8c72df0f4b4eb898b9a7ce1232afa21f4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR5 D7 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6945-6946",
+       "sha": "99d85c92ddbdee1508ea5d5724588db1d4bdb2d29587b97d8f07617c50d8f5b8"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 stores D6-D5, the Transmit Bits/Character select: 00 five or less, 01 seven, 10 six, 11 eight; the table header prints Bit 7 and Bit 6.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6947-6948",
+       "sha": "6453af4d158eb39203690d2b939d214cd389beef4dd037dad0063f85e6ae056b"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6969-6978",
+       "sha": "c190820e7d64067eccdc6e1cb6e76ceb03aef28f40d52bcf6b3c653eb091b29e"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6979-6982",
+       "sha": "730041809dd983af45acad8dda7a5afec27d4d41b7dfe086ddc8cc4a1361ea3e"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Bits sent must be right justified with the least significant bits first.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6948-6950",
+       "sha": "a7ed73cd6e66040a96ff34e767bcfd784a9d5589d7b35e8201b00dd3314d5557"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Five or fewer bits per character must be formatted as in Table 5-5; in the six and seven bit modes, unused data bits are ignored.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6951-6955",
+       "sha": "4610ef3bc1cd6d74922d96c255cf67025124078c88777d44bcb32e0916793870"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "For five or fewer bits the data byte carries a marker pattern of 1s and 0s above the data bits, from one up to five data bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6983-6991",
+       "sha": "62188323d6b3262b912bd11494b033c0108e22a336d5969d71f2b906c70c64ae"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6993-6997",
+       "sha": "88521ada29c5499751a3dc1b7697ae0d237a3ff9f6b885221f3d997391f309b8"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 stores D4, Send Break; when set it forces TxD to send continuous 0s from the next transmit clock, whether or not the transmitter is enabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6956-6960",
+       "sha": "e1fdf44ebdaaed70b15bbfbbcb4901ac8b4219ada7024deb4754694767136fea"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "When Send Break is reset, TxD continues to send the contents of the Transmit Shift register, which might be syncs, data or all 1s.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6960-6962",
+       "sha": "42f428dfe234d465d658371eb02301d93f364ed54cc690cde1bd9251f7105fcd"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "If Send Break is set in the mode printed 'X21' (Monosync and Loop) and the receiver gains character sync, the bit resets itself and the transmitter sends syncs or data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6962-6967",
+       "sha": "e299fd1eca43a3ec5c38fbec98495e0e3326b88f9c567067c5c2ae2abd603df0"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR5 D4 is also reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6967-6968",
+       "sha": "7f322a3b355f8fc6d81fdaa143a6a707df03b9316a318989f17b7c14ff9dfd7c"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 stores D3, Transmit Enable; data is not transmitted until set, and TxD sends continuous 1s unless Auto Echo or SDLC Loop mode is selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6992",
+       "sha": "880961a4f9464af6c622234efe520c82e593b5195081322eccacda49de77427b"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6998-7000",
+       "sha": "1756d4da48228dfc1c71e1559a2b59fb00911808a97e6f47361696e8f18e3aa1"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "If Transmit Enable is reset after transmission starts, data or sync characters in progress are completed; disabled during a CRC character, sync or flag characters are sent instead.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7000-7004",
+       "sha": "1c9aaf6bb073f8b533f1b8cf61f30a2bccf2c9070b86c773e041880abe773b5a"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR5 D3 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7004-7005",
+       "sha": "dd28c3b247e67a02c4fe18c9924c89045fddac4cd351ca36f8ad298060dbe12f"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 stores D2, the SDLC/CRC-16 polynomial select used by both transmitter and receiver: set selects CRC-16, reset the SDLC polynomial.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7006-7009",
+       "sha": "32782000fd39d2f3d10c4c05e48ff319ecf1f7fd98127b66ffdd4f76b9c661e9"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "The SDLC/CRC polynomial is selected when SDLC mode is selected; the CRC generator and checker can be preset to all 0s or all 1s by the Preset bit in WR10.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7009-7013",
+       "sha": "1a1b8cca60529743153cd400d99966a43fadee525bcb4fa1c598a091ec0d58db"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 D1, Request To Send, controls the /RTS pin: when set /RTS goes Low, when reset it goes High.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7014-7016",
+       "sha": "039be8ef71e4787a9794ed3e0d1e51d46a1de26457f313e56fe0e8b92ce1f519"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "write",
+     "of": "doc",
+     "text": "With Auto Enable in asynchronous mode, /RTS goes Low as RTS is set; on reset it stays Low until the transmitter is empty and the last stop bit has left.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7017-7020",
+       "sha": "e2ba8ec292bc84c9ebc188814dbae00469aa29d9a4e519cacbcd0c231419b694"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "is",
+     "of": "doc",
+     "text": "In synchronous modes /RTS follows the state of the RTS bit directly, except in SDLC mode under the flag-on-underrun conditions of WR10 and WR7'.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7020-7026",
+       "sha": "8bf9f43236f2db14621514576428be7cef8c6a3275480aedc567e370b83b5b79"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR5 D1 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7026-7027",
+       "sha": "f211bdd210daec16f8c62f4faec4a20323835121f87c5e4484fe51ef88ad86cf"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 stores D0, Transmit CRC Enable; set when a character is loaded from the transmit buffer into the Transmit Shift register, CRC is calculated on that character.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7028-7031",
+       "sha": "b3c1c1f0dda32aaf015af71f5a48a994372a56b4dff53dd49d5a2fa3a0493605"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7039-7040",
+       "sha": "8bf8c7d057a3ddf33c0040bfdf245fd4f24f7b18a7985133a58f299f1e138d48"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "is",
+     "of": "doc",
+     "text": "The CRC is not automatically sent unless this bit is set when the transmit underrun exists.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7040-7041",
+       "sha": "d9fa70ca159be6e107d520157237fd9320f1cc41d83f63a9bd822367f21ae7b4"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "write",
+     "of": "mame",
+     "text": "On RTS reset MAME raises /RTS at once unless Auto Enables is set and RR1 shows not all sent, in any mode; the check runs when WR5 is written.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1360-1366",
+       "sha": "0cb3bb04ea0e67b281fd5e3e5accf2f413cb21862c1661ead0e2fe5979f2ad62"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1982",
+       "sha": "35bacdb980dba9d7af341e1278a87bff9bbca42d2e8ad04db408cb852670d27c"
+      }
+     ],
+     "vs": "differs",
+     "row": "19"
+    },
+    {
+     "n": "25",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's channel reset, z80scc_channel::device_reset, stores 0x00 in the whole of WR5, so D6, D5, D2 and D0 are cleared as well as D7, D4, D3 and D1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1123-1125",
+       "sha": "84ee923c3f71e4cde6f4571155bdaaeecfe372a5b0aa99d9ff05b7a8ecee183c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1142",
+       "sha": "6e01242965a8f6f311671e9bb1dfaa78f1927034c5e188c789e956dac964e614"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6922-6923",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1974",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1976",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "272-275",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1418-1426",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1971",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1975",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1977-1979",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1974",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1974",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1974",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1974",
+     "as": "agrees",
+     "row": "22"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1982",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1360-1365",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1354-1358",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1368-1373",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2963-2965",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1348",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1142",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1142",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1142",
+     "as": "agrees",
+     "row": "15"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1142",
+     "as": "agrees",
+     "row": "21"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "access": "write",
+   "name": "WR6 sync low",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7042-7052"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr6"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR6 stores the transmit sync character in Monosync mode, or the first byte of a 16-bit sync character in External Sync mode, as printed.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7044-7046",
+       "sha": "032f3ecfc4187dee6c736a0716605dcfbe7c37fb7a44a67af850fbeba10e1085"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "WR6 is not used in asynchronous modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7046-7047",
+       "sha": "10d0007575dc16f27b953dc4f4de11bb6fc89804643b1a100ad5b1e20716b678"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In the SDLC modes WR6 stores the secondary address field, used to compare against the address field of the SDLC frame.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7047-7049",
+       "sha": "6ee0147a662667fece61ce621042af2b18bc187e9a2288d431fc9d1389a510d8"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode the SCC does not automatically transmit the station address at the beginning of a response frame.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7049-7051",
+       "sha": "f4098c4472eaeaee07fb4f425d85cc5a014c9b660efafdc5cbdb4a561790ccd4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The bit positions of WR6 are shown in Figure 5-8.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7051-7052",
+       "sha": "20cf2e6d7f6a2eb20298f66992305ee30d1119e7352f8a6744eb9849347228f9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7042-7043",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1991",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1991",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "access": "write",
+   "name": "WR7 sync high",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7060-7069"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr7"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR7 stores the receive sync character in Monosync mode, the last eight bits of a 16-bit Bisync sync character, or a Flag (01111110) in SDLC modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7062-7065",
+       "sha": "0ac855ee7304fdb8c38b27e2de89af4c9209795b555d201d159ebb7c8304967c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "WR7 holds the receive sync character or a flag if one of the special versions of the External Sync mode is selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7065-7067",
+       "sha": "5299f196d1130e0898bbf3e67eb42becb99f3e35c498e749c638f48ee053e3f0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "WR7 is not used in Asynchronous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7067-7068",
+       "sha": "7811f58ea8318285039453e2440290a0a190e8c24734e0d8107e06ecc466e46c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The bit positions of WR7 are shown in Figure 5-9.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7068-7069",
+       "sha": "6a1815bf7be4be81fc574c996f0a1f744106f56f629ca39095b1932f2fdfe422"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "On the ESCC and the 85C30 with WR15 D0 set, MAME stores the byte written to WR7 in its WR7' variable; otherwise it stores it in the sync pattern.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1997-2000",
+       "sha": "ddd400e700dce8c76a75e6539a78db7293e8fa90d8736a03a80b26ec5f8ff2eb"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7060-7061",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2000",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "access": "write",
+   "name": "WR8 transmit data",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7170"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr8"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR8 is the transmit buffer register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7170",
+       "sha": "0b1320bf8b42e3b41f4b0ea87e5f793a771d195fe406045f723e0dcd51ee05f0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A byte written to WR8 is written to the transmit buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7170",
+       "sha": "0b1320bf8b42e3b41f4b0ea87e5f793a771d195fe406045f723e0dcd51ee05f0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2007",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "access": "write",
+   "name": "WR9 master interrupt",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7171-7178"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7188-7264"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr9"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR9 is the Master Interrupt Control register and contains the Reset command bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7173-7174",
+       "sha": "29b9f6731ccccefae9d25fa5cfcc7f567b3da7cf85f0e638304da48cb4760fa8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Only one WR9 exists in the SCC, and it is written from either channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7174-7175",
+       "sha": "a0aae1acf39f3f783697172c3bafb82582fe2a0933ad35c565f4ca0fe01e9c39"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The interrupt control bits are programmed together with the Reset command because only a hardware reset resets them.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7175-7178",
+       "sha": "91d5bb873005bad46a48209173b4bc2bb687144bc7327c97f98e5b2aa305a04e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "WR9 D7-D6 select the reset command: 00 null, 01 Channel Reset B, 10 Channel Reset A, 11 Force Hardware Reset; the capture prints 0 as O in the null code.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7188-7189",
+       "sha": "a3865842bb389cade26dd06522121899fe508a7a33c11afea19af9a976fbc603"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7198",
+       "sha": "560eb8392d1d3c107217803f6d0666d1655862fa33f87926a43698e4923e0347"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7201",
+       "sha": "aa396716b85c7fd841986dce94dfd6b9609e59f60078e45fe8df5d1587d36998"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7203",
+       "sha": "ceda63cb55760336fe239fdd5d884a8c00e5a851885c77f03eec426ca94a130f"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7205",
+       "sha": "ad193c4caf3d69afd8c6de2b0c436fca4aa2f3d1e8d0d84da1bad7479e7207bb"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "A reset command in WR9 disables the channel's receiver and transmitter, forces TxD marking and the modem controls High, resets all IPs and IUSs and disables all its interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7189-7194",
+       "sha": "51aebc28c03f63bee69d55b2fbca93e536e3cbda0898fd80490c98fcd08b495a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Four extra PCLK cycles must be allowed after any reset command before more commands or controls are written to the channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7194-7197",
+       "sha": "5364e7cd820df255c7595dec467ccda2f89fe11dc8c82cf33b52c5944847930c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "The Null command (00) has no effect; it is used when a write to WR9 is needed for a reason other than a reset command.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7198-7200",
+       "sha": "548a7e3d06af4233a214441086642a8af635908afefb102fb755b2245e89445a"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "The Channel Reset B command (01) performs a channel reset on Channel B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7201-7202",
+       "sha": "70fa8b46f832c4656aad4e2169605e46150b73e02e99bb81a44923be67570cd0"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "The Channel Reset A command (10) performs a channel reset on Channel A.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7203-7204",
+       "sha": "dda4bcce136579c188c8e4b63239bc8cb82a9b99682b3a11f0b574cf2d613ea2"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "Force Hardware Reset (11) acts as a hardware reset, except that the Shift Right/Shift Left bit is unchanged and the MIE, Status High/Low and DLC bits take the programmed values.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7205-7209",
+       "sha": "d3c0098e9a6b7e87fba5890f3639e2545b566ba5d8ccedadbbbfd0f222c08074"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "WR9 stores D5, Software Interrupt Acknowledge; when set, reading RR2 executes an interrupt acknowledge cycle internally.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7210-7212",
+       "sha": "58d9e00c8ba93bc369d55991d1d841bcf57d74b38acb9b72edd1b9eafbc7a628"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "A software acknowledge makes the INT pin return High, the IEO pin go Low and sets the IUS latch for the highest priority interrupt pending.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7213-7216",
+       "sha": "382e2340535f5d0e96051f85a13b0d8484facc725166b96ad4c8ca848c20f0d4"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The Software Interrupt Acknowledge bit is reserved on NMOS and always writes as 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7217",
+       "sha": "709eb7e959433c4ec9ddd54b8317c16eb6fd4c0473b91f5c1da3204bea733760"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "WR9 stores D4, Status High/Status Low: set, the SCC modifies vector bits V6-V4 per Table 5-6; reset, bits V1-V3; it governs the vector of an acknowledge cycle and RR2B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7218-7224",
+       "sha": "ab889637920dbae478ef8cf876bcf639fc5c0f3811616f3ed322576e2e9b2bff"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR9 D4 is reset by a hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7224-7225",
+       "sha": "288fe274f86b463511cd8a00165c9086bccb19ed8d1a49f5a56b9f22c7f7a2a2"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 5-6 lists, for Channel B and Channel A, the transmit buffer empty, external/status change, receive character available and special receive condition codes 000 to 111.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7226-7236",
+       "sha": "f43337eb25fdd64ad30d1e09c98778d0e9b56df1b62c3b7d3f2464320e4492ee"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "write",
+     "of": "doc",
+     "text": "WR9 stores D3, Master Interrupt Enable; set to 1 it globally enables interrupts, and cleared to 0 it disables them.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7237-7239",
+       "sha": "da76d31c2829693ffd108ea5f00d5fb09e0064ef8695f1a58a1a3cf872742b93"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "Clearing MIE forces the IEO pin to follow IEI unless an IUS bit is set; no IUS bit is set after MIE is cleared.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7239-7241",
+       "sha": "8ade1dc6229142b0b14b4e49ec69d549bd41f9b1a0301f72102b032ab457ec06"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR9 D3 is reset by a hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7241-7242",
+       "sha": "69f4bb96a75f849bd7c547cd89d9260039235efcaf137eb2d217ae0eb5725579"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "write",
+     "of": "doc",
+     "text": "WR9 stores D2, Disable Lower Chain, with which the CPU controls the daisy chain: set to 1 it forces IEO Low, stopping lower priority devices from requesting interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7243-7247",
+       "sha": "cfbf02478254b8b86423de00e02d925724aca36017c253f06973813f07085c62"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR9 D2 is reset by a hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7246-7248",
+       "sha": "d92ec0ee3566c8dfcf0fddfa1d76ae18c244fdbd107ef3aa8403bb76f1caff7a"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "write",
+     "of": "doc",
+     "text": "WR9 stores D1, No Vector select; when set, no vector is returned during an interrupt acknowledge cycle even if the SCC is the highest priority requester.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7249-7256",
+       "sha": "9d318f0954cb2e0d97847f39f14812687e3d4e3776a8661afe4658a30cece1c8"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "write",
+     "of": "doc",
+     "text": "WR9 stores D0, Vector Includes Status; when set the returned vector varies with the highest priority IP set; the bit is ignored if No Vector is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7257-7262",
+       "sha": "b46311164d811561e7c2c24b820537ea4f960196966ee721c4871f7bb030dba5"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7264",
+       "sha": "f78e47efff15449fcfa156cb2e89dd6ad0023efa614c164b208d0012a514432a"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 5-5 shows the encoding of the status information.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7263",
+       "sha": "8d774e336d5c05ce8c98409aaf56365e9bff2b5e097e43042751013d5949a9a1"
+      }
+     ]
+    },
+    {
+     "n": "25",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's hardware reset keeps WR9 D5-D2, so Status High/Status Low (D4) keeps its value, and sets D7-D6 to 11 and D1-D0 to 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "502",
+       "sha": "570cab5fb79310c55c0691e98b5ac11e07bc4565ba9ba55455c71be5e306f0f2"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "506",
+       "sha": "5aa80d147734cb98493a23ebe4e3837b29394a95005b1f49c19bd743607c15a1"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "507-508",
+       "sha": "03996646f8dd89325aa3c95b8a46bfbe147737f1b3a1ccb3ddda7bda97b91ac7"
+      }
+     ],
+     "vs": "differs",
+     "row": "15"
+    },
+    {
+     "n": "26",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's hardware reset keeps WR9 D5-D2, so Master Interrupt Enable (D3) keeps its value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "502",
+       "sha": "570cab5fb79310c55c0691e98b5ac11e07bc4565ba9ba55455c71be5e306f0f2"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "506",
+       "sha": "5aa80d147734cb98493a23ebe4e3837b29394a95005b1f49c19bd743607c15a1"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "507-508",
+       "sha": "03996646f8dd89325aa3c95b8a46bfbe147737f1b3a1ccb3ddda7bda97b91ac7"
+      }
+     ],
+     "vs": "differs",
+     "row": "19"
+    },
+    {
+     "n": "27",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's hardware reset keeps WR9 D5-D2, so Disable Lower Chain (D2) keeps its value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "502",
+       "sha": "570cab5fb79310c55c0691e98b5ac11e07bc4565ba9ba55455c71be5e306f0f2"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "506",
+       "sha": "5aa80d147734cb98493a23ebe4e3837b29394a95005b1f49c19bd743607c15a1"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "507-508",
+       "sha": "03996646f8dd89325aa3c95b8a46bfbe147737f1b3a1ccb3ddda7bda97b91ac7"
+      }
+     ],
+     "vs": "differs",
+     "row": "21"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7171-7172",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2016",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2016",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2016",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2016",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2016",
+     "as": "agrees",
+     "row": "20"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2016",
+     "as": "agrees",
+     "row": "22"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2016",
+     "as": "agrees",
+     "row": "23"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2020-2022",
+     "as": "agrees",
+     "row": "7",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2025",
+     "as": "unfollowed",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2029",
+     "as": "unfollowed",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2018",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2036-2047",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2049-2050",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2023",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2026-2027",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2030-2031",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2051-2052",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2054",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2025",
+     "as": "unfollowed",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2029",
+     "as": "unfollowed",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2025",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2029",
+     "as": "unfollowed",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x0A",
+   "access": "write",
+   "name": "WR10 misc control",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7265-7270"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7284-7309"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7318-7421"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR10 contains miscellaneous control bits for both the receiver and the transmitter.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7267-7268",
+       "sha": "c11ef11f765b10aa2ebdeb1192b58dbdf2a5e7a352020500cae79ada76fbf38f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "On the ESCC with the Extended Read option enabled, WR10 may be read as RR11.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7269-7270",
+       "sha": "afcdfdafa3bed76bc9474d2e1ae0985297bdcf191bd8af970e7d8f4f56ef164f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "WR10 stores D7, the CRC Presets I/O select: set, the CRC generator and checker are preset to 1; reset, they are preset to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7284-7289",
+       "sha": "30dd9f18db40b3e61d04d1cc3aaba3c6760050819075ec0c3bba0abfefd33df4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Either preset can be used with either CRC polynomial; in SDLC mode the transmitted CRC is inverted and the received CRC is checked against 0001110100001111.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7289-7292",
+       "sha": "bd8d9c88559342c1ebd34bf59d2aa9b7aed1609fa2377a552e20a0e45cbd9932"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR10 D7 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7292-7293",
+       "sha": "9bcba2f9a1b6cfe150df7b6d79f9d38ea2714c9a09d6a98808d4810490e12315"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "WR10 D7 is ignored in asynchronous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7293-7294",
+       "sha": "c1ef5798bd5dc1d44df5876cea663a99e0e1ccff01676c9636804d36ef161e4c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "WR10 stores D6-D5, the Data Encoding select for both transmitter and receiver: 00 NRZ, 01 NRZI, 10 FM1 (transition = 1), 11 FM0 (transition = 0).",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7295-7297",
+       "sha": "a0b0e2f4f7e75339807491d858592d6d24a66e3f9fa430ed61a4940b8b33fd6b"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7304-7309",
+       "sha": "1497cbaa52bd4c3d2387221d6ce81e1f75312416bd5a30d80640253670a2d53c"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "All clocking options are available for all coding methods; the DPLL helps recover clocking in NRZI and FM modes, and any method can be used in X1 mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7297-7301",
+       "sha": "4422d4b8b610949adb3784ab7b227dc48a7a23076a2686c2dfa30f1e3ccc555d"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset forces NRZ mode, and the timing of the modes is shown in Figure 5-13.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7301-7303",
+       "sha": "2856df93cce9581e95cb4a2a0ec1cd0a73653bd39c61818a6009ab766c4b63b6"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "WR10 stores D4, Go-Active-On-Poll; in SDLC Loop mode, with an EOP received, it lets the transmitter go active and on-loop.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7318-7325",
+       "sha": "18db521a741cf550e90745d23ba05aaa6fbdc537745c493d45171b920c4389a8"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "On selecting SDLC Loop mode, the SCC links RxD to TxD with only gate delays until this bit is set and an EOP arrives; then it goes on-loop.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7319-7323",
+       "sha": "4a01575fd28e08cad74d3dd2f65a81316a41d65b363b0d9418b2f6dc264d6abc"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC Loop mode, if this bit is set as a flag leaves the shift register, another flag or data byte follows; otherwise the SCC reverts to 1-bit delay.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7325-7332",
+       "sha": "3c11b8685019dadc52c7c2da3b5af4416fcd8b4c0032988e8d65eba93a6136a5"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "To transmit a single response frame, reset this bit after the first data byte but before CRC; if not reset before CRC, extra flags slow the loop response.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7332-7336",
+       "sha": "72ac43f25ccbd607e376b8e153f9ecbb0601612c09b01c62867b392d1e922dda"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "After gaining control of the loop the SCC cannot transmit again until a flag and another EOP arrive; good practice is to set this bit only on a poll frame.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7337-7343",
+       "sha": "84666defe6aa44175b7fc4bb07605fdd8b2ba7ac1c6f62210fb138f8b2e7f07e"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "In synchronous modes other than SDLC with Loop Mode set, this bit is set before the transmitter goes active on a received sync character.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7344-7346",
+       "sha": "6e270e7ef3bd1069cd2642c8c0d77fe69b03d29ae0259da4bd46693ee45410cc"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR10 D4 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7348-7349",
+       "sha": "dac27cd98c86dcbc2c48c6186dd7c17c456b97517e3b9c7d10dec392555af881"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "WR10 D4 is always ignored in asynchronous mode, and in synchronous modes unless Loop Mode is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7347-7348",
+       "sha": "5fc6b61284bf435d54a41279f0c582f2ad311bce34a5a48b6c6c6890f5028d58"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "doc",
+     "text": "WR10 stores D3, Mark/Flag Idle line control, which affects only SDLC: 0 sends flags as the idle line, 1 sends continuous 1s after the closing flag.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7350-7354",
+       "sha": "a85572de7396a6f37e19dffcb74299c84f3a82c4b3ccc621bdf0df56a000da67"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "The idle line is chosen byte by byte, a flag or eight 1s; a loop's primary station should use Mark Idle to create the EOP, deselected before frame data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7354-7360",
+       "sha": "d0b99ee38064ece0e013dfaa76e2da138f1fcd857cf4626a3e0bd9be85771336"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "is",
+     "of": "doc",
+     "text": "The Mark/Flag Idle bit is ignored in Loop mode, but its programmed value takes effect on exiting Loop mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7360-7362",
+       "sha": "8d3bf95cee50f71c68fd74df845fe6d670eb02dfc46593531baa13be484fd070"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR10 D3 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7362-7363",
+       "sha": "8dd8154bef7adefd2772a9e65685bf79bc1f7d7d5f9d313f0bf45957ab59b3d9"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "is",
+     "of": "doc",
+     "text": "On the ESCC with Automatic Tx SDLC Flag (WR7' D0 = 1; printed WRT, 00=1) the bit can stay mark idle; opening flag, closing flag and mark idle are automatic.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7364-7368",
+       "sha": "21e7d4039fb11c3746850b2254a387a16b678bdaed8a552e26089aabc3525c48"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "write",
+     "of": "doc",
+     "text": "WR10 stores D2, Abort/Flag On Underrun select; it affects only SDLC: set, a transmit underrun sends an abort and a flag instead of CRC; reset, it sends CRC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7369-7374",
+       "sha": "7e1242fd885df6d699093f2f78db083b25c59430e6fb99ba69d5472c643c6d39"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "is",
+     "of": "doc",
+     "text": "At the start of that 16-bit transmission the Transmit Underrun/EOM bit is set, causing an External/Status interrupt, and a Transmit Buffer Empty interrupt occurs at its end.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7374-7381",
+       "sha": "370315ad0429cf6a4d168ff1b58e09b1d53d90ab0bbf28c5225739f3c3a26acb"
+      }
+     ]
+    },
+    {
+     "n": "25",
+     "on": "is",
+     "of": "doc",
+     "text": "With Abort/Flag On Underrun and Mark/Flag Idle both 1, all 1s follow an underrun; the bit should be set after the first data byte and reset immediately after the last.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7381-7386",
+       "sha": "2c3bf9f5bd2db611771f7467a3797882bccdb3e423ded7b7fa26240945626db4"
+      }
+     ]
+    },
+    {
+     "n": "26",
+     "on": "is",
+     "of": "doc",
+     "text": "This bit is ignored in Loop mode, but its programmed value is active on exiting Loop mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7386-7387",
+       "sha": "02391e8c1d207082e6c058074af30651c27685338038125c531404cfe909e670"
+      }
+     ]
+    },
+    {
+     "n": "27",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR10 D2 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7388",
+       "sha": "d38570bf4adb760574fa93b756b6ab6efe81d414de0c7021e7951d93cd475f44"
+      }
+     ]
+    },
+    {
+     "n": "28",
+     "on": "write",
+     "of": "doc",
+     "text": "WR10 stores D1, Loop Mode control; in SDLC mode its initial set connects TxD to RxD and starts searching the incoming data so the SCC can go on loop.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7389-7392",
+       "sha": "cdea6b6fe9c991129d561ee5d52309ee8dc6dd224a6fe6f00268d9243f2965e9"
+      }
+     ]
+    },
+    {
+     "n": "29",
+     "on": "is",
+     "of": "doc",
+     "text": "Select Loop mode after setting the other SDLC bits and before enabling transmitter and receiver; the SCC goes on-loop when Go-Active-On-Poll is set and an EOP arrives.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7392-7397",
+       "sha": "a2f205594ec556cf3ff017928cb98752fb40179beb12fc11142af84f9792e93a"
+      }
+     ]
+    },
+    {
+     "n": "30",
+     "on": "is",
+     "of": "doc",
+     "text": "If Loop Mode is reset after the SCC goes on-loop, the SCC waits for the next EOP to go off-loop.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7397-7399",
+       "sha": "38c255e52bb8f2b8aba5bbf8d9eb1f458a814448d4101ede27de159674af3aab"
+      }
+     ]
+    },
+    {
+     "n": "31",
+     "on": "is",
+     "of": "doc",
+     "text": "In synchronous modes the SCC uses this bit with Go-Active-On-Poll to synchronize the transmitter to the receiver; the receiver should not be enabled until after the mode is selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7400-7403",
+       "sha": "2c8e5243b614cc4b8c4532eb147912cfd113b1bfbdc93b6b790f3dca4a480a15"
+      }
+     ]
+    },
+    {
+     "n": "32",
+     "on": "is",
+     "of": "doc",
+     "text": "TxD is held marking in that mode unless a break is programmed; the receiver waits for a sync character, then enables the transmitter and removes any break.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7403-7408",
+       "sha": "86bf55e2cbb62b166e80a5767452f07e69eb5376a91a3e90bbb7aa7f40278a84"
+      }
+     ]
+    },
+    {
+     "n": "33",
+     "on": "is",
+     "of": "doc",
+     "text": "Loop mode works with sync characters of 6, 8 or 16 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7408-7409",
+       "sha": "a09a38c227d8f59200124b4f15cf3b9175f2bbac050163a9119e150966986b2d"
+      }
+     ]
+    },
+    {
+     "n": "34",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR10 D1 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7409-7410",
+       "sha": "f6d204a4f5991e55a2308c9942cd98c8182c26e67b721a5d55dbb244b268b918"
+      }
+     ]
+    },
+    {
+     "n": "35",
+     "on": "is",
+     "of": "doc",
+     "text": "WR10 D1 is ignored in asynchronous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7409-7410",
+       "sha": "f6d204a4f5991e55a2308c9942cd98c8182c26e67b721a5d55dbb244b268b918"
+      }
+     ]
+    },
+    {
+     "n": "36",
+     "on": "write",
+     "of": "doc",
+     "text": "WR10 stores D0, the 6-Bit/8-Bit SYNC select: set in Monosync mode, receiver and transmitter sync characters are six bits instead of eight; in Bisync, the received sync is 12 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7412-7417",
+       "sha": "4260dc2bd921bce5b4cd40c072d781a4936adfc9cbc938267618b8f200e3189f"
+      }
+     ]
+    },
+    {
+     "n": "37",
+     "on": "is",
+     "of": "doc",
+     "text": "In Bisync mode the transmitter sync character remains 16 bits; the bit is ignored in SDLC and asynchronous modes but still has effect in the special external sync modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7417-7420",
+       "sha": "1160aae667848a62448cf4e8c13ffda6067899580634238924e085932b9a9a4a"
+      }
+     ]
+    },
+    {
+     "n": "38",
+     "on": "reset",
+     "of": "doc",
+     "text": "WR10 D0 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7420-7421",
+       "sha": "52da6b2dbe1fb98e164b41815e3508495632471c5b6441e7e0f0d25c4d2f186d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7265-7266",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "agrees",
+     "row": "23"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "agrees",
+     "row": "28"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "agrees",
+     "row": "36"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7411",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2064-2072",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147",
+     "as": "agrees",
+     "row": "21"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "agrees",
+     "row": "21"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147",
+     "as": "agrees",
+     "row": "27"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "agrees",
+     "row": "27"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147",
+     "as": "agrees",
+     "row": "34"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "agrees",
+     "row": "34"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147",
+     "as": "agrees",
+     "row": "38"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "agrees",
+     "row": "38"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  }
+ ]
+}

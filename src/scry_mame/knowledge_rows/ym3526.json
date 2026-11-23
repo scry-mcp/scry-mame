@@ -1,0 +1,2123 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ym3526",
+ "title": "The YM3526 OPL registers",
+ "kind": "register",
+ "scope": "ym3526",
+ "covers": "the registers of the YM3526 (OPL) as Yamaha's data sheet lists them, and what MAME does for each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "YM3526.raw.txt",
+   "variant": "ym3526"
+  }
+ ],
+ "official": {
+  "YM3526.raw.txt": [
+   "107-140",
+   "172-199",
+   "203-216"
+  ]
+ },
+ "engine": [],
+ "closed": [
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "107",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "111-112",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "134-136",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "140",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "172",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "173",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "194-195",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "203",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM3526.raw.txt",
+   "lines": "204",
+   "as": "layout"
+  }
+ ],
+ "entries": [
+  {
+   "key": "0x01",
+   "name": "test",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "108"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "174"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "205"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "202"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "246"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "116-118"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments register 01 as LSI TEST DATA.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "205",
+       "sha": "1c326a1fd2a7fd23e136b3ee87da9d03599523d2541ce93d9a682c8b0e1e1569"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 01 holds TEST information.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "108",
+       "sha": "e2015a82f1b697968d9193c7b6c38dd1fdcde94914800ebe08ef2039ca0310ee"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The TEST information is usually set to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "108",
+       "sha": "e2015a82f1b697968d9193c7b6c38dd1fdcde94914800ebe08ef2039ca0310ee"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bit 5",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's waveform_enable returns 0 for this chip revision, so op_waveform returns 0 whatever bit 5 of this register holds.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "116-118",
+       "sha": "11c881bb819dd9714793c460b6c75c5ab2287750f87236ac3a59f1c9acd76266"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "203",
+       "sha": "57d12807409964876e255703accdbaff1168b1be733b5cd4593dcf0da6709c72"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "246",
+       "sha": "c60adaccb5c8b81bd14bc9c0c7ebc29ba0d4e46af658912d5423cbdbea8cc578"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "276",
+       "sha": "ec700e55c741a73cdd49036c241ce42e0cd72e3e0e242b79f97969e2bb6d74d0"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "503",
+       "sha": "02f1a8718b0d98f3d551688d1abb6d554d4c6334f3ee67f5e86f2f06f59e9bfe"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "174",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "202",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "timer 1 value",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "109"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "175"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "206"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "204"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1480"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1486"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm.h",
+     "lines": "546"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments register 02 as TIMER 1 DATA.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "206",
+       "sha": "7ebdcd2641433fe228bc031954ab01f43f454a564b672d6f6f45451ee5ff4c51"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 02 holds the time setting on timer 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "109",
+       "sha": "057b21aad8d6b2ff53fb171c1482b73bb24ef4b2c6a336327757fbe2c2209834"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME multiplies the stored byte by 4 and makes a timer 1 period 1024 minus that value steps, each step lasting OPERATORS times the clock prescale in clocks.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "204",
+       "sha": "919e5fa4196038549789a60c7ed284068328b9ea3c422d5ab79c6c3e764b11ef"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1480",
+       "sha": "813114b6a5f87b978bdcdc7199489ef38c3eb0b39464bbb10a524313d804de6b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1486",
+       "sha": "27addfcd0063aa836b1cdeed087a85426e3518325640957049b15b1d1fdb3d3f"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm.h",
+       "lines": "546",
+       "sha": "5d80152fb28ef78169de16558a1160cdd1ccfc0abf3de036e1790497fa2a463b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "175",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "204",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "timer 2 value",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "110"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "176"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "205"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1480"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1486"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm.h",
+     "lines": "546"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments register 03 as TIMER 2 DATA.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "207",
+       "sha": "a108d9968b035e82171df0b5d955f187e34275af27c914d440049cfedd8bafdc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 03 holds the time setting on timer 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "110",
+       "sha": "220ecf241409096d11a9b8504047728bfab0e41538f0b4dadea37c280ef13326"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME makes a timer 2 period 16 times (256 minus the stored byte) steps, each step lasting OPERATORS times the clock prescale in clocks.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "205",
+       "sha": "434fe8bf91a6c229ae1f9c4bc02eb392f21a7bafdd6cb7dcf82e9b943e1ab65d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1480",
+       "sha": "813114b6a5f87b978bdcdc7199489ef38c3eb0b39464bbb10a524313d804de6b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1486",
+       "sha": "27addfcd0063aa836b1cdeed087a85426e3518325640957049b15b1d1fdb3d3f"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm.h",
+       "lines": "546",
+       "sha": "5d80152fb28ef78169de16558a1160cdd1ccfc0abf3de036e1790497fa2a463b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "176",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "205",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "timer control",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "113"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "177"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "208"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "200-203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "206-213"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1402-1408"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "62-65"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "147"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "function": "fm_engine_base<RegisterType>::engine_mode_write"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments register 04 as IRQ RESET/TIMER CONTROL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "208",
+       "sha": "06500a24511b0aece886dfa9ee1f4e196368901e023006ce466e5ece0c8b46d0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 04 controls the operation of timers 1 and 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "113",
+       "sha": "2fe68c9f0adc90af8d78c977056c5197fab5d39fc2da8f16c3476bef4ded2c29"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 04 resets interrupt signals.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "113",
+       "sha": "2fe68c9f0adc90af8d78c977056c5197fab5d39fc2da8f16c3476bef4ded2c29"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write with bit 7 set only sets bit 7 of the stored byte and keeps its other bits; any other write replaces the byte.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "200-203",
+       "sha": "106c679c59aa31c4903b55231aecb4b15299ba7410db7ed68fcccf8b5827ac92"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1567",
+       "sha": "ed82a351edf7b7dd5426526ecfe380e3be31874d70743398799f159d069b0639"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "129",
+       "sha": "6cd20a48b764adf7235c8ba9ed0f3234e5fa861432efbe800ef49303c80df6c4"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to this register does not act at once: MAME schedules it with the scheduler's synchronize, which runs the engine's mode write in order with the timers.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1402-1408",
+       "sha": "36552226de6c2f0b878e3d9d3a1729fd84f9b62cc3081c5e07413656927d453c"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "62-65",
+       "sha": "0e534a33043eab6d334bd3220bd186fbc6be7f068f9bd5d9698496363f1e8ef5"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "147",
+       "sha": "5c54eacc08c1fc464e60109d97114c260c0e065d0add2e10ad3fb7266fa286d3"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "bits 3-6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME masks status bits 3 to 6 with the same bits of this register, in the status read and in the IRQ check.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "206",
+       "sha": "70e2c6aa01955b07dc5a2e4004d2fe61a5b9fdc1b6c08adc4d84db353ce008e9"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1444",
+       "sha": "ea502b337a85461221812393756fa23d2945e706a6ab72e282649188bbfcfd80"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1540",
+       "sha": "477b7378d754ba4641771adcbd52a5576821f4730156e1a64d61ed5f330c9836"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME shortens the timer 2 start by the low 4 bits of the clock count; a comment says the multiplier of 16 is free-running.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1584-1587",
+       "sha": "1623e37522f84985c307687b08a3dda99c55af91f1560a73ce7713f4b6f0b2f8"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's enable_timer_a and enable_timer_b both return 1.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "210-211",
+       "sha": "24d2ef7107540e7b7d9d3ca9495741588bb51d7a754fca380e5fd105beb19840"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "177",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "212-213",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1587-1588",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "207-209",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1573",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1582",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1572",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1575",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1578",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1580",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1563",
+     "as": "unseen",
+     "reason": "marks every channel for re-preparation; no register behaviour"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "CSM, note select",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "114"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "115"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "178"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "214"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "215"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "298"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "302"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1515-1522"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments register 08 as CSM speech synthesis mode/Note Select.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "209",
+       "sha": "f56567a152a14ae32dd2c205c12095cb76f4ea5fd75d1d8bd1d4aa2788a955ab"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 08 holds CSM, which is for the CSM speech synthesis mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "114",
+       "sha": "c1e275368f342dcbdbd12970092631e7e1f644a7779b93cb6bf1a0368e848f6e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 08 holds NOTE SEL, which is for switching the keyboard split by using the F-Number.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "115",
+       "sha": "ae642b8f9e9b1fec6440e30658e91e5401942004b41df0258a3f013493bd9b19"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When timer 1 expires with the CSM bit set, MAME keys on the channels selected by CSM_TRIGGER_MASK with the CSM key-on type.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1515-1522",
+       "sha": "208bfaf39cafa93ac22e86ec7ca692c50a6775bf6787abca54431e5ad5f90540"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "132",
+       "sha": "7d3afdd9979ee6e2ebe00477ae8455ff81ced52d0bd4f3f47f347cf330f8ca86"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "bit 6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME takes the key code's low bit from F-number bit 9 with NOTE SEL 0 and bit 8 with 1; a comment says this is reversed from the manual.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "298",
+       "sha": "c101364bce3f3b508e27455765d2a2c0cbdb62515904e8bc1c85fca5d3e69e73"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "300-302",
+       "sha": "ec594022c22edd6316e89f1ac7bd8cf11dde3815a96c45b802ef65a4be2e824b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "178",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "214",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1515-1522",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "215",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "302",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0xBD",
+   "name": "rhythm and depth",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "126-129"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "191"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "215"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "206-211"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1425-1431"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "216-218"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "262-265"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "251"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "255"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "264"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "270"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments register BD as DEPTH (AM/VIB) and RHYTHM (BD, SD, TOM, TC, HH); the capture garbles the separators.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "215",
+       "sha": "4ef81afbad706e166b6c55e9d4fbc44e1d1e3bf518b1e072594f4b6a06a1376d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register BD controls rhythmic sounds and has the corresponding bits for setting the ON/OFF of each rhythm.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "126",
+       "sha": "1071f0c27101ab9e23164592be068a4194149c105a77e25595ebc23fb7e7500e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "When the R bit is 1, the system is in the rhythm mode; the capture has a stray T before the sentence.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "127",
+       "sha": "0d8dc1d28c0575b19e7df1f4a494306ee3935f92097df8b172432555bd6569ce"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "VIB DEP indicates the depth of vibrato.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "128",
+       "sha": "e9beaaa5bdaddee97f16da787dc1815a9f125f90e433aaff300d752016114dcf"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture reads the two vibrato depths as `0 = 74, 1 = 146`; the last glyph of each value is doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "128",
+       "sha": "e9beaaa5bdaddee97f16da787dc1815a9f125f90e433aaff300d752016114dcf"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "AM DEP indicates the depth of amplitude modulation.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "129",
+       "sha": "b4afe9092f8643d4893ed5cd063737c1a6b70c26e147cfd4705caf0734e1bb60"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The two amplitude modulation depths are 0 = 1 dB and 1 = 4.8 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "129",
+       "sha": "b4afe9092f8643d4893ed5cd063737c1a6b70c26e147cfd4705caf0734e1bb60"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "191",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "206-211",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1425-1431",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "209",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "218",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "262-265",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "217",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "270",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "264",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "216",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "270",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "251",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "255",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0xA0..0xA8",
+   "name": "F-number low",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "123"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "187-188"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "196"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "225"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "290-294"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "354-365"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map shows registers A0 to A8 as a field labelled F Number (L).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "196",
+       "sha": "236a028198138eb63db792153ec6a5d8df05e4d096261c98e5deb8e30310c97e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "F-Number provides chords within one octave (the document's wording).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "123",
+       "sha": "0d94535f95c350514bfebbf3a7d4d21ede115719c4127bcf53c2e93001226224"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's block_freq joins 5 bits of registers B0 to B8 to the 8 bits of this register; its comment lays it out as 3 block bits and 10 F-number bits.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "225",
+       "sha": "b4dd6ff34c4b2475aecf093f7d2da0e0533682c2c8ef9a1684ba42a4586dc5f0"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "290-294",
+       "sha": "521e3070d337f5391fffe0ee0659eb575a9c5ac9c6ba36f7634840ca840c216d"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's phase step starts from the low 10 bits of block_freq times 4.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "354",
+       "sha": "ffea83182ba2d91ca9209960c15d5521fcae6fcbffacb68f2d623efe669e4ab4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "187-188",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "225",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "354-365",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0xB0..0xB8",
+   "name": "key on, block",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "124"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "125"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "189-190"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "197-199"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "214"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "214-224"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1420-1424"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "842-844"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "225"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "364-365"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "368"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments registers A0 to B8 as KON/BLOCK/F-Number.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "214",
+       "sha": "cb8245920e54b6c7d7958a2688d8d68086df5b911084330411cc8e1fac56e2fe"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Block represents octave information for each sound.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "124",
+       "sha": "cfc2db8faee32e396b58f33664f67c2fcffe5566b3fcf576fe615823f43920c8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "KON indicates that the sound is being generated when it is 1; the capture lacks a verb before `being`.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "125",
+       "sha": "68278b31d95dfc90f604d266eb2ca03fa6dcd88a2f030bd843b91b511afe78f3"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map cells for registers B0 to B8 read `F-N`, `BLOCK` and `(H)` in the capture, which garbles the glyphs around them.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "197-199",
+       "sha": "4921c3e69250791f4bc3b672dbab353f892127daa9f9bc356034fd049d9b8986"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "189-190",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "225",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "364-365",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "368",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "214-224",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1420-1424",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "842-844",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0xC0..0xC8",
+   "name": "feedback, connection",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "130"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "131"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "192-193"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "216"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "226"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "925-927"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "941-951"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments registers C0 to C8 as FEEDBACK/CONNECTION.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "216",
+       "sha": "8e1b26f23cfab35dcb75e082b27a6be093d9c939d5ab0f03a2a22bb9c8cc58fb"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "FB indicates the FM feedback factor.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "130",
+       "sha": "c7dbf7164231e118a0869de4d92247f7e6a40a2d74476d1f7f013207aa4fdd7d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "C indicates sine wave synthesis or FM modulation.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "131",
+       "sha": "34a09fd83c76a2a31af977f4fb8737e2ebb9473d31c97285dbcb3a1b0419af74"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "192-193",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "226",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "925-927",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "227",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "941-951",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x20..0x35",
+   "name": "operator mode",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "116"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "117"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "118"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "119"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "132"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "137"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "179-180"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "210"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "235-239"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "309-312"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "316-319"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "335-337"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "338"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "777-778"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments registers 20 to 35 as AM/VIB/EG-TYPE/KSR/MULTIPLE.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "210",
+       "sha": "614ad675d1ed905d19ef35420c4b7e35d26a9d06818ca511b8961c2a80ab2092"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "MULTI controls the relationship between fundamental waves and harmonics.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "116",
+       "sha": "be6c9b62a3db9142e56cf28b4fbb4334b1c9a5314186bd23598ac735ac9ae4c2"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "KSR is key scale of RATE.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "132",
+       "sha": "3c498dbb7659c4f73dbfd2b6b42ca988f91a13122d22911302eedc7effa5c887"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "EG-TYPE switches between Non Percussive and Percussive Tone; 0 is for Percussive Tone, and the other value, whose digit the capture lost, for Non Percussive Tone.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "137",
+       "sha": "2d6ff1bb9f17d8e4eb76e406129124ffdd286d20c6bd0310bbe7ac1e889e6757"
+      },
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "117",
+       "sha": "01cbd4f742f113e7d2a2507b525b2ce4fafd4ff9fbb2b94378f41fdd4cab54b2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "VIB indicates the ON/OFF of vibrato.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "118",
+       "sha": "f434d53763f042a991906d2a403b9cb965dadd7fa69fc6670e3265a72a01e0ee"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "AM indicates the ON/OFF of modulation.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "119",
+       "sha": "9650e7bee8f97c6f00a09dc57ecf65e8c1015ca307d9956cda085e23870a9be8"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bits 0-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME maps the stored multiple 11 to 10, 13 to 12 and 14 to 15, and treats 0 as one half.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "307-312",
+       "sha": "60029eaee4cd586eece4a158017d1d4adb0b78370644bdeaad3f4166ad079475"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "179-180",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "239",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "309-312",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "238",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "335-337",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "237",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "338",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "236",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "316-319",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "235",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "777-778",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x55",
+   "name": "operator level",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "120"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "133"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "181-182"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "211"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "240"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "241"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "322"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "325-327"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments registers 40 to 55 as KSL/TOTAL LEVEL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "211",
+       "sha": "7b8b4538fd2def833895e769c270c11a3ce596e6e9aa5a3547f33ebf332e68b7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "TL provides a total level for adjustment of each sound level.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "120",
+       "sha": "f57af16cb729555f229e0af93e1750f96f44b239588ef0ac2c3f7192a2c59594"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "KSL is the level key scale.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "133",
+       "sha": "67dcedec4114f48c3cc434db56b2175f01186f7fa067073bf01c4630dd539cff"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bits 6-7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads the two KSL bits swapped: a stored 1 selects the level 2 and a stored 2 selects 1.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "240",
+       "sha": "e7763b1f1290143a9526a83f00e5e279cd9ba5baba0fcdd241f8a62dd627a9ba"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "181-182",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "241",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "322",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "240",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "325-327",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x60..0x75",
+   "name": "attack, decay",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "138"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "139"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "183-184"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "212"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "242"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "243"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "336"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "337"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments registers 60 to 75 as ATTACK RATE/DECAY RATE.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "212",
+       "sha": "5fe815dfac1db105e9bb19cbfdb2b935eb1e25c95f560b247170edec3113f52a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "DR sets the decay rate at the decay time.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "138",
+       "sha": "40ff4889d7417351ed1b184ee9fdf3afc3b2a3b6f14d32ac84f8fc5c5bdd3aa2"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "AR sets the rate of increase at the attack time; the capture misreads the label AR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "139",
+       "sha": "c315339c8ef9793c65de31f7880fc7535bc797d7e48894f944cf0bf63b72839d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "183-184",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "243",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "337",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "242",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "336",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0x95",
+   "name": "sustain, release",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "121"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "122"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "185-186"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "213"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "244"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "245"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "330-332"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "338-339"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The register map comments registers 80 to 95 as SUSTAIN RATE/RELEASE RATE.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "213",
+       "sha": "1033c44137cc15555a70bf0a776ef3465b6490f2235133382fbd394a9d3a9680"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "RR provides the decay rate at Release/Sustain time.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "121",
+       "sha": "cdfae3ea008c6506704ab900a29b080db1aa59cf388f669b8caefd4d0440210e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "SL provides the level for shifting from decay to sustain.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "122",
+       "sha": "fe715c9ee75f461d2c7021563f8ed190937ec561680f0dafc48c29a56a4e4b90"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bits 4-7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME turns a stored sustain level of 15 into 31 before shifting it left by 5.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "330-332",
+       "sha": "f0d3337996ec0bd217f7f8dfe3eb165d5803a5cbf15ecc52fc9b3378e81ef4d7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "185-186",
+     "as": "key"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "203",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "245",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "338-339",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "244",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "330-332",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  }
+ ]
+}

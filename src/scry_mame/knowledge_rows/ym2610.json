@@ -1,0 +1,7948 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ym2610",
+ "title": "The YM2610 OPNB registers",
+ "kind": "register",
+ "scope": "ym2610",
+ "covers": "the registers of the YM2610 (OPNB) as Yamaha's application manual draws them, and what MAME does for each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "YM2610.raw.txt",
+   "variant": "ym2610"
+  }
+ ],
+ "official": {
+  "YM2610.raw.txt": [
+   "620-662",
+   "663-665",
+   "668-710",
+   "713-719",
+   "720-722",
+   "723-725",
+   "726-728",
+   "729-731",
+   "732-735",
+   "736-738",
+   "742-744",
+   "745-747",
+   "748-750",
+   "751-753",
+   "1009-1124",
+   "1189-1209",
+   "1243-1254",
+   "754-756",
+   "757-759",
+   "760-762",
+   "763-765",
+   "766-768",
+   "769-771",
+   "772-774",
+   "775-777",
+   "778-780",
+   "1211-1239",
+   "798-802",
+   "849-861",
+   "803-805",
+   "863-873",
+   "806-808",
+   "876-879",
+   "809-812",
+   "882-895",
+   "813-816",
+   "897-911",
+   "817-820",
+   "928",
+   "821-824",
+   "913-926",
+   "825-828",
+   "604",
+   "614-617"
+  ]
+ },
+ "closed": [],
+ "engine": [],
+ "entries": [
+  {
+   "key": "0x00..0x05",
+   "name": "tone period",
+   "aliases": [
+    "tune"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "620-641"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1913-1920"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "137"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "read",
+     "of": "doc",
+     "text": "The SSG registers are listed in a table headed Read/Write Data(SSG).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "620",
+       "sha": "efbba84aebedc444445699da0fdc73032f36435832d8c52abc7ba2da4b78c529"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The table columns are ADDR., D7 to D0 and COMMENT.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "622",
+       "sha": "068e18fde6a6e52f884d08218d9a70e83ad86bc4622587f3e4a3997e6e1445f0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "$00 is Fine Tune and $01 is Coarse Tune, together the Channel-A Tone Period.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "624-629",
+       "sha": "a56774d3bf2fb8341120d81407e2f7172dc767f7cfa607f3ed52dffdd44f50a1"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "$02 is Fine Tune and $03 is Coarse Tune, together the Channel-B Tone Period.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "630-635",
+       "sha": "ae36e3fad31c523626b9447826633008beda243d9556afd2667dc22eba6cb215"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "$04 is Fine Tune and $05 is Coarse Tune, together the Channel-C Tone Period.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "636-641",
+       "sha": "f8403510b8504574ca25f842fc2be991247c61211f99149de1b6355217bc772b"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The Fine Tune cell is drawn across D7 to D0; the Coarse Tune cell of $01, $03 and $05 is drawn with a filled left half.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "622",
+       "sha": "068e18fde6a6e52f884d08218d9a70e83ad86bc4622587f3e4a3997e6e1445f0"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "625",
+       "sha": "2e5c67015d25e012d1d36ae8a4e0dec2d83be4dd9492ef00f3658bfa9b9fd307"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "628",
+       "sha": "8a8631e235a9b6ac9fa0f5784de55dbdf2b1f133a59c7e64e9fa29c82ea38b36"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "634",
+       "sha": "74a7999d9176852cca9fb8e30e761c939d09870d3d675579402103fdec7036a5"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "640",
+       "sha": "7f3df1228c65b30e924cf667cf977a88674e0650f9dd3bb63a30d1fbd17ab29f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "623",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1913-1920",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "137",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "137",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "137",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "noise period",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "642-644"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "123"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$06 is the Noise Period; its cell reads Period Control.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "642-644",
+       "sha": "2ed9de20e88ab7c9e7e8aa177e4ba5d2ee19d5586b88e764ab88e5bc565c260f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The left part of the $06 cell is drawn filled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "643",
+       "sha": "6570d41f0147e821fdcd33a2c2fa91d9e86e296056a402d5988c3cbb2909c5c8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "123",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "mixer, I/O direction",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "645-647"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "124-125"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "135-136"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$07 is /Enable; its cell is split into /Noise and /Tone parts after a filled left part.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "645-647",
+       "sha": "1867f649e1220548ebcf4ad9eb56a3c46662d138303ce6b53d1ee5e98ba89c66"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The left part of the $07 cell is drawn filled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "646",
+       "sha": "5f6cf13d9dc932f2a02b33046d29e07bedbc46718f315aa1b457f4ddc671485f"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's SSG register accessors take bits 7 and 6 of $07 as the I/O port B and A directions, and bits 5-3 and 2-0 as the noise and tone enables.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "124-125",
+       "sha": "84fe9a6522bc2621a119c9764bb224e560e78216b7625bdf6c28d902cbff1883"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "135-136",
+       "sha": "4dbabd96f278e3c1d60de0a7e1bba7284d61ac527a5068cea164bc4b38442602"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0A",
+   "name": "amplitude",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "648-656"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "138-139"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$08, $09 and $0A are the Channel-A, Channel-B and Channel-C Amplitude.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "648-656",
+       "sha": "947a0bb1d88bb72686300d710eda212e4fe55b431d6c5c6a6d5d643aaa7aaf73"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Each amplitude cell is drawn as a filled left part, then M, then Level.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "649",
+       "sha": "0e1626bbf2732bdfef8e4752a26aed4d387fd85ad85dabbf3fa16005667e92c8"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "652",
+       "sha": "f54c7ba79b598bde85040a1eddead3f72e314ffde66b461373861ded80bab8e5"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "655",
+       "sha": "59801732db0bee872bc8777c4cc9cb864f1707774a3bd00213a51bd9a74eb67d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME takes bit 4 of $08 to $0A as the envelope enable of the channel and bits 3-0 as its amplitude.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "138-139",
+       "sha": "521f22ddbd929475074646014d836fa8952d4c290cda3febea00055b9b5342cf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "138-139",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "name": "envelope period low",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "657-659"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "126"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$0B is the Fine Tune of the Envelop Period (spelled so in the capture).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "657-659",
+       "sha": "0c763a3931d0bf0720d40511507b0b1734e87764a4ac81958f91d6ac1f87ff25"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $0B cell is one Fine Tune cell over the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "658",
+       "sha": "fc5d9767cb61290835044456ca86c156f67e5b277b6e9df16127f69a66aadb53"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "126",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x0C",
+   "name": "envelope period high",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "660-662"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "126"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$0C is the Coarse tune of the Envelop Period (spelled so in the capture).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "660-662",
+       "sha": "d5e7d7862e17fb31bb6a6425fc1779758ceedab987b80565723e650920ba0631"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $0C cell is one Coarse tune cell over the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "661",
+       "sha": "e2bfd89fe2925f6d4d04e288a86e584a3be9838ac79f1f55b37f03d62921cb11"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "126",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x21",
+   "name": "test",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "713-719"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$21 is Test, commented LSI Test Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "717-719",
+       "sha": "74340360a692f183c767d2defdb6b54707807d49ef9b4c9ebec3ac31e81ec8ba"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $21 cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "718",
+       "sha": "02c15d84a4b4015ff713abec7d68a5d35c333e578945fdf6ecf8fc4e6cec64b5"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "713",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "715-716",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x22",
+   "name": "LFO control",
+   "aliases": [
+    "LFO"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "720-722"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1189-1209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "194-195"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "214-217"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "221"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "202-212"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$22 is LFO Freq Control; its cell is a filled left half and an LFO cell.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "720-722",
+       "sha": "344cbc0bba371b4b947798c7154520364c8a9e31f7e3595f5e7423834ab03f22"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The left half of the $22 cell is drawn filled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "721",
+       "sha": "e273b5cabd68d8b0eec358b1cd6b9b18c59d511dee590f5de0dc1840ee43f636"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In the description of $22, D3 is LFO ON and D2 to D0 are FREQ CONT; D7 to D4 are drawn filled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1189-1196",
+       "sha": "85b0363920d34980d09bb64f4ef0072ae422375413a2cc3b39813d28651052a5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "FREQ CONT is set from the eight values of the frequency table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1208",
+       "sha": "8c71efa2acbcb1954ec1d3fc2c9745d9b4aa106e2ab618bac5638a8f83c67409"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The table lists FREQ CONT 0 to 7 with the frequencies 3.98, 5.56, 6.02, 6.37, 6.88, 9.63, 48.1 and 72.2 (Hz).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1198-1204",
+       "sha": "0b4db0bdb7bfec23a1c16e1da101bda9f79b259fad3c64161860df1f744bd38d"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "When LFO ON is 1, the LFO is on.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1209",
+       "sha": "457e59611cb664125265a207170f35cc013413965406f39fdcbfbac271e72d1d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "194-195",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "214-216",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "221",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "202-212",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "217",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x24",
+   "name": "timer A high",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "723-725"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$24 is Timer-A, commented Timer-A upper 8 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "723-725",
+       "sha": "ae9248e7751f7571fdeb56f050fab63bb40ec6623766dba4097711821b86c948"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $24 cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "724",
+       "sha": "c0dd6aaa01e1e46f6dd5c6f470c05f6749a6edd45290f8433c9e73fefbd0a6ec"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x25",
+   "name": "timer A low",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "726-728"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$25 is Timer-A, commented Timer-A lower 2 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "726-728",
+       "sha": "3097e7e9f1b3a4e8bac3bfc5c6e2a5128a984ece5aa47a3bf03bcb89072e0ed2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $25 cell is drawn with a filled left part and a Timer-A part at the right.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "727",
+       "sha": "48f6dc9e83cb741f6f28262a01e3ddc32cd357f0a583bec80b9c834d6a9c044f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x26",
+   "name": "timer B",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "729-731"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "197"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$26 is Timer-B, commented Timer-B Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "729-731",
+       "sha": "9352771bb88cf1f3f91ddc2b9544b37f6593b9867a6a6bb67c95f9a84f69c1ba"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $26 cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "730",
+       "sha": "d1aca914b352f49d737ed697a820f4cb1e6a3510c8532d29d4970ff25a0e34c7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "197",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x30..0x3F",
+   "name": "detune, multiple",
+   "aliases": [
+    "DT",
+    "MULTI"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "742-744"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "221-222"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$31 to $3E are Detune/Multiple, with the cells DT and MULTI.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "742-744",
+       "sha": "8d6deb1667b9ea47122a081a56d68d97039b584e5fb6174898bf0bc1bb52225c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as a filled left part, then DT, then MULTI.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "743",
+       "sha": "df01c98d9dc84959a21a2f03024eb278cd6bec52d950a56c9423f0c7d192b3dc"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "221-222",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x4F",
+   "name": "total level",
+   "aliases": [
+    "TL"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "745-747"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "223"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$41 to $4E are Total Level, with the cell TL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "745-747",
+       "sha": "3596cfc92fa46650eb08b48ce25253cb6df67612f6a5f5eb44bc263ab77c5a9d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as a filled left part, then TL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "746",
+       "sha": "54d3fe25849a96d1c00f5684ee8a9e08031c90b07894deecc1834f2ee9317f66"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "223",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x50..0x5F",
+   "name": "key scale, attack",
+   "aliases": [
+    "KS",
+    "AR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "748-750"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "224-225"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$51 to $5E are Key Scale/Attack Rate, with the cells KS and AR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "748-750",
+       "sha": "d052284e5f49fc8a701c27be06142f0a7e98e60a4ca9710e8a04ddea0f5bf35b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as KS, a filled part, then AR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "749",
+       "sha": "2a654c7bd860f668ab55405ee8f6660d5ad0a1cccc1fb853ef898f85717fd01c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "224-225",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x60..0x6F",
+   "name": "AM enable, decay rate",
+   "aliases": [
+    "AMON",
+    "DR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "751-753"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1243-1254"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226-227"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$61 to $6E are AMON/Decay Rate, with the cells AM and DR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "751-753",
+       "sha": "1483e8c876377e76751d797eb7b82e66224f829819954fc75458b9c8fdeb342a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as AM, a filled part, then DR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "752",
+       "sha": "1ea1e64c1696d034b15cc97012140b26097fe0eae5e16a93d280b0c197e8d113"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description of $61 to $6E, D7 is AMON and D4 to D0 are DR; D6 and D5 are drawn filled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1243-1250",
+       "sha": "6a27e8cdd8580d33d56263f9ce0dcda2545a20b851b8f04fbe6977026347449e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "DR is the Decay Rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1253",
+       "sha": "c2807e79a5ab4531aec382612da5e5c7003a60dd2b123c3326e55b7848f3da13"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "AMON controls amplitude modulation for each slot, and is on when 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1254",
+       "sha": "ba5c5007ff3f8bea11b1d5ef6068b56f82a5eb835fdb7be2699444426da24096"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226-227",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "227",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x11",
+   "name": "ADPCM-B pan, mode",
+   "aliases": [
+    "ADPCM-B Control 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "675-677"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1026-1036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "278-279"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "543-546"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$11 is Control 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "675-677",
+       "sha": "6bdd655479dfb778e1ead5e8ef042c10f4fe3928ad0fed2b2b958017a2237306"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $11 cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "676",
+       "sha": "212580eabf6e4cf6528362407bde06598c67e6b0559ad3e7b67bf698dd105bc6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description, $11 has L at D7 and R at D6; the other bits are drawn as -.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1026-1033",
+       "sha": "7497c02c1f3ab076213a0cfaa4cd586d964b7979ccfb80ada88b1d02d53fa62f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "L: when 1, output goes to the left channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1035",
+       "sha": "1a56c688cacafcd4902073b1e9618da12991d467f7164b7a8b825c6ecea6ab96"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "R: when 1, output goes to the right channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1036",
+       "sha": "d8249817878bd2ff51ed21650c4cf1ac1a36da004c829132c45abbb05650c7dc"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "278-279",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "543-544",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "545-546",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x12..0x13",
+   "name": "ADPCM-B start address",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "678-683"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1038-1051"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "284"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "374"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "658-659"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1854"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "391"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "847"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$12 is Start ADDR.(L).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "678-680",
+       "sha": "c5d3325cc20c4acb2d5031ffc4a81e6aaafdb44991a5f42507269971e13fca9f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "$13 is Start ADDR.(H).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "681-683",
+       "sha": "057940f857ae129f584061ab7afc47526a0859e4f03e45a1e0b27aecd9d33e9f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The $12 and $13 cells are drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "679",
+       "sha": "898b5000e42c573133ce9f551e34167d8ef3dd1667029710d3ea31d158dcf2c0"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "682",
+       "sha": "dbb4e3a42052e2e9aaa0cdbc04fc4acf9bba804c1f6f5a5b4266305be495c960"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "In the description, the ROM address bits 23 to 0 are drawn as Start Address(H), Start Address(L) and a Fix Level of 0 0 0 0 0 0 0 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1038-1045",
+       "sha": "f32b44c4f3f61cd2874cb1340b2cda83ff6ad6f0ff1ffaf2dc2945ad6ef47ed6"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1046-1051",
+       "sha": "0800e7c155480c1c746216d4a924ed6d8243e905174f222fc373217b975e54c2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "284",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "374",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "658-659",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1854",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "391",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "847",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x16..0x17",
+   "name": "ADPCM-B prescale",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "690-695"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "286"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The cells of $16 and $17 carry no label: each is drawn as a row of = signs.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "690-695",
+       "sha": "1c6a6ec50b22db8ff5f63c8a4dd5bc17d2cd7524709aaab2ab171cc02fe3e294"
+      }
+     ],
+     "state": "undetermined"
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $16 and $17 cells are drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "691",
+       "sha": "365339032f15a7798216fb5392d8cc652ec17d6f80615351217526aba5843310"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "694",
+       "sha": "74614a708218618e01ea841589626b2f6fbb5eee0e2e594747d83e43f1830803"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME stores writes to $16 and $17; its prescale value takes $16 as the low byte and bits 2 to 0 of $17 as the upper bits.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2023",
+       "sha": "c6253b251cb51249558ca61d8738edf248d70acde8e0e3ed9cab3023962e02bc"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "913",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "269",
+       "sha": "c556f4663898930e3ca12d9944be59fce0614242589f450f508f328dd8b7615b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "286",
+       "sha": "74dbb44c42f041e21a305039f52029956a609928861d0ce205fa1a25b91f7fab"
+      }
+     ],
+     "row": "1"
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x18",
+   "name": "ADPCM-B data write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "696-698"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "287"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "627-636"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "272-274"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The cell of $18 carries no label: it is drawn as a row of = signs.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "696-698",
+       "sha": "71766f51037b9a095c5956ea9abb643c278b7e42e101da54ef0a36bd87a0e19c"
+      }
+     ],
+     "state": "undetermined"
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $18 cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "697",
+       "sha": "6ea42c524e1f135a0842625d3b238a3ea2bda2474e4612480bd01f0d4ca77221"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME stores a write to $18 as the ADPCM-B CPU data byte.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2023",
+       "sha": "c6253b251cb51249558ca61d8738edf248d70acde8e0e3ed9cab3023962e02bc"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "913",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "269",
+       "sha": "c556f4663898930e3ca12d9944be59fce0614242589f450f508f328dd8b7615b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "287",
+       "sha": "dba644b39c5ae25a939610bb44074dabeed229ad3b08629aebf3860e90096a89"
+      }
+     ],
+     "row": "1"
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "While MAME's execute flag (bit 7 of ADPCM-B register 0) is set and record and external are clear, a $18 write clears its ready flag, per its comment.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "627-636",
+       "sha": "dfcc0f538d33b4785c09fa153f1a002c5d1a865b663e462fb6ae740f3f56fecc"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "272-274",
+       "sha": "2ca2e7ed616d3f0f73c4a02f1947407a59924ca7c644f0ac1002a041b18edc2f"
+      }
+     ],
+     "row": "1"
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x1B",
+   "name": "ADPCM-B level",
+   "aliases": [
+    "EG Control"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "705-707"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1095-1106"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "289"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "540"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$1B is EG Control.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "705-707",
+       "sha": "e8b3078352af9b3b37b86e6952dae34b4caa1dada418bb15973e683454e5491e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $1B cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "706",
+       "sha": "4bb6f557e566e7265489b2bbd703da110c55cc8be699c0cd02c9c8089f908e47"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description, $1B is EG-Control across D7 to D0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1095-1102",
+       "sha": "0dcb9321bbd42d2b5756d69c804ad03eefc3875fda5b3212901c8c69e8bab7db"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "$1B is the ADPCM-B Output Level Control; all 1 is the maximum.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1104-1106",
+       "sha": "70707adcb9418fe6ae9cb4751e65217476e8414154d4d289409b1442dbf77367"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "289",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "289",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "540",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x1C",
+   "name": "end-of-sample reset",
+   "aliases": [
+    "Flag Control"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "708-710"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1110-1123"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2025-2032"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "647"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1942"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2174"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2181-2183"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$1C is Flag Control.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "708-710",
+       "sha": "7e782080152c62a4829f9bc03769b6deae4692eb1dc585312f84ed85d628f155"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $1C cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "709",
+       "sha": "5dced2048606bf0943a8ba867834058f107ce9f01ab70d0451e1d7186449d8c6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description, $1C has MSK B at D7, D6 with no MSK label and MSK A5 to MSK A0 at D5 to D0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1110-1118",
+       "sha": "c1adde697559471073ce97bd3fe9ae5d1ca618a35ebf5aee9ce40689ba2a831b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "When a MSK bit is 1, the corresponding flag in Status 1 is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1121-1123",
+       "sha": "b63751abc07f5c8192b867688608ed98336e3f8f79799a66c12f92e6b6944376"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A 1 in D7 or D5-D0 of $1C also clears the matching bit of MAME's latched end-of-sample status; a 1 in D7 clears the ADPCM-B end-of-sample status too.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2029-2031",
+       "sha": "d52a0cf177f207dc4e3c3dba84d9dd4a9cba615be3808426b12882714512a9cc"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2025-2032",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2025-2028",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "647",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2028",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1942",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2174",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2181-2183",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "name": "envelope shape",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "663-665"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "260-262"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "268-270"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "127-130"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$0D is the Envelop Shape Cycle (spelled so in the capture), with the labelled cells CON, ATT, ALT and HLD.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "663-665",
+       "sha": "5251c5e781f146f3abd199c41776e64ed74b30d9a898bc715ea77d8e98d68c9b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $0D cell is drawn with a filled left part before its four labelled cells.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "664",
+       "sha": "01b3dbf13c990373a7e1cf5cb9640c0eea1d57a17bcc4bb01ad7107d47a79db4"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME sets its envelope state to 0 on a write of $0D, unless an SSG override is installed, which takes the write first.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+       "lines": "260-262",
+       "sha": "bf0b397a56dcfdf650abe07085755edef36dfc6fb23c175809aec0712a4cf264"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+       "lines": "268-270",
+       "sha": "fcbb1948678945753c3bc88b139091052e0dc36b9bdb3d4a57bd7c79bf6f00cf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2004-2012",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "127-130",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x28",
+   "name": "key on/off",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "736-738"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "176-184"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1423"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$28 is Key-ON/OFF, with a Slot cell, a filled cell and a CH cell.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "736-738",
+       "sha": "8a67a38ee1f36a1226e2773461eb79b07699206015e5961219f2a263d7f1783d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $28 cell is drawn as a Slot part, a narrow filled part and a CH part.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "737",
+       "sha": "53cf3e3a4281c9a2f74c1abd1b2d8c643b84b5816a49a1b7eee6bbc31702ba3b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "176-184",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1423",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x27",
+   "name": "timer control, mode",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "732-735"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1405-1408"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "62-65"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "147"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1560-1567"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "198-205"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$27 is Timer-A/B Control and 2 CH Mode, with the cells Mode, Reset B A, Enable B A and Load B A.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "732-735",
+       "sha": "be28e1948c6a7f9bd8e6b7874e254615f9728ef7008cdeca6615248edc1f507f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $27 cell is drawn as four parts: Mode, Reset, Enable and Load, the last three each split into B and A.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "733-734",
+       "sha": "7d99540b284182fa80b35d51de3b30557c078b55e2fdc632b1fed25533376098"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME does not store a write of 0x27 at once: it hands the byte to a scheduler synchronisation, and the store happens when the engine's mode-write handler runs.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1405-1408",
+       "sha": "2f347995de73c1bebd86628f15399cbb049a65ccca7ea55c12895f58a704d43b"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "62-65",
+       "sha": "0e534a33043eab6d334bd3220bd186fbc6be7f068f9bd5d9698496363f1e8ef5"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "147",
+       "sha": "5c54eacc08c1fc464e60109d97114c260c0e065d0add2e10ad3fb7266fa286d3"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1560-1567",
+       "sha": "7c4b722d3403dbc9e7f8f99c1a8919dfacd12f2755664712f9559929587e786a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1567",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "198-205",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x10",
+   "name": "ADPCM-B control",
+   "aliases": [
+    "ADPCM-B Control 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "668-674"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1009-1023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2020-2022"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "272"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "273-274"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "275"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "277"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "497-499"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "516-518"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "374"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "576-579"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "593-602"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$10 is Control 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "672-674",
+       "sha": "b6580e8acba38ad46ec133be6f34defdf105730a9d0d74291f54f8bd5548b080"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $10 cell is drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "673",
+       "sha": "ee5d513ff6cbccf9c990b59c9ac0c90d3a9238a3b99c809c195ef394d81560dc"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description, $10 has START at D7, REPEAT at D4 and RESET at D0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1009-1016",
+       "sha": "9e1ed3f25d88bde9697468cd21997d583f561eafd8982561141d26744ec597ee"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The description of $10 is headed ADPCM-B Start, Control external memory access.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1019",
+       "sha": "7f6ec74202e3dc59cc9753c096928ead3df3d1c03300b1ae6c6d8f55257c3c93"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "RESET: a line in Japanese says that 1 during execution returns ADPCM-B to its initial state, and adds that REPEAT is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1021",
+       "sha": "74bde289c77c15da08b0c7f935037e32ba32a64275a9a68e9e1aa22cb6c6adf3"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "REPEAT: when 1, ADPCM-B output repeats from the same addresses.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1022",
+       "sha": "13444344cbb45678729df71e8dd7325a3cf5b3b9ff6dd342006e457aea4d5c7c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "START: when 1, ADPCM-B output begins.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1023",
+       "sha": "fda93c761673def8ef82808f886ee8ce9dd9f3785068794c092e03b4fd67bdb7"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "The other bits of $10 (D6, D5, D3, D2 and D1) are drawn as -.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1015",
+       "sha": "ac219893d36f352dbe5b00f20ba7eafee5c4158f766f28513bbde0c97101a07d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME forces D5 of a written $10 to 1 and D6 to 0; its comment says external mode is forced on and recording disabled.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2020-2022",
+       "sha": "5642bdd9eb3cfa3ea0c97317ce1ca52e1691dcff3faa0ae022ccc132e2eb9d02"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "273-274",
+       "sha": "d7f1f58150f94c66391caec79da84cd710bd60e64def2b344f0323b0814d33bb"
+      }
+     ],
+     "row": "8"
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "On RESET MAME stops playback and holds the output without clearing the externally visible playing flag, as its comment says.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "576-579",
+       "sha": "5f1fa39419db805f491d1f892b4fe5fddec9cd357ee5627bddc4e34190b7de4a"
+      }
+     ],
+     "row": "5"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "668",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "670-671",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "272",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "275",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "277",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "497-499",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "516-518",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "374",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "593-602",
+     "as": "agrees",
+     "row": "7"
+    }
+   ]
+  },
+  {
+   "key": "0x19..0x1A",
+   "name": "ADPCM-B delta-N",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "699-704"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1068-1093"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "288"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "459-465"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2176-2177"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$19 is Delta-N(L).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "699-701",
+       "sha": "fce629f5ff07b2dc7179720ed97c3652aeaea9dd68af1dbbd85842f44aa47a77"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "$1A is Delta-N(H).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "702-704",
+       "sha": "accbb804911febca0727ceb9c2e8893af0e5b9a4d602e75ae9d1b62d7a58fdf4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The $19 and $1A cells are drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "700",
+       "sha": "0a8b42d686b6515b5408ba2ddda7423f11e49da29d86466754c788e0d64b9f2d"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "703",
+       "sha": "0d17285b79ac645c3107b88a8e7bdc96a2a2e44af54a94a0cd9baf58f7206960"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "In the description, DELTA-N (H) and DELTA-N (L) are drawn as the 16-bit DELTA-N, d15 to d8 and d7 to d0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1068-1075",
+       "sha": "262ddfa0dab9f73af25f90ea146331818c0af151b827ea7135c374804e7eff0e"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1076-1081",
+       "sha": "9792577dbf4f41a815e36c63906ba990ec25903dfa414e69e3aaa49eed31213b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "The sampling rate is given as f = delta-N / 256 * 55.5 kHz; a translator's note says the original divided by 216.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1084-1092",
+       "sha": "94ee917a8d71f32f3d8944fe3c2d2bd1db76e58fd504d8608ab3ce1e28773b85"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME adds delta-N to a 16-bit position per call of its ADPCM-B clock and consumes a buffered nibble when the sum reaches 0x10000: a divisor of 65536, not 256.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "459-465",
+       "sha": "ea32c013655c18e364f13b6b19f282e91fbfde3cefa1074b37e5551a6af7b157"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2176-2177",
+       "sha": "f88ff4a17b9d13720aff27a5efae78d9c6cb506c1eb93fc08ac53195f2558c8e"
+      }
+     ],
+     "row": "5"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "288",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x14..0x15",
+   "name": "ADPCM-B end address",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "684-689"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1053-1066"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "285"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1854"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "658-659"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "681-682"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "688-693"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "391"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "847"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "691-693"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$14 is End ADDR.(L).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "684-686",
+       "sha": "76a2c7646b41cd9abcbebe0425efedce7ff9f9280ccc53517ff59c9f1ca06285"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "$15 is End ADDR.(H).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "687-689",
+       "sha": "ff107ac81452c37cfc1fc2f4eb421d7bae2797f81e78e95a5beeab5c3723228d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The $14 and $15 cells are drawn across the full width of the table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "685",
+       "sha": "67f425c668b16c5de7f5361780a98d7a2d9b6a11a375423f5ea2543e6e042b80"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "688",
+       "sha": "9b02e3cd4705417262372b99ba5eb5240c2902d21b8b0a54ab574d2876833de2"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "In the description, the ROM address bits 23 to 0 are drawn as End Address(H), End Address(L) and a Fix Level box.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1053-1060",
+       "sha": "fa0491bf5e3d780d479a0aaf955bf98ef06087b7030030bb899682feab08f33c"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1061-1066",
+       "sha": "0800e7c155480c1c746216d4a924ed6d8243e905174f222fc373217b975e54c2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "The End Address drawing has a third box, Fix Level, holding 0 0 0 0 0 0 0 0, after the End Address(H) and (L) boxes.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1056",
+       "sha": "3fa0d55ced0caa9d34d94f6d31bf8d47ea1e8305086c99c3758ad8e37bcbc0ac"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1062",
+       "sha": "a336901ddab374358b212dfa2a493cd69721cb290822fc7b2d06c6051e899331"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "When the low 8 bits of MAME's address are all 1, it reports the end as hit if the address shifted right by 8 equals the end address.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "681-682",
+       "sha": "a53d7c01995b0a9d1309e3a476ad6fa559a18fd81cf6c37e7d202ab8a8fe0de5"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "688-693",
+       "sha": "034b96787ef353be20e6df62240766a30ca98e58e0ec2d9fecf7565e68d6580d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "1854",
+       "sha": "5dfc75a97bd0126d92dfbf8a12f3c45e87e1fb1059fa540d064b2e4f70b254f6"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "391",
+       "sha": "f4d10e9fb9b691bb8cebfc5d57ff779f78d727937e365f71306750ecc6ecc39e"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "847",
+       "sha": "f7ccb1a1f5553878b3987a9c5fc33a67f55fd5ebeb77a8ff3a1bf6815fa13bfb"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "658-659",
+       "sha": "d535d50a96167782412aa1705696310ea49a2f5e5570b02faa5a65ebc0aed697"
+      }
+     ],
+     "row": "5"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2023",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "913",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "269",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "285",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1854",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "658-659",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "691-693",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "391",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "847",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x0E..0x0F",
+   "name": "I/O ports (absent)",
+   "aliases": [
+    "I/O ports"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1921-1925"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2013-2016"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "106"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "131-132"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME returns 0xFF for a read of register 0x0E or 0x0F; its comment says the I/O ports are not supported.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "1921-1925",
+       "sha": "bb0b610e086305b0d48e704b74458a05836fe1a7caa2feff8468ba4b22e5a20d"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME handles a write of register 0x0E or 0x0F in a branch with no statement; its comment says the I/O ports are not supported.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2013-2016",
+       "sha": "3581a32fbb12a680bef7723fa07762a0b8052ea5500ede202260006dee383a51"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's SSG register array holds 0x10 bytes, and its accessors name 0x0E and 0x0F the I/O port A and B data.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "106",
+       "sha": "607f9dcce35d7603de27840fe4c1ba3f57131beec5af94a78e30808acd584316"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "131-132",
+       "sha": "c8295a1f036b1f879c0ba030957aba3d7b74d28c7621a53454c8b9c9305e4504"
+      }
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; ymfm_opn.cpp comments both branches of registers 0x0E and 0x0F as I/O ports not supported."
+    },
+    {
+     "where": "maker",
+     "gave": "The YM2610 manual in the table draws its SSG table down to $0D; its allocation map (line 607) gives the SSG block as $00 to $0F, naming no I/O registers."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "https://bitsavers.org/components/yamaha/ answered HTTP 403 to this session's fetch, so its listing could not be read."
+    },
+    {
+     "where": "archive-org",
+     "gave": "archive.org was not searched for a second YM2610 document; the manual in the table already lists its archive copy at web.archive.org."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x70..0x7F",
+   "name": "sustain rate",
+   "aliases": [
+    "SR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "754-756"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "228"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$71 to $7E are Sustain Rate, with the cell SR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "754-756",
+       "sha": "92d4ac226a107e3f47c08d7767c4752f191fa825c5c97db71c6bf1440089fc0e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as a filled part, then SR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "755",
+       "sha": "a3cebbbedf01b4fbb6ed55b0f09674e2837e55bc1b5e98289daff6b908d6f573"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "228",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0x8F",
+   "name": "sustain level, release",
+   "aliases": [
+    "SL",
+    "RR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "757-759"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "229-230"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$81 to $8E are Sustain Level/Release Rate, with the cells SL and RR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "757-759",
+       "sha": "f9ad42cb2fa5593112db3b36ccf0341e1143fafec0c4c57f5a9801655c1ce0e4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as SL, then RR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "758",
+       "sha": "1123048bbc59a039886055b51d6db132063110bbacbece47be887c6522da463b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "229-230",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x90..0x9F",
+   "name": "SSG-EG",
+   "aliases": [
+    "SSG-EG"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "760-762"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "231-232"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$91 to $9E are SSG-EG, described as the SSG-Type Envelop Control.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "760-762",
+       "sha": "6bf8ac0ebfe3781c01b2ed9e2db9225de303505cce176b96d563fdc517160861"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as a filled part, then SSG-EG.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "761",
+       "sha": "c61bf4352aa2c1a5bcf5f8f1254c48e7d5d19621f2015da1cc934d19df526835"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "231-232",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0xA0..0xA3",
+   "name": "frequency low",
+   "aliases": [
+    "F-Num 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "763-765"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-150"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-165"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "154-156"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$A1 and $A2 are F-Num 1, listed under F-Numbers/Block.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "763-765",
+       "sha": "24fa3428407060d4de091f74bfbfad900a9e0c675a66d390df6874b3b71ec7f4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $A1,$A2 cell is one undivided cell holding F-Num 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "763-765",
+       "sha": "24fa3428407060d4de091f74bfbfad900a9e0c675a66d390df6874b3b71ec7f4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME copies the low six bits latched by a write to 0xA4..0xA6 into the matching 0xA4..0xA6 register when 0xA0..0xA2 is written.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "154-156",
+       "sha": "f64e787594dad30a2b9c8ae5e8e4441188e8fc3f61a4618f2ceceeffc4a9bcd4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "159-163",
+       "sha": "c7c1afc41de9dfe0e78829df147f26eab26c4406e026fada1c4689ec96d1ff1b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME returns from the register write without storing when the low two bits of the register number are 3, as for 0xA3.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "149-150",
+       "sha": "b5b169d74d5b70085c14c5c21555df9d78c90c84f096c7540257123e661c77ce"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "161",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-148",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-160",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "163-165",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xA4..0xA7",
+   "name": "block, frequency high",
+   "aliases": [
+    "Block",
+    "F-Num 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "766-768"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "154-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-163"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$A5 and $A6 are Block and F-Num 2; the left part of the cell is drawn filled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "766-768",
+       "sha": "34565350020774d164e3e31090fce3598708ed47f50116075e2ce48bccddf11f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as a filled part, then Block, then F-Num 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "767",
+       "sha": "d4dd663cea51ee041cb5fc8d1a7f8e13584755bcc605574e18922bf9065582fd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "1",
+     "text": "MAME latches only the low six bits of a write to 0xA4..0xA6 in an internal register, and copies them to the register only when 0xA0..0xA2 is next written.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "154-156",
+       "sha": "f64e787594dad30a2b9c8ae5e8e4441188e8fc3f61a4618f2ceceeffc4a9bcd4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "159-163",
+       "sha": "c7c1afc41de9dfe0e78829df147f26eab26c4406e026fada1c4689ec96d1ff1b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xA8..0xAB",
+   "name": "channel 2 freq low",
+   "aliases": [
+    "2CH*F-Num 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "769-771"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "149-150"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "155"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-165"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "287-295"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "199"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "206"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$A9 and $AA are 2CH*F-Num 1, with the comment 2 CH - 2 Slot.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "769-771",
+       "sha": "783b3894a197dceac7fb49991941207fbd24a04772a303c60fca864af41699d4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $A9,$AA cell is one undivided cell holding 2 CH * F-Num 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "769-771",
+       "sha": "783b3894a197dceac7fb49991941207fbd24a04772a303c60fca864af41699d4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME also reads 0xA8 as the frequency of the operator at offset 6 of channel 2, when the two top bits of 0x27 are not zero.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "199",
+       "sha": "e230232110182754c81a2ef66a2381184fa55396e0cda544749cf47d426a95f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "287",
+       "sha": "30600b9ed9e23468f701d2e907f5216b29a167c00634d74f30b92a4711772525"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "293-294",
+       "sha": "572580c52638cff8c88e6d9e1de9d4b8b38063dd97642182d6081f9b233111fb"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "206",
+       "sha": "2cf8c4fbfea6a4ce1d3f9bba03f8fdf723ccf6200dca87143e7829928fa6fe60"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "161",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "206",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "290",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "292",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "149-150",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "155",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-160",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "162",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "163-165",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "288-289",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "291",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "295",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xAC..0xAF",
+   "name": "channel 2 block, high",
+   "aliases": [
+    "2CH*Block",
+    "2CH*F-Num 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "772-774"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "154-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-163"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$AD and $AE are 2CH*Block and 2CH*F-Num2, with the comment F-Numbers/Block.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "772-774",
+       "sha": "fa353c0dad3ab75913fc3fe502cf548aa5a2d0de10240ca364eec10744790631"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as a filled part, then 2CH*Block, then 2CH*F-Num2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "773",
+       "sha": "f559a5b07bdc06155c8d8446a54d7103f16a82a6f7e4605ebdd988378da796e8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "1",
+     "text": "MAME latches the low six bits of a write to 0xA4..0xA6 or 0xAC..0xAE, and applies them only when 0xA0..0xA2 or 0xA8..0xAA is next written.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "154-156",
+       "sha": "f64e787594dad30a2b9c8ae5e8e4441188e8fc3f61a4618f2ceceeffc4a9bcd4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "159-163",
+       "sha": "c7c1afc41de9dfe0e78829df147f26eab26c4406e026fada1c4689ec96d1ff1b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xB0..0xB3",
+   "name": "feedback, algorithm",
+   "aliases": [
+    "FB",
+    "Connect"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "775-777"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "210-211"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$B1 and $B2 are FB and Connect, with the comment Self Feedback/Connection.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "775-777",
+       "sha": "64329830063726ea18881a37ac5062c87e14767eb895da68e7548d159269f23c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as a filled part, then FB, then Connect.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "776",
+       "sha": "37e515e78da1e55d0e989c4f4990798d7400e619bb5086439c593e4796eb0701"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "210-211",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0xB4..0xB7",
+   "name": "pan, LFO sensitivity",
+   "aliases": [
+    "L",
+    "R",
+    "AMS",
+    "PMS"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "778-780"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "1211-1239"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "213-214"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "217-218"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.h",
+     "lines": "319-322"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "256-267"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1225"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "255"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "645-650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "64-68"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$B5 and $B6 are L, R, AMS and PMS, with the comment LR SEL./AM,PM SENS.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "778-780",
+       "sha": "009ff447675456626617315070239170d59539d92f56c7bf7201588b8de5c737"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as L, R, AMS, a filled part, then PMS.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "779",
+       "sha": "0b220533794a7f78099c1cb256c15f9018cedbbc463d20d67446f5bb9ad9ecff"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description of $B5-$B6, D7 is L, D6 is R, D5 and D4 are AMS and D2 to D0 are PMS.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1211-1218",
+       "sha": "58c303ad261b73852da2ced4f18ce04347eaeba4026e37e0ade34dfe2a953d26"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In that description, D3 of $B5-$B6 is drawn filled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1217",
+       "sha": "3f2e0c863e7eddbe30e70a0eeb1e152c3630f5e5f09f1199fcb7728175a39f8c"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "PMS controls phase modulation and AMS controls amplitude modulation, each according to the table below it.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1221-1222",
+       "sha": "d5f98049696764733fa2bf6174d4c87b57677f263f0dfee7e7772b54c74b69af"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "L and R specify the Left and Right channel output.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1223",
+       "sha": "61c59c0ac31b3e4c7a08d5e0a3747db21dba21753efc40817c420df7def54d2c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The PMS table gives the difference in cents for PMS 0 to 7: 0, then plus or minus 3.4, 6.7, 10, 14, 20, 40 and 80.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1225-1231",
+       "sha": "72588c9179188032f16d4aebe28414e34b14200679d78d1009bae57bc55cbedf"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "AMS 0 to 3 give a difference of 0, 1.44, 5.9 and 11.8 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "1233-1239",
+       "sha": "9c71f9d6f5b8ab00eedb897ebd636bf538565758dda89f94798903c0feebecc3"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's OPNA register reset stores 0xC0 in 0xB4..0xB6 and in 0x1B4..0x1B6, which the YM2610 uses.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "64-68",
+       "sha": "90747f70d643965d0e9d17707f71715fd0d260c14120a73580341b09252dc147"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "645-650",
+       "sha": "689e17f7607ecf62e578f2754620268200baafa3a34891cc1d0fff2bdbf8db4c"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1225",
+       "sha": "34d1768ead32d37ed4014e951211bf04fafa80afd36060209884833f78e4bf1e"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "MAME shifts the doubled LFO AM value right by 7, 3, 1 or 0 for AMS 0..3; its comment asks why full sensitivity gives 4.9 dB, not 11.8.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "256-258",
+       "sha": "659927b42dcd059404d45ab03be154ebc6f1801f11094178962560c5a73a2359"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "260-263",
+       "sha": "d4c585b3ac876237d32884a9f815aae41fe850541c29b3846d62aed45f40dc59"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "267",
+       "sha": "451a7306aaecd1ecc0bd298db57432eefde826dfe37b04c6701834e797b861b3"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "1",
+     "text": "MAME stores a write to 0xB4..0xB6 and reads bits 5-4 as AMS and bits 2-0 as PMS; it names bits 7 and 6 output 0 and output 1.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "213-214",
+       "sha": "32a9f9fde7e0613649d03346b4691f4f48e575019de670380428e067c2286cf1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "217-218",
+       "sha": "f6a1a0026ee740e84c34d49b289ee6d1ca32a338db891640c4821b29db708a58"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "645-650",
+       "sha": "689e17f7607ecf62e578f2754620268200baafa3a34891cc1d0fff2bdbf8db4c"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "MAME reads AMS at bits 5-4 and PMS at bits 2-0 of 0xB4..0xB6; bit 7 is its output 0 flag and bit 6 its output 1 flag.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "213-214",
+       "sha": "32a9f9fde7e0613649d03346b4691f4f48e575019de670380428e067c2286cf1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "217-218",
+       "sha": "f6a1a0026ee740e84c34d49b289ee6d1ca32a338db891640c4821b29db708a58"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "645-650",
+       "sha": "689e17f7607ecf62e578f2754620268200baafa3a34891cc1d0fff2bdbf8db4c"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME adds a channel's sample to its output 0 when bit 7 of 0xB4..0xB6 is set, and to its output 1 when bit 6 is set.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "213-214",
+       "sha": "32a9f9fde7e0613649d03346b4691f4f48e575019de670380428e067c2286cf1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.h",
+       "lines": "319-322",
+       "sha": "db5392c6d4e8e8ff33cd1515d03f5b585375b33028f870dd998e5cb943406486"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "645-650",
+       "sha": "689e17f7607ecf62e578f2754620268200baafa3a34891cc1d0fff2bdbf8db4c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "264-266",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2036",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xFF",
+   "name": "ID code",
+   "aliases": [
+    "ID"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1926-1930"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2033-2037"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's comment calls address 0xFF the ID code.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "1928",
+       "sha": "3f7d61782ac4b3aab66f373c66c6511cc2cc2ec123219e18cdf7c2f9246c76d6"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data-port read with the address register at 0xFF returns the value 1.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "1926-1930",
+       "sha": "2751fe2820fe9c7c192919dbfc4c70fd620d61743b16b2f47fb7ecf082136814"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data-port write at address 0xFF goes to the FM register array, which stores the byte under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2035-2036",
+       "sha": "b69860cbffaea2e88ff0337c7fd8e2535112aafeacefb8ed16d14b1bd41b622a"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2033-2034",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2037",
+     "as": "structure"
+    }
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h, ymopn.h and ymopn.cpp cite no manual; line 1928 of ymfm_opn.cpp comments the 0xFF read as 'FF: ID code'."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table lists registers up to $B6 and names no ID code; its only $FF is the $1B data at line 1164."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "https://bitsavers.org/components/yamaha/ answered HTTP 403 to this session's fetch, so its listing could not be read."
+    },
+    {
+     "where": "archive-org",
+     "gave": "archive.org's search for YM2610 returned 12 items (players, music shows, MAME builds), none a Yamaha document for the chip."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x100",
+   "name": "ADPCM-A key on, dump",
+   "aliases": [
+    "DM",
+    "AON"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "798-802"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "849-861"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "97-98"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "346-349"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "125-132"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$00 is Dump/ADPCM-A ON, with the cells DM, a filled bit and AON.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "800-802",
+       "sha": "bbdb41ff09314a074c17dfa352430e6f68522aa5a1c156dda81e74672700962c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $00 cell is drawn as DM, a filled bit, then AON.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "801",
+       "sha": "9d46e411836bcd345fd5b109a973fc2815e8dd0e56b3faa845734745cab2c996"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description, $00 has DM at D7 and AON across D5 to D0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "849-856",
+       "sha": "52816bb73bb3a82fb5b13a84e656351325d7ec53ab9f0fc9fcd1b8178eae23f1"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In that description, D6 of $00 is drawn as --.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "855",
+       "sha": "ae1613c41dfb2419de3101d06f02c5219cd812be11f5a56838cfd761e638ac56"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "DM set to 1 dumps the sound; DM at 0 produces a sound.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "858",
+       "sha": "96169ba62ed515c49216568a254cddeafc28fa4876cd7d2603856ceb43f8f7d0"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "AON specifies the ADPCM-A channel control bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "860",
+       "sha": "8928537f5efb7679799ff9e514070faf19804f00b4936fb50729f4262c52dbef"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On a key on MAME loads the channel's read address from the start address registers and clears its nibble, byte, accumulator and step index.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "125-132",
+       "sha": "c49b3d816bfeefab2e5a95c59305b4523bc0376b52cebb9b96d5578d32b824c4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "798-799",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "97-98",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "346-349",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "346-349",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "125",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "346-349",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "125",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x101",
+   "name": "ADPCM-A total level",
+   "aliases": [
+    "ATL"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "803-805"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "863-873"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "99"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "225-239"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$01 is ADPCM-A Total Level, with the cell ATL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "803-805",
+       "sha": "8a6028780b0a7ff6c1f26579bc5c54b3470d6c5a7c06e9c0d64adaa7b5da9cb7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $01 cell is drawn as a filled part, then ATL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "804",
+       "sha": "20401b9f1933128f661c2d91c4f5d99de658da3fd1276d3384bf46bbc20d79af"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description, $01 has ATL across D5 to D0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "863-870",
+       "sha": "2c89db3e7fd56993585f0b198c90a189ba44640f3e519551b55951d2f8e95cd2"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In that description, D7 and D6 of $01 are drawn as --.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "869",
+       "sha": "330c387e187337b27fc677e20a979b489cdc8faf2a64d5468741e72e761a59b8"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "ATL sets the ADPCM-A volume between 0 and -47.25 dB in steps of 0.75 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "872",
+       "sha": "cd26a9dbee222360ef71d6b39ad1d5df51bf0e7e1b3fc7ce370570ac43297636"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "ATL with all bits at 1 equals 0 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "873",
+       "sha": "f536dc65794528eab64ea3c4acd1c56b7aca364ec76d40e9300889120c490199"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "MAME sums the channel and total attenuations, then uses multiplier 15 minus the sum's low three bits and shift 5 plus its high bits; a comment says to verify.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "226",
+       "sha": "af95795a1e15a92c31380c321fc30eac9bd43c36365f0696a3b7607dc115c42e"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "232-235",
+       "sha": "414f446f55b1ded55d7d4951fcbf34e45bd7407678b2c41ef3f9d7ce7a035467"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "99",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "99",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "226",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "225",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "228-230",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "232-233",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "237-238",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "239",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x102",
+   "name": "ADPCM-A test",
+   "aliases": [
+    "TEST"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "806-808"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "876-879"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "100"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$02 is Test, with the comment LSI Test Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "806-808",
+       "sha": "1219e8505970ef1e30f40c042d256a2d71e2f4721b2237b7641a48f56e9ac78e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $02 cell is one undivided cell holding Test.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "806-808",
+       "sha": "1219e8505970ef1e30f40c042d256a2d71e2f4721b2237b7641a48f56e9ac78e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The $02 address is provided to test the LSI.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "876-878",
+       "sha": "cd16f3c705baa5e6e4995baaa80c7b3e923d18fdda3f51bc0900392b72b2b58b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The $02 value is usually all 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "879",
+       "sha": "95acb3b8bf72aad2259b1cd3a9330582e7ac852c2e8be15d867f449203ae34de"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "100",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x108..0x10D",
+   "name": "ADPCM-A level, pan",
+   "aliases": [
+    "AC L",
+    "L",
+    "R"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "809-812"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "882-895"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "103-105"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "225-246"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$08 to $0D are Output Select and Channel Level, with the cells L, R, a filled part and AC L.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "809-812",
+       "sha": "69614be08e8228bbb2f9b98630b90fb325081295e16b6d53e7c61dfb875e8358"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The cell is drawn as L, R, a filled part, then AC L.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "810",
+       "sha": "9a582edd8027ceacba292d7830086fd01ab6474b9c0498e5b4e4b51af8a2406b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In its description of $08-0D, L is D7, R is D6 and ACL spans D5 to D0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "882-889",
+       "sha": "09ebf83b8cee2ac8c83071f6b8f2863d14fd4c7ea3b9139f78f3434394562082"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "L: when 1, output goes to the Left channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "891",
+       "sha": "3811a0621d3165f8c64cccfd7c3fa58814391b77dfc112d547f49e7a55a4492e"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "R: when 1, output goes to the Right channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "892",
+       "sha": "c9528a3808160ef45a31c2ffb0fc4fba6cf7397297803039ec7fdda5b63aeb2c"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "ACL sets each channel's level from 0 to -23.25 dB in steps of 0.75 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "893",
+       "sha": "67d885c5fee518d623f6fa2f7e972fd0e6c4945e09c4e756d0fc7caf61547b98"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "ACL with all bits at 1 equals 0 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "894",
+       "sha": "152cd5d35311d33ff144d3bbc6e7da549a82fd26cef6cc4cc90dbe62860feffd"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "MAME reads L and R from D7 and D6 but the channel level from the low five bits, mask 0x1F, so D5 takes no part.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "103-105",
+       "sha": "f419378134d850e34984d6d563195a0c818057f0004346b6186dac58f7f68e46"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME sums the channel and total attenuations, then uses multiplier 15 minus the sum's low three bits and shift 5 plus its high bits; a comment says to verify.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "226",
+       "sha": "af95795a1e15a92c31380c321fc30eac9bd43c36365f0696a3b7607dc115c42e"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "232-235",
+       "sha": "414f446f55b1ded55d7d4951fcbf34e45bd7407678b2c41ef3f9d7ce7a035467"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "103",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "242-243",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "104",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "244-245",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "105",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "226",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "225",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "228-230",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "232-233",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "237-238",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "239",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "241",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "246",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x110..0x115",
+   "name": "ADPCM-A start low",
+   "aliases": [
+    "Start ADDR.(L)"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "813-816"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "897-911"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "106"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "128"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1853"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$10 to $15 are Start ADDR.(L), with the comment Start Address.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "813-816",
+       "sha": "c3c73162b7b3943ab1ac2d989189c4e30bf3f8e53000475d5caaef17fd937bfd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $10 to $15 cell is one undivided cell holding Start ADDR.(L).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "813-816",
+       "sha": "c3c73162b7b3943ab1ac2d989189c4e30bf3f8e53000475d5caaef17fd937bfd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The description heads the start address registers as L/H, at $10 to $15 and $18 to $1D.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "897",
+       "sha": "821d3989f0f40ea924e9b4902aeee896647351f647869fa4cb1da431ea862300"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The drawing maps Start Address(H) to ROM address bits 23 to 16, Start Address(L) to bits 15 to 8 and a fixed level of 0 to bits 7 to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "898-909",
+       "sha": "00c1a5d50d31dfa9f04c3c216dd28bf10880b69fb70be85df9f4e12768d3e88f"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "910",
+       "sha": "7b8f4d1a4414d7ba52b1b4fc8e3a72973d3f2005f6df456f9a45bc5eddef1330"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "106",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "128",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1853",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x118..0x11D",
+   "name": "ADPCM-A start high",
+   "aliases": [
+    "Start ADDR.(H)"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "817-820"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "897-911"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "928"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "106"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$18 to $1D are Start ADDR.(H).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "817-820",
+       "sha": "f94c0127bf5c14c592e057797a7ffe3b9d944df383ae444c7ec1336bfbddd28e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $18 to $1D cell is one undivided cell holding Start ADDR.(H).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "817-820",
+       "sha": "f94c0127bf5c14c592e057797a7ffe3b9d944df383ae444c7ec1336bfbddd28e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The D4 to D7 values of $18 to $1D and of $28 to $2D must be the same.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "928",
+       "sha": "c6110420943276ef6a4048e644a98ded68db9b283f28985d55bb4c0fe6bb5172"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "106",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "897-911",
+     "as": "elsewhere",
+     "owner": "ym2610:register:0x110..0x115"
+    }
+   ]
+  },
+  {
+   "key": "0x120..0x125",
+   "name": "ADPCM-A end low",
+   "aliases": [
+    "End ADDR.(L)"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "821-824"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "913-926"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "107"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "164-177"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1853"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "$20 to $25 are End ADDR.(L), with the comment End Address.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "821-824",
+       "sha": "c8278c94b7cd066ee1376249bdde0d08f2933c3166c27ee0f8aeacf5a62ea621"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $20 to $25 cell is one undivided cell holding End ADDR.(L).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "821-824",
+       "sha": "c8278c94b7cd066ee1376249bdde0d08f2933c3166c27ee0f8aeacf5a62ea621"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The description heads the end address registers as L/H, at $20 to $25 and $28 to $2D.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "913",
+       "sha": "db92f7ac1c7a77e081b15e427ee97e46923ad87bd4502491c1cf260783614f6c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The drawing maps End Address(H) to ROM address bits 23 to 16, End Address(L) to bits 15 to 8 and a fixed level of 0 to bits 7 to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "914-925",
+       "sha": "156d4f4525b052bd3b2fe4528ceba9c3819458a19a9fc223ba1bdb6127b50e09"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "926",
+       "sha": "7b8f4d1a4414d7ba52b1b4fc8e3a72973d3f2005f6df456f9a45bc5eddef1330"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "MAME adds 1 to the end value (H and L), shifts it left by 8 and stops when the 20 low bits match; its comment says the end is inclusive.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "107",
+       "sha": "13375fbc8c2421fcefd727d7fd8e6443991dcf966347974788e637fcb4e438f6"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "169-175",
+       "sha": "e8695609360a35083e119e34e13ffdaea874e76fbc521a41b50d3f0b00cad514"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "1853",
+       "sha": "de558112f719b798223030182e746aa99d0ed2db933f83554810258ce1a39dce"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "164-168",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "176-177",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x128..0x12D",
+   "name": "ADPCM-A end high",
+   "aliases": [
+    "End ADDR.(H)"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "825-828"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "913-926"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2071"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "107"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "172"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1853"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "In the register map, $28 to $2D are labelled End ADDR.(L).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "825-828",
+       "sha": "1ef3744c997a24b775053b4fd941133cef09da8ee68af360fc8ebbcb5a949302"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The $28 to $2D cell is one undivided cell holding End ADDR.(L), as the map labels it.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "825-828",
+       "sha": "1ef3744c997a24b775053b4fd941133cef09da8ee68af360fc8ebbcb5a949302"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "1",
+     "text": "MAME takes 0x28 to 0x2D as the high byte of the end address, which it shifts left by 8 into the value it compares.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+       "lines": "107",
+       "sha": "13375fbc8c2421fcefd727d7fd8e6443991dcf966347974788e637fcb4e438f6"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+       "lines": "172",
+       "sha": "1768eca320367da745e1328b9a6351134c6211d7985f91e3cc16fb8fc7852ded"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "1853",
+       "sha": "de558112f719b798223030182e746aa99d0ed2db933f83554810258ce1a39dce"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2064-2065",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2068-2069",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2071",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2070",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
+     "lines": "343",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.h",
+     "lines": "94",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "913-926",
+     "as": "elsewhere",
+     "owner": "ym2610:register:0x120..0x125"
+    }
+   ]
+  },
+  {
+   "key": "0x130..0x13F",
+   "name": "detune, multiple 2",
+   "aliases": [
+    "DT 2",
+    "MULTI 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "604"
+    },
+    {
+     "ref": "datasheet:YM2610.raw.txt",
+     "lines": "614-617"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2052"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2067"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2104-2105"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "148"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "221-222"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "657"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "1847"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2170"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2186"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "With A1 at 1, the register allocation map draws $30 to $B6 as FM, for CH3 and CH4.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "604",
+       "sha": "7fb9b53100a12a650537dffa83ddcff892dbf8d85af7cbaccbeb3993b38e2e95"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "614-617",
+       "sha": "eebf9aa104486bcefb15a9e7b65c8c40a002a57cdcdf24568a596a9a71331993"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "With A1 at 0, the same map draws $30 to $B6 as FM, for CH1 and CH2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "604",
+       "sha": "7fb9b53100a12a650537dffa83ddcff892dbf8d85af7cbaccbeb3993b38e2e95"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "614-617",
+       "sha": "eebf9aa104486bcefb15a9e7b65c8c40a002a57cdcdf24568a596a9a71331993"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port sends addresses from 0x130 to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2052",
+       "sha": "31b8296b769f09ef7ba5ce397ece6f56a592e3c9365fd1dd1cfe74199cfbd52b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2067",
+       "sha": "3776dea4e193e193f7e259ff47ff48027b5ec849a29db89d8ce23c81e4958633"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2104-2105",
+       "sha": "3da86e536060740adbe57e171be620613732c14501979b2deeb32a7bb3059caf"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's YM2610 defaults its FM channel mask to 0x36, bits 1, 2, 4 and 5, and passes it to the FM clock and output calls.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "657",
+       "sha": "6d2ddac5cf38315f53826123e1328acfca73a9ee8b878777c9bf08ae663fb734"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "1847",
+       "sha": "82335595371c4e434fe0a93425817ccf66a666a928e4cbca4f354a1e3abacf89"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2170",
+       "sha": "855575666b3c654b1342b38e25327243f2edf19183718453db7685d2af668628"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2186",
+       "sha": "f780be0b4f397c18c6ca45e6bad1cd755fa62eef36d0b2ee5ff4df9c8dc0d228"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads an operator's detune and multiple from register 0x30 plus its operator offset.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "221-222",
+       "sha": "50abded62f39c919f8e3233b6ab3fe0b8b15d333ead651c4f690f3fdb8fddee7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "148",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x140..0x14F",
+   "name": "total level 2",
+   "aliases": [
+    "TL 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "223"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads total level of an operator at register 0x40 plus its operator offset, which adds 0x100 for each group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "223",
+       "sha": "694c065d2737ba677d2a1191c9a53b3a1a96d2574687d4948a70c129918cafd7"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "158",
+       "sha": "c4c1b25351b1ecb1c7847f23923db47bca906cf8653989b03977c1facad6f196"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x140..0x14F in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The YM2610 manual in the table draws its allocation map (lines 604 to 617, held by ym2610:register:0x130..0x13F) and the total level 2 cell once, with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "https://bitsavers.org/components/yamaha/ answered HTTP 403 to this session's fetch, so its listing could not be read."
+    },
+    {
+     "where": "archive-org",
+     "gave": "archive.org's search for YM2610 returned 12 items (players, music shows, MAME builds), none a Yamaha document for the chip."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x150..0x15F",
+   "name": "key scale, attack 2",
+   "aliases": [
+    "KS 2",
+    "AR 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "224-225"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads key scale and attack rate of an operator at register 0x50 plus its operator offset, which adds 0x100 for each group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "224-225",
+       "sha": "ce9ac6023502bbce87b0bc56867450cb6bb4333a7143ed54e1a8949322cbd9eb"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "158",
+       "sha": "c4c1b25351b1ecb1c7847f23923db47bca906cf8653989b03977c1facad6f196"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x150..0x15F in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The YM2610 manual in the table draws its allocation map (lines 604 to 617, held by ym2610:register:0x130..0x13F) and the key scale, attack 2 cell once, with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "https://bitsavers.org/components/yamaha/ answered HTTP 403 to this session's fetch, so its listing could not be read."
+    },
+    {
+     "where": "archive-org",
+     "gave": "archive.org's search for YM2610 returned 12 items (players, music shows, MAME builds), none a Yamaha document for the chip."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x160..0x16F",
+   "name": "AM enable, decay rate 2",
+   "aliases": [
+    "AMON 2",
+    "DR 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226-227"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads AM enable and decay rate of an operator at register 0x60 plus its operator offset, which adds 0x100 for each group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "226-227",
+       "sha": "70836602eebfcd713ec0625abe98fa473dfc9d1a441d7b7f54f4c61a22fc664f"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "158",
+       "sha": "c4c1b25351b1ecb1c7847f23923db47bca906cf8653989b03977c1facad6f196"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x160..0x16F in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The YM2610 manual in the table draws its allocation map (lines 604 to 617, held by ym2610:register:0x130..0x13F) and the AM enable, decay rate 2 cell once, with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "https://bitsavers.org/components/yamaha/ answered HTTP 403 to this session's fetch, so its listing could not be read."
+    },
+    {
+     "where": "archive-org",
+     "gave": "archive.org's search for YM2610 returned 12 items (players, music shows, MAME builds), none a Yamaha document for the chip."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x170..0x17F",
+   "name": "sustain rate 2",
+   "aliases": [
+    "SR 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "228"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads sustain rate, bits 4-0, of an operator at register 0x70 plus its operator offset, which adds 0x100 for each group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "228",
+       "sha": "944a8cd8af7e9d9ec744f24c198625328aad86ea0e8df84eec2cf3e9762e9282"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "158",
+       "sha": "c4c1b25351b1ecb1c7847f23923db47bca906cf8653989b03977c1facad6f196"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x170..0x17F in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table draws one allocation map, held by ym2610:register:0x130..0x13F, and one sustain rate cell (lines 754 to 756, held by ym2610:register:0x70..0x7F), with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The listing of https://bitsavers.org/components/yamaha/ has no YM2610 file."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org collection yamaha-chip-jpn holds Yamaha data sheets (YM2608, YM3438 and YM3439 among them) and no YM2610 file."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x180..0x18F",
+   "name": "sustain level, release 2",
+   "aliases": [
+    "SL 2",
+    "RR 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "229-230"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads sustain level, bits 7-4, and release rate, bits 3-0, of an operator at register 0x80 plus its operator offset, which adds 0x100 for each group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "229-230",
+       "sha": "cdf13ff4004cd9c42636f15216230216d7809b9e1c8d086121fb392bbfd9210f"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "158",
+       "sha": "c4c1b25351b1ecb1c7847f23923db47bca906cf8653989b03977c1facad6f196"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x180..0x18F in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table draws one allocation map, held by ym2610:register:0x130..0x13F, and one sustain level, release rate cell (lines 757 to 759, held by ym2610:register:0x80..0x8F), with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The listing of https://bitsavers.org/components/yamaha/ has no YM2610 file."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org collection yamaha-chip-jpn holds Yamaha data sheets (YM2608, YM3438 and YM3439 among them) and no YM2610 file."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x190..0x19F",
+   "name": "SSG-EG 2",
+   "aliases": [
+    "SSG-EG 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "231-232"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "158"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads the SSG-EG enable, bit 3, and mode, bits 2-0, of an operator at register 0x90 plus its operator offset, which adds 0x100 for each group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "231-232",
+       "sha": "d33d380e31edc4d83f5302710f10b2ab70790374094d5a434ac9ec1bb2fda851"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "158",
+       "sha": "c4c1b25351b1ecb1c7847f23923db47bca906cf8653989b03977c1facad6f196"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x190..0x19F in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table draws one allocation map, held by ym2610:register:0x130..0x13F, and one SSG-EG cell (lines 760 to 762, held by ym2610:register:0x90..0x9F), with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The listing of https://bitsavers.org/components/yamaha/ has no YM2610 file."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org collection yamaha-chip-jpn holds Yamaha data sheets (YM2608, YM3438 and YM3439 among them) and no YM2610 file."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x1A0..0x1A3",
+   "name": "frequency low 2",
+   "aliases": [
+    "F-Num 1 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "148"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-163"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "149-150"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads a channel's block and frequency from bits 5-0 of register 0xA4 above register 0xA0, plus its channel offset, which adds 0x100 per group of 3 channels.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "209",
+       "sha": "294918ffaa50e1822be9a44b0926e10b21450c8b197e58df497ae611a48733dc"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "148",
+       "sha": "974153a7e8265a28c6334aa92bed03d442bd33f7aaf007c23a8619a80654823d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores a byte written to 0x1A0..0x1A2 under that number and then copies the matching latched six bits into 0x1A4..0x1A6.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "147",
+       "sha": "1cd70b79c171fe482c8bf2d31ac2df299fb736f82e346a1ab2491fd7030fe7b5"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "159-163",
+       "sha": "c7c1afc41de9dfe0e78829df147f26eab26c4406e026fada1c4689ec96d1ff1b"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME returns from the register write without storing when the low two bits of the register number are 3, as for 0x1A3.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "149-150",
+       "sha": "b5b169d74d5b70085c14c5c21555df9d78c90c84f096c7540257123e661c77ce"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table draws one allocation map, held by ym2610:register:0x130..0x13F, and one F-Num 1 cell (lines 763 to 765, held by ym2610:register:0xA0..0xA3), with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The listing of https://bitsavers.org/components/yamaha/ has no YM2610 file."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org collection yamaha-chip-jpn holds Yamaha data sheets (YM2608, YM3438 and YM3439 among them) and no YM2610 file."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x1A4..0x1A7",
+   "name": "block, frequency high 2",
+   "aliases": [
+    "Block 2",
+    "F-Num 2 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "148"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "154-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "159-163"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "149-150"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads a channel's block and frequency from bits 5-0 of register 0xA4 above register 0xA0, plus its channel offset, which adds 0x100 per group of 3 channels.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "209",
+       "sha": "294918ffaa50e1822be9a44b0926e10b21450c8b197e58df497ae611a48733dc"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "148",
+       "sha": "974153a7e8265a28c6334aa92bed03d442bd33f7aaf007c23a8619a80654823d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME latches the low six bits of a write to 0x1A4..0x1A6 in an internal register and copies them into 0x1A4..0x1A6 when 0x1A0..0x1A2 is written.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "147",
+       "sha": "1cd70b79c171fe482c8bf2d31ac2df299fb736f82e346a1ab2491fd7030fe7b5"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "154-156",
+       "sha": "f64e787594dad30a2b9c8ae5e8e4441188e8fc3f61a4618f2ceceeffc4a9bcd4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "159-163",
+       "sha": "c7c1afc41de9dfe0e78829df147f26eab26c4406e026fada1c4689ec96d1ff1b"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME picks that latch from bit 3 of the register number alone, so writes to 0x1A4..0x1A6 and to 0xA4..0xA6 use the same internal register.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "154-156",
+       "sha": "f64e787594dad30a2b9c8ae5e8e4441188e8fc3f61a4618f2ceceeffc4a9bcd4"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME returns from the register write without storing or latching when the low two bits of the register number are 3, as for 0x1A7.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "149-150",
+       "sha": "b5b169d74d5b70085c14c5c21555df9d78c90c84f096c7540257123e661c77ce"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table draws one allocation map, held by ym2610:register:0x130..0x13F, and one Block, F-Num 2 cell (lines 766 to 768, held by ym2610:register:0xA4..0xA7), with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The listing of https://bitsavers.org/components/yamaha/ has no YM2610 file."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org collection yamaha-chip-jpn holds Yamaha data sheets (YM2608, YM3438 and YM3439 among them) and no YM2610 file."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x1B0..0x1B3",
+   "name": "feedback, algorithm 2",
+   "aliases": [
+    "FB 2",
+    "Connect 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "210-211"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "148"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads feedback, bits 5-3, and algorithm, bits 2-0, of a channel at register 0xB0 plus its channel offset, which adds 0x100 for each group of 3 channels.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "210-211",
+       "sha": "7cf85c6fc17eccc3f013f156b3e227dc4ae337e85cf3f4f0b737c7f75d963329"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "148",
+       "sha": "974153a7e8265a28c6334aa92bed03d442bd33f7aaf007c23a8619a80654823d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x1B0..0x1B3 in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table draws one allocation map, held by ym2610:register:0x130..0x13F, and one FB, Connect cell (lines 775 to 777, held by ym2610:register:0xB0..0xB3), with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The listing of https://bitsavers.org/components/yamaha/ has no YM2610 file."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org collection yamaha-chip-jpn holds Yamaha data sheets (YM2608, YM3438 and YM3439 among them) and no YM2610 file."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  },
+  {
+   "key": "0x1B4..0x1B7",
+   "name": "pan, LFO sensitivity 2",
+   "aliases": [
+    "L 2",
+    "R 2",
+    "AMS 2",
+    "PMS 2"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "213-214"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "148"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "255"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "650"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "217-218"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2074-2075"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "64-68"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1225"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.h",
+     "lines": "319-322"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads output 0 at bit 7 and output 1 at bit 6 of register 0xB4 plus the channel offset, which adds 0x100 per group of 3 channels.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "213-214",
+       "sha": "32a9f9fde7e0613649d03346b4691f4f48e575019de670380428e067c2286cf1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "148",
+       "sha": "974153a7e8265a28c6334aa92bed03d442bd33f7aaf007c23a8619a80654823d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads AM sensitivity at bits 5-4 and PM sensitivity at bits 2-0 of register 0xB4 plus the channel offset, which adds 0x100 per group of 3 channels.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "217-218",
+       "sha": "f6a1a0026ee740e84c34d49b289ee6d1ca32a338db891640c4821b29db708a58"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "148",
+       "sha": "974153a7e8265a28c6334aa92bed03d442bd33f7aaf007c23a8619a80654823d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to 0x1B4..0x1B7 in the FM register array under that number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2074-2075",
+       "sha": "0039113f2692a090d4f4ffb27971e358be2b395bb11dee2f5de392099c42b9f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1417",
+       "sha": "60897da716b263d203359c8e43bb589407baabe2f089e585beb7f0564d366653"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "172-173",
+       "sha": "a217e203bdcdf42ae5e9f52edbcf63ca416c1fdafd261ec45ee64f538e9f80ba"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's OPNA register reset stores 0xC0 in 0x1B4, 0x1B5 and 0x1B6, which the YM2610 uses.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "64-68",
+       "sha": "90747f70d643965d0e9d17707f71715fd0d260c14120a73580341b09252dc147"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1225",
+       "sha": "34d1768ead32d37ed4014e951211bf04fafa80afd36060209884833f78e4bf1e"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME adds a channel's sample to its output 0 when bit 7 of 0x1B4..0x1B6 is set, and to its output 1 when bit 6 is set.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "213-214",
+       "sha": "32a9f9fde7e0613649d03346b4691f4f48e575019de670380428e067c2286cf1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.h",
+       "lines": "319-322",
+       "sha": "db5392c6d4e8e8ff33cd1515d03f5b585375b33028f870dd998e5cb943406486"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "255",
+       "sha": "6269c4a3417ea98bb885f1e56a286aec15bbaf8f0e4f6b46fe3236fb487e8431"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "650",
+       "sha": "f31cc0af79814fd8e547eb5ed7403e3b0179ef4e538d666c808f9cb9b4a831f8"
+      }
+     ],
+     "links": [
+      "ym2610:register:0x130..0x13F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments in ymfm_opn.h only list the register bit layout."
+    },
+    {
+     "where": "maker",
+     "gave": "The manual in the table draws one allocation map, held by ym2610:register:0x130..0x13F, and one pan cell (lines 778 to 780, held by ym2610:register:0xB4..0xB7), with no bank."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The listing of https://bitsavers.org/components/yamaha/ has no YM2610 file."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org collection yamaha-chip-jpn holds Yamaha data sheets (YM2608, YM3438 and YM3439 among them) and no YM2610 file."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the manual already in the table is the maker's document for the chip."
+    }
+   ]
+  }
+ ]
+}

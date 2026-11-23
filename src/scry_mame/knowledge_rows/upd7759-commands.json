@@ -1,0 +1,392 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "upd7759-commands",
+ "title": "The uPD7759 block headers in its speech data",
+ "kind": "command",
+ "scope": "upd7759",
+ "covers": "the block header bytes the uPD7759 decodes from its speech data, as MAME's state machine reads them",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The comment of upd7759.cpp lists the five header forms and cites no document; its own TODO says low-level emulation is missing."
+  },
+  {
+   "where": "maker",
+   "gave": "NEC's 1992 data book and 1985 product description give pins, timing and slave mode, and no byte format of the speech data."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "Hosts those NEC documents and the uPD7755 and uPD7756 user's manual; none lists the header bytes."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Holds a copy of the same data book; nothing else was looked for there."
+  },
+  {
+   "where": "index",
+   "gave": "Web searches for uPD7759 data sheets gave the same NEC pages and mirrors, none with the header bytes."
+  }
+ ],
+ "engine": [
+  "read_byte",
+  "update_adpcm"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "end of sample",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "485-492"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "515-516"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's comment lists header 00000000 as the sample end, and its code treats it as a silence of 1024 clocks that resets m_sample and m_adpcm_state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "44",
+       "sha": "e6819e3d58716856524667f62978b743948efad340dad18316555304bcdfa0b2"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "487-488",
+       "sha": "a123aecd9fc99f9e16928b1a2e7d18e3f083d78e9c07b51fe8db8f9d48459bcd"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "490-491",
+       "sha": "95f94f8576ce80daf9ac7b119626f5d28d04940f237e9b60a94308f6162169da"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With header 0x00 after a non-zero header was seen since the second dummy state, the next state is idle; otherwise another block header follows.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "461-465",
+       "sha": "e373ede541fdecfe20dbad6e7721c8a43d3ed534a083b2d70a26a4271c1a82c1"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "489",
+       "sha": "37fcf8e2dc117d44ad60472bb58fdb12eb3b0257b546980e33369a92fec71e9b"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "515-516",
+       "sha": "471fc17894a9770d123609f5acc81e19ff3aa8262df9ed287dda2bb67c8a00ad"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "485-486",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "492",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x01..0x3F",
+   "name": "silence",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "485-492"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's comment lists 00dddddd as a silence, and its code waits 1024 clocks times dddddd plus 1 in that state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "45",
+       "sha": "c0272ade67c279e68e5b833fbc4873539c504fdc27f391e5edafe56241cd132a"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "487-488",
+       "sha": "a123aecd9fc99f9e16928b1a2e7d18e3f083d78e9c07b51fe8db8f9d48459bcd"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A silence resets m_sample and m_adpcm_state to 0 and returns to the block header state, unless the header is 0 after a valid one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "487-491",
+       "sha": "91942d689e2503d04a45d91a5ac0b49140222d646ab753c72a10f5e4a508676e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "485-486",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "492",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x7F",
+   "name": "play 256 nibbles",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "494-499"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's comment lists 01ffffff as sending the 256 following nibbles, and its code sets m_sample_rate to ffffff plus 1 and m_nibbles_left to 256.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "46",
+       "sha": "7af8b2a4f327e837892565fe8dc30863a10476f382846fb39c7f02192ae101b1"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "494-496",
+       "sha": "6ca54f3278d28ba0de2b6f497403e80bbcfe96a894263053ff5d1c3dfb9fc7ac"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It then waits 36 clocks, which the code's own comment calls a guess, and goes to the MSN state to take the first data byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "497-498",
+       "sha": "b9a10bc623b146d40cdfdd7146b568f5a0160d691609f08fffa33aebbced9190"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "532-533",
+       "sha": "3568e2fb2715089959b5bdb89b304076729cea64df9f061d3ac0d0fd5827ae9f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "499",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0xBF",
+   "name": "play n nibbles",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "501-505"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "521-528"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's comment lists 10ffffff nnnnnnnn as sending n plus 1 nibbles; its code sets m_sample_rate to ffffff plus 1, waits 36 clocks (a guess) and goes to the count state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "47",
+       "sha": "454548e74a780587bdf4c9704c649c6463a720d81faa2ef290f1103d0d2abeb8"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "501-504",
+       "sha": "4d568b66ebc28531a1d15683a16f3dc1bfbbbc368238cf0a45164b21bed12a67"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The count state reads one byte, from m_fifo_in in slave mode or from read_byte at m_offset in stand-alone mode, and sets m_nibbles_left to that value plus 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "521-522",
+       "sha": "d883ebeca49d729fb55b2eacae950aa0f0f7e8cdfc9c15b94b28ca7325e8b1f8"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It then sets m_drq to 1, waits 36 clocks, a guess by the code's comment, and goes to the MSN state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "524",
+       "sha": "3ceb1a3cf46e751b4269902645248a9ffdb8533a8e4e760b6d83be8a6893d63b"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "526-527",
+       "sha": "b9a10bc623b146d40cdfdd7146b568f5a0160d691609f08fffa33aebbced9190"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "505",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "523",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "528",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xC0..0xFF",
+   "name": "repeat marker",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "507-512"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "476-480"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's comment lists 11---rrr --ffffff nnnnnnnn as a repeat marker, and its code sets m_repeat_count to rrr plus 1 and m_repeat_offset to m_offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "48",
+       "sha": "db55d97529e199293cf97f4890f127a3e4ccafb24facf28a7f20cc76f852386d"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "507-509",
+       "sha": "a779f8038921afeae35eee5fd8ed0b595d555ab537b6fe388839642683f46664"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It then waits 36 clocks, a guess by the code's comment, and goes to the block header state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "510-511",
+       "sha": "8314ea2ca31c60ba3a1524c9d7e4a8e648cf8c839446c309df94c0039f1cfc79"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With a repeat count left when the block header state runs, MAME decrements it and sets m_offset back to m_repeat_offset before reading the header.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "474-481",
+       "sha": "8004a3902b7bd36bf577218dcefc5ec15fd892069dfc46697f2765b1506f1293"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "512",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "477",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "480",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

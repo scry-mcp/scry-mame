@@ -1,0 +1,562 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "6821pia-device",
+ "title": "The 6821 PIA as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "The Motorola 6821 peripheral interface adapter as a chip: its reset state, interrupt flags and the control lines CA1, CA2, CB1 and CB2",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC6821.raw.txt",
+   "variant": "MC6821"
+  }
+ ],
+ "official": {
+  "MC6821.raw.txt": [
+   "394-397",
+   "412-427",
+   "430-439",
+   "482-485",
+   "486-489",
+   "492-496",
+   "502-505",
+   "534-537",
+   "666-668"
+  ]
+ },
+ "engine": [
+  "m_ts_b_handler",
+  "m_in_a_handler",
+  "m_in_b_handler",
+  "m_in_ca1_handler",
+  "m_in_ca2_handler",
+  "m_in_cb1_handler"
+ ],
+ "entries": [
+  {
+   "key": "pia6821",
+   "name": "6821 PIA",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "394-397"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "412-427"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "430-439"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "482-485"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "486-489"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "492-496"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "502-505"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "534-537"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "666-668"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::update_interrupts"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::ca1_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::ca2_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::cb1_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::cb2_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The PIA must be configured during the restart program which follows the reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "504-505",
+       "sha": "7a521b06a2772533c3de0e92de8a18f381e0833013aadf273e4f095144b4b6cc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "reset",
+     "of": "doc",
+     "text": "The active low RESET line resets all register bits in the PIA to a logical zero; it can serve as a power-on reset and a master reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "394-397",
+       "sha": "9bc2c4c4f5ceeaae13e32c743d602687daa7ab8b35568902fdab369bd944f95a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "reset",
+     "of": "doc",
+     "text": "A reset zeroes all PIA registers; the text says this sets PA0-PA7, PB0-PB7, CA2 and CB2 as inputs and disables all interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "502-504",
+       "sha": "d71d60d9a61f6f8f7349fc91220407b92be47df41e3b3165efe4909988e63e81"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "reset",
+     "of": "doc",
+     "text": "When the PIA comes out of reset, the A port represents inputs with pullup resistors; the B side, also input mode, floats high or low depending on its load.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "534-537",
+       "sha": "4c22e57ded448fe4319958fbd85a65c42195e4b0c14b82a1bd168150e159bb98"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The active low interrupt request lines IRQA and IRQB interrupt the MPU either directly or through interrupt priority circuitry.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "412-414",
+       "sha": "92cca892d0caf132cdfeca680c22d889c2616d388130ee578f9109fa152d4c04"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "Each interrupt request line has two internal interrupt flag bits that can make it go low; four interrupt enable bits can inhibit a particular interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "418-423",
+       "sha": "d14a201efb5929f8d2a830570603a8d75364fcaba92273b4c90df5945dfaec10"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "An interrupt may be serviced by a software routine that, on a prioritized basis, reads and tests the control registers of each PIA for flag bits that are set.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "424-427",
+       "sha": "e92b8facffc14b06e4bc8a3c29d9c92fed37f2e690301c1efe78bba1006cad61"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "doc",
+     "text": "After being cleared, the interrupt flag bit cannot be enabled to be set until the PIA is deselected during an E pulse.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "430-432",
+       "sha": "fe75dc11bee60c23fc3f8049ab87255fb724983eafa5f9e9b8a2bbfee7218344"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "To condition the edge sense network, at least one E pulse must occur from the inactive edge to the active edge of an interrupt input signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "432-436",
+       "sha": "cb3e27d0c078fdf76b8c2326d7a814c595bea6c6d2dd3212ab25028c07506de5"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "If the interrupt flag has been enabled and the edge sense circuit conditioned, the flag is set on the next active transition of the interrupt input pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "436-439",
+       "sha": "9649c0263fe3363759f8fac4b4623e3b1837650de4cbcbeb8e3fc0df7f7186d9"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "CA1 and CB1 are input only lines that set the interrupt flags of the control registers; the control registers also program their active transition.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "482-485",
+       "sha": "800368db2bc224492faf77fe3cd1300d17d6dd8ec1e9b6bd7d514d14372b6606"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "when",
+     "of": "doc",
+     "text": "Returned high by the next active CA1 transition, as specified by bit 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "666-668",
+       "sha": "bbf2a78524014a9493d38582d80c407f5c2202d5a9dad2f18e48aea58e59cfb0"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "when",
+     "of": "doc",
+     "text": "CA2 can be programmed to act as an interrupt input.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "486-487",
+       "sha": "a6f7ccdc3b7fbde5a0a324028ab447af84afead63b5cb5d4ae24c45149c15088"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "when",
+     "of": "doc",
+     "text": "CB2 can be programmed to act as an interrupt input.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "492-493",
+       "sha": "dbff74aa94527e12ed4a70b7b7e79ce694b70e582a78d3d06e6c9260c429c916"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "reset",
+     "of": "doc",
+     "text": "As an input, CA2 has an internal pullup resistor.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "486-489",
+       "sha": "d6ea772ba3f92de0f447f058cd8bbce65fe3d1cba4fd18758f0b98a2cf1a0142"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "text": "On reset MAME also drives CA2 high through its output handler, if one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "166-167",
+       "sha": "052729ffe3327e46a046fd9670a2dcf076890d20f9196d2ae8464cc06643d09c"
+      }
+     ],
+     "row": "15"
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "MAME sets a flag in the transition test itself: the old level, the new level and the control register's edge bit decide, with no E pulse among them.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "905-910",
+       "sha": "bdfb0698060e98ab235e4085310b8c8b2cfe9ab495e97c153f2d3800883d3a1c"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "935-940",
+       "sha": "928129a24d51d1216568fcc7e556b5f02fa2bad7db52bd042cfb83eb1da09148"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1030-1035",
+       "sha": "a9cd23dc7d6e84e8ff995366a08ab7be312470b55afe6abf87c59a4a6b2db5bd"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1061-1068",
+       "sha": "c0fe34a56ae001d696fe0eacd47443dbc27e31946f4dcbed8f6502063ce5f6a0"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "9",
+     "text": "MAME's edge sense takes no E pulse: ca1_w, ca2_w, cb1_w and cb2_w compare the stored previous level with the new one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "905-910",
+       "sha": "bdfb0698060e98ab235e4085310b8c8b2cfe9ab495e97c153f2d3800883d3a1c"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "935-940",
+       "sha": "928129a24d51d1216568fcc7e556b5f02fa2bad7db52bd042cfb83eb1da09148"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1030-1035",
+       "sha": "a9cd23dc7d6e84e8ff995366a08ab7be312470b55afe6abf87c59a4a6b2db5bd"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1061-1068",
+       "sha": "c0fe34a56ae001d696fe0eacd47443dbc27e31946f4dcbed8f6502063ce5f6a0"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "10",
+     "text": "MAME sets the flag on the active transition whether or not the enable bit is set; update_interrupts reads the enable bits when it raises the request line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "905-910",
+       "sha": "bdfb0698060e98ab235e4085310b8c8b2cfe9ab495e97c153f2d3800883d3a1c"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "182-187",
+       "sha": "8d1bf2b453af77b3fe0c82594c39f389634f9ebd81ffbed1063a489681b556ab"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1030-1035",
+       "sha": "a9cd23dc7d6e84e8ff995366a08ab7be312470b55afe6abf87c59a4a6b2db5bd"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "191-196",
+       "sha": "a091bcf80c159dc18d5c18e3ad2f90e65e426ba359f69eca14c734e976c01fe3"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "143-154",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "155-157",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "159-161",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "143-154",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "155-157",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "159-161",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "163-165",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "169-171",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "415-417",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "494-496",
+     "as": "electrical"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "182-187",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "191-196",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "910-913",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "940-943",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "1035-1038",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "1068-1071",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "905-910",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "1030-1035",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "921-922",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "1047-1048",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "917",
+     "as": "unfollowed",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "916",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "935-940",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "947-948",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "1061-1068",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "1075-1076",
+     "as": "agrees",
+     "row": "14"
+    }
+   ]
+  }
+ ]
+}

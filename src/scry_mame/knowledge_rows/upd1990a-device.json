@@ -1,0 +1,707 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "upd1990a-device",
+ "title": "uPD1990A and uPD4990A serial calendar clock chips",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "the NEC uPD1990A and uPD4990A serial calendar and clock chips as devices: data format, test mode and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "uPD4990A.raw.txt",
+   "variant": "upd4990a"
+  }
+ ],
+ "official": {
+  "uPD4990A.raw.txt": [
+   "79-88",
+   "255-266",
+   "289",
+   "330-332",
+   "368-373",
+   "447-452",
+   "455",
+   "479-490",
+   "494"
+  ]
+ },
+ "closed": [],
+ "engine": [
+  "adjust",
+  "enable",
+  "remaining",
+  "set_time",
+  "advance_seconds",
+  "timer_alloc",
+  "clock_tick",
+  "tp_tick",
+  "data_out_tick",
+  "test_tick",
+  "from_hz"
+ ],
+ "entries": [
+  {
+   "key": "upd1990a",
+   "name": "uPD1990A RTC",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "79-88"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "255-266"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "289"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "330-332"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "368-373"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "447-452"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "455"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "479-490"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "494"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "26-27"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::device_start"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::rtc_clock_updated"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::clock_tick"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::test_tick"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::get_data_out"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "210-217"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_REGISTER_HOLD"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "346-347"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "355-356"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The uPD4990A is a CMOS LSI that inputs and outputs calendar and clock data serially to and from a microcomputer.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "79-80",
+       "sha": "a2719ccd6c7d1a8d7399e4148d688f9440689e84b6cb484a5b353beb09cb8fd1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The crystal frequency is 32.768 kHz and the data items are time, minute, second, year, month, day and week.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "80-81",
+       "sha": "d02b76b291b589645cf88dbf1b01ec41e7f08be286e3a518b48244ef89284682"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "It has built-in counters for time (hour, minute, second) and date (year, month, day, week).",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "83",
+       "sha": "0b89e21966584e3a21c96b2bef6a4395aa1e59a0eb10ce965d2b54428663b355"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Leap years are adjusted automatically.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "84",
+       "sha": "6967dab19207b66881373850b64107d6bbb518751825f87ada3ea796c47bf7c9"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Commands can be set by inputting serial data.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "86",
+       "sha": "fe4ad1f2b817ab6e1aa32aaa424675a033a8789c943eb16cec65be07ac8fbf4e"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The selectable timing pulses are 64 Hz, 256 Hz, 2048 Hz and 4096 Hz, and the selectable output intervals are 1, 10, 30 and 60 seconds.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "87-88",
+       "sha": "332f3844591acc58c3778fc4b05c4ba547be233dbb690e5d2e8bf7ef2bdcb4c1"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "The crystal frequency is 32.768 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "255-256",
+       "sha": "7ede3eb8f71f80a2ba203df8d7fa7fb776fffebbebf246b6600c7140f6a7196e"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The data types are second, minute, day, week, month and year.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "257-258",
+       "sha": "976105e1bfe614b0b8437ebeda4f7982010346b92f8a2f51a2eb178b08fac3b1"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "Leap years, 31-day months and months of 30 days or fewer are adjusted automatically.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "259",
+       "sha": "16fb47cf19264d5233fe8e364f084b7b21b4ac2fe8bb768d8966d809900f2de7"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "A 24-hour system is used, the last two digits of the Gregorian year are indicated, and leap years are assumed to be multiples of 4.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "260-261",
+       "sha": "dded743dd09e906b95ac3f2b3f85a995ba49baf430fe6ad896d0ce29cfcc08ba"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "when",
+     "of": "doc",
+     "text": "Data is represented in BCD notation, except months, which are represented in hexadecimal notation.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "85",
+       "sha": "de81993f6a0cc4410f7aa7b48cf35d9148a78e8c24eaee889b3043f7e8463df6"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "263",
+       "sha": "9d59ee28976045b351e3e2263a78a7d3a8d04169e92bf46bde274f75e20a2709"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "Data is input and output synchronously with the external clocks input from the CLK pin, using the serial input and output system.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "264-266",
+       "sha": "63fcb88ec6f85a3933c4f01cdb2f985a3453881051f4118348bd8bbe4295fbd6"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The data of the 52-bit shift register appears on DATA OUT starting from the least significant bit of the second.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "289",
+       "sha": "b9a308f5aee50e43781a8367de958636d7e7601848f6768f5c2d0364f8f60237"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "With commands input from the C0, C1 and C2 pins, the shift register is 40 bits and the year function is ineffective; it works as the uPD1990AC outside test mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "330-332",
+       "sha": "61a9a760de76d3832b0a8a9478a2844e45749934b780425855b1b28fa0daa5c2"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "Register control commands number 4 and 4, TP select 3 and 8, TP control 0 and 3, and test mode set 1 and 1, for the 3-bit and serial forms.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "369-373",
+       "sha": "49d259f13939ad9918c84a4a90371ddf12ccfbad922a16c76398767f8c0adcd2"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "In serial command transfer mode, a strobe with C2 C1 C0 at VDD makes the chip take the serial command register as the command, and the year function is effective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "447-449",
+       "sha": "c383eec2d2b608e982945c9e4fb63dfd3842d14d34fe9a4c166a59525fea7646"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "when",
+     "of": "doc",
+     "text": "The test mode is cancelled by serial commands 0 1 0 0 to 1 1 1 0, and by one the capture prints as 0 0 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "450-452",
+       "sha": "76484c34c0db66eaad29dd414a088db577e17e2d934a546f2b80f6616d68d811"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "The year function is effective in the serial command transfer mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "455",
+       "sha": "87267b04982fdd9830966c5f128a75dfdf6a1b8cfcb67682a5f0ef2c0c337162"
+      }
+     ]
+    },
+    {
+     "n": "19a",
+     "on": "is",
+     "of": "doc",
+     "text": "There are two different test modes, depending on the OUT ENBL data.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "482",
+       "sha": "285ca87af6a80d232adf8a8fb5d022fbe8f8947bda39314ff939a85993077de3"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "when",
+     "of": "doc",
+     "text": "In test mode, data is output to the DATA OUT pin regardless of whether data has been input to OUT ENBL.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "480-481",
+       "sha": "8283b93b9b4f726c6fc161119f5a17f1d7a1e1f292a00ae9526e4d0448ff1996"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "when",
+     "of": "doc",
+     "text": "In test mode 1, OUT ENBL = 0, 8192 Hz signals are set parallel in the counters for year, month, week, day, time, minute and second, with no carry.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "483-485",
+       "sha": "587bc437327d7c63e67496b155ca346d5b5315e4c01ed346e9798bf16650e7bd"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "when",
+     "of": "doc",
+     "text": "In test mode 2, OUT ENBL = 1, an 8192 Hz signal is input to the second counter instead of the 1 Hz signal, and there is carry from counters.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "486-487",
+       "sha": "7c3957cbd6d3b46e5965afb6f28de8c2d6d7f4a527e5d750322112ec924553e4"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "reset",
+     "of": "doc",
+     "text": "The Register Hold command releases the test mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "490",
+       "sha": "fb90c0c0dbf3e37aa9e88d82d522178d25128bdfec2b962182b95a553bc24603"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "when",
+     "of": "doc",
+     "text": "When the Register Hold command cancels the test mode, 64 Hz is output to the TP pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "494",
+       "sha": "9a223b928f9a68bc045d038b987e8af3b582ebb33585bb0f749aadc960e0e362"
+      }
+     ]
+    },
+    {
+     "n": "25",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME keeps the day of the week, less 1, in the low nibble of the month byte of the time counter.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "124",
+       "sha": "d7bae8d12c3a6ec8dd60b950dd33db07ec2ceb61853f5948a8a84a26f3305519"
+      }
+     ]
+    },
+    {
+     "n": "26",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME steps each counter alone with no carry, sets DATA OUT when one wraps, and steps the year counter, the sixth, only in serial mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "125",
+       "sha": "c433ebfb11e86801d19d617e082cdba18776363685c37021cf4d0726da05d302"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "167-168",
+       "sha": "45d645723aed811fd272a52f23b70458dc70ab35b01c090c0193c8c762c5385e"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "169-179",
+       "sha": "c296c7c8d2f9280fd3997a03f9911432f672927fcb2c15806e3c5072ee2cc401"
+      }
+     ],
+     "row": "20"
+    },
+    {
+     "n": "27",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME outputs on DATA OUT in test mode whatever OUT ENBL is, and in test mode 2 sets it when the last counter is zero; its source marks that untested.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "472",
+       "sha": "f8a1c61abe0603433fecc27be333fec89d2fa3ae7d053ffcba3730841ddadb4a"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "152-158",
+       "sha": "c9582f08dd03acf4a212be8e6d451d6e62232c510de096d958c8248636c1c92b"
+      }
+     ],
+     "row": "19"
+    },
+    {
+     "n": "24",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME starts with every pin level and the command at 0, the shift register cleared, and test mode off.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "77-88",
+       "sha": "c06d8209d3ea3ad0cfda9635242e37c3a4285d2e801ce72afffb04e13859891e"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "89",
+       "sha": "247458011f26344f4cc62d8436b6b3dbd626f9e5078acd84210b9602674d429c"
+      }
+     ]
+    },
+    {
+     "n": "28",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME gives the uPD1990A type a test-mode clock of 1024 Hz instead of 8192 Hz, picking the rate when test mode is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "355-356",
+       "sha": "14013e32a3e8a815fe50a2b5fc02b6288cefee55aa66ae043f5c94aa8b212df6"
+      }
+     ]
+    },
+    {
+     "n": "29",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME sets its test-mode flag when the command read at a strobe is the test command.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "344",
+       "sha": "99a464acd3a1e6b82ed6722374d03c874af201fda70e4aba04c63d6cb9992436"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "353",
+       "sha": "41f8c8796ac313b7be0e887372d984f56fdc4428a9d9ff1dcce1d0fdcf71da3d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "82",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "262",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "368",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "479",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "488-489",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "26-27",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "92",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "94-96",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "93",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "159-165",
+     "as": "agrees",
+     "row": "21"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "120-125",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "135",
+     "as": "unfollowed",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "210-217",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "210-217",
+     "as": "agrees",
+     "row": "22"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "195",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "220",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "227",
+     "as": "unfollowed",
+     "row": "23"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "224",
+     "as": "unfollowed",
+     "row": "23"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "346-347",
+     "as": "agrees",
+     "row": "21"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "355-356",
+     "as": "agrees",
+     "row": "21"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "146",
+     "as": "parent",
+     "owner": "upd1990a:command:0x03"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "237",
+     "as": "parent",
+     "owner": "upd1990a:command:0x01"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "253",
+     "as": "parent",
+     "owner": "upd1990a:command:0x02"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "407",
+     "as": "parent",
+     "owner": "upd1990a:register:0x03"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "433",
+     "as": "parent",
+     "owner": "upd1990a:register:0x00"
+    }
+   ]
+  }
+ ]
+}

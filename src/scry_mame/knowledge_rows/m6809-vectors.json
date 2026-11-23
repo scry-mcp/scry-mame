@@ -1,0 +1,3001 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "m6809-vectors",
+ "title": "MC6809 interrupt and reset vectors",
+ "kind": "vector",
+ "scope": "m6809",
+ "covers": "The MC6809's vector locations at the top of memory: reset, NMI, the two software interrupts, SWI3, SWI2, FIRQ and IRQ",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC6809PM.raw.txt",
+   "variant": "MC6809"
+  }
+ ],
+ "official": {
+  "MC6809PM.raw.txt": [
+   "881-887",
+   "2627-2699",
+   "2776-2869"
+  ]
+ },
+ "closed": [],
+ "entries": [
+  {
+   "key": "0xFFF2",
+   "name": "SWI3",
+   "aliases": [
+    "SWI3"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "887"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2677-2699"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "360"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "368"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "670-673"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "675-683"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "51-56"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-436"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "123"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "98-104"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The SWI3 vector location is FFF2 (MS byte) and FFF3 (LS byte).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "887",
+       "sha": "d1a17fcb2f1a4ea83465b42b0a0175c440d27e1c3e9baccdf9958e87b294104d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI3 sets E, which the document glosses as the entire state being saved.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2679",
+       "sha": "a4fbfad068be3dec2f676a2e112d29b4b2125e34e3edee7eea4848c9fdaaa2b7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI3 stores to the stack, in this order, PCL, PCH, USL, USH, IYL, IYH, IXL, IXH, DPR, ACCB, ACCA and CCR.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2680-2691",
+       "sha": "f8048a3df4cb7a434ec3311b68818443bc95392e16db04fb413bdb84dcb554e4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "Control is transferred through the SWI3 vector: PC takes the contents of FFF2 and FFF3.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2692",
+       "sha": "b2186734c68e61fa5b3c2e579041d60c2212e001a0c8ae08a7994ddd7421e7ee"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2697",
+       "sha": "5df8abd92be21f79db71ff209ded3be531be7861d3084e26318461db85076bc7"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "All of the processor registers except the hardware stack pointer itself are pushed.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2695-2696",
+       "sha": "69e945e316dc7dfc2cd9ff7908b7110f4e730c586b44d31ad177ae64250ace3f"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI3 does not mask (disable) the normal and fast interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2697-2698",
+       "sha": "52bde0762bff56d989a1a720516497a93beb04f46578e65255e6b9cbf48b343f"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The Condition Codes line of SWI3 reads: Not affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2693",
+       "sha": "aa0fe79272cde85b6270e3344014b169d820992d24fb99902e109e7fe5cf471b"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The addressing mode of SWI3 is inherent.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2699",
+       "sha": "75d4d679b3bf80049f07f333559b5a822f5aa7f33c48a2b5afa48c28ad83ee4d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "In the DISPATCH11 block, case 0x3F runs the SWI3 label, which stores VECTOR_SWI3 (0xFFF2 in the enum) into m_ea through set_ea.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "360",
+       "sha": "2eee4439447241ee2d69fa077ec3050cbdad10e0a89323ab2433b81cf9c9acab"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "368",
+       "sha": "a46bd267745b326a25d8ac6506cb8ceb28a47a9eb2f4bb27c86f3a626840e1e9"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "671",
+       "sha": "d8b093e1028db5600b666e3891c4cd4b939d67891fdc0a06eec6c6f4c65a3a95"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "123",
+       "sha": "543dbe5a61b5387f7f6b6968f6bac691806c90b8ab99f8bef82a5d8d984cfd4f"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "227",
+       "sha": "5b30ceb5373cd56640cf3e6b089d226318a0dd3824e51f62f4c89cfafbcca4ed"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "INTERRUPT_VECTOR loads PC high and low from read_vector(0) and read_vector(1), reading memory at m_ea.w plus the ordinal, but calls the bound vector callback instead when one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "53-54",
+       "sha": "4c9a9dd768666ebdba9d47253a7e7e3dcdacd0606027447864454a156d6f5cdc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "98-104",
+       "sha": "1a3323e9adf08917b3bf284e5c8e65f6e529eeea14e712aa5d8a1db55d7ee0dc"
+      }
+     ],
+     "row": "4"
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The SWI3 label calls debugger_exception_hook with EXCEPTION_SWI3.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "672",
+       "sha": "ce5a1854af96838a8a589e531eef8310af61c75df8d8c4f249ffb614b6c64253"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "SOFTWARE_INTERRUPT calls dummy_read_opcode_arg(0) and dummy_vma(1), and INTERRUPT_VECTOR calls dummy_vma(1) twice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "680-681",
+       "sha": "5a1a719c4e37d999f002e3ccd2191f06b8ee1cde16d171f912abebb18d54ed54"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "52",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "55",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2677",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2678",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2694",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "677",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "678-679",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "678-679",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "670-673",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "675-683",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "51-56",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0xFFF4",
+   "name": "SWI2",
+   "aliases": [
+    "SWI2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "886"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2651-2676"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "291"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "316"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "315"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "725-733"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "665-668"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "675-683"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "51-56"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-436"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "124"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "98-104"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The SWI2 vector location is FFF4 (MS byte) and FFF5 (LS byte).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "886",
+       "sha": "01a1d029192ec9dac4fb3fa1d727e5d8db90a3a4631ebbbed0d34f36b28925e6"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI2 sets E, which the document glosses as the entire state being saved.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2654",
+       "sha": "64fc923112bf1939ea33e0c519a30a310d63adc3a29a14d869f119bc7a2d5b22"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI2 stores to the stack, in this order, PCL, PCH, USL, USH, IYL, IYH, IXL, IXH, DPR, ACCB, ACCA and CCR.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2655-2666",
+       "sha": "d72c659643a53535371f739391506964921f77f1622fd80258eaf8ad87ce8b71"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "Control is transferred through the SWI2 vector: PC takes the contents of FFF4 and FFF5.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2667",
+       "sha": "e50a7bd5e9022cf6a1d9d924ef53b989733107440a650852ad55e25bc1cd42ed"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2672",
+       "sha": "b0274b44d5bc74656ad78126d5488f7b90456ee49c7dc8dad7fb81a3b20e33a0"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "All of the processor registers except the hardware stack pointer itself are pushed.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2670-2671",
+       "sha": "5b7b765eec2a7a58fecfb09260245809519fc210f0dca3e090c82b00e20996a5"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI2 does not mask (disable) the normal and fast interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2674-2675",
+       "sha": "dc7cbfa632723c572551365bd15ea332a1d72ad058342f5192633ccce4170a7e"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "SWI2 is available to the end user and must not be used in packaged software.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2672-2674",
+       "sha": "af6cd35ed8474c379fd3f9a3955ec6f82eaab70e4ac5fc16eb486f9ee9b1236d"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The Condition Codes line of SWI2 reads: Not affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2668",
+       "sha": "aa0fe79272cde85b6270e3344014b169d820992d24fb99902e109e7fe5cf471b"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The addressing mode of SWI2 is inherent.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2676",
+       "sha": "75d4d679b3bf80049f07f333559b5a822f5aa7f33c48a2b5afa48c28ad83ee4d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "In the DISPATCH10 block, case 0x3F runs the SWI2 label, which stores VECTOR_SWI2 (0xFFF4 in the enum) into m_ea through set_ea.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "291",
+       "sha": "7f4e224857f38bbb6c0109634b9fa2e72e2e9bb8881600ef8e753d9b82aa5186"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "316",
+       "sha": "7507e912212eef1944e5c993759f2b3c3a634ef01aa3e3c816841d75a9ef056c"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "666",
+       "sha": "2e3c0b44015dfb03bd3c347f4ed9c792ec1c526fcb01a83659dab94d1af2ce8f"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "124",
+       "sha": "63c0bc6c3ed6a847c3b14a6af3a5b67ba55fb47816f0ca60f405ff0507f77a7a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "227",
+       "sha": "5b30ceb5373cd56640cf3e6b089d226318a0dd3824e51f62f4c89cfafbcca4ed"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "INTERRUPT_VECTOR loads PC high and low from read_vector(0) and read_vector(1), reading memory at m_ea.w plus the ordinal, but calls the bound vector callback instead when one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "53-54",
+       "sha": "4c9a9dd768666ebdba9d47253a7e7e3dcdacd0606027447864454a156d6f5cdc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "98-104",
+       "sha": "1a3323e9adf08917b3bf284e5c8e65f6e529eeea14e712aa5d8a1db55d7ee0dc"
+      }
+     ],
+     "row": "4"
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The SWI2 label calls debugger_exception_hook with EXCEPTION_SWI2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "667",
+       "sha": "2ccd3200626f732cb1ac766b8b431e386277ce4a3b2497b4f495c7c0c8d107d7"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "SOFTWARE_INTERRUPT calls dummy_read_opcode_arg(0) and dummy_vma(1), and INTERRUPT_VECTOR calls dummy_vma(1) twice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "680-681",
+       "sha": "5a1a719c4e37d999f002e3ccd2191f06b8ee1cde16d171f912abebb18d54ed54"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "52",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "55",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the DISPATCH10 block, case 0x3E runs XSWI2, which stores VECTOR_SWI2, calls the exception hook, selects S and pushes the entire state before INTERRUPT_VECTOR.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "291",
+       "sha": "7f4e224857f38bbb6c0109634b9fa2e72e2e9bb8881600ef8e753d9b82aa5186"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "315",
+       "sha": "64066f6ea5add7589c9b5d80c6c1bfc9437aa4c74d14686c3d111e2fa70c8646"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "725-733",
+       "sha": "5e74535f6f08a06672da60de770ba76a148454cdb9ed8ea75b7288f93b756612"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2651",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2652",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2653",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2669",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "677",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "678-679",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "678-679",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "665-668",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "675-683",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "51-56",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0xFFFA",
+   "name": "SWI",
+   "aliases": [
+    "SWI"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "883"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2627-2650"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "16"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "90"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "654-663"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "52-55"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-436"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "127"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "98-104"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The SWI vector location is FFFA (MS byte) and FFFB (LS byte).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "883",
+       "sha": "7a33b11161ebf9368acc6394cae1e9bea5b0f4606e0c8bf6634314702cede045"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI sets E, which the document glosses as the entire state being saved.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2629",
+       "sha": "a4fbfad068be3dec2f676a2e112d29b4b2125e34e3edee7eea4848c9fdaaa2b7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI stores to the stack, in this order, PCL, PCH, USL, USH, IYL, IYH, IXL, IXH, DPR, ACCB, ACCA and CCR.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2630-2641",
+       "sha": "7a9782ad748628f9eddf9aea845673ac360ef7ee5d538dd47fa49c8867bee76d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "Control is transferred through the SWI vector: PC takes the contents of FFFA and FFFB.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2643",
+       "sha": "894f4b4079c62af2c4988a711072c849a311f3b51963260cc8cd11081c2d594a"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2647-2648",
+       "sha": "220861b4a915c258956ef383e9719c5e0ed41cf245995752ff96e5c5b1953bf7"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "All of the processor registers except the hardware stack pointer itself are pushed.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2646-2647",
+       "sha": "69e945e316dc7dfc2cd9ff7908b7110f4e730c586b44d31ad177ae64250ace3f"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "SWI sets I and F; the document says this masks (disables) both the normal and fast interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2642",
+       "sha": "091fc25b24965d02972dc8a487ab4bbd58d241dc013aafe5fd96ff2a71e9503b"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2648-2649",
+       "sha": "5698bb834b403ea8f114625271ab0b47c431c11f9a9c4776049f029294568593"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The Condition Codes line of SWI reads: Not affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2644",
+       "sha": "aa0fe79272cde85b6270e3344014b169d820992d24fb99902e109e7fe5cf471b"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The addressing mode of SWI is inherent.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2650",
+       "sha": "75d4d679b3bf80049f07f333559b5a822f5aa7f33c48a2b5afa48c28ad83ee4d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "In the DISPATCH01 block, case 0x3F runs the SWI label, which stores VECTOR_SWI (0xFFFA in the enum) into m_ea through set_ea.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "16",
+       "sha": "eccbc5d000e3366b7bce5246955e16272d9c7d22c6ce00b9c7ae8eb37be876ad"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "90",
+       "sha": "2da250005bb89bb12573841ab9d56f784ae12aa6d58ba7c69b9b7a1ee42d8957"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "654",
+       "sha": "241185ba1047ca76cc1494a172cbde3d665b2bb76dfecdd4feb62cd587458e55"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "127",
+       "sha": "e0e3dbc4e52bd31233a67199cf69930fae65d044dedb142767513ba51d417f08"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "227",
+       "sha": "5b30ceb5373cd56640cf3e6b089d226318a0dd3824e51f62f4c89cfafbcca4ed"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "SWI continues at INTERRUPT_VECTOR: PC high and low come from read_vector(0) and read_vector(1), memory at m_ea.w plus the ordinal, or the bound vector callback when one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "663",
+       "sha": "cd1f90ddf48dfda42a36c88c692b3152b3639c0bd602a2e0d82983b9c8aba783"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "53-54",
+       "sha": "4c9a9dd768666ebdba9d47253a7e7e3dcdacd0606027447864454a156d6f5cdc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "98-104",
+       "sha": "1a3323e9adf08917b3bf284e5c8e65f6e529eeea14e712aa5d8a1db55d7ee0dc"
+      }
+     ],
+     "row": "4"
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The SWI label calls debugger_exception_hook with EXCEPTION_SWI.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "655",
+       "sha": "8c57cd88769fc7f38b5419ee1e4cfe4324c5c82e1d52453cfe1ca1693190e6b3"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The SWI label calls dummy_read_opcode_arg(0) and dummy_vma(1), and INTERRUPT_VECTOR calls dummy_vma(1) twice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "659-660",
+       "sha": "5a1a719c4e37d999f002e3ccd2191f06b8ee1cde16d171f912abebb18d54ed54"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "52",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "55",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2627",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2628",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2645",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "656",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "657-661",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "657-661",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "662",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0xFFF6",
+   "name": "FIRQ",
+   "aliases": [
+    "FIRQ"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "885"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2776-2803"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "5-10"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "19"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "469-472"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "272-275"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "18-36"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "52-55"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-397"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "431-436"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "572-580"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "582-592"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "603"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "125"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "251"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "277"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "278"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "98-104"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The FIRQ vector location is FFF6 (MS byte) and FFF7 (LS byte).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "885",
+       "sha": "ac22a2c628261ab64e4149b5e28782cd961d92760f98282c663a8c44d4cfe9c1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "doc",
+     "text": "A FIRQ with the F bit clear causes the interrupt sequence to occur at the end of the current instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2779",
+       "sha": "a684407804dc3c07784c98503c96b2835853888b5c68d7661ded621ca40d257d"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2787-2789",
+       "sha": "11f2a58c249e230f367e2c19931d250ff6c141a87dd84eee27af7a8e849ba0af"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "The FIRQ sequence pushes the program counter (PCL, then PCH) and then the condition code register onto the hardware stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2779-2780",
+       "sha": "100b57b0ba8826495f19a4012a25f231fa97c855c94584c7bda03533d8bd3deb"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2782",
+       "sha": "c32aa1bdd834d5f2843ae491521b46f6a67194a73cf31d048392dee0e08d1f5a"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2789-2790",
+       "sha": "421b750126a403e16951d89486468d4ad387553cc59ec38dff31d479d35d58ff"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "FIRQ clears E; the document glosses this as a subset of the state being saved.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2781",
+       "sha": "cdf322f666dcc93f5ee6102dc8ec51fe9e5008cdf0f382ea231668a6432b61aa"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "FIRQ sets F and I; the document says this masks further interrupts, so a normal IRQ cannot interrupt the routine.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2783",
+       "sha": "bfe0656a3dbb7e1231c8882afb6e5eeffd6345444d303e03735f26d1609b4bab"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2795-2798",
+       "sha": "760712ac9514774e358bd9eca113fe29c84d374f14fa048466790a5f310fe9f3"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "Program control is transferred through the FIRQ vector: PC takes the contents of FFF6 and FFF7.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2784",
+       "sha": "faede1da1fab37f50afaa7bbba71810874d32bd521863de13bb4d96210b4fc30"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2790-2791",
+       "sha": "f29507fc3f47eab04e04c05d3bf78517f1bb246abe97ec81d7b1d3adabe5ea06"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The Condition Codes line of FIRQ reads: Not affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2785",
+       "sha": "aa0fe79272cde85b6270e3344014b169d820992d24fb99902e109e7fe5cf471b"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "An RTI instruction returns the processor to the original task.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2791-2792",
+       "sha": "b9bb939f97ef27a6ad48f4eb77769a68bf4cade538dab61f40ac37981b76375b"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "does",
+     "of": "doc",
+     "text": "It is possible to enter the FIRQ routine with the entire machine state saved if FIRQ occurs after a clear and wait for interrupt instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2793-2795",
+       "sha": "019f306d7cea6af68e1ce2b264fa694a01797d9d56f4908a8c2c100deb868a0e"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The mask bit I could be reset during the interrupt routine if priority was not desired.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2798-2799",
+       "sha": "e48eded4dfcb4cb1d4c9a9f9991a71a6277d51044d1192cdda308397f17468fd"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "FIRQ allows operations on memory, TST, INC, DEC and the like without the overhead of saving the entire machine state on the stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2799-2802",
+       "sha": "6ccd075d5abf41d92c2cd04d36632152be73746cf1a33b0659587a3c6b459857"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The addressing mode of FIRQ is inherent.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2803",
+       "sha": "75d4d679b3bf80049f07f333559b5a822f5aa7f33c48a2b5afa48c28ad83ee4d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The FIRQ label stores VECTOR_FIRQ (0xFFF6 in the enum) into m_ea through set_ea; MAIN jumps to it when get_pending_interrupt returns VECTOR_FIRQ.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "5-8",
+       "sha": "b4acb57267f10df09bb105a72f5f23a3ada3d72daad584b4a7986368babc5db5"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "273",
+       "sha": "a701d9509a84d4a536f0e495f4b43218c17564b850de6b7f01d5cf711a6e3156"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "34",
+       "sha": "8a9a217c585fd314158f53451f2a3fa8f0ed37728507f1dd6e04c6a1205548e9"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "125",
+       "sha": "d165c68d12024709b2781763926cdce97b265ce53e920d5f9cea1b3beda285d0"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "227",
+       "sha": "5b30ceb5373cd56640cf3e6b089d226318a0dd3824e51f62f4c89cfafbcca4ed"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "The label continues at INTERRUPT_VECTOR: PC high and low come from read_vector(0) and read_vector(1), memory at m_ea.w plus the ordinal, or the bound vector callback when one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "36",
+       "sha": "cd1f90ddf48dfda42a36c88c692b3152b3639c0bd602a2e0d82983b9c8aba783"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "53-54",
+       "sha": "4c9a9dd768666ebdba9d47253a7e7e3dcdacd0606027447864454a156d6f5cdc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "98-104",
+       "sha": "1a3323e9adf08917b3bf284e5c8e65f6e529eeea14e712aa5d8a1db55d7ee0dc"
+      }
+     ],
+     "row": "6"
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The FIRQ label calls standard_irq_callback with M6809_FIRQ_LINE and the PC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "35",
+       "sha": "4d588872ae0ec1a99af7f45291b6474f10fac01510690547f3331d08538d9c74"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The label calls dummy_read_opcode_arg(0) twice and dummy_vma(1) once, and INTERRUPT_VECTOR calls dummy_vma(1) twice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "18-20",
+       "sha": "83ae865105299c2669fa2f8634cca63e83c8b0365ed750b9a428ba6652868688"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "52",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "55",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The FIRQ label saves the entire state with E set when firq_saves_entire_state() is true; m6809.h defines that function as returning false.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "21-25",
+       "sha": "e8b54c9275d8b784799120ce980dd5ec39c3d785a551998e00c0ff05707d3e12"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "277",
+       "sha": "835e4ca98852282ab0e57fde8ef2ef350248670fc611be1f2b0b976015d050df"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2776",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2777",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2778",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2786",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "469-472",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "272-273",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "5-10",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "19",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "21-32",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "277",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "251",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "278",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-397",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "431-436",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "21-30",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "277",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "33",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "274-275",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "572-580",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "582-592",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "603",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "251",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0xFFF8",
+   "name": "IRQ",
+   "aliases": [
+    "IRQ"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "884"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2804-2830"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "5-10"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "19"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "474-477"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "274-275"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "39-49"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "52-55"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-436"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "126"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "98-104"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The IRQ vector location is FFF8 (MS byte) and FFF9 (LS byte).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "884",
+       "sha": "99e06115e17f63dc4386c815a7c4b53682f9dd6ba08000846ca5fcfa637bbd2f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "doc",
+     "text": "If the I bit is clear, a low level on the IRQ input causes the interrupt sequence to occur at the end of the current instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2807",
+       "sha": "bab4651d0d587b923ad5db29c55c5c226952eb4342a3c43f31edf93bc24bf811"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2824-2826",
+       "sha": "807306018fc78a6bf048abf31748fff523852749552a551a94b03f357866e6f7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "IRQ stores to the stack, in this order, PCL, PCH, USL, USH, IYL, IYH, IXL, IXH, DPR, ACCB, ACCA and CCR.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2807-2817",
+       "sha": "c65946cf309295170f320b77d369b8853c0840c14593d9276a5979849d318148"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2819",
+       "sha": "6a1fa0fb9c40c474dca5030b02de6314e087b0642deee44ac2b1bf98800682c6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "IRQ sets E, which the document glosses as the entire state being saved.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2818",
+       "sha": "283374439163c4de74410af3cf50a20eeb6c6f090053c2dbe435f590d9a380c1"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "IRQ sets I; the document says this masks further IRQ interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2820",
+       "sha": "fb7b14bd47a707cd48ea935588198259138c731a99a6c89615b69adf80b4201f"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "Program control is transferred through the IRQ vector: PC takes the contents of FFF8 and FFF9.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2821",
+       "sha": "664a71d86b709450e5b8fa3d09d600ff621ce8e0ae3ff44d08d99a4d575bcf21"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The Condition Codes line of IRQ reads: Not affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2822",
+       "sha": "aa0fe79272cde85b6270e3344014b169d820992d24fb99902e109e7fe5cf471b"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "Control is returned to the interrupted program using an RTI instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2826-2827",
+       "sha": "6485e28bd0c61881c307a9a4c3c2a1f07519741e3796fd7169f1f0eb65c675de"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "A FIRQ may interrupt a normal IRQ routine and be recognized anytime after the interrupt vector is taken.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2827-2829",
+       "sha": "5c5557c9846d9eed93440f1ced818a42f5b795292c1648dbcdc0ccb842a0134c"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The addressing mode of IRQ is inherent.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2830",
+       "sha": "75d4d679b3bf80049f07f333559b5a822f5aa7f33c48a2b5afa48c28ad83ee4d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The IRQ label stores VECTOR_IRQ (0xFFF8 in the enum) into m_ea through set_ea; MAIN jumps to it when get_pending_interrupt returns VECTOR_IRQ.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "5-9",
+       "sha": "172ba84ba25e068cc480ae61dc029f4df471bf583de4f165803bbcd1bbf7b469"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "275",
+       "sha": "c7aa739b9eff5fe7b126d5a3ca82819e74ada0710f5d76efe6fa196322f3d516"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "47",
+       "sha": "747d5dad2fe065d48c0c024348009b3a68ac9ae383c037cc36a45ed4a4db549a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "126",
+       "sha": "3bfc7a95d76ebcadd918630535e381e9259c1ba7aec1884f381dad06e1f84600"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "227",
+       "sha": "5b30ceb5373cd56640cf3e6b089d226318a0dd3824e51f62f4c89cfafbcca4ed"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "The label continues at INTERRUPT_VECTOR: PC high and low come from read_vector(0) and read_vector(1), memory at m_ea.w plus the ordinal, or the bound vector callback when one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "49",
+       "sha": "cd1f90ddf48dfda42a36c88c692b3152b3639c0bd602a2e0d82983b9c8aba783"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "53-54",
+       "sha": "4c9a9dd768666ebdba9d47253a7e7e3dcdacd0606027447864454a156d6f5cdc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "98-104",
+       "sha": "1a3323e9adf08917b3bf284e5c8e65f6e529eeea14e712aa5d8a1db55d7ee0dc"
+      }
+     ],
+     "row": "6"
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The IRQ label calls standard_irq_callback with M6809_IRQ_LINE and the PC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "48",
+       "sha": "17405c7d0a1eb919c4c899add53396841f8fafb6f79bcaa474aebb5dbf556681"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The label calls dummy_read_opcode_arg(0) twice and dummy_vma(1) once, and INTERRUPT_VECTOR calls dummy_vma(1) twice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "39-41",
+       "sha": "83ae865105299c2669fa2f8634cca63e83c8b0365ed750b9a428ba6652868688"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "52",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "55",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2804",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2805",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2806",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2823",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "474-477",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "274-275",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "5-10",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "19",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "43-45",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "42",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "44",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "46",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "46",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "272-275",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "5-10",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "19",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0xFFFE",
+   "name": "reset",
+   "aliases": [
+    "RESET",
+    "RESTART"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "881"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2860-2869"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "252-254"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "256"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "258-259"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "261"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "264"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "52-55"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "129"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "102-104"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "222"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "98-104"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809make.py",
+     "lines": "11"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The RESET vector location is FFFE (MS byte) and FFFF (LS byte).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "881",
+       "sha": "09054665688e158fd5bb62b208f5c1961bc6df40ceaf1c1bd9ae05ee3d328cbc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "RESTART gives CCR the value X1X1XXXX: the second and fourth characters are 1 (the capture lost the arrow).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2861",
+       "sha": "65b46fe4de6d513c80a3b1fe77565867a6365ce78656a314046ca9fd5a594696"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "RESTART sets DPR to 0016, read here as hexadecimal 00 (the capture lost the subscript's form).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2862",
+       "sha": "bd8713e027e0fbbf18bdc18d66dc3db597b257232cb1e9dd2190f47c6169d06f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The starting address is fetched from the restart vector: PC takes the contents of FFFE and FFFF.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2863",
+       "sha": "a3bd3ba479b024cb7b70d3d9e83aba1ebc55b9ff9a8529de4128d3cb940a3847"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2867-2868",
+       "sha": "5b6fb13fdc5431e5963ea1199bda526a347876f6ab6da1260fbbb56fad5c6c38"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The processor is initialized (required after power-on) to start program execution.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2866-2867",
+       "sha": "1e2e2eab320dd0826fe94d5cd611b732a24e69d7e5e779e2fe1ee0e19416d061"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The Condition Codes line of RESTART reads: Not affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2864",
+       "sha": "aa0fe79272cde85b6270e3344014b169d820992d24fb99902e109e7fe5cf471b"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The addressing mode of RESTART is extended indirect.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2869",
+       "sha": "cc18bafb539143da3911a9a0441c2469b57ba62b7544993b524696aece74aeb4"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "device_reset stores VECTOR_RESET_FFFE (0xFFFE in the enum) into m_ea through set_ea and calls reset_state, which sets m_state to 1, the state of INTERRUPT_VECTOR.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "261",
+       "sha": "9eaa19ecb042a9368ec310c11715c743ad7940972b293c2f7b2180c0a862b87b"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "264",
+       "sha": "471d5a614c09d06d632da2fad05564fbe6a1d99e1ff5ba34fb9878b9653b49b2"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "129",
+       "sha": "1b9a6ea2173dec2d8f0ed356a375d72f663eb914332434d73c72077b8ff88a72"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "222",
+       "sha": "055467a309fcad16083662e2654d20abefdb7c9053c45726f2a5604793e2ad24"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "227",
+       "sha": "5b30ceb5373cd56640cf3e6b089d226318a0dd3824e51f62f4c89cfafbcca4ed"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809make.py",
+       "lines": "11",
+       "sha": "d9ab7e671be9d57670d704db104a3241a05ca7a70494d7b92ba5ad0ff5637e67"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "INTERRUPT_VECTOR loads PC high and low from read_vector(0) and read_vector(1), reading memory at m_ea.w plus the ordinal, but calls the bound vector callback instead when one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "53-54",
+       "sha": "4c9a9dd768666ebdba9d47253a7e7e3dcdacd0606027447864454a156d6f5cdc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "98-104",
+       "sha": "1a3323e9adf08917b3bf284e5c8e65f6e529eeea14e712aa5d8a1db55d7ee0dc"
+      }
+     ],
+     "row": "4"
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "INTERRUPT_VECTOR calls dummy_vma(1) twice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "52",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "55",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "device_reset also clears m_free_run.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "254",
+       "sha": "9f36d86614a8854694ca2b7f78da97956b05aa4105964129284156ffe8905a26"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2860",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2865",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "252-253",
+     "as": "parent",
+     "owner": "m6809:vector:0xFFFC"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "258-259",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "102-104",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "256",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0xFFFC",
+   "name": "NMI",
+   "aliases": [
+    "NMI"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "882"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2831-2859"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "5-10"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "19"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "270-271"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "463-467"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "252-253"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "560"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "4-15"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "52-55"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "413-418"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "610-612"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "636-643"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "614-634"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-436"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "128"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "227"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "98-104"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The NMI vector location is FFFC (MS byte) and FFFD (LS byte).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "882",
+       "sha": "c4b8f51b9ad1239cab152b73f3733a5ed2f44d8d5d6865c6936c97f8516b777a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "NMI sets E, which the document glosses as the entire state being saved.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2843",
+       "sha": "d754719d2c461106da0633d571b8f742e0f6b87f94df0112175b7e6ed2ecf15a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "NMI stores to the stack, in this order, PCL, PCH, USL, USH, IYL, IYH, IXL, IXH, DPR, ACCB, ACCA and CCR (the capture reads DPR as OPR).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2832-2842",
+       "sha": "f59a099be96aec0e06d55c8dd0d0b9bb58984d1d8918a2ee9ef80aa82621362b"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2844",
+       "sha": "65a785a67c0e5e150c56cee0cd44549ac870c92cf03c8b75069ac2d8fd930ebd"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "NMI sets I and F; the document says this masks interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2845",
+       "sha": "091fc25b24965d02972dc8a487ab4bbd58d241dc013aafe5fd96ff2a71e9503b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "Program control is transferred through the NMI vector; the operation line gives its first address as FFFC (the capture misreads the second).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2846",
+       "sha": "625ce21354d3683984078958db2ebf6e692910aa0f9b096ee7114287ccc5a3f4"
+      },
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2852-2853",
+       "sha": "5d6a2d927289233ec4fed65c6f6c23a9f12e2e4ba4c6ef690062b51fc4369f4b"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "A negative edge on the NMI input starts the NMI sequence at the end of the current instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2849-2852",
+       "sha": "8504a6745d3cde9a42c14810ef07777b3cf7d978d2fb67aab6ef4a6017e2b778"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "All of the processor's registers except the hardware stack pointer are pushed onto the hardware stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2849-2851",
+       "sha": "90bec3d4a89b86d194d5514cf9bdfb638419cd3ef7e757a8bd80b5345b30fcd8"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "doc",
+     "text": "Successive negative edges on the NMI input cause successive NMI operations.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2853-2854",
+       "sha": "6ce7ba5ee9f20e806b59024e0b6f94e80fa7261df8398abe744ffaa6b1dfd084"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "does",
+     "of": "doc",
+     "text": "A RESET operation can internally block NMI operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2854-2855",
+       "sha": "42fc71eb0e418fbfe1a704b28a773fd1780cf4f42d770304d7ca06c990274a87"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "If NMI was blocked, it occurs after the first load into the stack pointer (the capture reads LDS as lOS; TFR r,s; EXG r,s; etc.) after RESET.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2856-2858",
+       "sha": "d5f0a2cc4924dded6fae0f4e9134d763e911f8b0e2da7a0d7a4498fedf18041e"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "does",
+     "of": "doc",
+     "text": "Any non-maskable interrupt that occurs while NMI is blocked is latched.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2855-2856",
+       "sha": "43ad0e7d9ecca2bdc29ba4e1e03f17d2340ea50d2a436339b5f3585fca68995d"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The Condition Codes line of NMI reads: Not affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2847",
+       "sha": "aa0fe79272cde85b6270e3344014b169d820992d24fb99902e109e7fe5cf471b"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The addressing mode of NMI is inherent.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6809PM.raw.txt",
+       "lines": "2859",
+       "sha": "75d4d679b3bf80049f07f333559b5a822f5aa7f33c48a2b5afa48c28ad83ee4d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The NMI label stores VECTOR_NMI (0xFFFC in the enum) into m_ea through set_ea; MAIN jumps to it when get_pending_interrupt returns VECTOR_NMI.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "5-7",
+       "sha": "d912b790f87a705a8f87495b0be79a4dedaefdda83194ef109939c8a4a2c2c51"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "271",
+       "sha": "7051a96061408975e63469ad6896ac28a308423ec1fc7ec08047a6f8c3ce4deb"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "13",
+       "sha": "9007b3c3977a1062580fb69296d1389098eb575943e0640e286d03bb0e85f8a4"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "128",
+       "sha": "309d4f6a56db31f7b837b9ee1a181aaee1cab79fed067a41c34bc183e751344e"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.h",
+       "lines": "227",
+       "sha": "5b30ceb5373cd56640cf3e6b089d226318a0dd3824e51f62f4c89cfafbcca4ed"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "The label continues at INTERRUPT_VECTOR: PC high and low come from read_vector(0) and read_vector(1), memory at m_ea.w plus the ordinal, or the bound vector callback when one is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "15",
+       "sha": "cd1f90ddf48dfda42a36c88c692b3152b3639c0bd602a2e0d82983b9c8aba783"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "53-54",
+       "sha": "4c9a9dd768666ebdba9d47253a7e7e3dcdacd0606027447864454a156d6f5cdc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+       "lines": "98-104",
+       "sha": "1a3323e9adf08917b3bf284e5c8e65f6e529eeea14e712aa5d8a1db55d7ee0dc"
+      }
+     ],
+     "row": "5"
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The NMI label calls standard_irq_callback with INPUT_LINE_NMI and the PC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "14",
+       "sha": "86f24ea6883c648fa47bf3c90b209e3dda49e3b9bdcbce63c0419c550e9ae88d"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The label calls dummy_read_opcode_arg(0) twice and dummy_vma(1) once, and INTERRUPT_VECTOR calls dummy_vma(1) twice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "5-7",
+       "sha": "83ae865105299c2669fa2f8634cca63e83c8b0365ed750b9a428ba6652868688"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "52",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "55",
+       "sha": "02ea0fb98eaa0edbdb42a80f0e8663dba00bc2185b127cd2318409562373d89a"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "m_lds_encountered is set in LD16 and LEA_us when S is selected, and in TFR for destination 4; the EXG body, cited whole, has no store of it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "413-418",
+       "sha": "cc97a86a514143ffb69b5580550b0ef75090170ca09eb7af973f47fb0b9998f3"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+       "lines": "610-612",
+       "sha": "2f3f6afd768209b4dc32d6baf154b32cc2f3acc2d7fea488df15c3a01e905532"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "636-643",
+       "sha": "b347ad0ad0de5963ba58a57a529ca7ba5566870a6da3207875b7df84a3b55e33"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "560",
+       "sha": "0447d8ceb79bbecf4d4a670eeb23b4e4580a7c208e259eb167271a15c327ec86"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "614-625",
+       "sha": "e7583fa888924fad787cf4d1b71a0dcdcc96380b8d37c78ae50b6a64c6f97413"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+       "lines": "626-634",
+       "sha": "9d365452eab7849ecbf7b29e91e0ec02292a451410fbc805d4c918fe965b279f"
+      }
+     ],
+     "row": "10"
+    },
+    {
+     "n": "106",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "device_reset clears m_lds_encountered, and execute_set_input sets m_nmi_asserted from an edge only when it is true, so earlier edges leave only m_nmi_line changed.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "253",
+       "sha": "ec66e1303f1ceab5b481cb4300944a3f73f7a26eecec3679999a667d720632bc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "465-466",
+       "sha": "e034054d7b0318cb0461a825a31b7b7f290ecaac419ab87e9c17ba4bf0e4abe9"
+      }
+     ],
+     "row": "11"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2831",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:MC6809PM.raw.txt",
+     "lines": "2848",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "8",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "9-11",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "12",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "463-467",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809inl.h",
+     "lines": "270-271",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "5-10",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "19",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "9-10",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.h",
+     "lines": "279",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "392-403",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "404-415",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "416-427",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.lst",
+     "lines": "428-436",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "463-467",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/base6x09.lst",
+     "lines": "4",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "252-253",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+     "lines": "463-467",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  }
+ ]
+}

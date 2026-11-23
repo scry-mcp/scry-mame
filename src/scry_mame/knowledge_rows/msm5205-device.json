@@ -1,0 +1,376 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "msm5205-device",
+ "title": "The MSM5205 as a device: ADPCM decoder, reset",
+ "kind": "device",
+ "scope": "msm5205",
+ "covers": "the MSM5205 as a device: its ADPCM decoder and D/A stage, its reset, and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "OKI-VoiceSynthesis-1994.raw.txt",
+   "variant": "msm5205"
+  }
+ ],
+ "official": {
+  "OKI-VoiceSynthesis-1994.raw.txt": [
+   "1089-1143",
+   "1234-1238",
+   "1267-1268"
+  ]
+ },
+ "engine": [
+  "update",
+  "stream_alloc",
+  "timer_alloc",
+  "fill",
+  "compute_tables",
+  "toggle_vck",
+  "update_adpcm",
+  "m_vck_legacy_cb"
+ ],
+ "entries": [
+  {
+   "key": "msm5205",
+   "name": "OKI MSM5205 ADPCM",
+   "aliases": [
+    "MSM5205",
+    "M5205",
+    "OKI 5205"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1089-1143"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1234-1238"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1267-1268"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::device_start"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::update_adpcm"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::sound_stream_update"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The MSM5205 is a speech synthesis integrated circuit that accepts Adaptive Differential Pulse Code Modulation (ADPCM) data.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1098-1100",
+       "sha": "e8c435742da85c19e5e07b47eddb98b6b689cc12e066eed2183468e080eb778a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "doc",
+     "text": "Its synthesis stage expands ADPCM data to 12-bit PCM data.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1101-1103",
+       "sha": "1d4b309b4203b501f595c1cab63eb029be3ac4e60101de9cea8c5a52fbc99c84"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "A D/A stage reproduces the analog signal from the PCM data.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1103-1105",
+       "sha": "16a847a42cf4a1c4eea6d8ea74c970afdba0e0170089aa8f5c0ec03bc9588836"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The MSM5205 has a 10-bit D/A converter and no built-in low-pass filter.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1094-1095",
+       "sha": "7388c61b2d7a1f4d98ffa9e2a91356f9c7235d466623a9479267b0a53bc0d6e3"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Its features are a 3 or 4-bit ADPCM system, an on-chip 10-bit D/A converter and low power consumption.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1107-1110",
+       "sha": "dd3043ccf126b38a59203827efbd38fdef0dc3e96896f889a02a1ffcbc7bb722"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "If the MSM5205 is sent ADPCM data that gives more than full scale output, the D/A output wraps around from the most positive rail to the most negative rail.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1267-1268",
+       "sha": "6d6a85d759126bda4407bc489bb0da4922eb05ce26a19f621dc3b7108e550132"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "reset",
+     "of": "doc",
+     "text": "RESET is an active high input that initializes the internal circuitry.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1237",
+       "sha": "49273352cb1828c2cadf9069c5d03b5967a70e167e4263aa49ffab82263560e9"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "Internally, the reset pulse is synchronized with the VCK signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1237",
+       "sha": "49273352cb1828c2cadf9069c5d03b5967a70e167e4263aa49ffab82263560e9"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "To be effective, RESET must be true for at least twice the VCK time.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1237-1238",
+       "sha": "483fa8d6cf821a42f133240260ab146f100655d9378f1b148e28f3b82b738f35"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME clamps the new signal to 2047 at the top and -2048 at the bottom, so the output saturates instead of wrapping around.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "196-199",
+       "sha": "e7efd009a2afd0b2a00e1b3debb52c334d60c66451cf0d93e772d9d7208919c4"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's device_reset sets the latched data, the VCK level, the reset input level, the signal and the step index to 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "109-116",
+       "sha": "f40c16d1b1789beb8a5ffca8605f809c9d74aa5117aa421e83bdf8e8addda22e"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The step index moves by -1, -1, -1, -1, 2, 4, 6 or 8 for the low three bits of the nibble, and stays within 0 to 48.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "125",
+       "sha": "c42eb466ca9af2e09bab2e67cac98e72c5998420065491e67d88d3599784bb7a"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "201-206",
+       "sha": "0ef868249d84df001af7b4ca54aef2fc54ea5f738b0aa0d7d78185a84dab7219"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME fills the output stream with the 12-bit signal after clearing the low bits the converter lacks, 2 of 12 for the 10-bit MSM5205.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "58",
+       "sha": "628e363789d0a29cf65cba902684aa131e75e19357a9e757125cee780a45679a"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "354-356",
+       "sha": "f9d9055af56a44ce0da4579fb3ce373301d001860cdc6fe378dd21f8daa46315"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "357",
+       "sha": "32c30a361239190ace2b7931a623bf0d38cb8120a9169b4599a8a9136597882d"
+      }
+     ],
+     "row": "3"
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The stream is brought up to date and the signal replaced only when the new signal differs from the current one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "210-214",
+       "sha": "7984e050a877a5d44ed2b89f195d21b69e858d57a2fcad7018a7b03991670b8f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1089-1090",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1091-1093",
+     "as": "version"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1096-1097",
+     "as": "version"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1106",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1111",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1112-1114",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1115-1118",
+     "as": "version"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1119-1128",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1129-1143",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1234-1236",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "90-92",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "193-199",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "201-206",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "183-188",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "183-188",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "190",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "352",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "180-181",
+     "as": "parent",
+     "owner": "msm5205:register:0x02"
+    }
+   ]
+  }
+ ]
+}

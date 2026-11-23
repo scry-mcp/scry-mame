@@ -1,0 +1,2135 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "sega315_5313-regs",
+ "title": "Sega 315-5313 VDP register file",
+ "kind": "register",
+ "scope": "sega315_5313",
+ "covers": "The VDP registers 0x00 to 0x1F, keyed 0x100 plus the register number so they do not overlap the ports, and the three control word forms 0x200 to 0x202 that set them",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The comments of 315_5313.cpp list the ports and register bits in Charles MacDonald's style and cite no document; its TODO says timing needs checking on hardware."
+  },
+  {
+   "where": "maker",
+   "gave": "Genesis Software Manual, https://archive.org/details/sega-genesis-software-manual: a scan with no text layer; OCR garbles register grids and hex addresses, so it cannot be captured line for line, a person can read it."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "No Sega Genesis VDP register manual turned up in a web search for one on bitsavers."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Holds the Genesis Software Manual scan named under maker; nothing else official was found there."
+  },
+  {
+   "where": "index",
+   "gave": "Web searches gave Sega Retro and Sonic Retro wiki pages, Charles MacDonald's genvdp.txt and an unverified Scribd Technical Overview, none an official document that can be captured."
+  }
+ ],
+ "engine": [
+  "adjust",
+  "m_lv4irqline_callback",
+  "m_lv6irqline_callback",
+  "rand",
+  "from_ticks"
+ ],
+ "entries": [
+  {
+   "key": "0x100",
+   "name": "VDP mode set 1",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "53-59"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME keeps register 0x00 in m_regs[0x00] and names its bits, among them 0x10 horizontal interrupt enable, 0x04 palette select, 0x02 HV latch enable and 0x01 display disable.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "45-49",
+       "sha": "81a97ddf457b6105c19d735d3e8940a5124fcc0e757dbb4be6ebb11b46ec5ca4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "53-59",
+       "sha": "7893edd7897c1d50e6d4f01a973b24cdf303e670645146dcbf0d0d9704b70e0c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; with a horizontal interrupt pending and bit 4 set, the interrupt timer is armed for 16 ticks, otherwise the level 4 line is lowered.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "597-599",
+       "sha": "b90b0797a9160a7991a7e4d6c2e9ccb34a33b9c21b9201f0a61f8834724a58eb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "605-606",
+       "sha": "d9541eb6a101191545960eab399e57b3438ac2a9b4b18abc519d3ba3bf3d42b2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "45",
+       "sha": "477d6383d67d3a62e68378e1799a2072bdc7d911572552801ae5e86f6bceb8f8"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "55",
+       "sha": "9c3bda8261f2433be89f2c6eeed03961eb7c0a03dcd95ac63776a768d615f739"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 0 set the line renderer, after filling the backdrop, returns before reading the plane table bases.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1688-1691",
+       "sha": "d94c789e9f0586290af7cb62c0bcf6f735f2c4346c163722f3cc879f00f75473"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1703-1708",
+       "sha": "8bbcb22c2c221cddcbb1ee2583ea294c1ed30c3869dc0e71ea954e43e5195e83"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "59",
+       "sha": "620dcd611334742177cd981f2e3ef08387a329742bac5ea335a6d1ed70d11b94"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 2 clear the palette entries are masked with 0x49 when the per-line palettes are built.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2139-2140",
+       "sha": "96d1c6f8ad9e256f31c7021c510e4875172bbbcaed7cb653ab508e55538e48be"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "57",
+       "sha": "525045a0c4174d7d6a710bd8e832cef0bc2c924673dc3fb6a618a49098cf5734"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The comments of the macros for bits 5, 3 and 1 say 'not used by any commercial games?', 'unhandled' and 'used by lightgun games'.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "54",
+       "sha": "e7468990e7e0a8ef665fcf3f97ab178364da4714c23a3489a2f925ee930ad592"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "56",
+       "sha": "a32dd571dddba07f8df878943b65f5caa1291ac3678b803d0cb452c2224f2520"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "58",
+       "sha": "f305d5a2e36280741c4286d9acb630f63c7625c25f5916d313d0564c4b8d1918"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x101",
+   "name": "VDP mode set 2",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "77-84"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME names bits of register 0x01: 0x80 TMS9918 select, 0x40 display enable, 0x20 vertical interrupt enable, 0x10 DMA enable, 0x08 240 lines, 0x04 SMS select.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "66-71",
+       "sha": "0387139b4966bfb0d45cb253887643d2aa7ed98d0b6d9e39f2830f13416b3563"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "77-84",
+       "sha": "bb0cfaa84b79096c1244ccd3e402a0404cb36d2b16aeca840efa4b17603b4f9e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; with a vertical interrupt pending and bit 5 set, the interrupt timer is armed for 16 ticks, otherwise the level 6 line is lowered.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "612-614",
+       "sha": "89945a845eabe382e56c55d6a6fe1c861edda29d377a5b64b3c2e83f51e30ba4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "621-622",
+       "sha": "630635b4a0cd4030f4f53f42d94e004c7853a38c8e6f44cb9b234773d4ec8e77"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "68",
+       "sha": "ca67ca725e12515be3fc836f4811c30f7147b72e60ff0dd9945aada5f7d8adb3"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "79",
+       "sha": "4d715264f3d9e13bb18defdfd57be73fa5e692e4b60b8e91cf1a338f808468a7"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the vertical interrupt timer fires, the level 6 line is raised if bit 5 is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "258-259",
+       "sha": "cf5bd56955d34e696cf46a1c806973a7a2dba24794bd32b32b28b7164b99fdfc"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "79",
+       "sha": "4d715264f3d9e13bb18defdfd57be73fa5e692e4b60b8e91cf1a338f808468a7"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 6 clear the line renderer fills the backdrop and returns, and the status VBLANK bit reads 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1688-1691",
+       "sha": "d94c789e9f0586290af7cb62c0bcf6f735f2c4346c163722f3cc879f00f75473"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1696-1700",
+       "sha": "4c3518ce874c91d4d000c7640ae329e0416c1d930e32a3eac421ee61085052c1"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1111",
+       "sha": "9ad4f58ae53e0b06001596be79e4f81033fc8f9fa783d85c3b2b24d64bfdb618"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1146",
+       "sha": "f6b7663a9008ce4d6f5bd319e7a34c09cc6c475b9ad20310c571463eab07af12"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "78",
+       "sha": "89d393a6163a6f37d235143c5e4ed63686db607d3202c9ec7f71cdbf42d2aad8"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The 68k transfers, the arming of the fill and the copy each happen under a test of bit 4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "803",
+       "sha": "5af061efe6b1f91613728d4146e893df081f98eba2a27896f22999209ea8dedf"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "809",
+       "sha": "58e2b6ba1b6c67270f8c58bf3dc37d142375719cbbff78e33beedc8733df8cf1"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "815",
+       "sha": "85f54be4ac240492c690f0fbb3c686bf9aa8fce1de2c5bf68cebdd6246ca2275"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "827-831",
+       "sha": "52a16d029425ff5c7bab56231cd333e6944a1132641084d68418651701786f56"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "846",
+       "sha": "9085c4e93f7029e3dfbc9600d6ea2c56af966efa07752fae26936b1c60b680eb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "80",
+       "sha": "6163f2c0e99eb7fd80a4919d99f0097c2f40108055734610aa3dcc8f137aa2f9"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 3 set the screen is 240 lines high, and the frame's line count and interrupt lines follow it at the end of the frame.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1683",
+       "sha": "54254cb783be879439ebd70de0232e63f243de0fe0151567d9c1d10b961e1df5"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1298",
+       "sha": "ac997ea8c96a0d81dc7a911cee0540c9726ad4256b0f8d6d56de55169f21d946"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2342-2349",
+       "sha": "f14fc9e521c0eafb86c341bca58dff249ac4651a118a7e5d3f4f24238f32f703"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "81",
+       "sha": "4c527a16ca5ecbecc17374abe0603fc56e9210235e367f9f95ab0a968437dc79"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 2 clear, a write to a register number above 0x0A returns without storing.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "577-578",
+       "sha": "464167774aba12137ec3fd878ef8537be36cf6f0982caa2b62af1c840c6bc5c0"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "82",
+       "sha": "c50fbc963a77a675d5ab1f1949c3fa074847c6afab32023d8945d22fa31437e7"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x102",
+   "name": "Plane A table base",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "86-88"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 5 to 3 of register 0x02 are the plane A name table address, shifted left by 13.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "87",
+       "sha": "1ddce03999215e76e92b227c9cddb5eabf903451080580df95d1cef4b47555ba"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1708",
+       "sha": "7077be46038e88cc0959fbb6d0ef2a0111b164a853a37f78e4565e3a3c9da1e6"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; bits 7 and 6 and bits 2 to 0 are named unused.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "86",
+       "sha": "0bd126ab2fb142cdd15b2e1deea8732ffdd8457139576f463c780a3bc55d3950"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "88",
+       "sha": "fff3f26a2d0d5ed2eec16b976e430057ee330e780e207fcde684937a9a4b6043"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x103",
+   "name": "Window table base",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "90-92"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 5 to 1 of register 0x03 are the window name table address, shifted left by 11 and masked with 0x1F in 32-cell mode or 0x1E in 40-cell mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "91",
+       "sha": "4d614937cf7200a2157de1f6ec452c4598b537a56fd28873e22310c3604d43e2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1720-1723",
+       "sha": "be9db6a53a55b4b5dff58b72db234f9d9dcc165b646cc1839482b9f5775f748f"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; bits 7 and 6 and bit 0 are named unused.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "90",
+       "sha": "f5d37ae1d60067d3ff6e19df5427cb15caa6e88fc6ebd946f5661482d983563b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "92",
+       "sha": "cb8dccde978e0600e0e91381b94d9f94e9b17b98ef95ac5f6d1d34d0284dd6f7"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x104",
+   "name": "Plane B table base",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "94-95"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 2 to 0 of register 0x04 are the plane B name table address, shifted left by 13.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "95",
+       "sha": "67f343dafa9bab762a1b21419366c9559cce762281d03af55aa552ee51bbb87d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1709",
+       "sha": "b091bbd6555abf2c4219e130d421fac0dd54a672a4b317bb89d1744e30f080f4"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; bits 7 to 3 are named unused.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "94",
+       "sha": "cd9934a03fb16e41579d094056201ec40590d76c27733fd187c33b7bcb0d8bbc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x105",
+   "name": "Sprite table base",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "97-98"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 6 to 0 of register 0x05 are the sprite attribute table address, shifted left by 9, with bit 0 masked off in 40-cell mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "98",
+       "sha": "d5a37709703fca716e157f88041643f738d38d30dda530daf09234865b69188e"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1412-1415",
+       "sha": "3c978dceca97dd8a6972eee926ceacc61f135c7d98b6b2c78ff7e3441a8b09c0"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1389-1395",
+       "sha": "2858bfeafefb38611feaa57b750181dd392642dbfc29d64e9d62ff90043ace84"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; a VRAM write inside the table it selects also goes to an internal copy of the table.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "425-428",
+       "sha": "410d17f13a876d04420632bf4d622f03a0e3d1ce96e00bc3d29d23a296ed35cb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "437-443",
+       "sha": "4f28757a40de69c9b18bfb737a881b4a65e1f96321d620141095993556101dfd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "97",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x106",
+   "name": "VDP register 6",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "100"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Between the macros of registers 0x05 and 0x07 MAME has only the comment '6?'.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "98-102",
+       "sha": "f84d5a482d3f33f51029000bd6956aec9eea4c03fc6b39d4c03b481d2a0d82a4"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value in m_regs[0x06].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x107",
+   "name": "Backdrop colour",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "102-103"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 5 to 0 of register 0x07 are the backdrop colour index, which fills each line buffer as the background.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "103",
+       "sha": "2a245ca7a22f5ac821f8732edbf03ce22b422199b3cf85a04ad261efcfcd3aee"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1690",
+       "sha": "a6cfaac7361aef92211be9c40cebc01c365c192121e31609b2fd38a033a891a7"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; bits 7 and 6 are named unused.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "102",
+       "sha": "0d77c2123e0741a309cef8914566f226cd9a9dbc44d459f98947f4c006ed00db"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x108",
+   "name": "VDP register 8",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "105"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The comment '8?' follows the macros of register 0x07 and stands before the comment '9?'.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "103-106",
+       "sha": "89932f99fdf9875f65237c914a4e1b6196312b526b39fd57d475ce2408c0b6d4"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value in m_regs[0x08].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x109",
+   "name": "VDP register 9",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "106"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The comment '9?' follows '8?' and stands before the macro of register 0x0A.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "105-108",
+       "sha": "db8ee8f08dacca0055f2009ca2d91bf987362b02e846e90d4a3cd9fde3393763"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value in m_regs[0x09].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x10A",
+   "name": "HINT line counter",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "108"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x0A is the value the horizontal interrupt counter reloads from, named MEGADRIVE_REG0A_HINT_VALUE.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "108",
+       "sha": "b41ba22534f5e1d51b2b7831829a17be6c5c76153f4aba42d393f96664a922c4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2283-2284",
+       "sha": "16ca5da7c163a377deb13115a62a1c0d3e07886348bdcb301fc07e7de3f6cfe5"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value; the counter reloads from it, doubled when m_imode is 3, when it reaches -1 on lines up to 224.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2277",
+       "sha": "b29100bedafb6b36f0c8e556e43f0a5540bc41404e9ec6c753224e78b6efe672"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2281-2284",
+       "sha": "5c34ecde06646dce7fda400a9a24df6855b851035f91f61f2ecd21b11ae0fdb0"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On lines past 224 the counter is reloaded from register 0x0A on every line, doubled when m_imode is 3.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2277",
+       "sha": "b29100bedafb6b36f0c8e556e43f0a5540bc41404e9ec6c753224e78b6efe672"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2297-2300",
+       "sha": "3b36e8cd09ebbf63a3fd473a7c9ad6685462e4e88842905769056a87b15b4596"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x10B",
+   "name": "VDP mode set 3",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "110-113"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME names bits of register 0x0B: 0x08 level 2 interrupt enable, 0x04 vertical scroll mode and 0x03 horizontal scroll mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "110-113",
+       "sha": "c7937a7caafaf260a3031d063142f3a2249e68c55395ddc839f1db190d3bba72"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Horizontal scroll mode 0 reads the first two table words for the whole screen; mode 1 picks the words by scanline & 7, mode 2 by scanline & ~7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1800-1805",
+       "sha": "fe8409fc0646e60a277cd99870682f0d39d46c66bdfa8d0555508c8bed06e290"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1807-1811",
+       "sha": "9109457863d52fd56cd728723ec7eeebe6ce15d09d9038c3a25bb516e03d5976"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1815-1816",
+       "sha": "52b0aa133912a6446926739b731b333e5de5aca1e9a3e0eb30e04d35d6be1dbe"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1820-1829",
+       "sha": "e4d12ae32a9a65981b924211e36bbd7e0afee69875c214329407c5c3833c0fa9"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In interlace mode 3 modes 1 and 2 use the scanline shifted right by 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1808-1811",
+       "sha": "56e3d001f9b8f2f6a57a23b0fefb87b8b336d2bb4fd08a9aaed246404701ed31"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1821-1824",
+       "sha": "465f8d5fc145803badf75025d9ff560b0e5f8e4be333b91f3e9f72de639d3069"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the plane B column loop, bit 2 clear takes the vertical scroll from VSRAM word 1; set, from a word that depends on the column.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1863-1871",
+       "sha": "a81035885e816bee2dbb5d282daa21fbb3354ef216c00765c41f9f2ee868f0d8"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "112",
+       "sha": "8eca7d6c74a7d2a1a4c7111352a8f8fe9dbc57f997284eb4fb1c3572b4f5a57d"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x10C",
+   "name": "VDP mode set 4",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "115-121"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME names bits of register 0x0C: 0x80 RS0, 0x20 special, 0x08 shadow/highlight, 0x06 interlace and 0x01 RS1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "115-121",
+       "sha": "049841f6a42fdb22fe93e64a775681297d056f11e30538aaa416f2394830a41b"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "get_hres is bit 7 plus twice bit 0; the screen is 256 pixels wide for 0 and 1 and 320 for 2 and 3.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "168",
+       "sha": "719bcbd7df9f8602e22226e0d873335dcb44b9efb0e81647ca081d3a4d3f4758"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "165",
+       "sha": "8627a5c023ee7a02ab3933fa55fa8878aeea6a9bb45398b8893143196118e42f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "115",
+       "sha": "9f54165a4c0897ee618304b70e843ebf410f8b93e72d3f0eae5d6f6a9880a4ec"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "121",
+       "sha": "ba73d0366866e3189bb822668de490a760d5015ad9eb494e226f096b2a90f0f3"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 3 is tested in the compositing loops to choose between normal and shadow/highlight drawing.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2011",
+       "sha": "217d8f1e5e067c9acbfcaca94a52fcc443141b808067d83f9212ac5f2b477f9c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2054",
+       "sha": "217d8f1e5e067c9acbfcaca94a52fcc443141b808067d83f9212ac5f2b477f9c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2080",
+       "sha": "217d8f1e5e067c9acbfcaca94a52fcc443141b808067d83f9212ac5f2b477f9c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2158",
+       "sha": "217d8f1e5e067c9acbfcaca94a52fcc443141b808067d83f9212ac5f2b477f9c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "119",
+       "sha": "ded329ceeeb639281f3764ca2865a071eeedaf64cf7e3935b6cc0f5c1b3b9a21"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 2 and 1 are copied to m_imode at the end of each frame.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2338",
+       "sha": "e01609cf7a1558d991d0c48d88544496c3ae2a9d4f667d81bdbfab0319dd8450"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "120",
+       "sha": "8089f83b1116ee97b5b4c6ee8e24885622b69cae86205733de3a512833240b42"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 0 picks the sprite table size, 0x400 bytes when set and 0x200 when clear, and the mask of its base address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "425-426",
+       "sha": "e71b47c021c7f697f48c80684cd0e25c1be79b0e8676d68d570201cff6d5bb37"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "121",
+       "sha": "ba73d0366866e3189bb822668de490a760d5015ad9eb494e226f096b2a90f0f3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x10D",
+   "name": "Hscroll table base",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "123-124"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 5 to 0 of register 0x0D are the horizontal scroll table address, shifted left by 10.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "124",
+       "sha": "e876268678f73f321272a91e60e5fcc2b786856599c7811b59312899b2b71add"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1775",
+       "sha": "a5900a63b3e866ed8205006671c2cd9e435c3c19389cf357f92c7177c9d0ba6c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value unless bit 2 of register 0x01 is clear; bits 7 and 6 are named unused.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "577-578",
+       "sha": "464167774aba12137ec3fd878ef8537be36cf6f0982caa2b62af1c840c6bc5c0"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "123",
+       "sha": "44c8fd4d679d9110720b8ebbb4f70badb0d6e369f783833ddc5b0ceb2add9b85"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x10E",
+   "name": "VDP register 0x0E",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "126"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The comment 'e?' stands between the macros of register 0x0D and those of register 0x0F.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "124-128",
+       "sha": "e57adec8d0e6696e2ba55c69396f4309a69a7cc4cdb602c0da388e49c92f27bb"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value in m_regs[0x0e] unless bit 2 of register 0x01 is clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "577-578",
+       "sha": "464167774aba12137ec3fd878ef8537be36cf6f0982caa2b62af1c840c6bc5c0"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x10F",
+   "name": "Auto increment",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "128"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x0F is the amount vdp_address_inc adds to the VDP address, named MEGADRIVE_REG0F_AUTO_INC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "128",
+       "sha": "a9fcf71128b54c58e7d0462e62014effaa3a0fc0c746962441965c3806c1ec98"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "417-420",
+       "sha": "7ef23556da741ffd9e9846d54b6d61bfd482ce7bc41778ad098e417d3498281c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The address is 16 bits wide: the sum wraps at 0xFFFF.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "419-420",
+       "sha": "7fd7dc7534297a67331a0c0f30f072c88ce5fd30ecdfb60e7e1df48e26565b9a"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x110",
+   "name": "Plane size",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "130-133"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 1 and 0 of register 0x10 are the plane width code and bits 5 and 4 the height code, combined as the size.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "133",
+       "sha": "bf6f8ba2274b6e9d61e1ec9ddb944750cfd6cf0561586b6104ead43507721e67"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "131",
+       "sha": "f9a5701acfa1deaf5f8f934c88d51fe38baa1583270617df31b3f0d47f73a9dc"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1710",
+       "sha": "e9b239044e4cc9adab6617bc174d5881cef8fe469e8642e69bf23fc873a67966"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Width code 0, 1 or 3 gives 32, 64 or 128 cells with height code 0; width code 2 gives 64 wide and 1 high.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1779-1782",
+       "sha": "c022b030b4535a0c4529ab52676789f1744677108b728461138d5e78fa1ca11f"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Height code 1 gives 64 cells and 3 gives 128, with width code 0; code 2 gives 64 and logs 'Invalid VSize!'.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1784",
+       "sha": "9b20ded8ed084533e6aec6a379b3dd5a10173df8b787df9be53b8402d413eecf"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1789",
+       "sha": "2527e842f06b0e0733f3693f9b6c2dbac38d1792333a25cb09f2b14535111049"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1794",
+       "sha": "a5c5a6c897898eb09fb715ee40ce60eae02af82b5d4717187d2ed67caeca4c44"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Width 128 with height code 1 is cut to 128 by 32, and width 64 with height code 3 to 64 by 64; the comments say 'Invalid Total Size'.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1787",
+       "sha": "8509da66569023a8b02683b62d2f760991e63ac6e5fa40922f8ab1e14f4296cd"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1795",
+       "sha": "eefc677dd462c55098cfee10d7a9ecde16f01b0fc00f9affe17d2beb25c37d42"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "130",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "132",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x111",
+   "name": "Window horizontal",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "135-137"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 of register 0x11 puts the window right of the split and bits 4 to 0 give its position in 16-pixel units.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "135",
+       "sha": "25cdcc4a998fd70a1946f814acf9017081ea1848b9b1e07605179f7855780020"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "137",
+       "sha": "bce50eee68dbc39751e3b048128b81391b4ff9bfddcee780e0265361d9b70a05"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1711",
+       "sha": "626a5f35cc93f50c9b46a79883f829b877dd03b315c282fdd2512a40dc2404c6"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1734",
+       "sha": "c469e3b189813dd778c0e230e67c49b62559f36aa7f8e90fb10bc9b86b2e0667"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 7 set the window runs from the split, capped at the width, to the right edge; clear, from the left edge up to it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1732-1740",
+       "sha": "b2180166a1748d89d8fee210aaea9f517e0b02cf0dfef7de434215460d69fe09"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1741-1751",
+       "sha": "f09f9337fce13be0ff8d1622d91235577dfa64e92e806db7b6dece1009a1a487"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "135",
+       "sha": "25cdcc4a998fd70a1946f814acf9017081ea1848b9b1e07605179f7855780020"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1711",
+       "sha": "626a5f35cc93f50c9b46a79883f829b877dd03b315c282fdd2512a40dc2404c6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "136",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x112",
+   "name": "Window vertical",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "139-141"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 of register 0x12 puts the window below the split and bits 4 to 0 give its position in 8-line units.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "139",
+       "sha": "9260943a255e0554cfe27a1f83ef133c988dee84412762f6f0a8421ed3904238"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "141",
+       "sha": "a5a479d6f6f1a1ece505cf9a361fc9e7ede44b41ff32958aed15948bef25c75b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1713",
+       "sha": "943c0bb235e9bbbea029ce469de1e059e8c1d03cd1572fbd6da374ce5cbb916a"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1755",
+       "sha": "e2dffcf385697ca1649dec898460395b3450aa9513ec48119833d2c14bfe6f58"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 7 set the window runs from the split to the bottom of the screen; clear, from the top to it, capped at the screen height.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1753-1764",
+       "sha": "45479ec6d7d95728225a9a84649c4f084be221657d500dc7682f24aa2c619465"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "139",
+       "sha": "9260943a255e0554cfe27a1f83ef133c988dee84412762f6f0a8421ed3904238"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1713",
+       "sha": "943c0bb235e9bbbea029ce469de1e059e8c1d03cd1572fbd6da374ce5cbb916a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "140",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x113",
+   "name": "DMA length low",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "143"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x13 is the low byte of the DMA length, named MEGADRIVE_REG13_DMALENGTH1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "143",
+       "sha": "2af16c02fa3c340940fa93c88b9818ad73cbdfce6ca48fefe7c959fa07224330"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "797",
+       "sha": "853c582de38ba79a11e15ac1b5043e19fc896a7f3deb0b337f81ff36a345009c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A 68k transfer takes the length registers as a word count and doubles it to bytes; a fill and a copy take them as they are.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "797",
+       "sha": "853c582de38ba79a11e15ac1b5043e19fc896a7f3deb0b337f81ff36a345009c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "830",
+       "sha": "b29c26df513cdc6b7679d8032b02c53355fb04f48473227094e5bc82254fae1d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "843",
+       "sha": "c4281b33ee2c865989d265ce6b9e8122d10ff1cf280dfa13fca1f4464c896fba"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 0x13 and 0x14 are cleared to 0 at the end of a fill and of a 68k transfer, unless a VSRAM transfer returns early.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "528-529",
+       "sha": "3d5e892a767ae492f606f8791d8a6f97637dc3b0c71ab9b8ed3e9f447361ef30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "728-729",
+       "sha": "3d5e892a767ae492f606f8791d8a6f97637dc3b0c71ab9b8ed3e9f447361ef30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "753-754",
+       "sha": "3d5e892a767ae492f606f8791d8a6f97637dc3b0c71ab9b8ed3e9f447361ef30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "778-779",
+       "sha": "3d5e892a767ae492f606f8791d8a6f97637dc3b0c71ab9b8ed3e9f447361ef30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "768",
+       "sha": "7a52467ec1e17fdbfdd1dd23a84814f7e922d8923dc903b11612758d75690115"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x114",
+   "name": "DMA length high",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "145"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x14 is the high byte of the DMA length, named MEGADRIVE_REG14_DMALENGTH2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "145",
+       "sha": "49d2cce58c12b6e68b489c72f64a67f59e541763777f753b535b79756188db55"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "797",
+       "sha": "853c582de38ba79a11e15ac1b5043e19fc896a7f3deb0b337f81ff36a345009c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its value is bits 15 to 8 of the word count of a 68k transfer, and of the byte length of a fill and of a copy.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "797",
+       "sha": "853c582de38ba79a11e15ac1b5043e19fc896a7f3deb0b337f81ff36a345009c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "830",
+       "sha": "b29c26df513cdc6b7679d8032b02c53355fb04f48473227094e5bc82254fae1d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "843",
+       "sha": "c4281b33ee2c865989d265ce6b9e8122d10ff1cf280dfa13fca1f4464c896fba"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x115",
+   "name": "DMA source low",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "147"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x15 is the low byte of the DMA source, named MEGADRIVE_REG15_DMASOURCE1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "147",
+       "sha": "e8caea9c54657701ae1b8c741f0e043123f33ed9a2283d829340997e32f83469"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "796",
+       "sha": "66a55e3660a3c0f7c2a60a1c960e280716cefe8d20dedeb82251725cc8fa4313"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "For a 68k transfer the three source registers, with bit 7 of register 0x17 masked, form a word address shifted left by 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "796",
+       "sha": "66a55e3660a3c0f7c2a60a1c960e280716cefe8d20dedeb82251725cc8fa4313"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After a 68k transfer register 0x15 holds bits 8 to 1 of the next source address, unless a VSRAM transfer returns early.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "731",
+       "sha": "89e027d9c72e811e889c285dd4143a3d095ae2a7952c07e41ded7fb533ea9db4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "756",
+       "sha": "89e027d9c72e811e889c285dd4143a3d095ae2a7952c07e41ded7fb533ea9db4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "781",
+       "sha": "89e027d9c72e811e889c285dd4143a3d095ae2a7952c07e41ded7fb533ea9db4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "768",
+       "sha": "7a52467ec1e17fdbfdd1dd23a84814f7e922d8923dc903b11612758d75690115"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x116",
+   "name": "DMA source middle",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "148"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x16 is the middle byte of the DMA source, named MEGADRIVE_REG16_DMASOURCE2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "148",
+       "sha": "6e8120afbe81568ff447d3e7a96f08f7691306690a654fe3d5f36215aa687b44"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "796",
+       "sha": "66a55e3660a3c0f7c2a60a1c960e280716cefe8d20dedeb82251725cc8fa4313"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "For a copy registers 0x15 and 0x16 form the VRAM source byte address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "842",
+       "sha": "cd4d1f8ad23497bca29200e7f28773d4d376aad1d5d9d184cfb81f6d0e1d3968"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After a 68k transfer register 0x16 holds bits 16 to 9 of the next source address, unless a VSRAM transfer returns early.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "732",
+       "sha": "0963eff2545dfc9e6c536032592e03940db26e61add53ec0a6c79ba4d12b2504"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "757",
+       "sha": "0963eff2545dfc9e6c536032592e03940db26e61add53ec0a6c79ba4d12b2504"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "782",
+       "sha": "0963eff2545dfc9e6c536032592e03940db26e61add53ec0a6c79ba4d12b2504"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "768",
+       "sha": "7a52467ec1e17fdbfdd1dd23a84814f7e922d8923dc903b11612758d75690115"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x117",
+   "name": "DMA source high/type",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "150-152"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 7 and 6 of register 0x17 select the DMA type; for a 68k transfer bits 6 to 0 are also the top of the source address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "150-152",
+       "sha": "77d16704eb207af0b2bcf4cddfb0d2fccecd06eee9288344178c1ac4eec74a26"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "794",
+       "sha": "ddf656e166ac3d9a1212b6123cb17c02914f5b8a54a7adecee7c069f8a228609"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "796",
+       "sha": "66a55e3660a3c0f7c2a60a1c960e280716cefe8d20dedeb82251725cc8fa4313"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Type 0 or 1 is a 68k transfer, 2 a fill and 3 a copy.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "794-803",
+       "sha": "bcc85375760aab207679543e843f60c09bf9d2462a9ff26c23fabeb32f94b5f1"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "822-831",
+       "sha": "23ca74701e30c6658965e15087085e5fecb65bbd449b532db6d279ce2e408b2a"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "838-846",
+       "sha": "eded807fc3f3a12a8f8a2af0f2d50cc817bfaae1c098a3382ced2cba4ca8b146"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A 68k transfer masks bit 7 off the register and shifts it into source bits 23 to 17.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "796",
+       "sha": "66a55e3660a3c0f7c2a60a1c960e280716cefe8d20dedeb82251725cc8fa4313"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After a 68k transfer register 0x17 holds bits 24 to 17 of the next source address, unless a VSRAM transfer returns early.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "733",
+       "sha": "bdfe7381bc488e91ef17b445edf689d2a07d1acb4ab47a2de9d2c73bd720d534"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "758",
+       "sha": "bdfe7381bc488e91ef17b445edf689d2a07d1acb4ab47a2de9d2c73bd720d534"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "783",
+       "sha": "bdfe7381bc488e91ef17b445edf689d2a07d1acb4ab47a2de9d2c73bd720d534"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "768",
+       "sha": "7a52467ec1e17fdbfdd1dd23a84814f7e922d8923dc903b11612758d75690115"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x118..0x11F",
+   "name": "Registers 0x18 to 0x1F",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "881"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "ctrl_port_w passes register numbers 0x18 to 0x1F, once masked to five bits, to vdp_set_register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "876",
+       "sha": "87d155546e02cdf852269913c6a0e71c4d3c5eea4910adad8a706833ca791f5f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "881",
+       "sha": "cfe7a948a205b68fd221fc4d3454298019375cef398b814cd5021d3f48269b85"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the value in m_regs unless bit 2 of register 0x01 is clear, which makes it return first.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "577-579",
+       "sha": "cc467f64c418edfdea6e9b3cdf0d955a18ebb01817a3a9b1d4a305fde82f0263"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x200",
+   "name": "register-set word",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "874-884"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_set_register"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With none pending, a word with bits 15 and 14 equal to 10 is a register write: bits 13 to 8 give the register, bits 7 to 0 the value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "860",
+       "sha": "5faac3f4a04e392520038e1aa495134185af6e2211154ca5a81442edc0ff3282"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "872-877",
+       "sha": "a21aa4a4b2d8a82f7839dd4fb480a5ee9eb7b25eb9c3938868ebe977a73ef967"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It calls vdp_set_register with the register number masked to five bits, then clears code and address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "881-883",
+       "sha": "f1d325511d30ac3cdbb407490ca8e712ba62dd681e0f2cd8676ae502e651e8df"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A register number with bit 5 set, bit 13 of the control word, is logged as a register error.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "876",
+       "sha": "87d155546e02cdf852269913c6a0e71c4d3c5eea4910adad8a706833ca791f5f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "879",
+       "sha": "85cc98594902c919849766c687cfc4ebeef30f3f71b94ee24561a6a43982302a"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "vdp_set_register returns with no change when bit 2 of register 0x01 is clear and the number is above 0x0A.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "577-578",
+       "sha": "464167774aba12137ec3fd878ef8537be36cf6f0982caa2b62af1c840c6bc5c0"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Otherwise vdp_set_register stores the value in m_regs[regnum].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "579",
+       "sha": "9274ab821aadfa659b761a5f46df6537daef431ee0ee54494363fd56d821b823"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "884",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "588",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "597",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "606",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "610",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "612",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "622",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x201",
+   "name": "command first word",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "885-889"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With none pending, a word whose bits 15 and 14 are not 10 is the first word of a command.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "860",
+       "sha": "5faac3f4a04e392520038e1aa495134185af6e2211154ca5a81442edc0ff3282"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "872-874",
+       "sha": "2169ba0ce14d8daf63a95e4052548074677c3244b9bae1effcaee7faed7134ea"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "885",
+       "sha": "7dd530c4d36da47cd33396718ef1fa1e8c0f7d91ee551d7fdc1c73aa65edb454"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It is stored, the pending flag is set, and code and address are recomputed from it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "886-889",
+       "sha": "43c423685d35062a2a2523ef550f711bae48d55fd41ade5c2346c99f2852ac86"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x202",
+   "name": "command second word",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "860-868"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With a first word pending, the next control word is the second word, whatever its bits 15 and 14.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "860-864",
+       "sha": "29648c3e12a96b18cd7ba0b27c5ccc71cf2af13b9e0a38e621007637c4f4aaed"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It clears the pending flag, is stored, and code and address are recomputed; a code with bit 5 set then starts DMA handling.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "863-868",
+       "sha": "27f5e7ee7fff27eb6e12d5ef974475b74a1870bcbd3b686d0e22b52800a3ad84"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.h",
+       "lines": "137",
+       "sha": "e926c6d3b84e98fc41b98bcbe9cdffacb0f336a2cfcfd138b7c204a4b8acddc0"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

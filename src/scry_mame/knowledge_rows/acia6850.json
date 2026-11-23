@@ -1,0 +1,1041 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "acia6850",
+ "title": "The 6850 ACIA, its registers",
+ "kind": "register",
+ "scope": "acia6850",
+ "covers": "The two addresses of the Motorola 6850 ACIA: status and control selected by RS low, receive and transmit data by RS high",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC6850.raw.txt",
+   "variant": "MC6850"
+  }
+ ],
+ "official": {
+  "MC6850.raw.txt": [
+   "308-313",
+   "426-428",
+   "429",
+   "437",
+   "438-439",
+   "440",
+   "475-480",
+   "496-500",
+   "509-519",
+   "553-557",
+   "558-564",
+   "568-574",
+   "575-588",
+   "589-600",
+   "601-605",
+   "607-609",
+   "613-619",
+   "637-641"
+  ]
+ },
+ "engine": [
+  "scheduler",
+  "timer_expired_delegate",
+  "synchronize"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "status",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "426-428"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "438-439"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "607-609"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "613-619"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "637-641"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::read"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::status_r"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::write_cts"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Information on the status of the ACIA is available to the MPU by reading the ACIA Status Register.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "607-608",
+       "sha": "b87e0bb4beff22f7bfc21c20d43e090606abec83ef0c1bf0eb6bef0a7d187211"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "The read-only Status Register is selected when RS is low and R/W is high.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "608-609",
+       "sha": "5a4e9f0772733fbe058aac1604fb0214d5ae6eee10b11ff32c90759bb37bb22c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "The TDRE status bit shows the current state of the Transmit Data Register, except when inhibited by CTS being high or by the reset condition.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "426-428",
+       "sha": "b5274c18a9165d84405e4e7ffb15b45d4532ae72ec8a95675dfddb934dee8829"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "RDRF, bit 0, indicates received data has been transferred to the Receive Data Register; an MPU read of that register, or master reset, clears it.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "613-617",
+       "sha": "ce07a42897ee62163e4fe0417c751b0f4e0dd2fb19cb262365bcaa2bf5b6520d"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "read",
+     "of": "doc",
+     "text": "Data Carrier Detect being high also causes RDRF to indicate empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "618-619",
+       "sha": "4021e589235531336c09052526a9582b09554be6e7fd84816df0ea5f7832b8f5"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "doc",
+     "text": "The Clear-to-Send bit shows the state of the CTS input: a low CTS means clear to send; in the high state TDRE is inhibited and the bit reads high.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "637-641",
+       "sha": "a979a07a89a8ebe0592ff24e9034507275449963e1411b21eb1708dd152ad955"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "Reading the status register after the error condition has occurred is part of clearing an Overrun or loss-of-DCD interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "438-439",
+       "sha": "a78250e360a61bc5d2163220e90363bc7f93cf8ddee35e149684f680204028e3"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "status_r masks only TDRE, when m_divide is 0 or CTS is set; RDRF is returned as stored, whatever the DCD input.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "158-168",
+       "sha": "b788c77bec7c3044eaef22585e3b7d5abe510421fba595353eae1a540b89f860"
+      },
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "169-173",
+       "sha": "8a9eb968ea1bafdda9a8b1799bd22cf3ef52f0117a74ba57b949a938a70d8653"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "A status read moves a pending DCD interrupt to waiting for a data read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "165-170",
+       "sha": "766f52a2aa6ee39abfd9ce6c3b83e12fa4f3629a17c194fb9862df3b20cb225c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "314",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "160-163",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "319-326",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "160-163",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "223",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "272",
+     "as": "parent",
+     "owner": "acia6850:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "284",
+     "as": "parent",
+     "owner": "acia6850:register:0x01:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "346",
+     "as": "unseen",
+     "reason": "receiver state machine clocked by RxC, outside the register entries"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "510",
+     "as": "unseen",
+     "reason": "transmitter state machine clocked by TxC, outside the register entries"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "616",
+     "as": "parent",
+     "owner": "chip:device:acia6850"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "name": "control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "308-313"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "475-480"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "553-557"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "558-564"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "568-574"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "575-588"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "589-600"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "601-605"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "32-60"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::control_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::output_rts"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::output_txd"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The Control Register consists of eight bits of write-only buffer, controlling the receiver, transmitter, interrupt enables and the RTS output.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "553-557",
+       "sha": "f69bcf2b05007763e576af33d0adb53c34fcb908d1912d410e3c8fc8ad8818f2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Control Register is selected for writing when RS and R/W are low.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "553-554",
+       "sha": "8d61f7e3a180076f1b2b5e8cfa498d598f3233cdcbae7b194585d8aed696959d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "CR0 and CR1 determine the divide ratios used in both the transmitter and the receiver.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "558-561",
+       "sha": "5d548ab590287e8f38bca196088aba86b04d34aefaeb11db3225e7d74c6daaa2"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "CR0 and CR1 also provide a master reset, which initializes both the receiver and the transmitter.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "561-564",
+       "sha": "6ccaba7f32906c026163fb2668c8ffac091b4a0a414943031f3e788a5daf57d1"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "write",
+     "of": "doc",
+     "text": "The master reset clears the Status Register, except for external conditions on CTS and DCD.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "561-563",
+       "sha": "7abda84d98b23eb933b5d258ec727b8cb9ce586e6269d309c6b185ac46d978a6"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "17",
+     "text": "Master reset keeps TDRE set, and sets the DCD bit from the m_dcd input, as it keeps CTS.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "223-227",
+       "sha": "c0978f2646ed92e7d0836e0ecc18bed8beae9bee4469afc55d38aca8b403ccb0"
+      },
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "229-232",
+       "sha": "b9f93201cf3a262d029d248c66f28680dee8000c6c61d15213c4b981289edc74"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "CR1 CR0 = 00 divides by 1, 01 by 16, 10 by 64, and 11 is master reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "568-574",
+       "sha": "cc1fe80440c0f14b7aac6f890c6800a3b6ff1b8292883018828c979924ed23ae"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "CR2, CR3 and CR4 select word length, parity and the number of stop bits: 7 bits with parity, or 8 bits with or without parity.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "575-586",
+       "sha": "80b2b9eb39db4bc8cad7f47e25b277dfa603eb115448a744f3603364a2b5481e"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "Word length, parity select and stop bit changes are not buffered and become effective immediately.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "587-588",
+       "sha": "54282034d4df1bc89f8f44e823c8ced6dae8a86a6158ee5f86bc0be738e4fb93"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "CR6 CR5 = 00: RTS low, transmitting interrupt disabled; 01: RTS low, enabled; 10: RTS high, disabled; 11: RTS low, break level, disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "589-600",
+       "sha": "3702f212401996ad2fea2115b927f2f2ce9681186f1b3c6299ab135a0e106701"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "CR7 is stored; the text says high enables the Receive Data Register Full, Overrun and low-to-high DCD interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "601-605",
+       "sha": "a6f2063107536793fad8c0ab7bc8aa596d514ec0106a11010903b540e771dfdc"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "The RTS output corresponds to CR5 and CR6; with CR6 = 0, or CR5 and CR6 both 1, it is low.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "475-479",
+       "sha": "06ad4d6175d42c3626d8d93a2fdeb10ebec7ab147f06f7c1fb265041d5d70e17"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "The RTS output can also be used for Data Terminal Ready (DTR).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "480",
+       "sha": "3eb92c710f8f83c9762391512dacd0a69fbbb9602415a109631c89cb8a9a4d66"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "when",
+     "of": "doc",
+     "text": "During the first master reset the RTS output is held at level 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "308-309",
+       "sha": "1a14584daa1261d128867ce0a5337160188f3f6b3fc83ddacbd83355afcbdd0b"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "when",
+     "of": "doc",
+     "text": "During the first master reset the IRQ output is held at level 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "308-309",
+       "sha": "1a14584daa1261d128867ce0a5337160188f3f6b3fc83ddacbd83355afcbdd0b"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "when",
+     "of": "doc",
+     "text": "On all other master resets the RTS output can be programmed high or low.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "309-311",
+       "sha": "46c8b8facb17acb8d7e7a23b0dd34c617d72464d0effe94cbc95e76daf1843e3"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "when",
+     "of": "doc",
+     "text": "On all other master resets the IRQ output is held high.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "309-311",
+       "sha": "46c8b8facb17acb8d7e7a23b0dd34c617d72464d0effe94cbc95e76daf1843e3"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "CR5 and CR6 should also be programmed to define the state of RTS whenever master reset is used.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "311-313",
+       "sha": "427e99a68e8866eb124f69d263efe70bb89a08d785737341d5fca328702ba2da"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "306-309",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "182",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "181-182",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "32-38",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "202-212",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "213-218",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "585-590",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "181-182",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "32-38",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "186-189",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "40-51",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "187-189",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "194-196",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "235",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "595-598",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "53-60",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "199",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "193-196",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "235",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "595-598",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "53-60",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "202-209",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "235",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "595-598",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "237",
+     "as": "unfollowed",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "193-196",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "235",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "595-598",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "53-60",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "237",
+     "as": "unfollowed",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "190",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "202-209",
+     "as": "agrees",
+     "row": "13"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "receive data",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "437"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "440"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "509-519"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::data_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Data is automatically transferred to the empty Receive Data Register from the receiver deserializer upon receiving a complete character, which sets the RDRF bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "509-513",
+       "sha": "1a3e3cddfff2c4575d9bfb510282f1289016b23c5d71adbcd3757beef5699535"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "Data may be read through the bus from the Receive Data Register.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "513-516",
+       "sha": "70f6843bedcc6ed0ea10c47ca4275d1bde6a0a2eac4fefa2c75a33ff8e3efef4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "The non-destructive read cycle causes the RDRF bit to be cleared to empty although the data is retained in the RDR.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "516-518",
+       "sha": "79f3e9e20e0f3709477a65d6d7910a94add24eb283f4f395a96d672849bcc954"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "The bit can be cleared by reading data.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "437",
+       "sha": "278415c916f431ac57e9a7645d5425d26dd7f1644dca680bb1989cb5dbb3bcaf"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "Then reading the Receive Data Register clears the interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "440",
+       "sha": "d42dc78686358d49c0e373ef230a90680ce79171370597f4d4904348aae3ac5a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The status is maintained by RDRF as to whether or not the data is current.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "518-519",
+       "sha": "98aa273d6cc327960e85d350a769c6843a7111b94c917ad55fffc8a928f258c4"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A debugger read, with side effects disabled, changes no status flag and no pending flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "280-291",
+       "sha": "40cfb8298dc2fd6dbad0f5055f5cec2586d0cc4d65ef1bd94e74c20bde91aa6d"
+      },
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "292-299",
+       "sha": "1fe674fe9aff22b3758354f08f1302def7f55d7ca7a873164ab338c27cd5b144"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "differs",
+     "text": "A data read clears a pending DCD interrupt; with an overrun pending it sets the overrun status bit, leaves RDRF set and clears the pending flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "282-291",
+       "sha": "119d7c7b943dc969586d7889b0173c84501ac31676e1215b53ef3d14bf4792cb"
+      },
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "293-296",
+       "sha": "3d4bf2905251bad133bd507b0f60bda5992123681cf893e46bdd33b62a6856d1"
+      }
+     ],
+     "row": "5"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "301",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "289-290",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "301",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "289-290",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "439",
+     "as": "unseen",
+     "reason": "receiver state machine clocked by RxC, outside the register entries"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "transmit data",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "429"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "496-500"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::data_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Data is written in the Transmit Data Register during the negative transition of E when the ACIA is addressed with RS high and R/W low.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "496-498",
+       "sha": "462939744efd2457c35c595ab7fe2f564dcda1a30b4963cad4120fe5447eb372"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Writing data into the register causes the Transmit Data Register Empty bit in the Status Register to go low.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "498-500",
+       "sha": "c13e1fe90cdc217313dc6ee7a738bfe7aa57444cefa28158e73bbebf678a5a15"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "The interrupt is cleared by writing data.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "429",
+       "sha": "e2a772ec109ef91130e7ed23eb2ad5a9327804108d5431944bd8eae6333c93e6"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In master reset, m_divide = 0, MAME does not store the byte and logs 'ACIA data write while in reset'.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "260-263",
+       "sha": "d90828a89302ae264e734d9bdaa1ec205de37bbd341fd90830ec6f083772ca16"
+      },
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "264-273",
+       "sha": "a07824d0bc27dcfeba63c6479cf6eee38717f7726eb140179aa7f7279f6e3df8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "271-272",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "275",
+     "as": "unfollowed",
+     "row": "3"
+    }
+   ]
+  }
+ ]
+}

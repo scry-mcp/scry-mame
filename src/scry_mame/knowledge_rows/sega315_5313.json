@@ -1,0 +1,1626 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "sega315_5313",
+ "title": "Sega 315-5313 VDP ports",
+ "kind": "register",
+ "scope": "sega315_5313",
+ "covers": "The ports of the Mega Drive VDP as vdp_r and vdp_w decode them: data, control and status, HV counter and sound chip port, and what MAME does for each",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The comments of 315_5313.cpp list the ports and register bits in Charles MacDonald's style and cite no document; its TODO says timing needs checking on hardware."
+  },
+  {
+   "where": "maker",
+   "gave": "Genesis Software Manual, https://archive.org/details/sega-genesis-software-manual: a scan with no text layer; OCR garbles register grids and hex addresses, so it cannot be captured line for line, a person can read it."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "No Sega Genesis VDP register manual turned up in a web search for one on bitsavers."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Holds the Genesis Software Manual scan named under maker; nothing else official was found there."
+  },
+  {
+   "where": "index",
+   "gave": "Web searches gave Sega Retro and Sonic Retro wiki pages, Charles MacDonald's genvdp.txt and an unverified Scribd Technical Overview, none an official document that can be captured."
+  }
+ ],
+ "engine": [
+  "rand",
+  "set_pen_color",
+  "psg_w"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x03",
+   "name": "data port read",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1320-1328"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::data_port_r"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_vram_r"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_vsram_r"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_cram_r"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_address_inc"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_r answers byte offsets 0x00 and 0x02 alike by calling data_port_r.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1318-1321",
+       "sha": "5d594b17f6ee24d9e01a877b1b433b0b3c02b81bbf2543c47befb1a8bfdecc23"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1327",
+       "sha": "831b96e3aabc2ce7dbeac07ec32b2cd0e0ab8ab8f6fd9599550e39cb970306cf"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With code 0x00, 0x04 or 0x08 a read returns the word at the address register from VRAM, VSRAM or CRAM respectively.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "946",
+       "sha": "258525de3b74c4bc4c92d739265b59e0710eb5f3b14f9b11900223e0212fab87"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "951",
+       "sha": "6b5d9aea7300ab0f85d57c8d51fa9f14d3727dfc41eec8f027f35e31bb33ffc2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "956",
+       "sha": "3be293532129ebab5978be6bd2c65078acf04f7e9bd0d92368b09370065509c7"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "968-971",
+       "sha": "8c6cddabf902c4c33d1d71b051a0aa978dbb88dba7d4c699072df355e7eb224f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "988-989",
+       "sha": "a83a885c9f9ef906e2cf50cc0b7e63bd1250f5afdd03d31cff458953a7cbe421"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "999-1000",
+       "sha": "53f804af2d7f87a8e8757ff6d76c3dce8d0721c912f2aa94ebc6a28f734a13c1"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Except on a debugger read, each of those reads then adds register 0x0F's value to the address, wrapping at 16 bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "128",
+       "sha": "a9fcf71128b54c58e7d0462e62014effaa3a0fc0c746962441965c3806c1ec98"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "972-973",
+       "sha": "a973356fe855df4b8ec7f1d2155be5ba8423e52b7c700d4c6dc1841a18b56f45"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "990-991",
+       "sha": "a973356fe855df4b8ec7f1d2155be5ba8423e52b7c700d4c6dc1841a18b56f45"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1001-1002",
+       "sha": "a973356fe855df4b8ec7f1d2155be5ba8423e52b7c700d4c6dc1841a18b56f45"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "419-420",
+       "sha": "7fd7dc7534297a67331a0c0f30f072c88ce5fd30ecdfb60e7e1df48e26565b9a"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With code 0x01, 0x03 or an undefined code a read returns machine().rand() and logs it, except on a debugger read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "976-980",
+       "sha": "066db75329810675099de6b9166cd3721b299febe0389d740ab3b3b0d8d48998"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "982-986",
+       "sha": "21a38cec309f6d9eb62e4a1c101ae3d230b71ad577f50bb604bc738d6fd50c0b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1005-1009",
+       "sha": "0721172d8232d880d6b7bcd946cba6f01cb336c198c2a278bd1613a958d0bd11"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With code 0x05 a read returns 0 and logs it, except on a debugger read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "961",
+       "sha": "8115e3d8fa4c23a7b68d72859a7dd06345fd036226c7911044dc81920051ce92"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "994-997",
+       "sha": "5c190f6f1e6ed9544c90f5f6431f501c2c4d183e1706271a960ceec78e3e2a2e"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1015",
+       "sha": "28ac788b8f9b58d4f6ab6871519560e47c99de184d79299ef7a0e5336fb2cb09"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Except on a debugger read, a data port read cancels a pending second command word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "965-966",
+       "sha": "19e98108111bed679e078bb87728e2da1f97418fcae88f6309f1430df0c24187"
+      }
+     ]
+    }
+   ],
+   "access": "read",
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1322",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1323",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1324",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1325",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1326",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1328",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "974",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "992",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1003",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "391",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "503",
+     "as": "parent",
+     "owner": "sega315_5313:register:0x00..0x03:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "636",
+     "as": "parent",
+     "owner": "sega315_5313:register:0x04..0x07:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "726",
+     "as": "parent",
+     "owner": "sega315_5313:command:0x00..0x7F"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "883",
+     "as": "parent",
+     "owner": "sega315_5313:register:0x04..0x07:write"
+    }
+   ]
+  },
+  {
+   "key": "0x00..0x03",
+   "name": "data port write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "899-912"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::data_port_w"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_vram_write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_vsram_write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_cram_write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::write_cram_value"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_address_inc"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_w answers byte offsets 0x00 and 0x02 alike by calling data_port_w, after copying a one-lane write onto the other byte lane.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "897-900",
+       "sha": "5d594b17f6ee24d9e01a877b1b433b0b3c02b81bbf2543c47befb1a8bfdecc23"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "901-911",
+       "sha": "541ce343012fbc52a3a1b3099ee999f8c356725668260b1b797c4fa2c6e7a877"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data port write first cancels a pending second command word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "488",
+       "sha": "d1f4c856b240c8e25541d82d345d018259be9a209385517f2a974909fb995940"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With a fill pending, the low byte of the written word is stored in VRAM at the address register without advancing it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "501-512",
+       "sha": "d29ad94d67c2edbca568087cf9282cc70bfb542169ee1bd307a0c0205619b390"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Then the high byte is stored length plus 1 times, the address advancing by register 0x0F each time, and registers 0x13 and 0x14 are cleared.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "514-525",
+       "sha": "b7dd9c6206740d9609f1480f12955d1340e464e33fc8f474441e8c1a837660f1"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "528-529",
+       "sha": "3d5e892a767ae492f606f8791d8a6f97637dc3b0c71ab9b8ed3e9f447361ef30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "417-421",
+       "sha": "5e59f44f31a7e616ca5fb5053212e9a61c2e4a7d1dc4e1521086ad4962ee274d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "128",
+       "sha": "a9fcf71128b54c58e7d0462e62014effaa3a0fc0c746962441965c3806c1ec98"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With no fill pending, code 0x01, 0x03 or 0x05 hands the word to the VRAM, CRAM or VSRAM write routine.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "501",
+       "sha": "ae04fa3b56d4d80a2dc045a43d786d9da4e34879f3a496f9d22aed824c26640c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "535-538",
+       "sha": "193902eb70608250ded451c7f38a507ed5bccc656c98d1b7724c6ebfe224b015"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "544-546",
+       "sha": "71d4993f7dbba620f6b3cfbfe89960e9d3939cb20cef7f5a6c1b1727a4a85565"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "548-550",
+       "sha": "c6efa854240c48e3d3972b15b8643debffe99941058bf8b813121f2e5f4b128f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "556-558",
+       "sha": "4c49833ef308c13a4e6ed8c0a4341119f7df4cf4e462462d5cc8525cf36672b4"
+      }
+     ]
+    },
+    {
+     "n": "111",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each of these writes then adds register 0x0F's value to the address, wrapping at 16 bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "128",
+       "sha": "a9fcf71128b54c58e7d0462e62014effaa3a0fc0c746962441965c3806c1ec98"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "446",
+       "sha": "7a35ee2e4109b8ab842bbf773bf800b2e986fcfebce0a25fbf43da4fb04a0650"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "455",
+       "sha": "7a35ee2e4109b8ab842bbf773bf800b2e986fcfebce0a25fbf43da4fb04a0650"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "483",
+       "sha": "7a35ee2e4109b8ab842bbf773bf800b2e986fcfebce0a25fbf43da4fb04a0650"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "419-420",
+       "sha": "7fd7dc7534297a67331a0c0f30f072c88ce5fd30ecdfb60e7e1df48e26565b9a"
+      }
+     ]
+    },
+    {
+     "n": "112",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A VSRAM write stores the word at the address register in the vertical scroll RAM.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "451",
+       "sha": "db00f50d7b6493ddccce4579a3573f8019a763948849be93fb97b28bd68ae49b"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A VRAM write at an odd address swaps the two bytes of the word before storing it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "430-435",
+       "sha": "d409af2d968e216370a60d4d88ed6f0198bbc2e66237f5b187129e8ab8d0e4f2"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A VRAM write inside the sprite attribute table also stores the word in an internal copy; the source comment says a change of the base address does not invalidate it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "425-428",
+       "sha": "410d17f13a876d04420632bf4d622f03a0e3d1ce96e00bc3d29d23a296ed35cb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "437-443",
+       "sha": "4f28757a40de69c9b18bfb737a881b4a65e1f96321d620141095993556101dfd"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A CRAM write stores the word in the entry at the address register and, when m_use_cram is set, derives a palette lookup entry from three bits per channel.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "458-466",
+       "sha": "2e368c22ebd1f103811afdea97996f05221276f976ba42ca3bfb249900159b4b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "481",
+       "sha": "234358c7b61a4a4888ca0f547031385a42dbd5bac32701bb9b0e569405724387"
+      }
+     ]
+    },
+    {
+     "n": "109",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With m_use_cram set, an external palette and a base other than -1, a CRAM write sets three pens at offsets 0, 0x40 and 0x80, with flags 0, 0x200 and 0x400.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "463-474",
+       "sha": "de1114e8b53ddf06233e1d3d5203127dfbd53e6e3b4bf356b394a22b0a366dcd"
+      }
+     ]
+    },
+    {
+     "n": "110",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With read code 0x00, 0x04 or 0x08, or an undefined code, a data port write is only logged.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "540-542",
+       "sha": "79ba9c16989da9455c029efd27a4d54503fe1995b0c17376564d6e28b1864afb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "552-554",
+       "sha": "2a5f0f59018544f54b855d8c48690beb091c7c36da9766e4e1aea9fb2fed16f9"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "560-562",
+       "sha": "12db5acdd4fa342d52cb4ff4135162113c95f3e4b27f7c902766d18658ce399a"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "564-566",
+       "sha": "46ae3a92b1eadfd4822ac22c175a863288ae1fc374a0e050a21f1d7a6bda2d24"
+      }
+     ]
+    }
+   ],
+   "access": "write",
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "912",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x04..0x07",
+   "name": "status",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1330-1336"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::ctrl_port_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_r answers byte offsets 0x04 and 0x06 alike with the word that ctrl_port_r builds.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1318",
+       "sha": "e6943f4dd1aca982e94b629815b8ee80db7416b96b72dc8532e82f6689b9ae30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1330-1333",
+       "sha": "f53723696bedf64c135736892f2fdca7dab9d132a7adc7dacf223907858e70f7"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 13, 12, 10 and 9 (FIFO empty) read 1, and bits 8 (FIFO full), 6 (sprite overflow) and 1 (DMA in progress) read 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1095",
+       "sha": "d572e08a799f6b21a1e127932302884461763fa47d62c2f24244879e4e380e0f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1098",
+       "sha": "6984ed8e9c3992a5c37f1de31e540c00570a234ebe46026ae1cdbea800bdf41f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1100-1101",
+       "sha": "03cb775d8a169a96dd500d60a2f7796f3827211f0a92372b84a0a87207781b4a"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1137-1141",
+       "sha": "3e0c07d6fa6bfb41bee25da38358d67e7fe428a138bbeebe76e3915d3c4d914f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1143",
+       "sha": "f4e3118c9d77dd13f3af2cecd1b23ef681874289fd838d1cc557ad6b9a527755"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1148",
+       "sha": "84d4dd0e57af613fa587e34b3080123c73c8034e734363516bcae02ec49a8815"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 is m_irq6_pending, bit 5 is m_sprite_collision and bit 0 is m_vdp_pal.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1142",
+       "sha": "b165b2c24e993b92249b3831e34fc5fe25e122fd36bbe7390bbcfb4a8ac81deb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1144",
+       "sha": "ce0ee039021ca77a1343e93f3faf5dc1bed1cdbcdf966f685d881ff67f0f02c0"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1149",
+       "sha": "534fa6d1c76875bcb81f6bab9fe098918c7741f6575a2d5efb85001f9e044a04"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 4 is m_imode_odd_frame inverted when bit 0 of m_imode is set, and 0 otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1096",
+       "sha": "8fa4fe1ba63cbc583b815dcd3836f6c476a1cedad8f72d41972539b8fe0c3be1"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1103",
+       "sha": "36de0c26ae10e45adbc9b6e8207841905eef01627828486db2657d880d2e9510"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1145",
+       "sha": "2d85d3b988d78d73ea2a1ea8f0508f0cfb8fae4986cf071d832303a7b744aee4"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 3 is m_vblank_flag, forced to 1 while bit 6 of register 0x01 is 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "78",
+       "sha": "89d393a6163a6f37d235143c5e4ed63686db607d3202c9ec7f71cdbf42d2aad8"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1099",
+       "sha": "7c1ebc3c2dc44fdea9a7871c2994bce57077f9fe6983d7cdafe6041bf2eac43d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1111",
+       "sha": "9ad4f58ae53e0b06001596be79e4f81033fc8f9fa783d85c3b2b24d64bfdb618"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1146",
+       "sha": "f6b7663a9008ce4d6f5bd319e7a34c09cc6c475b9ad20310c571463eab07af12"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 2 is 1 for horizontal positions 401 to 460 and 0 otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1097",
+       "sha": "b15b69588bb58138b98a9cba1dc0d9bc315c34b77e038f453ab3acd4ec10e2b6"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1105-1108",
+       "sha": "76fe295e183d0c353480b7c4ab16722933fb6aa84a958e086ccdf9fd471a8c4b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1147",
+       "sha": "a99f4315eb55c2356989bca057cb90ce8c8d484081dc8b6685bd7da82e5e2684"
+      }
+     ]
+    }
+   ],
+   "access": "read",
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1334",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1335",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1336",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "401",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "395",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "398",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "396",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1537",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2270",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2269",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2331",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2339",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2337",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    }
+   ]
+  },
+  {
+   "key": "0x04..0x07",
+   "name": "control port",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "914-918"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::ctrl_port_w"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::update_code_and_address"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_w answers byte offsets 0x04 and 0x06 alike with ctrl_port_w, logging a write that does not touch both byte lanes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "897",
+       "sha": "e6943f4dd1aca982e94b629815b8ee80db7416b96b72dc8532e82f6689b9ae30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "914-917",
+       "sha": "0960df00862075551a91ca1e51c62da61875d87decc22d17781b227d7db9fb88"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A control port write cancels a pending fill.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "858",
+       "sha": "a28dca754df44868e5e3b31fbb8e686c8f223367dd5fa47e6a2514e8656af9a3"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With a first word pending, the word is stored as the second one, the pending flag clears, and code and address are recomputed.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "860-866",
+       "sha": "1b23ce8d2b38869e0ff3c4aef0515c856b61a1cff38bada8063c51ea71430e3c"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With none pending, a word whose bits 15 and 14 are 10 sets the register numbered by bits 13 to 8 to its low byte and clears code and address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "860",
+       "sha": "5faac3f4a04e392520038e1aa495134185af6e2211154ca5a81442edc0ff3282"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "872-873",
+       "sha": "45d645723aed811fd272a52f23b70458dc70ab35b01c090c0193c8c762c5385e"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "874-884",
+       "sha": "baefdd7516e9008850f3f08e92f73b89cd4dae15b1ee56515edcf2cd4a1b6183"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 5 of that register number, bit 13 of the control word, is logged as a register error and the number is masked to five bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "876",
+       "sha": "87d155546e02cdf852269913c6a0e71c4d3c5eea4910adad8a706833ca791f5f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "879",
+       "sha": "85cc98594902c919849766c687cfc4ebeef30f3f71b94ee24561a6a43982302a"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "881",
+       "sha": "cfe7a948a205b68fd221fc4d3454298019375cef398b814cd5021d3f48269b85"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Any other word with none pending is stored as the first word, sets the pending flag and sets code and address from it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "860",
+       "sha": "5faac3f4a04e392520038e1aa495134185af6e2211154ca5a81442edc0ff3282"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "872-873",
+       "sha": "45d645723aed811fd272a52f23b70458dc70ab35b01c090c0193c8c762c5385e"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "885-889",
+       "sha": "1470d5abe958d76a703df8a5809974720239552993f6b412f95dc8ac31e517e0"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The code is bits 15 and 14 of the first word plus bits 7 to 4 of the second shifted right by 2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "633-634",
+       "sha": "fc80df64ba2c2cfb9c0b17dc0ed5789640ab0e8d724bbefe1186ed7e052c0ab8"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The address is bits 13 to 0 of the first word plus bits 1 and 0 of the second shifted left by 14.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "636-637",
+       "sha": "db1715eacf109e85a29f1db4b9d434aeaac92fb8b2f3960c86c56a95580dd944"
+      }
+     ]
+    },
+    {
+     "n": "109",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After the second word, a code with bit 5 set starts DMA handling by calling handle_dma_bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "860",
+       "sha": "5faac3f4a04e392520038e1aa495134185af6e2211154ca5a81442edc0ff3282"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "863-868",
+       "sha": "27f5e7ee7fff27eb6e12d5ef974475b74a1870bcbd3b686d0e22b52800a3ad84"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.h",
+       "lines": "137",
+       "sha": "e926c6d3b84e98fc41b98bcbe9cdffacb0f336a2cfcfd138b7c204a4b8acddc0"
+      }
+     ]
+    }
+   ],
+   "access": "write",
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "918",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0F",
+   "name": "HV counter",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1338-1346"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::megadriv_read_hv_counters"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::get_hposition"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::get_scanline_counter"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::screen_hpos"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::get_hres"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_r answers byte offsets 0x08, 0x0A, 0x0C and 0x0E alike with megadriv_read_hv_counters.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1318",
+       "sha": "e6943f4dd1aca982e94b629815b8ee80db7416b96b72dc8532e82f6689b9ae30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1338-1343",
+       "sha": "6d7b8295ddd3afacf011b8a69c54de9d696a19f271babab9ed4c43fc2770dc2b"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The word has the V counter in its high byte and the H counter in its low byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1311",
+       "sha": "130b3858f5a06075a1412bd590269db98407b572469cebf415c4026ca36507ea"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The V counter is the scanline counter, plus 1 above horizontal position 460, looked up in a table by line count (register 0x01 bit 3) and NTSC or PAL.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1285",
+       "sha": "8f44ccbec5ab678c2048a2c845246aa4fbe70122a547043edd3614232c90097c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1289",
+       "sha": "4fb1f437cdda3cb3257906402d11c075ce973d62f1f8fa662f327fad06539df2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1298-1307",
+       "sha": "2eb6d7e188b33d4c47b9865708005201d65efa1b9932679033e3125f150d4bf9"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "81",
+       "sha": "4c527a16ca5ecbecc17374abe0603fc56e9210235e367f9f95ab0a968437dc79"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The H counter is the horizontal position, less 0x49 when it is above 0xF7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1309",
+       "sha": "dd8c445e34ab04e94ec7462ad6f87bbce386c40ede0b69cc0f7a8e5bd8f5de60"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The horizontal position is the elapsed fraction of the scanline time times 480, clamped to 480; with alternate timing or no frame rate it is the screen position.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "172",
+       "sha": "5403ffd750e1867b5c0ee57e8058b53ecb8ce438a554c5cb85d4e694bee96c36"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1247-1258",
+       "sha": "64421d447de57ef95ac72f3d2abc0330877f1df96212712d94db5d9a09f41a1b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1259-1267",
+       "sha": "5bffea35cdba73dbcc32a1a9312e05057e7eb623042a9efebdfcefbd6b4904ef"
+      }
+     ]
+    },
+    {
+     "n": "111",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The scanline counter is m_scanline_counter, or the screen's vertical position when alternate timing is in use.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1272-1275",
+       "sha": "742e2db1fc6a6bb101724a87dd4fdc436fab7749ab93cc8a285249b7bfe3bc27"
+      }
+     ]
+    },
+    {
+     "n": "112",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With alternate timing the screen's horizontal position is divided by 5 or 4, by register 0x0C bit 0, when m_lcm_scaling is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "121",
+       "sha": "ba73d0366866e3189bb822668de490a760d5015ad9eb494e226f096b2a90f0f3"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "166",
+       "sha": "d224b8c24420fb04bfd462a838994a0d597707c0c3de27367b8e19f9442add3b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "168-169",
+       "sha": "eaf3b9101434a6c855f6cf36a4750dfc417318f5e4ff7352c40bfe617d47ac7e"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A negative scanline counter is replaced by the total number of scanlines.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1292-1296",
+       "sha": "22e8475e29c88ce6bebc8a5b242127bf83bccfc110cf4bdf55eb713fbac1918d"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The NTSC 224-line table counts 0x00 to 0xEA, jumps back to 0xE5 and counts on to 0xFF.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1152-1163",
+       "sha": "2b7ae0995e60478e38eb056b338cf96fd50c091f9bfb05fab070400db361274d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1164-1170",
+       "sha": "011dd16b6726dbee1dfab19e2d173811075aa7d0c9c4adeffbd569f00f115ac3"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The NTSC 240-line table counts 0x00 to 0xFF, then 0x00 to 0x05.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1173-1184",
+       "sha": "0bc9f68d6d296ce47eee401df1f13397999ccbf2630a8c68d8dd0546a2191686"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1185-1191",
+       "sha": "43380c0c0243f178b4abc97409a6dafaf8f2a9b6827d563159843a21c3d80a58"
+      }
+     ]
+    },
+    {
+     "n": "109",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The PAL 224-line table counts 0x00 to 0xFF, then 0x00 to 0x02, jumps to 0xCA and counts on to 0xFF.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1194-1205",
+       "sha": "b40c1aa84130d33741e8b233d5ce09c366777a3920341556cc5fa55cea06a1f2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1206-1215",
+       "sha": "5f9e19ba14dc5e4d40efda9a3d11b3bc778bf55935e4b7542364a4e4ebb8426f"
+      }
+     ]
+    },
+    {
+     "n": "110",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The PAL 240-line table counts 0x00 to 0xFF, then 0x00 to 0x0A, jumps to 0xD2 and counts on to 0xFF.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1218-1229",
+       "sha": "de4a3dd5217c3d0dafcc1461f556f7091aa83abbe51e395f59b6d77dad75a5bd"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1230-1239",
+       "sha": "080c44221948d8d1a9fbddb3ec132ec1d3b4abd9278e65f26cab58fce6085c85"
+      }
+     ]
+    }
+   ],
+   "access": "read",
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1344",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1345",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1346",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "402",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "411",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2345",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "400",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2260",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "2336",
+     "as": "parent",
+     "owner": "chip:device:sega315_5313"
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0F",
+   "name": "HV counter write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "920-925"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_w treats byte offsets 0x08, 0x0A, 0x0C and 0x0E alike, logging an attempt to write the HV counters.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "897",
+       "sha": "e6943f4dd1aca982e94b629815b8ee80db7416b96b72dc8532e82f6689b9ae30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "920-925",
+       "sha": "5f5f8349a19ad0616ba008aa2dacc014df63af4fa3f7c1488e42fadcf4917539"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write there is only logged as an attempt to write the HV counters.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "924-925",
+       "sha": "d8e116969ae813960a03b855bb73f91a3408b511ddb5140389047e8e3cfc25a6"
+      }
+     ]
+    }
+   ],
+   "access": "write"
+  },
+  {
+   "key": "0x10..0x17",
+   "name": "PSG write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "927-937"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_w sends byte offsets 0x10, 0x12, 0x14 and 0x16 alike to psg_w, when the low byte lane is written.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "897",
+       "sha": "e6943f4dd1aca982e94b629815b8ee80db7416b96b72dc8532e82f6689b9ae30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "927-936",
+       "sha": "e3425826a04c74d7ee17da9f4068e871d6b7f9d9689bbc269f1c32549d65d934"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the low byte lane is written, the low byte of the data goes to psg_w, which writes it to the sound chip.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "933-934",
+       "sha": "b64e00a90e696cb5eafc835be6c64b76b4af484e96aff667e78c312fa2ec0aed"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.h",
+       "lines": "66",
+       "sha": "1203a961e44f50f14ea32a78e2deb348b829e7ce5e55e7ccf6a521039f363a5a"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write that touches only the high byte lane sends nothing to the sound chip.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "931-937",
+       "sha": "597e4a5cae56247ec1aabb1488840521e1d61966c4acdd6a6f0df153032a631c"
+      }
+     ]
+    }
+   ],
+   "access": "write"
+  },
+  {
+   "key": "0x10..0x17",
+   "name": "PSG read",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1348-1355"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_r treats byte offsets 0x10, 0x12, 0x14 and 0x16 alike, logging an attempt to read the PSG and returning 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1316",
+       "sha": "37908f751cd2465a6248c5e18e9a53576c030477fb127f2d4f02c6e9cb41e666"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1318",
+       "sha": "e6943f4dd1aca982e94b629815b8ee80db7416b96b72dc8532e82f6689b9ae30"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1348-1355",
+       "sha": "dd31cbe98b0c9b451aca61408340e58fa36f84ffccd67f014dcb540c86643181"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read there returns 0 and logs 'Attempting to read PSG!', except on a debugger read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1352-1354",
+       "sha": "9df7c9929890e8bc302b9ad5e5e2b5827845c4761fdde2ec564f96f34d65d57d"
+      }
+     ]
+    }
+   ],
+   "access": "read",
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1355",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x18..0x1F",
+   "name": "unmapped",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "939-941"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1316"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "1357"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's vdp_w sends byte offsets 0x18 to 0x1E to the default arm of its switch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "897-908",
+       "sha": "da460df8d39010a61b8d1a2991549c9ae64bbec6ee8de1736ac2025cd1820286"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "909-920",
+       "sha": "43887f0921cc57d569a4d91a986fc5f9b527fcc921e4a9db479eaae74c68654d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "921-932",
+       "sha": "713168fea6d12e9de759baf18fd876ee087995bfe86e3971900e1bcb863973d2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "933-941",
+       "sha": "085d26769c889d2a13495c8a31afc91bdbd70363f529ec606ffac09313c898af"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write there only prints 'write to unmapped vdp port' in the debug output.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "939-941",
+       "sha": "c4ebd648484bb04682216693362f35f3eb4e5e4d0ccbcb419e3c6d119ec71234"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of these offsets returns 0, the value vdp_r starts with, since no case of its switch handles them.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1316-1327",
+       "sha": "7647d73cd506270717bcaac418ac1792d0c6ab2baa5ba4b0272c850a709aa278"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1328-1339",
+       "sha": "337ce7603a2178a797acd9f270c6d122fd066abdbd77d83e7db7e1eb281de6f1"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1340-1351",
+       "sha": "9f10f689b885e339f4c36257eb0d10861828e300de1476bb1f898cf8dbea7667"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1352-1357",
+       "sha": "4cdb2ff4d2767131bd4510eb03a12b679edb2254245da4bd0e4f497396baec53"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

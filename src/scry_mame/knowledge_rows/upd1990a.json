@@ -1,0 +1,1029 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "upd1990a",
+ "title": "uPD1990A and uPD4990A pins as handlers",
+ "kind": "register",
+ "scope": "upd1990a",
+ "covers": "the pins of the uPD1990A and uPD4990A, one handler per pin, as the NEC uPD4990A data sheet describes them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "uPD4990A.raw.txt",
+   "variant": "upd4990a"
+  }
+ ],
+ "official": {
+  "uPD4990A.raw.txt": [
+   "271-278",
+   "289",
+   "312-327",
+   "330",
+   "342",
+   "343-345",
+   "363",
+   "365-367",
+   "374",
+   "447",
+   "453-454"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:uPD4990A.raw.txt",
+   "lines": "322-327",
+   "as": "electrical"
+  }
+ ],
+ "engine": [
+  "adjust",
+  "enable",
+  "remaining",
+  "set_time",
+  "advance_seconds",
+  "timer_alloc",
+  "clock_tick",
+  "tp_tick",
+  "data_out_tick",
+  "test_tick"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "oe_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "277-278"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "318"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::oe_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "OUT ENBL is the output control input.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "318",
+       "sha": "c5ceeadd0a5aa359a00d05ff773a5d2d0d48a9bf39b4caeea25be3280294a094"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Connecting the OUT ENBL pin to ground sets the DATA OUT pin at high impedance.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "278",
+       "sha": "cd9a85ee07aeea7187a987566a78909e97a07c6beccfc2742cea749df7d56f86"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME drives a level of 1 instead of high impedance: with OUT ENBL low and test mode off, DATA OUT reads 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "433",
+       "sha": "a83b58701b4608ae08824ef79e52b564266c3475aeacd28e92742c498f26f4fd"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "472",
+       "sha": "f8a1c61abe0603433fecc27be333fec89d2fa3ae7d053ffcba3730841ddadb4a"
+      }
+     ],
+     "row": "2"
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A change of OUT ENBL makes MAME send the DATA OUT level to the data callback, unless the latched command is the test command.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "435-436",
+       "sha": "8c2f1a8b92a7dc2dfe966008a2b01fbc15f34675cfb7a2ae28d5351b0d2dc33b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "277",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "cs_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "275-276"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "317"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::cs_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "189-190"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "375-376"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CS is the chip select input, which prohibits the CLK and STB inputs.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "317",
+       "sha": "1b92b731f118366fb93a8d979371930181d13fcf10ecb33685f09abe40b20dac"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Connecting the CS pin to ground inhibits the STB input.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "276",
+       "sha": "1e2285828398fbe3f059ef0b151568de57009adef4f11df3a82ec929a10e8f61"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Connecting the CS pin to ground inhibits the CLK input.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "276",
+       "sha": "1e2285828398fbe3f059ef0b151568de57009adef4f11df3a82ec929a10e8f61"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "CS is the chip select input.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "317",
+       "sha": "1b92b731f118366fb93a8d979371930181d13fcf10ecb33685f09abe40b20dac"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "275",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "189-190",
+     "as": "agrees",
+     "row": "2",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "375-376",
+     "as": "agrees",
+     "row": "3",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "424",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "stb_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "271-274"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "316"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "342"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "374"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::is_serial_mode"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::stb_w",
+     "case": [
+      "MODE_REGISTER_HOLD"
+     ],
+     "preamble": true
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "STB is the strobe input.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "316",
+       "sha": "2db66aed53998ec6003c22f63af4ed3aeeae211be4df5a1d9cfc54fb0c60ebeb"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Each command is latched with STB.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "274",
+       "sha": "c444006521fc49a8c085ff3959a9bcc8ee3b821b8defd4b03c31f3f7f0624a17"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A function mode can also be selected through serial data input, with C0 = C1 = C2 = VDD.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "272-273",
+       "sha": "1b6a023ebe2cb67dd1070c39bb67ec74f7260f4c4f3ff4db81ad4caa5215fe28"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The commands C3' C2' C1' C0' are made effective only when C2 C1 C0 = 1 1 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "374",
+       "sha": "c34d5c14b2a4b4d64163027d4701843261c647633b5dd6c1371720819a30b66b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "The test mode is cancelled by C2 C1 C0 = 0 0 0 to 1 1 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "342",
+       "sha": "f7562801a18430d94b2022ecb2aae65be498340f4647eefd39dee6ed6b421b43"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With CS high, MAME latches a command when STB goes from low to high and stores the STB level at the end of the call.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "189-190",
+       "sha": "455c251366e17c16feec77a8fd49f1dd6339557df9bc66b6c1d9ac8a6c27fc71"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "194-195",
+       "sha": "ee75f3083e81e8ec86ca134255003bea7de20ab5bba7ad85a92cc24bd268b254"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "198-204",
+       "sha": "511a1aae6b7db76d9af6b991616c499aa30addedd0213c64d5a724eb660ce69a"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "365",
+       "sha": "bd44a5e98d85c0b8432d840c404817e9de63d51f00c910982864de5579b2286a"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In MAME serial mode needs the uPD4990A type as well as C2 C1 C0 = 1 1 1, so the uPD1990A type cannot enter it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "66",
+       "sha": "822cc7f08dd4951f9f078e08b32facda89505014156d78b99c99730cf25cbc62"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When serial mode is off, MAME reads C2 C1 C0 = 1 1 1 as its test command.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "198-204",
+       "sha": "511a1aae6b7db76d9af6b991616c499aa30addedd0213c64d5a724eb660ce69a"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME leaves test mode only on Register Hold and on the TP and interval commands, not on Register Shift, Time Set or Time Read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "210-217",
+       "sha": "990fc6b5c8d49d8027feffc892723a4ab2f7f39412bb2dca947e1aa8177bda54"
+      }
+     ],
+     "row": "5"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "271",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "199",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "202",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "66",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "199",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "66",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "198-202",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "88",
+     "as": "parent",
+     "owner": "chip:device:upd1990a"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "442",
+     "as": "parent",
+     "owner": "upd1990a:register:0x04"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "448",
+     "as": "parent",
+     "owner": "upd1990a:register:0x05"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "454",
+     "as": "parent",
+     "owner": "upd1990a:register:0x06"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "clk_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "314"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "453-454"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::clk_w"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "289"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "447"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CLK is the shift clock input of the 40-/52-bit shift register.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "314",
+       "sha": "46fe6a88b056bc8872782cfb544836fe768e14b3593e3e85930b46919832fbe8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "CLK is the shift clock input of the 40-bit shift register.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "314",
+       "sha": "46fe6a88b056bc8872782cfb544836fe768e14b3593e3e85930b46919832fbe8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "CLK is the shift clock input of the 52-bit shift register.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "314",
+       "sha": "46fe6a88b056bc8872782cfb544836fe768e14b3593e3e85930b46919832fbe8"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "In serial command transfer mode the serial command register is not held by the Register Hold command.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "447",
+       "sha": "b28fa40b0a8fc5754dd50d4c0880f57d059a0f690974255890105013876e4ddf"
+      },
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "453",
+       "sha": "e897ef474cd1916a433809d036c985c02bbd9663988a537a73281cc840bceea6"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Accordingly, the serial command can be executed irrespective of the mode if the CS pin is active.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "453-454",
+       "sha": "5e8465362b53ae473b1d83fc766c8b2461c25a11d353579188fc63b3dabfcfa3"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With CS high, MAME acts on a rising edge of CLK, shifts the data registers when the command is Register Shift, and stores the CLK level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "375-376",
+       "sha": "455c251366e17c16feec77a8fd49f1dd6339557df9bc66b6c1d9ac8a6c27fc71"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "380-381",
+       "sha": "c1ed92858108c963c73c6c7f57e0a9ad8741260e3d7f3287f95462ce36013131"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "393-404",
+       "sha": "a2250ed8858ce99f38ddb142e0c31afa5d27059a09cba464ad726748448a8864"
+      },
+      {
+       "ref": "mame:src/devices/machine/upd1990a.cpp",
+       "lines": "412",
+       "sha": "d823cd737a1fb5c7b8354294b8e65f2f0be7847a07ebcd50ed7b47b6790abfab"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "The data of the 52-bit shift register appears on DATA OUT starting from the least significant bit of the second.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "289",
+       "sha": "b9a308f5aee50e43781a8367de958636d7e7601848f6768f5c2d0364f8f60237"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "393-404",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "385-391",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "393-404",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "385-391",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "393-404",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "406-408",
+     "as": "agrees",
+     "row": "8"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "c0_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "330"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "363"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::c0_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "When serial data commands are used, the C0, C1 and C2 pins should be connected to the VDD pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "363",
+       "sha": "f7cb9d7be61c4bdbfc0dfa5aef4a55534fcc59b83e7637767b2067fda2c3882d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Commands input from the C0, C1 and C2 pins are 1 for a high level (H) and 0 for a low level (L).",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "330",
+       "sha": "aa28da66a0fa0c07c3c603a7e3ed80b3c674e670d845909b4273911eb0afb58a"
+      }
+     ],
+     "links": [
+      "upd1990a:register:0x05",
+      "upd1990a:register:0x06"
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "442",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "c1_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "315"
+    },
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "343-345"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::c1_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "For the serial data commands C2 C1 C0 are to be set to 1 1 1 at all times.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "343-344",
+       "sha": "ff7d8b5b78aabba3f45147d3a53583b0cd06abe49c95899a032dd225db7b3be0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The serial data commands use a 52-bit shift register, and the year function is effective.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "345",
+       "sha": "f0dafedf45715ed83f5c7f98af4b7a920e0eda0219431795ed6033c3aa6e1613"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "C0, C1 and C2 are the command input, of 3 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "315",
+       "sha": "cb4295a9da6a90d4447e14324569aafa6ccc658b4adf3896710b921ad8aa34ed"
+      }
+     ],
+     "links": [
+      "upd1990a:register:0x04",
+      "upd1990a:register:0x06"
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "448",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "c2_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "365-367"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::c2_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The command is input as a 3-bit binary code on C2, C1, C0, or as a 4-bit serial transfer command C3', C2', C1', C0'.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "366-367",
+       "sha": "5d39787cdd7cb67b6f04bc092a214aefab20dde61c969f9cfceb9423e42f903e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The 3-bit binary command code input is C2, C1, C0.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "366",
+       "sha": "7404175a82cf99c101755df3bd4dea32e8a5cf4f8b2b984dad0c3803c9728bc4"
+      }
+     ],
+     "links": [
+      "upd1990a:register:0x04",
+      "upd1990a:register:0x05"
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "365",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "454",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "data_in_w",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "312-313"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::data_in_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "DATA IN is an input terminal.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "312-313",
+       "sha": "e462fa469374feb1061a79c05ddca9348889abf84e6cc7e2aa20550319f69260"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "DATA IN is the data input of the 40-/52-bit shift register.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "313",
+       "sha": "9578a7eb870c3c30b7feca1725d8e49781fc8d210f6258039df0a4e5bcce83f9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "461",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "data_out_r",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "319-320"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::data_out_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "DATA OUT is an output terminal, N-channel open drain.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "319-320",
+       "sha": "914d6e734a279133facc60727cd572e86c324efcbd0294ee591ee6bf17d08f2d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "DATA OUT is the data output of the 40-/52-bit shift register.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "320",
+       "sha": "74748bb88e5d9a83f9d4b23a7e48829ae8445b8d081c540f9181fb9cd1e2c762"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "478",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "name": "tp_r",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:uPD4990A.raw.txt",
+     "lines": "321"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "function": "upd1990a_device::tp_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TP is the timing pulse output terminal.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "321",
+       "sha": "ba216135166aaabbd659e32b3bfa63e3389044c6bb22aff6f151994ce63d0369"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "The TP pin carries the timing pulse.",
+     "quotes": [
+      {
+       "ref": "datasheet:uPD4990A.raw.txt",
+       "lines": "321",
+       "sha": "ba216135166aaabbd659e32b3bfa63e3389044c6bb22aff6f151994ce63d0369"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "483",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "87",
+     "as": "parent",
+     "owner": "chip:device:upd1990a"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "140",
+     "as": "parent",
+     "owner": "upd1990a:command:0x07"
+    },
+    {
+     "ref": "mame:src/devices/machine/upd1990a.cpp",
+     "lines": "278",
+     "as": "parent",
+     "owner": "upd1990a:command:0x02"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1341 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ay8910-registers",
+ "title": "The sixteen AY-3-8910 registers",
+ "kind": "register",
+ "scope": "ay8910",
+ "covers": "the 16 registers of the AY-3-8910 as General Instrument's data manual describes them, and MAME's write and read of each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "AY-3-8910.raw.txt",
+   "variant": "ay8910"
+  }
+ ],
+ "official": {
+  "AY-3-8910.raw.txt": [
+   "549-958"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:AY-3-8910.raw.txt",
+   "lines": "549-565",
+   "as": "see-also"
+  }
+ ],
+ "engine": [
+  "set_period",
+  "set_volume",
+  "m_port_a_write_cb",
+  "m_port_b_write_cb",
+  "m_port_a_read_cb",
+  "m_port_b_read_cb"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x05",
+   "name": "tone period",
+   "aliases": [
+    "tune"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "566-649"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_AFINE"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_BFINE"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_CFINE"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R0/R1, R2/R3 and R4/R5 are the fine and coarse tune registers of the tone generators of channels A, B and C.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "569",
+       "sha": "620f22d138fa449e99b2b3aa792b90f6be6f09bd46f0ce26104f5d88bbe31b0b"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "577-581",
+       "sha": "756ae16039c29643d4ca7566d5c3e4ffe433e544ba44cee51ff03768e20d47e0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "A tone generator counts the input clock down by 16 and then down by its programmed 12-bit tone period.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "570-573",
+       "sha": "df525523641cbcc5a185fe68e7dc472b4871837175d894abdb50a0cb53d2aaa2"
+      }
+     ]
+    },
+    {
+     "n": "3A",
+     "on": "write",
+     "of": "doc",
+     "text": "Channel A's tone period is R1, bits B3 to B0 as TP11 to TP8, over R0 as TP7 to TP0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "574-576",
+       "sha": "629482842782f023b2072b5a32ef6118610725dc9bb571c37385a251457197d9"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "579",
+       "sha": "8c068a3cfba288cfacb925144950c7ff2329a8a4f7ab8330580c5affc2c9f030"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "611-614",
+       "sha": "6dcf2b0a04520c922e6398a33b1335edc6a841ad69ed13a29a71b6c2f66b70de"
+      }
+     ]
+    },
+    {
+     "n": "3B",
+     "on": "write",
+     "of": "doc",
+     "text": "Channel B's tone period is R3, bits B3 to B0 as TP11 to TP8, over R2 as TP7 to TP0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "574-576",
+       "sha": "629482842782f023b2072b5a32ef6118610725dc9bb571c37385a251457197d9"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "580",
+       "sha": "58083fe0f81da96619fb620e50b354a3a15e26f20f38525f16ab902d37b170f9"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "611-614",
+       "sha": "6dcf2b0a04520c922e6398a33b1335edc6a841ad69ed13a29a71b6c2f66b70de"
+      }
+     ]
+    },
+    {
+     "n": "3C",
+     "on": "write",
+     "of": "doc",
+     "text": "Channel C's tone period is R5, bits B3 to B0 as TP11 to TP8, over R4 as TP7 to TP0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "574-576",
+       "sha": "629482842782f023b2072b5a32ef6118610725dc9bb571c37385a251457197d9"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "581",
+       "sha": "126c198f0555f0d9d9b574f6adddf53dba06a18b37410f2daff3a33a8f4df79a"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "611-614",
+       "sha": "6dcf2b0a04520c922e6398a33b1335edc6a841ad69ed13a29a71b6c2f66b70de"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The tone period is a period: the higher the value, the lower the tone frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "595-597",
+       "sha": "1d99c1f6ed73a6441c5f468164a190203350e013fa4f1f9ce6078ca74a532314"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The lowest tone period is 1, which divides by 1, and the highest is 4095.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "598-600",
+       "sha": "5d3b2e0a4b340eb762ac902f8e2b180677b92b03996cc4128b4960b558bfcf15"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The document gives equations from the input clock and the tone period to the tone frequency, and back.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "601-610",
+       "sha": "25300cb392ad759cf9a7d72c17dac7c0ab57b9aee352cedd6a3d568b9561e7dd"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "619-622",
+       "sha": "a4b36259b62cfc85118faa5980b5b053911fb7877c93baf5ff4aba4963b491d3"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "With a 2 MHz input clock the tone frequencies range from 30.5 Hz to 125 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "615-618",
+       "sha": "aa0528591a3b096ef2d91da64edebcdca273ded92d89cabbd49ff546c960cb8c"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "From a 2 MHz clock, a 1 kHz tone has tone period 125: coarse tune 0000 and fine tune 01111101.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "623-628",
+       "sha": "6bad143efced29e590e89718d0c84aa89d88c28d4da591a8b93d861271d3247d"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "629-635",
+       "sha": "b31055094494d4baa41e330ec7d84bc9029c8dd878e658a67b53961970ca22f3"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "From a 2 MHz clock, a 100 Hz tone has tone period 1250: coarse tune 0100 and fine tune 11100010.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "636-642",
+       "sha": "ea28e50e4c791f790b66ee2a6de544e64993f8a9f8e7894759ecfa49d016cb04"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "643-648",
+       "sha": "e151945f6181eb31d1b09b54a40748453e08ad96feed88c2dc1d6502515cc7fb"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3A",
+     "text": "MAME hands channel A's period to its setter with register 0x01 masked to 8 bits in expanded mode, and to 4 bits otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "929-930",
+       "sha": "afe05d589e8cb13e80e83d2555cf24ef2099d3ff58ce60da2f187156dcd2b617"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "153",
+       "sha": "101665e0232b19b63780211af9a54b7a11531ae0e687842b8eda5c34b517a42f"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3B",
+     "text": "MAME hands channel B's period to its setter with register 0x03 masked to 8 bits in expanded mode, and to 4 bits otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "934-935",
+       "sha": "63840f5b2d3f840e8fc45a5463ec3c011470abd9a3fece20b920198266d0d29d"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "155",
+       "sha": "0271b57f95f1c3fe5dc1c74b878c4ad6d54f2a397a9aa484fba67e8eca9652e0"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3C",
+     "text": "MAME hands channel C's period to its setter with register 0x05 masked to 8 bits in expanded mode, and to 4 bits otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "939-940",
+       "sha": "58a6b995f93eab9fd0c47402d8ac16d06c9b9595a574feccaff34dbec0c91bca"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "157",
+       "sha": "d96b84546a92be164f2997f6b73afaccecc9615ced70a82b39b89db61c600678"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "566-568",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "582-594",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "649",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "925",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "928",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "933",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "938",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "noise period",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "650-682"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_NOISEPER"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R6 is the noise period register: its lower 5 bits, B4 to B0, are the 5-bit noise period.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "654-656",
+       "sha": "9a6be09f12a5d9cfb98d60dfa6e4510cfb2f3ee52fd61ca3aa3faa5010882af1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Writing R6 sets the noise period from bits B4 to B0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "654-656",
+       "sha": "9a6be09f12a5d9cfb98d60dfa6e4510cfb2f3ee52fd61ca3aa3faa5010882af1"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The noise generator counts the input clock down by 16 and then down by the programmed 5-bit noise period.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "652-654",
+       "sha": "fdf0b5644fa7a932ae2b59308ad3b15cebb747868d59b9b8ac42c82d5b895441"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The noise period is a period: the higher the value, the lower the noise frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "663-664",
+       "sha": "6928f1aeaf869a300dd3e6d2a72a51353e4160c7546ec05375b8855d01fbe40d"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The lowest noise period is 00001, which divides by 1, and the highest is 11111, which divides by 31.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "665-666",
+       "sha": "7b6792064b65d5e14cd7fa12e2c5048f3b7ecf51cc4e17359f538ec422ccc609"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The document gives the equation from the input clock and the noise period to the noise frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "667-673",
+       "sha": "72961c9345c93200433e9a3c87ac38704352c1c3574021afd5169110318965db"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "With a 2 MHz input clock the noise frequencies range from 4 kHz to 125 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "674-678",
+       "sha": "ff17dfbce49ece64808345e9a7676427ef5474b3092e7ee5079ffb213f42fdb1"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The document rearranges the noise equation to give the noise period register value from the clock and the wanted frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "679-681",
+       "sha": "ac2a3bdf1f987bd5e077047d739d0295a382a26b1f854166ff9951fb45496e7c"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME takes no action when 0x06 is written; its accessor reads the noise period from it as 8 bits in expanded mode, 5 bits otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "942-944",
+       "sha": "3343188c358604c57fe1cbce6a81f1b7d8c130214373e294feb57780cb84e8d7"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "283",
+       "sha": "4a5a897c68813f4338e0a8b3bd507560d3c6b8ec3ba2e17a3abe836187501692"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "158",
+       "sha": "0208b1ece42986e3c835cafd77d9f992533b08295a8c271545947736f0b78355"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "650-651",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "657-662",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "682",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "925",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "mixer and port direction",
+   "aliases": [
+    "enable"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "683-720"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_ENABLE"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R7 is a multi-function enable register that controls the three noise and tone mixers and the two general purpose I/O ports.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "686-687",
+       "sha": "ed4a9aa5745931ac94c04a3a1dabde61467641746ff66512c65c81dbf15d857a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Bits B5 to B0 of R7 pick, per channel, whether noise, tone, both or neither are combined; a 0 enables.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "688-691",
+       "sha": "7647be63fff9754362b8827a400f9c3df9db2d0c419e93eab89d78d53a44444d"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "698-704",
+       "sha": "62582c1fd7b3803fa133f9e1701ff5aa313ecdf338a7181195f61fd1c9ba3f28"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "705-710",
+       "sha": "423982eb787b92a0117955a4372b07d6746312809a6b5644425fc00e2c2639c8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to R7 sets, in bits B7 and B6, the direction of I/O ports B and A: 1 is output and 0 is input.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "692-694",
+       "sha": "c4c4909562b23a75cfb55f08a74b301462f1799cd6b5b81d5879b073d2159c91"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "711-717",
+       "sha": "db2ae4f12cbecfe5df5f1255ae1962c2a7a81848687939e230b9c4388a709f4c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Disabling noise and tone does not turn a channel off; only zero in its amplitude register does.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "718-720",
+       "sha": "7280fadf0be659fec79d9876773e5b8ca076b75c67e867e5365468e1f1133a87"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "683-685",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "695-697",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "925",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "972",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "959-964",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "966-971",
+     "as": "unfollowed",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0A",
+   "name": "channel amplitude",
+   "aliases": [
+    "volume"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "721-793"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_AVOL"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_BVOL"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_CVOL"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R10, R11 and R12 are the amplitude registers of channels A, B and C; the lower 5 bits, B4 to B0, determine the amplitude.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "721-724",
+       "sha": "e2df33b806498db0956f4b26f86f3b7a871ca7e0536049040ce0ee964251f4d2"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "725-729",
+       "sha": "f425d739d9cbea52999ecf761451664e13dd5aae23024439b4cf7144ab36f272"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to an amplitude register sets, in bits L3 to L0, the fixed amplitude level, which counts only when M is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "736-743",
+       "sha": "7e9f742bd805fee19e5163b9d5d157a13ffd87c74f1274554565631152996446"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to an amplitude register sets the mode bit M: 0 selects a fixed level amplitude and 1 the envelope generator's output.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "734-735",
+       "sha": "74e77cb33b0ad3723fe17eb77eea48322a91712eee434a84b2f3f9032cd1181f"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "744-750",
+       "sha": "5fe4de320986c7ccdff2381273aa2d2f071987b3326d9c7ad3d4d9917279e86b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "A fixed level amplitude is one of the 16 levels, set by the decimal value of bits L3 to L0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "780-784",
+       "sha": "f49bdc47518767c3341478645d4a68dc28064694df801e7520c8a72b91f32163"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "In expanded mode MAME keeps a 5-bit fixed level, where the document gives L3 to L0, 4 bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "277",
+       "sha": "a186a0d40c94c6db2491a39981b1080fb6a876884bb0689be59b94e397b68880"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "In expanded mode MAME takes the envelope mode from bit 5; a chip with extended envelope keeps a 2-bit mode, not the 1-bit M.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "278",
+       "sha": "ab9578f8fbbe144f223a21c08f199035d850b8b861807a6d1b1cba9fd6cd42d0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "730-733",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "751-779",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "785-793",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "925",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x0B..0x0C",
+   "name": "envelope period",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "794-852"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_EACOARSE"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R13 and R14 set the frequency of the envelope, and R15 sets its shape and cycle pattern.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "799-803",
+       "sha": "829752fcdd9a1bf4a842658257ae93109e36b92295cf70803abfc58f0e377b58"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The 16-bit envelope period is the coarse tune register R14 as EP15 to EP8 over the fine tune register R13 as EP7 to EP0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "809-813",
+       "sha": "8fff9b2e47907735b6a56b155021f79394a7cf5669ab79549115006fbe778759"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "828-831",
+       "sha": "3e7f0ea2f298d7406b6329721ed951bad640531058a89c34554b5f0371b69f92"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The envelope generator counts the input clock down by 256 and then down by the programmed 16-bit envelope period.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "807-809",
+       "sha": "0c10dd6a9176b6958f431825a680eb23373ec7a2fc4cac3a86ecbe29e5888667"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The envelope period is a period: the higher the value, the lower the envelope frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "814-816",
+       "sha": "ec990a3fabb65a6cb5f1ed419bc0b17f0b3ff665125cb3f5d21ca9643b1c8a92"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The lowest envelope period is 1, which divides by 1, and the highest is 65535.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "817-819",
+       "sha": "6ee5fe509447ec852191a3cabb56419ed7359c65729f057bb7bd283ccd73f4fe"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The document gives the equation from the input clock and the envelope period to the envelope frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "820-827",
+       "sha": "6565e6ab69f3b07ccdeeeff6bfccdd5b3a2e1cd3688b96122560720abdb2c0c2"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "With a 2 MHz clock the envelope frequencies range from 0.12 Hz to 7812.5 Hz.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "832-835",
+       "sha": "733f98d94d98126fc6e455c5798fcabfda97fe199adf6de9ab7adbb8b352e684"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The document rearranges the envelope equation to give the period registers from the clock and the wanted frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "835-840",
+       "sha": "e605dd17d41fc84b8b72bb500e6d99d86d9371d393902b2e510f46b710686d5f"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "From a 2 MHz clock, a 0.5 Hz envelope has coarse tune 00111101 and fine tune 00001001.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "841-852",
+       "sha": "74f502aecb665d4e690801bc832c4f2640324b4e22b1f6c5b06c3fbcdcfe3a4c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "794-798",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "804-806",
+     "as": "see-also"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "925",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "955-956",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "name": "envelope shape",
+   "aliases": [
+    "shape"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "853-929"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_EASHAPE"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "function": "set_shape"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The envelope generator counts the envelope frequency down by 16, giving a 16-state envelope pattern on its 4-bit output E3 to E0.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "854-859",
+       "sha": "946552f25fc30a32c014b280d8b7faa68fe062a2f65cd14395f7adfd260f5c8f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to R15 sets, in its lower 4 bits B3 to B0, the envelope shape and cycle control, each bit controlling one function.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "860-862",
+       "sha": "06ca8edec4de20a8af340fe8eb5ee1988b3b7517b99ca2e30eeafd9daa28b6aa"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Hold set to 1 limits the envelope to one cycle, holding the last count, 0000 or 1111 by direction.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "883-887",
+       "sha": "1a75229273932b41542048e7345b792a83b98c4ea092b817af0fd182f1fb5bd5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Alternate set to 1 makes the envelope counter reverse its count direction after each cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "888-889",
+       "sha": "e0847b03b0c2d32b20f5f8d128f8a6805aef4e2d0f489b977557da34dfae729b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "With both Hold and Alternate set to 1 the envelope counter is reset to its initial count before holding.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "890-891",
+       "sha": "8342940857b28795b42f62af16e907462f3961d8e90508132b3f40487aa9b222"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Attack set to 1 counts the envelope up from 0000 to 1111; set to 0 it counts down from 1111 to 0000.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "896-899",
+       "sha": "6d0c7d3b7b57ed86e81f6f0907f42aa8204ab8c318b90a11d20f2e4192655f77"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Continue set to 1 gives the cycle pattern the Hold bit defines; set to 0 the envelope resets to 0000 after one cycle and holds.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "900-905",
+       "sha": "3afa0b439a02f5cf6e2ed5fce8a5e5bd26eedd71a10dd3c987e44b0664b7a0b3"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On the AY8930 a write to 0x0D keeps a mode in bits 7 to 4, and entering or leaving expanded mode clears registers 0x00 to 0x0C and 0x10 to 0x1C.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "975-986",
+       "sha": "a429c70689cfb7f75c8f65e30a94df1c3dd2273d66375656b1ba4aab642e0211"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "987-992",
+       "sha": "99c21a056c9c3e5d71adac0ce70bafcd77c01016aae42d47704dfeccf6da8061"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.h",
+       "lines": "165",
+       "sha": "884216d0e30422d59cbbce7f7093683cbde8da09174897c1fc40376273acc09d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "853",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "863-882",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "892-895",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "906-913",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "914-929",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "925",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "993",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "lines": "245-251",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.h",
+     "lines": "252-259",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0E..0x0F",
+   "name": "I/O port data",
+   "aliases": [
+    "port"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "930-958"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_PORTA"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_write_reg",
+     "case": [
+      "AY_PORTB"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_read_ym",
+     "case": [
+      "AY_PORTA"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "function": "ay8910_device::ay8910_read_ym",
+     "case": [
+      "AY_PORTB"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R16 and R17 are data storage registers between the PSG data bus and the two I/O ports; they have no effect on sound.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "933-938",
+       "sha": "a30931c7309de6fc145c52da2eedb33d6e444e46ef60d550d3bd9df30a2cbd3d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "To output data on I/O port A, bit B6 of R7 is set to 1, then R16 is latched and the data written.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "939-944",
+       "sha": "af2c47e258033855960dd00a9ebc419f0918557a979b929743b127b9964bc2a5"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of R16 or R17 returns the data at the pins when the port direction bit in R7 is input.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "945-950",
+       "sha": "d95d21a555378af2d90ceb1bd89a3e85d701b4bff26c110bf35116c7f1dc893e"
+      },
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "955-958",
+       "sha": "39d45c05d8839f3df75103529e736a6f77a99fcf1307669dad9a979f3fd0d3ce"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Output data stays on the port until new data is loaded, reset is applied, or the port is switched to input.",
+     "quotes": [
+      {
+       "ref": "datasheet:AY-3-8910.raw.txt",
+       "lines": "951-954",
+       "sha": "b20106fa2ffcfe11d78a562489d69cdd32c34ad5197f9e981fb6a9dd71e00165"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "read",
+     "of": "mame",
+     "vs": "differs",
+     "text": "A read of 0x0E or 0x0F takes the data from the port's read callback when set, even in output mode, where MAME also logs a warning.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1403-1409",
+       "sha": "01aa1903b2f2f6c5194ec02407214e0e29d7c5de3a50af3944da4292b3c78262"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1416-1417",
+       "sha": "bb20195b340c80e5fa5a425e9ea73398577dc79c515f3e4d0bb6d70d4a8e1595"
+      },
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1422-1425",
+       "sha": "b737ddc803163c3f22beb179b0c400887141614e785d923f627b31bb46c82fe4"
+      }
+     ],
+     "row": "3"
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x0F reaches the port B write callback only if bit 0x80 of 0x07 is set; with the bit clear MAME logs the write as ignored.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ay8910.cpp",
+       "lines": "1008-1018",
+       "sha": "34ca66833183b0c5eced88840f92866eeb627ee38d0994fb4d1299fc0cca6adb"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:AY-3-8910.raw.txt",
+     "lines": "930-932",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "925",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1393",
+     "as": "parent",
+     "owner": "ay8910:device:ay8910"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1401",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "996-1007",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1418-1419",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/sound/ay8910.cpp",
+     "lines": "1426-1427",
+     "as": "log"
+    }
+   ]
+  }
+ ]
+}

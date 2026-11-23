@@ -1,0 +1,550 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "i8251-device",
+ "title": "The 8251A USART as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "The 8251A USART as a chip: its reset state, the mode instruction fields and the transmitter empty flag",
+ "source": "official",
+ "documents": [
+  {
+   "name": "8251A.raw.txt",
+   "variant": "8251A"
+  }
+ ],
+ "official": {
+  "8251A.raw.txt": [
+   "161-166",
+   "271-275",
+   "294-308",
+   "452-455",
+   "594-603",
+   "644-668",
+   "777-795"
+  ]
+ },
+ "engine": [
+  "update_rx_ready",
+  "update_tx_ready",
+  "m_rxrdy_handler",
+  "m_txrdy_handler",
+  "m_txempty_handler",
+  "m_syndet_handler",
+  "set_data_frame",
+  "transmit_register_setup",
+  "transmit_register_reset",
+  "receive_register_reset"
+ ],
+ "entries": [
+  {
+   "key": "i8251",
+   "name": "8251A USART",
+   "aliases": [
+    "8251"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "161-166"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "271-275"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "294-308"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "452-455"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "594-603"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "644-668"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "777-795"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::mode_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::update_tx_empty"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "reset",
+     "of": "doc",
+     "text": "A high on RESET forces the 8251A into the Idle mode, where it stays until a new set of control words is written.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "161-165",
+       "sha": "97eb0b41eae395832b347d62075a1c15229e93ea62d9086d46590a99e153b786"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "reset",
+     "of": "doc",
+     "text": "Upon a master reset the TxD line is held in the marking state.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "272-275",
+       "sha": "12710d5c7877cbb7ed3a4d3a1859ceab21f51e226250f2219e35ea14a69333c3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "TxD is held in the marking state when the transmitter is empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "272-275",
+       "sha": "12710d5c7877cbb7ed3a4d3a1859ceab21f51e226250f2219e35ea14a69333c3"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The transmitter begins transmission upon being enabled if CTS = 0 (printed 'eTS = O'); TxD is held marking when Tx Enable or CTS is off.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "271-275",
+       "sha": "ca262615606b5eb0ffc3f97294bc5255038ca044af90284190b3fdd66df405f5"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "TxEMPTY goes high when the 8251A has no characters to send; it resets on a CPU character if the transmitter is enabled, and stays high while it is disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "294-302",
+       "sha": "a3a781870eef25914f3f50a81c639933bf8f9252258dac76859a3f31cbdebf15"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "In synchronous mode TxEMPTY high shows SYNC characters are or are about to be sent as fillers; it does not go low while they are shifted out.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "303-308",
+       "sha": "8eaae2fd7c53598b242fb44c983cf088247594e2fbb09dc55954b3834e8d0030"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The pin that serves as SYNDET in synchronous mode, input or output as programmed, is reset to output mode, low, upon RESET.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "452-455",
+       "sha": "80e022b1b121c17949c5a9abf6bd1e49324eeea356bf356b1329a9edf3f81e58"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "When parity is enabled it does not count as one of the data bits for the programmed word length.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "594-598",
+       "sha": "42c6ea4031bb23a01ef137586794957612d6944f3e85622f4c172d05937a2550"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The received parity bit cannot be read on the data bus; with fewer than 8 bits the low data bus bits hold the data, and unused bits read as zeros.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "598-603",
+       "sha": "c331288e3b2fbdca5b454523236f4c5e1e7eb378aee19fff13e199b5cf5d07ed"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "The mode instruction has a baud rate factor field whose first value is SYNC MODE; the other values are garbled in the capture, only (64) being legible.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "644-649",
+       "sha": "53578f9e180414ae63be74118f0634f3bc593b556053be12cb30614ebea1c484"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "when",
+     "of": "doc",
+     "text": "The mode instruction selects a character length of 5, 6, 7 or 8 bits, in the figure order of the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "650-654",
+       "sha": "5ef767d39839e45beca46c4fdf1fafb1ec304407d7311ddd038ec182612eca27"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "when",
+     "of": "doc",
+     "text": "The mode instruction enables parity (1) and selects even parity with 1; the glyphs of the opposite value are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "655-659",
+       "sha": "a8d6110823fa630849555c9c19254a088de48991bcad7d67c88e4987ecb76e6e"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "when",
+     "of": "doc",
+     "text": "The mode instruction selects the number of stop bits: INVALID, 1, a value garbled in the capture, and 2, in the figure order.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "660-664",
+       "sha": "99ca782e910ef60ce2849817b2a3a247b1d6f68598589ce6a5f959e21cb5d181"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "The stop bit count only affects Tx; Rx never requires more than one stop bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "665-667",
+       "sha": "cb0b6955aad0d8cd950c52e801ff747c9d42bee73c2aee68a5ccbbfa6c9a5d19"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "The synchronous mode instruction has the same character length and parity fields, with the other fields shown in the figure.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "777-787",
+       "sha": "8ecb09c5457b35e6976427e3f61b8dfc7f92e6180c12015b92930324dce6caee"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "when",
+     "of": "doc",
+     "text": "In the synchronous mode instruction, external sync detect: 1 makes SYNDET an input, 0 an output.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "788-790",
+       "sha": "8477f61467908550c06adcf3344eb9fdf6e16406f8a530c5b4634d142937f2b5"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "when",
+     "of": "doc",
+     "text": "In the synchronous mode instruction, single character sync: 1 is one SYNC character, 0 is two.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "791-793",
+       "sha": "95228823bc4efa79802696c54afc0527ae5cfad66fa9b53ca6cc5b10195bf682"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "In external sync mode, programming double character sync affects only the transmitter.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "794",
+       "sha": "453574133abba8743d2b877321d7fe680f5b785282ce525709c7ddeaa93ea263"
+      }
+     ]
+    },
+    {
+     "n": "119",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reset also drives RTS and DTR high, which its comment calls an assumption.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "513-515",
+       "sha": "91e8a90f1177498b976cb1309a072c1f27070e36463999ac8131c82d7cc68261"
+      }
+     ]
+    },
+    {
+     "n": "120",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reset sets the TxEMPTY and TxRDY status bits, clears the mode byte, command, data registers and clock counts, and sets the baud factor to 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "524",
+       "sha": "e5f2adcabb42021d1a3513869c6a3883415d353a5d900c51c7edcbef2267bddd"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "526-531",
+       "sha": "49105865780760216da39988aff0ca164a46e87eddb965466e757cba87ee15ed"
+      }
+     ]
+    },
+    {
+     "n": "121",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the transmitter is empty and no SYNC character is sent, MAME drives TxD to the inverse of the send-break command bit, low while it is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "447-449",
+       "sha": "b79a80db8d99cf2fbca582a1a01df54ef2fbc630ee85ac070ce725e7ba25d82d"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "461-465",
+       "sha": "6de2697e2e1bb1314686c3d1a0bcb2abad327b691d855ec0f39f55eb6d38e5df"
+      }
+     ]
+    },
+    {
+     "n": "122",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "In synchronous mode MAME clears the transmitter-empty flag when it loads a SYNC filler, so TxEMPTY drops while SYNC characters are sent.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "449-459",
+       "sha": "16994d089cc4a969900f40a3971ad741f3583dc6fa88df56805e6db6de120be4"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "468",
+       "sha": "c36c76aea8616847a5871306dc7086797ed20668a78cd564988b959d8f604e1d"
+      }
+     ]
+    },
+    {
+     "n": "123",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A mode instruction saves the mode byte, first sets m_flags to I8251_NEXT_COMMAND, clears the SYNC byte count and m_syndet_pin, calls the receive register reset and zeroes the transmit clock count.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "600",
+       "sha": "70f475a5b8544ebf7185cdda8f8ab13fb4b4fb0161eeeb4622715129ddd377e0"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "669-671",
+       "sha": "544c9bfd43fbe479278e1c51fdebc726c25beb7794399d17aae540ff31664674"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "729-730",
+       "sha": "9d2ab883ce000e97608115d97b3ddf3ca6e8ae6d7515abcf15b28692bb03ebaa"
+      }
+     ]
+    },
+    {
+     "n": "124",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A synchronous mode instruction clears the saved SYNC characters, m_rxd_bits and m_sync1, and sets the SYNC transmit shift to 8.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "722-726",
+       "sha": "c440c8cc1ba6be4a0371a4191390893d88495c77b23af213bd4c651ba142fa74"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "520",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "511",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "534",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "462-464",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "647",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "651-661",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "663-664",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "678-688",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "690-697",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "668",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "702-710",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "714-725",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "721",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "718-719",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "447",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "462",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "674",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "668",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "795",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "166",
+     "as": "electrical"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,668 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "sega315_5313-commands",
+ "title": "Sega 315-5313 VDP DMA commands",
+ "kind": "command",
+ "scope": "sega315_5313",
+ "covers": "The three DMA verbs of the Mega Drive VDP, started by a second control word with code bit 5 set and told apart by the top bits of register 0x17",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The comments of 315_5313.cpp list the ports and register bits in Charles MacDonald's style and cite no document; its TODO says timing needs checking on hardware."
+  },
+  {
+   "where": "maker",
+   "gave": "Genesis Software Manual, https://archive.org/details/sega-genesis-software-manual: a scan with no text layer; OCR garbles register grids and hex addresses, so it cannot be captured line for line, a person can read it."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "No Sega Genesis VDP register manual turned up in a web search for one on bitsavers."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Holds the Genesis Software Manual scan named under maker; nothing else official was found there."
+  },
+  {
+   "where": "index",
+   "gave": "Web searches gave Sega Retro and Sonic Retro wiki pages, Charles MacDonald's genvdp.txt and an unverified Scribd Technical Overview, none an official document that can be captured."
+  }
+ ],
+ "engine": [
+  "spin_until_time",
+  "read_word",
+  "rand"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x7F",
+   "name": "68k to VDP DMA",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::handle_dma_bits"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::insta_68k_to_vram_dma"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::insta_68k_to_cram_dma"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::insta_68k_to_vsram_dma"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_get_word_from_68k_mem"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "handle_dma_bits takes its 68k to VDP transfer branch when the type bits of register 0x17 are 0 or 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "794-797",
+       "sha": "0fd110d0157b89741fd72369c9b3a24f9929af518647d0ba4a488fa1e9140b85"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "803",
+       "sha": "5af061efe6b1f91613728d4146e893df081f98eba2a27896f22999209ea8dedf"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "809",
+       "sha": "58e2b6ba1b6c67270f8c58bf3dc37d142375719cbbff78e33beedc8733df8cf1"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "815",
+       "sha": "85f54be4ac240492c690f0fbb3c686bf9aa8fce1de2c5bf68cebdd6246ca2275"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The source is registers 0x15, 0x16 and 0x17 (bit 7 masked) shifted left by 1, and the length is registers 0x13 and 0x14 shifted left by 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "796-797",
+       "sha": "2e8df2f09641daf7f45c8c082a8bd0155a65afa125ddfded8d7f97039e16409f"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 4 of register 0x01 set, a code whose low four bits are 1, 3 or 5 starts the VRAM, CRAM or VSRAM transfer respectively.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "799-803",
+       "sha": "b05972a36d1790623f1a39090e2a9e961d5afecd7d314d0bd519c4b9edd95e79"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "805-809",
+       "sha": "cd4628686efaf8f2c8d91fdb2d81a67969156977e771bfe807545d11e626c579"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "811-815",
+       "sha": "4361c1f522302af77ae86fd058d2a6392f6416b369049c0f5900fbf8ea7e530d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "80",
+       "sha": "6163f2c0e99eb7fd80a4919d99f0097c2f40108055734610aa3dcc8f137aa2f9"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.h",
+       "lines": "140-143",
+       "sha": "1cafae65f76969f4cd571a917f4f935793ce457a3c460d77ed22f42d5ca13cd4"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Any other code only prints a debug message.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "817-820",
+       "sha": "93f169e462075ddaf84e08f4333e8b61645878b39467959fa972e64d6589f419"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A length of 0 becomes 0xFFFF and each loop moves length shifted right by 1 words; the VSRAM loop returns once the address is 0x80 or more.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "714",
+       "sha": "ccaacbb42dde635de0979a9188c8bf1667a9abbdbc4df726ce857626aa51ca3e"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "719",
+       "sha": "32c2f96a24d48086a3591c417228213101ad2eaa37b49d8f97bf9d1aca864558"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "739",
+       "sha": "ccaacbb42dde635de0979a9188c8bf1667a9abbdbc4df726ce857626aa51ca3e"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "741",
+       "sha": "32c2f96a24d48086a3591c417228213101ad2eaa37b49d8f97bf9d1aca864558"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "764-768",
+       "sha": "1373abc5d8b0cbaa32ec17b0877a27f28bdc3981a3f2b30ecd304491254bbda3"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The VRAM transfer spins the 68k for length times 1000 over 3500 nanoseconds.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "716-717",
+       "sha": "26df301bd4850705e374de7291f9f9ee8b50cb24130ca1e604e60fa6837b8642"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Source addresses up to 0x3FFFFF are read as words at the source minus m_dma_delay, and 0xE00000 to 0xFFFFFF at the source itself.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "650-653",
+       "sha": "0192597de62f5d02d4baa67b21a9a8f2f0d65b566c15a5e9d0738410d3133a43"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Any other source address logs 'DMA Read unmapped' and returns machine().rand().",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "654-659",
+       "sha": "6da5d0f4cadf8c93419743c27d43e3eec4b2959249883fffbee6cae3cf60cda5"
+      }
+     ]
+    },
+    {
+     "n": "109",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "VRAM words are written by vdp_vram_write, CRAM words by write_cram_value and VSRAM words directly into m_vsram.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "721",
+       "sha": "cc09c3e458c38e1396b47a9675fba7e22335d7c2821e83f6556312a521c230c2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "745",
+       "sha": "fbfb24f8f2d6786ce5061c726d20808416d8663a70c9ded7a2f504bbe90f7bc2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "770",
+       "sha": "ae3f2773d06cff54798c9b33fd22cc76df9ac4f447aafcf15c742aeced61ec1c"
+      }
+     ]
+    },
+    {
+     "n": "110",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A CRAM or VSRAM word advances the address by register 0x0F; vdp_vram_write does the same for VRAM.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "750",
+       "sha": "7a35ee2e4109b8ab842bbf773bf800b2e986fcfebce0a25fbf43da4fb04a0650"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "775",
+       "sha": "7a35ee2e4109b8ab842bbf773bf800b2e986fcfebce0a25fbf43da4fb04a0650"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "446",
+       "sha": "7a35ee2e4109b8ab842bbf773bf800b2e986fcfebce0a25fbf43da4fb04a0650"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "417-420",
+       "sha": "7ef23556da741ffd9e9846d54b6d61bfd482ce7bc41778ad098e417d3498281c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "128",
+       "sha": "a9fcf71128b54c58e7d0462e62014effaa3a0fc0c746962441965c3806c1ec98"
+      }
+     ]
+    },
+    {
+     "n": "111",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The source wraps to 0xE00000 above 0xFFFFFF for VRAM, and to 0xFE0000 for CRAM and VSRAM.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "723",
+       "sha": "d8bbee2aa33d3fe91e3974f32716fc860f31c12c3aeb1cdb99e3d3b9b6626703"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "748",
+       "sha": "2df904b3d2fcfc1f878af0246fd409132de749adf0f356dfcd50632f74a42db4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "773",
+       "sha": "2df904b3d2fcfc1f878af0246fd409132de749adf0f356dfcd50632f74a42db4"
+      }
+     ]
+    },
+    {
+     "n": "112",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A VSRAM transfer returns as soon as the address is 0x80 or more.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "768",
+       "sha": "7a52467ec1e17fdbfdd1dd23a84814f7e922d8923dc903b11612758d75690115"
+      }
+     ]
+    },
+    {
+     "n": "113",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A VRAM transfer ends by masking the address to 16 bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "726",
+       "sha": "1dea6e7ac052400b90a74e61f4baa88610ed5bbe1ed1ce0c9eac2859e4a3c6b1"
+      }
+     ]
+    },
+    {
+     "n": "114",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A transfer that runs to its end leaves registers 0x13 and 0x14 at 0 and registers 0x15 to 0x17 holding the next source address shifted right 1, 9 and 17.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "728-733",
+       "sha": "19b6fad3a30836c3d51cdf2107e9df27655cd459e83ca4dff51e4a51d40c0743"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "753-758",
+       "sha": "19b6fad3a30836c3d51cdf2107e9df27655cd459e83ca4dff51e4a51d40c0743"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "778-783",
+       "sha": "19b6fad3a30836c3d51cdf2107e9df27655cd459e83ca4dff51e4a51d40c0743"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "789",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "822-837",
+     "as": "parent",
+     "owner": "sega315_5313:command:0x80..0xBF"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "838-852",
+     "as": "parent",
+     "owner": "sega315_5313:command:0xC0..0xFF"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0xBF",
+   "name": "VRAM fill",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "822-837"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the type bits of register 0x17 are 2, handle_dma_bits takes the branch that arms a fill.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "822-825",
+       "sha": "c1206859e0fb3a8c85ba67a54640b032f64ab32ebcd5a956f605d300393b8b15"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "827-831",
+       "sha": "52a16d029425ff5c7bab56231cd333e6944a1132641084d68418651701786f56"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With a code whose low four bits are 1, 3 or 5 and bit 4 of register 0x01 set, the fill is armed and the length registers' value is kept.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "824",
+       "sha": "b904c135d6c3682e4d78c4ebea83deee9c2c4d894aa76a903fff1d1384693d6d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "827-831",
+       "sha": "52a16d029425ff5c7bab56231cd333e6944a1132641084d68418651701786f56"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "80",
+       "sha": "6163f2c0e99eb7fd80a4919d99f0097c2f40108055734610aa3dcc8f137aa2f9"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.h",
+       "lines": "140-143",
+       "sha": "1cafae65f76969f4cd571a917f4f935793ce457a3c460d77ed22f42d5ca13cd4"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Any other code only prints a debug message.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "833-836",
+       "sha": "f9f90f4f28d2b0f96e55197061f000fea876178c33c7b83c4ada8e4631f745d1"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The next data port write does the fill: its low byte goes at the address, then its high byte length plus 1 times.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "501-512",
+       "sha": "d29ad94d67c2edbca568087cf9282cc70bfb542169ee1bd307a0c0205619b390"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "514-525",
+       "sha": "b7dd9c6206740d9609f1480f12955d1340e464e33fc8f474441e8c1a837660f1"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A control port write cancels an armed fill.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "858",
+       "sha": "a28dca754df44868e5e3b31fbb8e686c8f223367dd5fa47e6a2514e8656af9a3"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "823",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "825",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "826",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "837",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xC0..0xFF",
+   "name": "VRAM copy",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "838-852"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::insta_vram_copy"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When both type bits of register 0x17 are set, handle_dma_bits takes the branch that does the copy.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "838-846",
+       "sha": "eded807fc3f3a12a8f8a2af0f2d50cc817bfaae1c098a3382ced2cba4ca8b146"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "151",
+       "sha": "c27f9842e1a9ee0219874ce775d71620d65b545989cc1482fc73331e7b65c50a"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A code with bit 4 set, or whose low four bits are 1, allows the copy; any other code only prints a debug message.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "840",
+       "sha": "7fadc362c16fbd2796e450d14f74b4f172bcfefbe056f8f1ebf38009484e8d39"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "848-851",
+       "sha": "b769dbc218dd213bb8e1c975ede1c57694d46581723712a31fd47ddc6c435514"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.h",
+       "lines": "138-140",
+       "sha": "7c2673962ae3e9b49e6985208238ab76c865cf5360379d12338f50af6b9daab9"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 4 of register 0x01 set, insta_vram_copy copies the length in bytes from the VRAM byte address of registers 0x15 and 0x16.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "842-846",
+       "sha": "68e9056d87a22d3d55f68488a84bd390332540f062edc7fc7e754ed416d094ec"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "689-692",
+       "sha": "4a8dbb1ef1548acf969cc9a3c7b4628221df16839bd6c6ca9ed00d3c2e459eb7"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "80",
+       "sha": "6163f2c0e99eb7fd80a4919d99f0097c2f40108055734610aa3dcc8f137aa2f9"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "An odd source or destination byte address uses the low byte of its VRAM word and an even one the high byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "694-695",
+       "sha": "3743d66993b3e46960d8c1f2ec7db907929d27419b7819f807c4c34018e352cf"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "697-704",
+       "sha": "c02f3551b877cfa2758eb7e269dc320e08227ef95ab7d30c0678b68d17b23b82"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each byte advances the source by 1 and the destination by register 0x0F.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "706-707",
+       "sha": "cbbec1bf5d8a9b4836a75438b653e9db86bbb7a7e3d7a8f45c835d13986c69b5"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "417-420",
+       "sha": "7ef23556da741ffd9e9846d54b6d61bfd482ce7bc41778ad098e417d3498281c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "128",
+       "sha": "a9fcf71128b54c58e7d0462e62014effaa3a0fc0c746962441965c3806c1ec98"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "839",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "841",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "847",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "lines": "852",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

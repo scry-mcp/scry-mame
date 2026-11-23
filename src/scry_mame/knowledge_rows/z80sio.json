@@ -1,0 +1,3696 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80sio",
+ "title": "Z80 SIO channel registers",
+ "kind": "register",
+ "scope": "z80sio",
+ "covers": "the read and write registers of each channel of the Zilog Z80 SIO: status, special receive condition, interrupt vector and the control registers WR0 to WR7",
+ "source": "official",
+ "documents": [
+  {
+   "name": "UM0081.raw.txt",
+   "variant": "Z80 SIO"
+  }
+ ],
+ "official": {
+  "UM0081.raw.txt": [
+   "10537-10539",
+   "10546-10630",
+   "10682-10683",
+   "10687-10958",
+   "10962-11159",
+   "11161-11167",
+   "11182-11186",
+   "11189-11193",
+   "11204",
+   "11208-11554",
+   "11567-11578"
+  ]
+ },
+ "closed": [],
+ "engine": [
+  "check_interrupts",
+  "clear_interrupt",
+  "enter_hunt_mode",
+  "get_special_rx_mask",
+  "get_tx_empty",
+  "interrupt_priorities",
+  "receive_enabled",
+  "transmit_enable",
+  "trigger_ext_int",
+  "trigger_interrupt",
+  "update_rr1",
+  "update_rx_int"
+ ],
+ "entries": [
+  {
+   "key": "0x06",
+   "access": "write",
+   "name": "WR6 sync 1, address",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11154-11159"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11189-11190"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr6"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR6 stores the byte written to it: the transmit sync character in Monosync mode, the first eight bits of the Bisync sync character, or an External Sync transmit sync character.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11155-11157",
+       "sha": "1a8bb8d35e16da4fd4354409d3a0ee4ffa4172f08c1314da308618ecf384c3a2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "In SDLC mode WR6 stores the byte written to it as the secondary address field, compared with the address field of the SDLC frame.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11157-11159",
+       "sha": "16a4175fa354450d79f4f14fda225b3c77bafa77137a6022293266cccf2ad493"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "WR6 bits D7 to D0 are Sync 7 to Sync 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11189-11190",
+       "sha": "e020e60948c06af35e97362de306159bc19d8addfb9082dfe7c7603b5a2019bd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1798",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1798",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11154",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "access": "write",
+   "name": "WR7 sync 2, flag",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11182-11186"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11191-11193"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11204"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr7"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR7 stores the byte written to it: the receive sync character in Monosync mode, the last eight bits of the Bisync sync character, or the SDLC flag character 0111 1110.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11183-11185",
+       "sha": "457e6b3733ce9821a5805d4b5e673fc543852a96feb1fb7445b9302b7d7bc4a8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "WR7 is not used in the External Sync mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11185-11186",
+       "sha": "9fabc6ef77006954a6be64bee27dd9454848fd0f6178f9dc6f9a25c4cce67a94"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "WR7 bits D7 to D0 are Sync 15 to Sync 8; the capture's header line drops the D0 label.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11192-11193",
+       "sha": "5f1766ba88b216eb368fd9bc81d68d33f0bd771b440219ce675ffeccb0ed36f9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "For SDLC, WR7 must be programmed to 0111 1110 for flag recognition.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11204",
+       "sha": "7512646bf276b799f6453f022bae110062bfeab75a4d4e6e433774f56c1a2157"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1804",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11182",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11191",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "access": "write",
+   "name": "WR5 transmit control",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11051-11059"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11066-11153"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11161-11167"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_write",
+     "case": [
+      "REG_WR5_TX_CONTROL"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::update_dtr_rts_break"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::set_rts"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::set_dtr"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::get_tx_word_length"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2539-2544"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "246-250"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR5 contains control bits for the transmitter, except D2, which affects the transmitter and receiver.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11052-11053",
+       "sha": "e5cf609f6e0226df26aa792c53f8bdb3cde37774342463d30664aac5a6f79f88"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 stores D0, Transmit CRC Enable; set as a character is loaded into the transmit shift register, it makes CRC be calculated on that character.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11054-11057",
+       "sha": "4c7383a94ac0a56b0385820bad3589d0b6f09f0f77d2c5bc4bc977d611cbcd77"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "When the RTS bit is set, the RTS pin goes Low.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11086-11088",
+       "sha": "e1a3ab7b778742c267e696d98f2a2c8985ea966045069cd8dc657ed712f2373c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "In asynchronous mode, when the RTS bit is reset, RTS goes High only after all the bits of the character are transmitted and the transmit buffer is empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11088-11090",
+       "sha": "707cdc0a1ba2684b8b7f9bf6fc45060e0c0a389be1fe00f8edf77b678fc7faa5"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "In synchronous modes the RTS pin directly follows the state of the RTS bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11090-11091",
+       "sha": "a4c1278cafb47fdb5a0b34651be747d1315151f26140fae9d3ee1a66ba6d4a5c"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 stores D2, which selects the CRC-16 polynomial when set and the SDLC polynomial when reset, for both transmitter and receiver.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11092-11096",
+       "sha": "57714fde4bde602a877d7d901f663003066ccd355a9a99fab8d3a263758c4d1a"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "Data is not transmitted until the Transmit Enable bit D3 is set, and the Transmit Data output is held marking.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11103-11105",
+       "sha": "40bfca646673a3d658f1ed15ff39d24d27255a48e4ac0509a82f3672ebf4a092"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "Send Break D4, when set, immediately forces the Transmit Data output to the spacing condition; when reset, TxD returns to marking.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11109-11112",
+       "sha": "a6658b4e1c30993d5e20c8c2c21dde45245f981d740a532f4e59a12a33c6e0a9"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "WR5 D6 and D5 select the bits per character: 00 five or less, 01 seven, 10 six, 11 eight.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11117-11119",
+       "sha": "26fc9c275e122305618f41a28f7156dd2e23158a480d044d4c8fe4cce50971bf"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11124-11132",
+       "sha": "4c54cb9ffee0f97e99545a1d92ffa54c021a4b0c30f9064969f9f6e2ce2bb4b6"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "DTR D7, when set, makes the DTR pin active (Low); when reset, inactive (High).",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11151-11153",
+       "sha": "bc56c73c56cc528b9d4f4a9785a7dd5a7e419ad40ec9442b11097e15deea8837"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The CPU formats a character of five bits or fewer right-justified, least-significant bit first, as Table 28 shows.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11120-11123",
+       "sha": "b017e63eb496b29c274ac5a67620e93ee0e4ed45acb5e29d91030dfe4b2e842c"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11161-11167",
+       "sha": "a62a28e3714a60f969113cbe1bea207e9c1b74c9c895540b839e3a2d1e9e6052"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "CRC is not sent automatically unless the Transmit CRC Enable bit is set when the Transmit Underrun condition occurs.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11057-11059",
+       "sha": "bf424a4c96a835fdf15ecc7948d247ddb0b98635967e7dc9d734ff8d1062c53e"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "With SDLC mode selected, the CRC generator and checker are preset to 1s and the SDLC polynomial must be selected; otherwise both polynomials preset to 0s.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11097-11102",
+       "sha": "f605ce3fd5014944ee6dbb74650d9ae23d69a5502a7feec6b377b45ebac51865"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "Data or sync characters being transmitted are completely sent if Transmit Enable is reset; if disabled during CRC transmission, sync or flag characters are sent instead.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11105-11108",
+       "sha": "0a8166cacb1190f1180f68719808cfad0ae6f59532e65d3b222f4a353c369d3d"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME clears the pending transmit interrupt when WR5 is written with the Transmit Enable bit D3 clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1791",
+       "sha": "78cc38cdaa373beeba99e50e5efc84550c87ce36a5a97b77e76a7c1abe5832c5"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1792",
+       "sha": "4eb0039bdeab780463553da838f28c5c02de44701ed94e204678e71d718c9f67"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "MAME forces TxD to 0 at once while D4 is set; once it is clear it drives TxD to the transmitter's current level m_txd, not to a fixed marking level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1475",
+       "sha": "f1da4bf980648916d490befed2b92933ea2edc18233ba05a300abbe3f3dfaf57"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11051",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11066-11085",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11113-11116",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11133-11150",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1781",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1781",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1831",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1831",
+     "as": "unfollowed",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1469-1470",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "366",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1469-1472",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "366",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1469-1472",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "366",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1478",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "375",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1511-1514",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1517",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1509",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "363",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "372",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1824",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1782-1789",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2539-2544",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "246-250",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "access": "write",
+   "name": "WR3 receive control",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10862-10883"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10895-10933"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10938-10958"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_write",
+     "case": [
+      "REG_WR3_RX_CONTROL"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::receive_allowed"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::transmit_allowed"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::get_rx_word_length"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "212-215"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR3 contains receiver logic control bits and parameters.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10863-10864",
+       "sha": "136fcab4d65ea44d275d59e372426a31a5ddefe637259ceff654fafbc2c0eab3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D0, Receiver Enable; a 1 programmed into it allows receive operations to begin.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10865-10867",
+       "sha": "ea066e0f89d294ced2c8da534c1fb3f7f4f4ff084bd62f1d6700d39a21c9fcbf"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Receiver Enable should be set only after all other receive parameters are set and the receiver is completely initialized.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10867-10868",
+       "sha": "a5f999578ffe8a93e86849c2795e8b76e6c503b1cf3db93234e4d7f735b8b40f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D1, Sync Character Load Inhibit; if selected, the leading sync characters are kept out of the receive buffers.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10898-10900",
+       "sha": "b09af1f70f54a94a0f8e816fa55a6b0673889c12b44f8a8b3db677d196dde2ff"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "CRC calculation is not stopped by sync character stripping, so this feature should be enabled only at the beginning of the message.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10900-10902",
+       "sha": "44170186a99ddeff1de75e23edb20d7274e905ba47ac23bd7777f2879b9e48ee"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D2, Address Search Mode: in SDLC mode, messages matching neither WR6 nor 1111 1111 are rejected, with no receive interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10903-10907",
+       "sha": "13c6bfe48d9cf8cb476e387952a4c91293400f64361793a9e0653c25a81410bd"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 stores D3, Receiver CRC Enable; set, it starts or restarts CRC calculation at the last character moved from the receive shift register to the buffer stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10908-10911",
+       "sha": "7ed78f9bce279d77385ab7b622bf2c4edb1ffc4b913d71400f9204b228e579d2"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The Z80 SIO enters the Hunt phase automatically after a reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10915-10917",
+       "sha": "b775eee6feb770cd2279231371a0eb131773aca8685d24aec13a35ecec96d827"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "The Hunt phase is re-entered by writing a 1 to D4, which sets the Sync/Hunt bit D4 in RR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10917-10920",
+       "sha": "b5b8b1ec923ded88862c496c45aa168e6325a2a92557de539fb2b1ddbbd294a0"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME enters hunt mode on a D4 write only if WR4 selects a synchronous mode, while row 9 states the D4 write with no such condition.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1755",
+       "sha": "bb2e8aac48b843b4f609746bc84a49cb4c6bcd734c14d3841c2d3830927badee"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1759-1762",
+       "sha": "3b1e35c1e544bf6f794e2911ec7a84f15bbc27cad7d5b9e63c4af0ebd197079c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1976-1977",
+       "sha": "16662dc76e6ac294102b480d98dea9d02de8a4ddaa9fc0d943abfdb291ef9429"
+      }
+     ],
+     "vs": "differs",
+     "row": "9"
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "If Auto Enables D5 is set, DCD and CTS become the receiver and transmitter enables; if not, they are only inputs to their RR0 status bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10921-10924",
+       "sha": "730a2b7ef5015676b48c4a20a9e7239051b08da3cda4053138375e2616726d24"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "doc",
+     "text": "WR3 D7 and D6 select the receive bits per character: 00 five, 01 seven, 10 six, 11 eight.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10929-10931",
+       "sha": "a3444a96c3a8f12d168524429279313c4406fabf85a5765b1956307a07438890"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10938-10943",
+       "sha": "ffe95889bc6ecc5c427deb4726f5f7920c0a048dbfb331e485cbfc96107a5d51"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "Both bits D7 and D6 may be changed while a character is being assembled, but before the programmed number of bits is reached.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10931-10933",
+       "sha": "ee88bb10fb00845cf92a203b01634d6bff6d8d22a78cb495a641a145d20ae58f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10862",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10869-10883",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10895-10897",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10912-10914",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10925-10928",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10944-10958",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1752",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1752",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1752",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1752",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "348",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "353",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1492-1498",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1490",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "985",
+     "as": "unseen",
+     "reason": "constructor zero-fill of the register image; device_reset sets it again"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1125",
+     "as": "parent",
+     "owner": "chip:device:z80sio"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1128",
+     "as": "parent",
+     "owner": "chip:device:z80sio"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2353",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2334",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1781",
+     "as": "parent",
+     "owner": "z80sio:register:0x05:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2716",
+     "as": "unseen",
+     "reason": "mk68564_channel is another device of this file that writes the same member"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1743-1750",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1824",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "212-215",
+     "as": "agrees",
+     "row": "12"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "access": "write",
+   "name": "WR4 modes",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10934-10937"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10962-11050"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11060-11065"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_write",
+     "case": [
+      "REG_WR4_RX_TX_MODES"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::get_clock_mode"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "233-236"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR4 contains control bits that affect both the receiver and the transmitter.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10935-10936",
+       "sha": "001a3380501734c102454571a4567b53ed548f5f653beb3854d2fed1bd7e0ef4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "In the initialization routine WR4 should be set before WR1, WR3, WR5, WR6 and WR7.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10936-10937",
+       "sha": "1bca9d08db90ab640c4e1bb7caabe7f6f9665806f1a52bf7342d1c6bcca62674"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D0, Parity Enable; if set, a parity bit position is added to transmitted data and expected in received data.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10962-10964",
+       "sha": "5142cf2547226042d2018b57c63028d8597fc08f900a3aecb7a616bfb82ea39d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In receive mode the parity bit received is transferred to the CPU as part of the character, unless eight bits per character is selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10964-10967",
+       "sha": "cdb56a92140a05276ea086c7978540be48d286461cfd7645b36c7c5cf3a7a048"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D1, Parity Even/Odd: if parity is specified, it decides whether the parity bit is sent and checked as even or odd, 1 being even.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10968-10970",
+       "sha": "c002aa1eedb99cb5df37261555e1849b7042db5ae833ad08807b262b6587951c"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D3 and D2, the stop bits per asynchronous character: 01 one, 10 one and a half, 11 two; 00 selects a synchronous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10971-10974",
+       "sha": "8e5f77f2269c9d6d55e5ed8090652b6dfab1c275f4865f953a23c52253a88608"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10993-11001",
+       "sha": "f975c684d5824a3f700a4abddd9f8465f60e49831237011863d54959a6cfb8de"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The receiver always checks for one stop bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10973",
+       "sha": "e513896a9dc9a4852d1c66d3a49b005117db360bf690bb337bc1f554fde319ed"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 stores D5 and D4, the sync mode: 00 8-bit programmed sync, 01 16-bit programmed sync, 10 SDLC mode, 11 External Sync mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11005-11006",
+       "sha": "d96ec928c7577ede947102d2e7dd12b1cadf5fe6f5f5807fd5a3ba465a6149b2"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11012-11017",
+       "sha": "aeae49e1d4b7be611de42bb770c1d91e0ed5641b7f07fc293d383e2a864027cd"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "WR4 D7 and D6 select the multiplier between the clock and the data rate: 00 x1, 01 x16, 10 x32, 11 x64.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11008-11009",
+       "sha": "ba4cb3054d13822d5674f13f319852fe59f61e40fd175188f013f92d08a1c890"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11060-11065",
+       "sha": "feea94e6809d3a063d3f3fa42937d1c46718d48f515d2ceaea10a7bc2d214d26"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "Synchronous modes need the x1 clock rate; asynchronous modes may use any rate, but the same for receiver and transmitter.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11009-11011",
+       "sha": "008a29e9f67948f20cbc9057ea7095ccf93f9677f72a13b0058537c3a2b4eaa7"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11047-11048",
+       "sha": "0e10aee408e4a1e514705eaa2ccf80913df1f57198b4dfdf83c5785e75571323"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The system clock must be at least 4.5 times the data rate; with x1, bit synchronization must be performed externally.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11048-11050",
+       "sha": "2efb16d84bf03a03b91d4643a55ff55e5e28a420fd3b2927cd3240a1bb0b8076"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10975-10992",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11002-11004",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11007",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11018-11046",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1768",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1768",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1768",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1768",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1444-1450",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1442",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1769-1776",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1824",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10934",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "233-236",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "access": "write",
+   "name": "WR2 vector",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10849-10861"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10884-10894"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_write",
+     "case": [
+      "REG_WR2_INT_VECTOR"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR2 is the interrupt vector register and occurs in Channel B only.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10849-10851",
+       "sha": "6b5aeee3359e82aa7a80fd7c63d295c87a59d00bd1f98bc3c739b9ff60af6431"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores a WR2 write on channel A as it does on channel B, and logs the INT/DMA mode bits for channel A.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1725",
+       "sha": "65075fa962a47e3aa79315d6ec106124ec42d1ec5c530518c16234af05010d4f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1727-1736",
+       "sha": "b1b849d21ba099ad0f406ea33667be204cc55932471cf4853adeba6e638757e9"
+      }
+     ],
+     "vs": "differs",
+     "row": "1"
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "V7 to V4 and V0 are always returned exactly as written; V3 to V1 are returned as written if Status Affects Vector is 0, otherwise modified.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10851-10854",
+       "sha": "f962cd9450920486cf51b05992c32d0a142007e07c10931ca9cc0e6298cffdf8"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "WR2 bits D7 to D0 are V7 to V0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10856-10857",
+       "sha": "8acc19088cc59d5ca7db8eab2da6b2c2bf1704875cfcd4641cdbc517a8f00801"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10855",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10858-10861",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10884-10894",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1824",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "access": "write",
+   "name": "WR1 interrupt enable",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10691-10696"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10706-10848"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_write",
+     "case": [
+      "REG_WR1_INT_DMA_ENABLE"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::update_wait_ready"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR1 contains the control bits for the various interrupt and Wait/Ready modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10692-10693",
+       "sha": "b0509f657bf3f77514dac45066b38611317928475eaa37f03a1ac543b835a72e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D0, External/Status Interrupt Enable, which allows interrupts from DCD, CTS or SYNC transitions, Break/Abort detection and termination, or the Tx Underrun/EOM latch setting.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10694-10696",
+       "sha": "01a8e4389dba197b5adc5a71b5566923481704b19f52be1ec7e29cc89a8e35a4"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10727-10729",
+       "sha": "3f82d2c6799cd15356f4ed703ff59c641542bba572171c350196e63024344f52"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D1, Transmitter Interrupt Enable; if set, interrupts occur whenever the transmitter buffer becomes empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10730-10731",
+       "sha": "faa2a46b2cdd53a080280338fbf66ab52d987f2a0f64dc7509881aad9c9f0d6d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D2, Status Affects Vector, Channel B only: if clear the fixed WR2 vector is returned on interrupt acknowledge, if set a variable one.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10732-10737",
+       "sha": "be4d39ad8b9a647c5655efdd3e284fd7040feba561851dcc833940808510b388"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "With Status Affects Vector, V3 V2 V1 give 000 Ch B transmit buffer empty up to 111 Ch A special receive condition, as Table 16 lists.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10742-10753",
+       "sha": "51b8e603569132d69add45a67428eb1ffd1c1be3da75b13bfafa2cc5b2ac8b3c"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D4 and D3, the receive interrupt mode: 00 disabled, 01 on first character only, 10 all characters with parity special, 11 all without.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10738-10741",
+       "sha": "f186b245349c33de11a9a9d1c39630153dcd579547cf9b4265e1d38f182df2ce"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10763-10774",
+       "sha": "7aa38b804d913c82cee201c28c1107c6522d155165bb4a76e485349b65b090f9"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10775-10778",
+       "sha": "760e56897ec254d130921500a3b3c2701467a36a0c4026f230efe4b7bf46baab"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "WR1 stores D7, Wait/Ready Enable; the Wait/Ready function is enabled by setting it to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10758-10760",
+       "sha": "e5ae15e4eab92f940be9a6c7bcc494e7bac75517397ec11125690fc06d6f9254"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The text says the Ready function is selected by setting D5 to 1, while later text makes D5 the Wait/Ready on Receive/Transmit bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10760-10762",
+       "sha": "01c289e991a6c3716bbfc075a121ce9c84d2495c5bfbc4c75240de1b4cda5624"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10803-10804",
+       "sha": "c8ae345578dd7e16d29d12c062f841014cb31b117e7d13fb70ea55eab880a257"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "If D5, Wait/Ready on Receive/Transmit, is 1 the Wait/Ready function follows the receive buffer; if 0, the transmit buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10803-10806",
+       "sha": "e029e9b5e0f031a5fae4400b31b49cd173beffc26cb3f625816345d50d1b7c9b"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "Wait and Ready can be used in Transmit or Receive modes, but not both at once.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10802-10803",
+       "sha": "5900d904abf91e8f8579d3279e1a008fd3568165ce28151dbc94aba31c182a1e"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 18 gives the Wait/Ready output states for each combination of modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10807-10809",
+       "sha": "0ffa71d5e2bfef6e4cbde7a36cfd536403db9ed10ad3041448ab2ae12d314682"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10818-10829",
+       "sha": "0611d81c65ccf5997702fa6c8b0e23f471156e74d04839a7766c00c9a548e4b6"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10830",
+       "sha": "405e543a2ac7a3e0494687c04227bb908d248190b4a9a88f0c2fa862d9bdcb97"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The Ready function can occur with the Z80 SIO not selected; READY becomes inactive when IORQ and CS become active, so the DMA controller is not enabled then.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10816-10817",
+       "sha": "07365c1df4d88de5a392c2523f584672c5b5a0598afcded855ec9d2aa053cdd6"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10834-10840",
+       "sha": "146b31d98a775f971c890cb2de546b2102c12f5c1cb43670e35769308a73f7fe"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The Wait function is active only when the CPU reads data not yet received, or, under program control, writes while the transmit buffer is full.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10841-10848",
+       "sha": "78f361d7f0721a53ed6eebd1430a573bf9f313c4a05d786d8f2818e272705500"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "The Wait function is selected by setting D6 to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10800",
+       "sha": "5c728eed48ae29b4c89dc52f5bbec708c232cec0289d7c365cdcb7cd449512e3"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "In the Wait function the WAIT/READY output is open drain and goes Low when active.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10800-10801",
+       "sha": "dbfb97fd17db72cf54d8f7291189602a55b0e089f719700325885d212f2eb288"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10810-10815",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10754-10757",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10779-10799",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10831-10833",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10691",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10706-10726",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1709",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1709",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1709",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1709",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1710-1718",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1824",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "325-332",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "333-343",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "335-343",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1709",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "323",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "access": "write",
+   "name": "WR0 command, pointer",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10537-10539"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10546-10567"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10578-10586"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10682-10683"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10687-10690"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10697-10705"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10568-10577"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10587-10630"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_read",
+     "case": [
+      "REG_RR0_STATUS"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_NULL"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_write",
+     "case": [
+      "REG_WR0_COMMAND_REGPT"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0_resets"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Each channel has eight write registers, WR7 to WR0, that the system program programs separately to configure the channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10537-10539",
+       "sha": "7349bbb789f2d59dbd06213a389372d29e66e82468727db8b2a06d7f53c300f1"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10546-10546",
+       "sha": "943f7e1248b9be56587976edab004c5bb37df443bedc4eafb488b47c5d0d79bc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Programming a write register other than WR0 takes two bytes; the first, stored in WR0, has three pointer bits D2-D0 selecting the register.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10547-10551",
+       "sha": "b6482b7b2ce6a7cdbaeaed894e3c8226b327edd09a45b8fd120e16e89ef7c34c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "After pointing to a register, a programmer can read to test a read register or write to initialize a write register.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10553-10556",
+       "sha": "16656677f6b6a09148a8b3922265cdf42126f39cb4e5676f88e67b7a55f2c487"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 is unique because all the basic commands can be given with a single byte, and reset initializes the pointer bits to WR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10557-10559",
+       "sha": "c5278067bbf8e7d3e714a7c361f6f2c55455dbba9e850255953622502d77f3c2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The basic commands and CRC controls are in the first byte of any write register access, and these registers are addressed as commands, not data.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10560-10564",
+       "sha": "fe15fd0658ca572788fcb735c58a1c6ae802fe37af9cbddcd064025a3e651995"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 is the command register, and it also carries the CRC reset codes and points to the other registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10565-10567",
+       "sha": "53544197ac4800e8c934d66f98080a100dfbad80a6051b6fca8b82b0cc068e6e"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 stores D2-D0, the pointer bits that determine which write register the next byte writes to, or which read register it reads from.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10578-10580",
+       "sha": "8c1a923f486891d5732057ba5087544a353f312223b153c38ba7d4af929550dc"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "The first byte written to each channel after a reset, by Reset command or reset input, goes to WR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10580-10582",
+       "sha": "11380020a7d61230e8e30ff1d87eef55cb266ec9f20fed522cd8be75e07c8ad7"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores the whole command byte in WR0 before a Channel Reset command runs, and its channel reset never clears WR0, so pointer bits in D2-D0 stay selected.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1636",
+       "sha": "01754a89fabc89a1100ea1a98d9afea302de3158985c962609b33805f5146a22"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1663-1667",
+       "sha": "2e1e111ea7a03d15f7b46644d8896dd385664ebec336248044f533790bded533"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1109-1120",
+       "sha": "ad099030f25c112c197b602f784f5d1674340ed6307e9d69874da4c60fe55502"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1121-1132",
+       "sha": "2d866173bd9119f81b8fd4824cf19ff419c5c89aadfb646166d6cfe960114a68"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1133-1144",
+       "sha": "98b59b5ad7cf70a490ff4d47b80bd1d040448baf0035f9821cd162fe8564cfde"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1145-1155",
+       "sha": "fb49e710c1ad868587d74622486ba6e8ead25c6f3dd6bfd703d13ee648ae5218"
+      }
+     ],
+     "vs": "differs",
+     "row": "8"
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "Following a read or write to any register except WR0, the pointer points to WR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10582-10583",
+       "sha": "f479c6731e83c0c6de8eab3307ee635d514f8697b39bb636df7407573048a4c7"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "Bits D5-D3 are encoded to issue the seven basic Z80 SIO commands listed in Table 13.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10584-10586",
+       "sha": "97ed9a8cfb22f77889e3f442169a3c2167f32722d2d23da34d8f1715a6dbc4f5"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "CRC Reset Codes 0 and 1, WR0 D7 and D6, used together select one of three reset commands, listed in Table 14.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10682-10683",
+       "sha": "d64d2c9c0d5ca1c5ae0cdd69004407d3e262a3095e6378d1330a16a1ca0ad0df"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10697-10702",
+       "sha": "d6ec7468213a736778480572a0f39719350a8500485d0779c27f48a9ea601b67"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 D7 D6 = 01 resets the Receive CRC checker, which is initialized to 1s for the SDLC mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10697-10701",
+       "sha": "4332f8dcd11b342a1960ab34db41c11e1d0249a1db0946517b9b557a260e00ba"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10703",
+       "sha": "9e72e961d7349714bd24d611c9919aaaf02549f342e24a0ab41ac07738ed5944"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10689-10690",
+       "sha": "522d2314e202df7fc3b40a57a987d66ac0470c54b2492df178aa1763ea91e95b"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 D7 D6 = 10 resets the Transmit CRC generator, normally to 0s and to 1s in SDLC mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10697-10701",
+       "sha": "4332f8dcd11b342a1960ab34db41c11e1d0249a1db0946517b9b557a260e00ba"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10704",
+       "sha": "8eb217f9769a82389418029401952b254327a19ff4f0246081dc75336e59e375"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10687-10689",
+       "sha": "17e09a427abca20ed2e5ac609da0c5b3c76cf747bd07f2dbf40dda364fe21971"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 D7 D6 = 11 resets the Tx Underrun/End of Message latch.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10697-10701",
+       "sha": "4332f8dcd11b342a1960ab34db41c11e1d0249a1db0946517b9b557a260e00ba"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10705",
+       "sha": "b42cb3396ee7622aecba3de747bb9818587be23fb7405603e5af4ee649d4db9c"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME resets the Tx Underrun/EOM latch (RR0_TX_UNDERRUN) only when m_tx_in_pkt is set; otherwise the command is logged as not accepted.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1621-1628",
+       "sha": "fadd5238b6778e54175f6e72edff563874c6813c737fa97a7bdc2c16f6a91486"
+      }
+     ],
+     "vs": "differs",
+     "row": "15"
+    },
+    {
+     "n": "17",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 D7 D6 = 00 is the null code, with no effect.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10697-10701",
+       "sha": "4332f8dcd11b342a1960ab34db41c11e1d0249a1db0946517b9b557a260e00ba"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10702",
+       "sha": "6f5daef2a4a8e55ab58a8ef8c75000ffd320b63bf5983add831261ae5ea124db"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "The second byte is the control word written into the selected register to configure the Z80 SIO.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10551-10552",
+       "sha": "09931f2694edde13c75b416e1c2a3ecfe60a3f644faea49e25eded83915ed5e4"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On the Reset Receive CRC Checker command MAME also clears its receive CRC enable flag, m_rx_crc_en.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1615",
+       "sha": "910a8241c9ea21f8131d06ad0cdd625f0ab125b4165d45632dc0132c5bf8b8db"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10568-10577",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10587-10630",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1636",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1636",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1819",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1585",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1612-1616",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1617-1620",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1609-1611",
+     "as": "agrees",
+     "row": "17",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1607",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1612",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1617",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1621",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1629",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1624",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1638",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1584",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1814",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1580",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "access": "read",
+   "name": "RR0 status",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11208-11385"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_rr0"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_read",
+     "case": [
+      "REG_RR0_STATUS"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::get_tx_empty"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::read_ext"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::trigger_ext_int"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::set_tx_empty"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::advance_rx_fifo"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::trigger_interrupt"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::clear_interrupt"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::dcd_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::cts_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::sync_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1269"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1872"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RR0 contains the status of the receive and transmit buffers, the DCD, CTS and SYNC inputs, the Transmit Underrun/EOM latch and the Break/Abort latch.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11221-11224",
+       "sha": "a2c2817c516bc2bab0f2bffbde585af4c1938360cf56a176d3e55b240c7bd23e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Receive Character Available D0 is reset when the receive FIFO is empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11226-11227",
+       "sha": "31cf6e0b283589eeaac1f66f75bb994b59e178a07ab3036d88a38ca593182afe"
+      }
+     ]
+    },
+    {
+     "n": "38",
+     "on": "is",
+     "of": "doc",
+     "text": "Receive Character Available D0 is set when at least one character is available in the receive buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11225-11226",
+       "sha": "0a972a4291cc10b09a5ff5a903342732a883d3cdb5720baf5a07b85021a6f505"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Any interrupting condition sets Interrupt Pending D1, readable only in Channel A; it is reset when all the interrupting conditions are satisfied.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11251-11257",
+       "sha": "3566f790f7d7a238566c92d73f8c21886f99a93837fefb73dab206e5f4eb3cb0"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Interrupt Pending D1 is always 0 in Channel B.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11258",
+       "sha": "83057b33af5713d0a99972443831f5ae6639cf91c151184528d0903cb6d9db8a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "Transmit Buffer Empty D2 is set whenever the transmit buffer becomes empty, and reset when a character is loaded into the transmit buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11259-11262",
+       "sha": "5c84b83ad861f5dacec5963022cbbbe78c097b30168a86894aa85e2e854e0fec"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "Transmit Buffer Empty D2 is not set while a CRC character is being sent in a synchronous or SDLC mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11260-11261",
+       "sha": "468b882d8f01e81a100e60a0ae38de26cd881946ea2cc92cca843b9a9afb4138"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Transmit Buffer Empty D2 is in the set condition after a reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11262-11263",
+       "sha": "7090068328ddf4088f4941c0bb2c38449236c1bce95448069ac01f7ccc07e352"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "DCD D3 shows the state of the DCD input at the time of the last change of any of the five External/Status bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11264-11267",
+       "sha": "755b33db05d3c551ed16fa0b97805ab721d12c354b98d115f0110b6898d030dc"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "Any transition of the DCD input latches the DCD bit and causes an External/Status interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11267-11268",
+       "sha": "dbe215f7930c9a1e0752e3551234ca7fdb354be4f4077391117457e275b51dac"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "To read the current state of DCD, read it immediately following a Reset External/Status Interrupt command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11269-11270",
+       "sha": "95ef478c17d36fbb3720aae3d2006505508b7fe841ddcc71141ce72b45fa3593"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "Sync/Hunt D4 is controlled differently in the asynchronous, synchronous and SDLC modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11271-11274",
+       "sha": "5c911254c4f07a24ee6a53a7e1c18b960a247036835f5ad7eb52fd4b92fea944"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "doc",
+     "text": "In asynchronous modes D4 shows the SYNC input: High-to-Low sets it and causes an External/Status interrupt (if enabled); Low-to-High clears it and sets the interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11275-11279",
+       "sha": "ccf0f456772f27a6c63c6148a194ac89f061f89bba3e08d7f19ddbaf777a6671"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11283",
+       "sha": "d1cd9cae65e89b048f8d27d3b81edc0a78224a174c2f2c0e1fbd9defce165cdc"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "doc",
+     "text": "When the External/Status interrupt comes from any other input or condition, D4 shows the inverted state of the SYNC pin at the time of the change.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11283-11285",
+       "sha": "c9f51571a85e392162384af763e196c197db9b3b7e892b5fe014ea0a5221e4b4"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "To read the current state of the SYNC input, D4 must be read immediately following a Reset External/Status Interrupt command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11285-11287",
+       "sha": "05fcb300b1b26f88dbe6fef8ab420e73b12c07b0d12741b6c2974e0ef153f696"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode D4 works as in asynchronous mode, except Enter Hunt Mode enables the external sync detection logic.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11289-11292",
+       "sha": "571d4899972d7bd2237f850ec280604791bc383b0fa4e7aceca8a468b3ba22ca"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode SYNC is held High until synchronization is achieved, then driven Low on the second RxC rising edge after the last sync bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11293-11298",
+       "sha": "2551b49d91c451e65b48d180cb39c6b310e905b56ca79c0b47c1f811362f130d"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "In External Sync mode SYNC is kept Low until the CPU reports lost synchronization; its High-to-Low transition sets D4 and the External/Status interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11299-11305",
+       "sha": "47c58087d7d34480a60f0e8203a3f57d4225bbef8c38808e392655e0e91b89ee"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "When SYNC goes High again another External/Status interrupt is generated, and Enter Hunt Mode is set whenever synchronization is lost or the message ends.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11320-11327",
+       "sha": "78c9c70ec040741c1fae35512bc3cfd0e2b1c7dc3177deb33271a71b84d51ec6"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "In Monosync and Bisync receive modes D4 is first set by Enter Hunt Mode, and reset, with an External/Status interrupt, when character synchronization is established.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11328-11332",
+       "sha": "e3fc7de537a5bd11adc5bdb4c55b87cfa67c09e05fe645f4130a1c4f75013134"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "is",
+     "of": "doc",
+     "text": "The CPU clears that interrupt with Reset External/Status Interrupt, and sets Enter Hunt Mode on end of message or lost synchronization, which sets D4 and an interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11332-11339",
+       "sha": "48e28b55a0808603714b8aec0f43812cde499f987b2d97177bd720735391a6f6"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "is",
+     "of": "doc",
+     "text": "In Monosync and Bisync modes the SYNC pin is an output that goes Low when a sync pattern is detected.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11340-11341",
+       "sha": "9fc89644e6ecdd1363d4affde6bb16b87ae7df046362eaff371d948bf52dc7af"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode D4 is first set by Enter Hunt Mode or by disabling the receiver, and reset to 0 when the opening flag of the first frame is detected.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11342-11344",
+       "sha": "24f4b269b23bdcaff59764cd53a53889b185261f3ec7a88bee370373ab4bce6f"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode an External/Status interrupt is also generated on that reset, and D4 can be set again only by Enter Hunt Mode or by disabling the receiver.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11344-11350",
+       "sha": "25071f79e377047944f689cea9c93a9239dc568a6598908552171c4801c2a1a2"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "write",
+     "of": "doc",
+     "text": "CTS D5 is similar to DCD, but shows the inverted state of the CTS pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11354-11355",
+       "sha": "e1e7e62a580c8e65f33255065a11bc196c770b97d481ec35c2108f6c18f9a0d9"
+      }
+     ]
+    },
+    {
+     "n": "25",
+     "on": "is",
+     "of": "doc",
+     "text": "Transmit Underrun/End of Message D6 is set following a reset, internal or external.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11356-11357",
+       "sha": "a115b5d1978f634e4f3130216e2dcab9b9b1c49978d43ff22b11d4bbb406dd9e"
+      }
+     ]
+    },
+    {
+     "n": "26",
+     "on": "write",
+     "of": "doc",
+     "text": "Only the Reset Transmit Underrun/EOM Latch command can reset D6.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11357-11359",
+       "sha": "e34d749ab18a040959d8eae920935d2dc34c6defbc1b7f6b0ba812cc1e909100"
+      }
+     ]
+    },
+    {
+     "n": "27",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME clears D6 with that command only while a packet is being transmitted; otherwise it logs that the command is not accepted.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1624-1627",
+       "sha": "05a357b130430ce67f21ea19ea2a231c3ffa70149d9bcdba8c36c5c844db0fbe"
+      }
+     ],
+     "vs": "differs",
+     "row": "26"
+    },
+    {
+     "n": "28",
+     "on": "is",
+     "of": "doc",
+     "text": "When the transmit underrun condition occurs D6 is set, causing the External/Status interrupt that Reset External/Status Interrupt resets.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11359-11361",
+       "sha": "b0f081976b5398e35da6a304117a52431bb9aab486943cf7c3c78df4a9a197a6"
+      }
+     ]
+    },
+    {
+     "n": "29",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME also sets D6 when the transmitter is disabled, and a comment says it is not sure real hardware does.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1208-1210",
+       "sha": "b79b2f140c7766b431189c24aac4a17e4501ccb6ec622082a295b799149f672a"
+      }
+     ],
+     "vs": "differs",
+     "row": "28"
+    },
+    {
+     "n": "30",
+     "on": "is",
+     "of": "doc",
+     "text": "In asynchronous receive mode Break/Abort D7 is set when a Break sequence, a null character plus a framing error, is detected; the External/Status interrupt is set if enabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11365-11368",
+       "sha": "7858ae3fc6687a02c54bcd588cbf79c86aa4d72fc62530e87a1ce639b26d00b4"
+      }
+     ]
+    },
+    {
+     "n": "31",
+     "on": "is",
+     "of": "doc",
+     "text": "The interrupt service routine must issue Reset External/Status Interrupt so that the termination of the Break can be recognized.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11369-11371",
+       "sha": "a8665ef3b1eda5845b0480420be104b649e7ca1eb5b4c382213eab2084a35b6f"
+      }
+     ]
+    },
+    {
+     "n": "32",
+     "on": "is",
+     "of": "doc",
+     "text": "D7 is reset when the termination of the Break sequence is detected, which also sets the External/Status interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11372-11374",
+       "sha": "0638dc0b71dde3cde2d8a787f6e06747df1f0a4ae9c5c981dce9f8f819c34555"
+      }
+     ]
+    },
+    {
+     "n": "33",
+     "on": "is",
+     "of": "doc",
+     "text": "Reset External/Status Interrupt must then be issued to look for the next Break, and a single extraneous null character after the break should be read and discarded.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11375-11378",
+       "sha": "cd39b604fb1c14f796599f976e5f5a4ba84aa0e0fe972ada11e7dc23b793f967"
+      }
+     ]
+    },
+    {
+     "n": "34",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC receive mode D7 is set by detection of an Abort sequence of seven or more 1s.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11379-11380",
+       "sha": "d3a5145a4b30196dd771a7303e38658729e299f4a8206bb7c83613dcacf4571d"
+      }
+     ]
+    },
+    {
+     "n": "35",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode the External/Status interrupt for an Abort is handled the same way as for a Break, and D7 is not used in synchronous receive mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11380-11382",
+       "sha": "9b8c7407bffebbfd66fc2c2b1a3c606bc2cbf796bb22a967bed8047752ad1455"
+      }
+     ]
+    },
+    {
+     "n": "36",
+     "on": "is",
+     "of": "doc",
+     "text": "RR2 to RR0 are read for status; to read a register other than the captured 'RRD' the pointer byte is first written to WR0, then an input instruction reads it.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11209-11216",
+       "sha": "27d517bf681dc50af5ef385fdec1d7313f993f6ec6728a3127c2e98b8ebcc3af"
+      }
+     ]
+    },
+    {
+     "n": "37",
+     "on": "is",
+     "of": "doc",
+     "text": "The status bits of RR0 and RR1 are grouped so that, for a Special Receive Condition interrupt, all the error bits can be read from RR1.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11217-11220",
+       "sha": "b65bad026a167ef8a6819dd4eb552f539f79640ea5b5e79689360a1650ae073f"
+      }
+     ]
+    },
+    {
+     "n": "39",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "MAME latches DCD when an external change is triggered, but sets the DCD bit when the input level m_dcd is 0, the same inversion as CTS.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1402-1405",
+       "sha": "f86ba5d55854da5cac193c37c7a7e09a313cf0c17793728c02b35a4cdf3c4b35"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1424-1426",
+       "sha": "99b341d828039c4465582e20bf6e5cd01a7725b1dc113467af9130c22530def2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11208",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11228-11250",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11280-11282",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11288",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11306-11319",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11351-11353",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11383-11385",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11362-11364",
+     "as": "see-also"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1913-1916",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "690",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "709-710",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "690",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "710",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1319-1322",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1526-1530",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1313-1314",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2348-2354",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1426",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1429-1430",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "689-690",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1408-1413",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2368-2376",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1408-1413",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1424-1426",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1396-1399",
+     "as": "agrees",
+     "row": "24"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2330-2335",
+     "as": "agrees",
+     "row": "24"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1580",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1585",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2317",
+     "as": "unseen",
+     "reason": "receive engine sets this bit when it queues a character"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1985",
+     "as": "unseen",
+     "reason": "receive engine hunt-mode write of this bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2049",
+     "as": "unseen",
+     "reason": "receive engine sync-detect write of this bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2141",
+     "as": "unseen",
+     "reason": "SDLC receive engine write of this bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2415",
+     "as": "unseen",
+     "reason": "asynchronous receive engine write of this bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1249",
+     "as": "unseen",
+     "reason": "transmit engine underrun write of this bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1120",
+     "as": "unseen",
+     "reason": "channel reset write of this bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "984",
+     "as": "unseen",
+     "reason": "constructor zero-fill of the register image; device_reset sets it again"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "386",
+     "as": "unseen",
+     "reason": "CRC transmit flag bookkeeping of the transmit engine"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1131",
+     "as": "unseen",
+     "reason": "CRC transmit flag bookkeeping of the transmit engine"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1205",
+     "as": "unseen",
+     "reason": "CRC transmit flag bookkeeping of the transmit engine"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1239",
+     "as": "unseen",
+     "reason": "CRC transmit flag bookkeeping of the transmit engine"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1365",
+     "as": "unseen",
+     "reason": "CRC transmit flag bookkeeping of the transmit engine"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1584",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1527",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1328",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1902",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1904",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1907",
+     "as": "unseen",
+     "reason": "receive FIFO shift, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1908",
+     "as": "unseen",
+     "reason": "receive FIFO shift, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "687",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "688",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "706",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "707",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "689",
+     "as": "unseen",
+     "reason": "interrupt-state bookkeeping, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "708",
+     "as": "unseen",
+     "reason": "interrupt-state bookkeeping, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2357",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1429-1430",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "689-690",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1269",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1872",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1313-1314",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "access": "read",
+   "name": "RR1 special receive",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11386-11538"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_rr1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_read",
+     "case": [
+      "REG_RR1_SPEC_RCV_COND"
+     ],
+     "preamble": true
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Reading RR1 returns the Special Receive condition status bits and the residue codes for the I-field in the SDLC receive mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11386-11388",
+       "sha": "5cb782d85ff1ea62e9580e733e09149254eebe752ad8285e0d7a2b3de38d51b0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "All Sent D0 is set in asynchronous modes when all the characters have completely cleared the transmitter; its transitions cause no interrupts and it is always set in synchronous modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11389-11392",
+       "sha": "72c6c44b04b47e44410f63934a6d40640bd2a44ec08fe27fddd8b95425c646a0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC receive mode Residue Codes D3-D1 give the I-field length when it is not a whole number of characters, meaningful only when End-of-Frame is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11393-11398",
+       "sha": "5d14360976b8df900b9bccc3330baa527067ac37b09b016f83db32fa9f262a02"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "For eight bits per character, residue codes 100, 010, 110, 001, 101 give 0 I-field bits in the previous byte and 3 to 7 in the second previous byte.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11419-11430",
+       "sha": "45aa4a80c61e75f455b5265a235e76133a60ae3f8ee4a41daee8caf38da3d968"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11431-11435",
+       "sha": "3148d79c3aa5112ad4cb6bc4cd61b5542af76c0ca0c010b685edc58dae6acba4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "I-field bits are always right justified.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11439",
+       "sha": "217758ae374d82ba0eb4c663b5daafa7306a75fe87d928b2391a5782fa14aabe"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "For another receive character length a similar table may be built; with no residue the codes 011, 111 and 000 give 8 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11440-11447",
+       "sha": "2b16f53a5a40c7df7c6230bddb9d93b442baa0b6c28f050b2c1893fb259c2a7d"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 34 gives the no-residue codes by receive character length: 8 bits 011, 7 bits 000, 6 bits 010, 5 bits 001.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11448-11453",
+       "sha": "9c629acac20199e26ff6eecd7bba4716aa9b0d7d393a599f9076fea19fb2e21b"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "When parity is enabled, Parity Error D4 is set for characters whose parity does not match the programmed sense, and stays set until the Error Reset command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11470-11473",
+       "sha": "0ddb57a32fdd461d9090ba8374d770d641113e9647556387ade9e67a3dae8a5a"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Receive Overrun Error D5 means more than three characters were received without a CPU read; it is latched until Error Reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11474-11480",
+       "sha": "d2f1d3346cf6614f74562efb02238550b7c0799c85e21a14df2368370c7bfcc1"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "CRC/Framing Error D6 is set for a character with a framing error, not latched; in synchronous and SDLC modes it gives the CRC check result.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11523-11533",
+       "sha": "5d8dc86f2ae96463d214f64f90e28d122c5f2762449232b4f052bfc9bb810b43"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "End-of-Frame D7, SDLC only, shows a valid ending flag was received; it is reset by Error Reset and updated by the first character of the next frame.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11534-11538",
+       "sha": "d6c215ad9a5fa25ee629a6f648bf4a7660cbf8e1c4ecc724a3b357a011a28467"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11399-11418",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11436-11438",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11454-11469",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11481-11522",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1539",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "381",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "984",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1122",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1369",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1685",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1882",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1925",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2255",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "2542",
+     "as": "unseen",
+     "reason": "engine write of this register image, described by no row of this entry"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1580",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1585",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1584",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "access": "read",
+   "name": "RR2 vector",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11539-11554"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11567-11578"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_rr2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::control_read",
+     "case": [
+      "REG_RR2_INTERRUPT_VECT"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::read_vector"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "RR2 contains the interrupt vector written into WR2 if the Status Affects Vector control bit is not set.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11540-11542",
+       "sha": "2a70c14f0587904aff0bc556fd03318d9a95c4430b6e1d1ed3b07b3799229a4d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "If Status Affects Vector is set, RR2 contains the modified vector, modified by the highest priority interrupting condition at the time of the read.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11541-11545",
+       "sha": "029a35cd1947968306f61fb09b781c9fc7c9236948279e48b4c6e377c770745c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "If no interrupts are pending, the vector is modified with V3 = 0, V2 = 1 and V1 = 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11545-11546",
+       "sha": "7c4d0741247d389abf13270ae8f6c99b6bf6f51e9c4b217b6c1b7c4d4b80dc1f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "RR2 is read only through Channel B.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11546",
+       "sha": "6e83a4da237128ad4811fe7343ea1ed1855c6acb1a059fe82f0bb9c6fb1b3a17"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME returns the vector when RR2 is read through channel B, and returns 0 instead of a vector when it is read through channel A.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1566-1570",
+       "sha": "ef01f59c96f755ff5dfe6d02675a56c46bb4411e5e8cbf57f583ae0fc6e119dc"
+      }
+     ],
+     "vs": "differs",
+     "row": "4"
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "RR2 bits D7 to D0 are V7 to V0, with V3, V2 and V1 variable if Status Affects Vector is programmed.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "11547-11550",
+       "sha": "daf338922da62179415208dde7edf4519d609b206b7ad46006697bdd0e578226"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11539",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11551-11554",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "11567-11578",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "746-750",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "761-769",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "770-778",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "784",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "749",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "755",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "757",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "759",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "766",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "775",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1580",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1585",
+     "as": "parent",
+     "owner": "z80sio:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1584",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "985",
+     "as": "unseen",
+     "reason": "constructor initial value of the vector register"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1725",
+     "as": "parent",
+     "owner": "z80sio:register:0x02:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "753-754",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  }
+ ]
+}

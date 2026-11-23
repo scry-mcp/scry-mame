@@ -1,0 +1,384 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80scc-device",
+ "title": "Z80 SCC serial controller as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "the Zilog SCC as a chip: what it is, its family members and how they are named",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SCC-UserManual-1992.raw.txt",
+   "variant": "SCC family"
+  }
+ ],
+ "official": {
+  "SCC-UserManual-1992.raw.txt": [
+   "443-473",
+   "477-511",
+   "1607-1618"
+  ]
+ },
+ "closed": [],
+ "engine": [],
+ "entries": [
+  {
+   "key": "z80scc",
+   "name": "Z80 SCC family",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "443-473"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "477-511"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1607-1618"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "442-480"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::device_reset_after_children"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The Zilog SCC is a dual channel, multiprotocol data communication peripheral designed for use with 8- and 16-bit microprocessors.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "443-446",
+       "sha": "3ff5294f25b9e2eeda24aa3c1d422ef56182f482ceafbe594578a3dcffb1c04f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The SCC works as a serial-to-parallel, parallel-to-serial converter/controller that software can configure for a wide variety of serial communications applications.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "446-449",
+       "sha": "7919923b8e8a5f1ca4769bfc8d6b25003b12021895adc6f0b5d478e6c03c5066"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The SCC has on-chip baud rate generators, digital phase-lock loops and crystal oscillators, which reduce the need for external logic.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "449-452",
+       "sha": "d40afce0a0e694124c68afdf733d43939f534fd9c3df473928464440573285d8"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The SCC handles asynchronous formats, byte-oriented synchronous protocols such as IBM Bisync, and bit-oriented synchronous protocols such as HDLC and IBM SDLC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "453-457",
+       "sha": "8c64b8d39656e5af2c9325bac9f2f5f46db34c1ac07150377e7535963ee7d241"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The device can generate and check CRC codes in any synchronous mode and has modem controls in both channels, usable as general-purpose I/O where they are not needed.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "458-463",
+       "sha": "04846bcb0e7e0360958410967a59ff136d4f44ed9e1586da6562435115180225"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Each channel gives access to 14 write registers and 7 read registers, the number varying with the version.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "464-468",
+       "sha": "21804c8f61242384c6753b212de1b95b5facd37ad1d6d26eca03d490fedcd015"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Within each operating mode the SCC allows protocol variations such as odd or even parity, character insertion or deletion, CRC generation, break and abort generation and detection.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "469-473",
+       "sha": "f0efc4b2b6a97e9d4e5350646f2aef6f2416f3f01c21e6b055088b809bc8b3ba"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The SCC/ESCC family has seven devices: Z8030, Z80C30, Z80230 on the Z-Bus and Z8530, Z85C30, Z85230, Z85233 on the Universal Bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "477-478",
+       "sha": "c47e00ba486d784b221779643003c703130816442517cf6c274583cbb0cb3318"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "483-491",
+       "sha": "1ce95cd100cacb93f39aa7163d493e9e9081fd2427d6e246438240176d5d136e"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The manual calls NMOS the Z8030 and Z8530, CMOS the Z80C30 and Z85C30, ESCC the Z80230 and Z85230, EMSCC the Z85233, Z80X30 the Z-Bus versions and Z85X3X the Universal versions.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "479-482",
+       "sha": "08de9648897cbf55338858ba87f7aa01b3b8a1de7e9d636f2f449c6477e9a6ce"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "492-500",
+       "sha": "d3fe55897f8aec7f212f23dcc4244a3f5147612507a6f31c5503b852c02e08b8"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "501-504",
+       "sha": "3e0e9502bec0b3d1c135060441c030ef4f542ad637a7c35454c02d908ab7bf65"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The Z-Bus version has a multiplexed bus interface; the Universal version has a non-multiplexed bus interface; the 85C30 SL1480 version adds SDLC enhancements.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "505-511",
+       "sha": "0bb5faca64957d3de4cdfc5d081ef1e91139a3a5e3fdb4e02105d0245924df70"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The Z85X30 may be reset by either a hardware reset or a software reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1607-1608",
+       "sha": "1a70d2e29343bf0c84b4f1a4e2d594eba26197464622de0dbdc0973a888b5fc1"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "A hardware reset occurs when two inputs, printed N/R and IRD in the capture, are both Low at the same time, normally an illegal condition.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1608-1611",
+       "sha": "9c651e234ba9abeef3ab90ae2d0cf70d717dd7ae8bc63df9de7f54ca28aa946c"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "Once that condition is removed the reset stays asserted internally for four to five more PCLK cycles, and any attempt to access the chip is ignored meanwhile.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1611-1613",
+       "sha": "d39c415a68d368ea45bb5d4033186686381d652cf274ba8cc6b8de132ea606c0"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "The Z85X30 has three software resets encoded in the command bits of WR9; two channel resets affect one channel and some bits of its write registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1615-1618",
+       "sha": "d52ac57719968b65b8a49e69a405266db2d26a488eaaed65bcdb2600c8e4fce6"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "The command forces the same result as the hardware reset, and the Z85X30 stretches the reset signal four to five PCLK cycles beyond the access recovery time.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1612-1614",
+       "sha": "75f694d4745eb6adbaadb9b4139437dba05711654fa9c3e78f291bc0469e9c81"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1618",
+       "sha": "44f969f31245212a31574fe1915e49dacce1694114306186f0f0137fca7ea482"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "The WR9 bits may be written together with the reset command because only a hardware reset affects them.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1614-1617",
+       "sha": "e7bb21272a4bd0292c253f1b1bf7c57ac23b75ece4ed0861d00e651bba08ca38"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "reset",
+     "of": "doc",
+     "text": "The reset values of the various registers are shown in Table 2-7.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1617-1618",
+       "sha": "7c964a1c9e53f83be72764478031ce2e90d60df5cb00633510b91d88c84e07f8"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME builds the Z8030, Z80C30 and Z80230 as z80scc_device instances, each with its own device type and variant constant.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "442-445",
+       "sha": "38b63af16c783ced46b1096676bc4cb95f828fd48e0f635b9d38d40c0f9ca414"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "447-450",
+       "sha": "e4354832080ae62880dbd91b85bc842c71e17c85cb7257857a55b68a89004d73"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "452-455",
+       "sha": "f31bae4fccffcb049b4e9f4b29b8474b5200ef394f7250d7956d39a576da5a2f"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "19",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME builds the Z8530, Z85C30, Z85230 and Z85233 as z80scc_device instances, each with its own device type and variant constant.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "457-460",
+       "sha": "ff0b22be8490196c63ee5b503228684c9eed18c08f8f5e39b814ba682db8c904"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "462-465",
+       "sha": "00929f8bc38b63ac703501ba8b0e465d2d4334f2e3800c023634b9fd6991be74"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "467-470",
+       "sha": "7bb96331c7634a261d86807d30cec9f565a297af55854d234a225e80b3f15765"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "472-475",
+       "sha": "eec69935f70e2b40b234d4d57be72fd028e573b274d23c08ecbac5ae5d7103ce"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "20",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME also builds a Z8523L, which the capture's family list does not name, as a z80scc_device with its own type and variant.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "477-480",
+       "sha": "133e4fa121ca9e487bf61f6fe33d9d1ab3a66b16b81e6bfb76ee4af450b1be98"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "21",
+     "on": "reset",
+     "of": "mame",
+     "text": "In z80scc_device::device_reset_after_children MAME sets register 0x09 D7-D6 to 11 and D1-D0 to 00, 0x0A to 0x00, 0x0B to 0x08, 0x0E D5-D4 to 11 and D3-D0 to 0000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "502",
+       "sha": "570cab5fb79310c55c0691e98b5ac11e07bc4565ba9ba55455c71be5e306f0f2"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "507-516",
+       "sha": "30aa4ab8bf4a04267478ec560770879c13530a91a16cecbf4450b95db41dca73"
+      }
+     ],
+     "vs": "differs",
+     "row": "17"
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

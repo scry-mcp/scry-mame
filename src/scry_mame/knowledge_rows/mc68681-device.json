@@ -1,0 +1,271 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "mc68681-device",
+ "title": "The 68681 DUART as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "The Motorola 68681 dual asynchronous receiver/transmitter as a chip: what a hardware reset leaves in its registers and channels",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC68681.raw.txt",
+   "variant": "MC68681"
+  }
+ ],
+ "official": {
+  "MC68681.raw.txt": [
+   "811-818"
+  ]
+ },
+ "engine": [
+  "receive_register_extract",
+  "is_receive_framing_error",
+  "is_receive_parity_error",
+  "get_received_char",
+  "transmit_register_setup",
+  "transmit_register_get_data_bit",
+  "rx_w",
+  "write_CR",
+  "set_rcv_rate",
+  "set_tra_rate",
+  "set_data_frame",
+  "write_irq",
+  "log"
+ ],
+ "entries": [
+  {
+   "key": "mc68681",
+   "name": "MC68681 DUART",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "811-818"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_base_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "mc68681_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::device_reset"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The DUART can be reset by asserting the RESET signal or by programming the appropriate command register.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "811-812",
+       "sha": "09f08eadf3049bc1401230da3eacb6058251a1bc876719a015f50ea104acee51"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset clears the interrupt mask register, the interrupt status register, the output port register and the output port configuration register.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "812-815",
+       "sha": "a47a3dc3c441ada6e9c512beda1bff1aca1e32856242a0d0bc8c2dbc48d07c3d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset clears status registers A and B.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "812-813",
+       "sha": "dd9e4701e447cab222b0dd4d48c4ebdaa041b101241428706cde77a2e2948441"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "reset",
+     "of": "doc",
+     "text": "RESET initializes the interrupt vector register (IVR) to 0F16.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "814-815",
+       "sha": "baadb49ccebd3f5b878de0474ba547bb0f94ee75857d8c27ca721bca7903a563"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "RESET places parallel outputs OP0 through OP3 in the high state.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "815-816",
+       "sha": "7bb277975310a27ee1162aa4fc1a6f696d5c60d400de645f31e273856b9e6f95"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "reset",
+     "of": "doc",
+     "text": "RESET places the counter/timer in timer mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "816",
+       "sha": "4b5947b071e555e2f6949327c2c576d65b4aba3d36805fad82accf7144f6e610"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "reset",
+     "of": "doc",
+     "text": "RESET places channels A and B in the inactive state, with the TxDA and TxDB serial-data outputs in the mark (high) state.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "816-818",
+       "sha": "dcfe335488dfbd407dde36b4112d8e1040fc1a47902d35394fec3469b2caba70"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "RESET also clears the counter preset and IPCR.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "282-284",
+       "sha": "6746300c9bbe3eb9acae29f9e0bcea98fdd6243d8fe8a95bdf2a8b77960426fa"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "RESET also clears the internal interrupt state and drives the IRQ output inactive.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "286-287",
+       "sha": "f3d5f6f7cd41190e45f0665f9b1c03a2faca65882f82d78127470ea5820a3883"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "mc68681_device::device_reset also clears m_read_vector.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "296",
+       "sha": "a8ddffcfd1c5bd924ec71397d24b79feeb8778d61a6d13305b7f50126585db9d"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A channel reset also selects 8 data bits, no parity and 1 stop bit, and zeroes the clock select register, both baud rates and the break flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1369-1373",
+       "sha": "104f9d19ecfa6276f58f3db6f850e458b864ad6b8c560fc822c2ef4dd96e13e0"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME's reset sets ACR to 0, and ACR bit 6 set is 'Entering timer mode' in its ACR write, so ACR = 0 is not timer mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "277",
+       "sha": "dd5fcf687d30df942896e219757d74d4ee7d76e6e55a118fc6d2cd47bc61198c"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "969-976",
+       "sha": "35308435462ad42dff7de6757d8f74384f2aa1b1c1ff0029f0aa131b091e5e1e"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "977-981",
+       "sha": "22acef81afec86cf2e2a787897f7828dbdce935b1835badfcd75a72bcf73ae21"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "278-281",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "295",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "281",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "288",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1364-1367",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1364-1367",
+     "as": "unfollowed",
+     "row": "7"
+    }
+   ]
+  }
+ ]
+}
