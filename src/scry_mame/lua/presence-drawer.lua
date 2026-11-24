@@ -1,8 +1,6 @@
--- Drawn on the render manager's UI container, which the window shows and the snapshot target
--- and `screen:pixels()` do not.
--- A drawer that raises writes why beside the state file, where `status` reads it.
--- Written by the mame MCP server for ONE session: the presence edge and the layers over it. The
--- state file says what to draw (caption, keys, pause, recording, where); this only animates it.
+-- Written by the mame MCP server for ONE session: the state file says what to draw, and this
+-- only animates it. It draws on the UI container, which the window shows and a capture does not;
+-- a drawer that raises writes why beside the state file, where `status` reads it.
 local path, broke = __SCRY_path__, __SCRY_broke__
 -- `scry_drawn` marks this chunk loaded: MAME runs every callback registered, so a second load
 -- would register a second drawer and draw each box twice, darkening a band drawn at less than
@@ -44,31 +42,30 @@ local set_up, why = pcall(function()
       layers = {},
       keys = {},
       key_w = {},
+      key_a = {},
     }
     local first = true
     for line in text:gmatch("[^\n]+") do
-      local k, v = line:match("^(%w+)=(.*)$")
+      local k, v = line:match("^([%w_]+)=(.*)$")
       if first then
         out.state, first = line, false
       elseif k == "paused" then
         out.paused = v == "1"
-      elseif k == "place" then
-        out.place = v
       elseif k == "layers" then
         for layer in v:gmatch("[^,]+") do
           out.layers[layer] = true
         end
-      elseif k == "rec" then
-        out.rec = v
-      elseif k == "serial" then
-        out.serial = tonumber(v)
       elseif k == "rgb" then
         out.rgb = tonumber(v, 16)
-      elseif k == "caption" then
-        out.caption = v
       elseif k == "key" then
         out.keys[#out.keys + 1] = v
         out.key_w[#out.keys] = ui:get_string_width(v)
+      elseif k == "key_alpha" then
+        for a in v:gmatch("[^,]+") do
+          out.key_a[#out.key_a + 1] = tonumber(a)
+        end
+      else
+        out[k] = v
       end
     end
     return out
@@ -102,11 +99,7 @@ local set_up, why = pcall(function()
   end
 
   local function sample()
-    local screen
-    for _, s in pairs(manager.machine.screens) do
-      screen = s
-      break
-    end
+    local _, screen = next(manager.machine.screens)
     if screen == nil then
       return
     end
@@ -151,10 +144,9 @@ local set_up, why = pcall(function()
 
   -- A filled disc as stacked boxes: the UI container has no round primitive.
   local function disc(c, cx, cy, d, ux, col)
-    local rows = 7
-    for i = 0, rows - 1 do
-      local y0 = cy - d / 2 + i * d / rows
-      local y1 = y0 + d / rows
+    for i = 0, 6 do
+      local y0 = cy - d / 2 + i * d / 7
+      local y1 = y0 + d / 7
       local dy = (y0 + y1) / 2 - cy
       local half = math.sqrt((d / 2) ^ 2 - dy ^ 2) * ux
       c:draw_box(cx - half, y0, cx + half, y1, 0, col)
@@ -224,8 +216,8 @@ local set_up, why = pcall(function()
       for i = 0, STEPS - 1 do
         local a = math.floor(255 * alpha * (1 - i / STEPS) + 0.5)
         local col = (a << 24) | RGB
-        local x0, y0 = ex * i / STEPS, ey * i / STEPS
-        local x1, y1 = ex * (i + 1) / STEPS, ey * (i + 1) / STEPS
+        local x0, y0, x1, y1 =
+          ex * i / STEPS, ey * i / STEPS, ex * (i + 1) / STEPS, ey * (i + 1) / STEPS
         c:draw_box(x0, y0, 1 - x0, y1, 0, col)
         c:draw_box(x0, 1 - y1, 1 - x0, 1 - y0, 0, col)
         c:draw_box(x0, y1, x1, 1 - y1, 0, col)
@@ -288,8 +280,7 @@ local set_up, why = pcall(function()
             local room = right - left - 2 * pad * ux
             local text, width = shown_text(cap, room, running, t)
             local x = left + pad * ux + (room - width) / 2
-            -- the band is the call's own tint darkened, and opaque once it has faded in: a
-            -- translucent tint left the text under WCAG AA over a bright picture
+            -- opaque once faded in: a translucent tint left the text under WCAG AA
             c:draw_box(left, y, right, y + rowh, 0, argb(fade, cap_rgb or BAND_RGB))
             c:draw_text(x, y + pad, text, argb(fade, TEXT_RGB), 0)
           end
@@ -305,14 +296,15 @@ local set_up, why = pcall(function()
             if x + widths[i] > right then
               break
             end
-            c:draw_box(x, y, x + widths[i], y + rowh, 0, argb(KEY_ALPHA, KEY_RGB))
-            c:draw_text(x + pad * ux, y + pad, name, argb(1, KEY_TEXT_RGB), 0)
+            local a = cur.key_a[i] or 1
+            c:draw_box(x, y, x + widths[i], y + rowh, 0, argb(KEY_ALPHA * a, KEY_RGB))
+            c:draw_text(x + pad * ux, y + pad, name, argb(a, KEY_TEXT_RGB), 0)
             x = x + widths[i] + gap * ux
           end
         end
       end
-      -- Top right whatever `place` says; a stopped machine repaints only on a console command,
-      -- so there it stays lit instead of blinking.
+      -- Top right whatever `place` says; a stopped machine repaints on a console command only,
+      -- so there it stays lit.
       if mark_w > 0 and (not running or (t - rec_since) % BLINK < BLINK / 2) then
         local y, right = ey + gap, 1 - ex - gap
         local x = right - mark_w

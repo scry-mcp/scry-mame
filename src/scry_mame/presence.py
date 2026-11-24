@@ -89,7 +89,7 @@ def _ascii(text: str) -> str:
 def encode(state: presence.State, payload: presence.Payload) -> str:
     """The state file's text: `state`, then one `name=value` line each (`layers` as MAME can
     draw them, `rec` while something is recorded, the caption as `serial`, `rgb`, `caption`)
-    and one `key` per key down."""
+    and one `key` per key down, then `key_alpha`, each key's alpha in the same order."""
     drawn = [layer for layer in payload.layers if layer not in LACKING]
     lines = [state, f"paused={int(payload.paused)}", f"place={payload.place}",
              f"layers={','.join(drawn)}"]
@@ -99,6 +99,8 @@ def encode(state: presence.State, payload: presence.Payload) -> str:
         lines += [f"serial={payload.caption.serial}", f"rgb={payload.caption.rgb:06X}",
                   f"caption={_ascii(payload.caption.text)}"]
     lines += [f"key={_ascii(name)}" for name in payload.keys]
+    if payload.key_alphas:
+        lines.append("key_alpha=" + ",".join(f"{a:.2f}" for a in payload.key_alphas))
     return "\n".join(lines) + "\n"
 
 

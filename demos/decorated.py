@@ -49,13 +49,16 @@ def passes(document: Mapping[str, Any], demo: core.Demo) -> list[dict[str, Any]]
 
 
 def decorator(demo: core.Demo, run: core.Run, document: Mapping[str, Any],
-              layers: Sequence[ov.Layer],
-              look: presence.Look = presence.LOOK) -> motion.Decorator:
-    """What `motion.build` draws each cut with: cut `n` starts at the frame its `record` began."""
+              layers: Sequence[ov.Layer], look: presence.Look = presence.LOOK,
+              key_names: Mapping[str, str] | None = None) -> motion.Decorator:
+    """What `motion.build` draws each cut with: cut `n` starts at the frame its `record` began.
+    A demo may name an input field for a person; the clip draws the name, and the live overlay
+    keeps the emulator's own field name."""
     declared(layers)
     from scry_core import decorate  # the `decorate` extra: only the making of a loop needs it
     style = decorate.Style.of(ov.Overlay(calls="calls" in layers, keys="keys" in layers,
-                                         pointer=False, pause=False, record=False), look=look)
+                                         pointer=False, pause=False, record=False), look=look,
+                              key_names=dict(key_names or {}))
     tools = {step.name: step.tool for step in demo.steps}
     starts = []
     for moment in demo.moments:
@@ -76,8 +79,9 @@ def decorator(demo: core.Demo, run: core.Run, document: Mapping[str, Any],
 
 
 def main(demo: core.Demo, layers: Sequence[ov.Layer], argv: Sequence[str] | None = None,
-         look: presence.Look = presence.LOOK) -> int:
-    """The demo's command line with its loop drawn in `layers`."""
+         look: presence.Look = presence.LOOK,
+         key_names: Mapping[str, str] | None = None) -> int:
+    """The demo's command line with its loop drawn in `layers`, each field named for a person."""
     declared(layers)
     return core.main(replace(demo, decorator=lambda demo_, run, document: decorator(
-        demo_, run, document, layers, look)), argv)
+        demo_, run, document, layers, look, key_names)), argv)

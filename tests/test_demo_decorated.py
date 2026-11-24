@@ -116,6 +116,19 @@ def test_a_look_the_demo_gives_is_the_one_the_clip_is_drawn_with() -> None:
     assert bigger != _draw(0)
 
 
+def test_a_field_a_demo_names_for_a_person_is_drawn_with_that_name() -> None:
+    """The clip draws the demo's name; the live overlay keeps the emulator's field name."""
+    one, keyed = _demo(moments=1), _timeline_with_a_key()
+
+    def drawn(**names: str) -> list[bytes]:
+        each = decorated.decorator(one, _run(), keyed, ("keys",), key_names=names)
+        return [p.rgb for p in each(0, range(30), _pictures(), RATE, BOX)]
+
+    plain = decorated.decorator(one, _run(), keyed, ("keys",))
+    assert drawn(a="start") != drawn(), "the name the demo gave was not drawn"
+    assert drawn() == [p.rgb for p in plain(0, range(30), _pictures(), RATE, BOX)]
+
+
 def test_a_moment_that_is_no_recording_cannot_be_placed_in_the_timeline() -> None:
     odd = Demo(name="t", root=ROOT, server=["x"], alt="a", steps=[_step("a", "start"),
                                                                     _step("b", "run_for")])

@@ -64,11 +64,12 @@ def test_a_state_replaces_the_file_whole(tmp_path: Path) -> None:
 def test_the_state_file_carries_the_extended_state_one_line_each() -> None:
     caption = tl.Caption("write_memory 0x10 AA..", "write", 0xFF8C00, 7)
     text = mpresence.encode("acting", presence.Payload(
-        paused=True, caption=caption, keys=("P1 Left", "P1 Button 1"),
+        paused=True, caption=caption, keys=("P1 Left", "P1 Button 1"), key_alphas=(1.0, 0.6),
         layers=("edge", "pointer", "keys", "calls", "pause"), place="top"))
     assert text.splitlines() == [
         "acting", "paused=1", "place=top", "layers=edge,keys,calls,pause", "serial=7",
-        "rgb=FF8C00", "caption=write_memory 0x10 AA..", "key=P1 Left", "key=P1 Button 1"]
+        "rgb=FF8C00", "caption=write_memory 0x10 AA..", "key=P1 Left", "key=P1 Button 1",
+        "key_alpha=1.00,0.60"]
     bare = mpresence.encode("held", presence.Payload())
     assert bare.splitlines() == ["held", "paused=0", "place=bottom", "layers=edge"]
 

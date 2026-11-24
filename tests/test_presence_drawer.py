@@ -35,14 +35,17 @@ def _lua() -> str:
     pytest.fail("no Lua 5.4 interpreter is installed: the drawer is not run without one")
 
 
-def state(lines: str, *, caption: str = "", keys: tuple[str, ...] = (), layers: str = "edge",
-          place: str = "top", paused: bool = False, serial: int = 1, held: str = "held",
-          rec: str = "", tint: int = CAPTION_TINT) -> str:
+def state(lines: str, *, caption: str = "", keys: tuple[str, ...] = (),
+          key_alpha: str = "", layers: str = "edge", place: str = "top",
+          paused: bool = False, serial: int = 1, held: str = "held", rec: str = "",
+          tint: int = CAPTION_TINT) -> str:
     """A state file as `mpresence.encode` writes it, by hand so the test names each line."""
     body = [held, f"paused={int(paused)}", f"place={place}", f"layers={layers}"]
     if caption:
         body += [f"serial={serial}", f"rgb={tint:06X}", f"caption={caption}"]
     body += [f"key={k}" for k in keys]
+    if key_alpha:
+        body.append(f"key_alpha={key_alpha}")
     if rec:
         body.append(f"rec={rec}")
     return "\n".join([*body, lines]).rstrip("\n") + "\n"
@@ -104,6 +107,20 @@ def test_a_drawer_loaded_twice_draws_once(tmp_path: Path) -> None:
     twice = run(tmp_path, f"dofile({lit(str(tmp_path / 'drawer.lua'))})\n"
                           f"put_state({body})\nshot(1.0)\n")
     assert boxes(twice[0]) == boxes(once[0]) == presence.LOOK.steps * 4
+
+
+def test_a_keycap_is_drawn_at_the_alpha_the_state_file_names(tmp_path: Path) -> None:
+    """The server sends each mark's alpha, so a mark it let go fades out in the window."""
+    def key_alpha(alpha: str) -> int:
+        body = lit(state("", keys=("a",), key_alpha=alpha, layers="edge,keys", place="top"))
+        frame = run(tmp_path, f"put_state({body})\nshot(0)\n")[0]
+        box = next(part for part in frame
+                   if part[0] == "box" and int(part[6]) & 0xFFFFFF == presence.LOOK.keycap_rgb)
+        return int(box[6]) >> 24
+
+    whole, half = key_alpha("1.00"), key_alpha("0.50")
+    assert whole == round(255 * presence.LOOK.keycap_alpha)
+    assert half < whole, "the mark at half alpha is drawn fainter"
 
 
 def test_a_state_with_only_the_edge_draws_the_edge_and_nothing_over_it(tmp_path: Path) -> None:

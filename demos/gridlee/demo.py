@@ -276,6 +276,11 @@ DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
 FONT_SHARE = 17 / 720
 
 
+#: What the clip calls each input field: the arcade names are machinery to a person watching.
+KEY_NAMES = {"Coin 1": "coin", "1 Player Start": "start"}
+
+
 if __name__ == "__main__":
     sys.exit(decorated.main(DEMO, LAYERS,
-                            look=replace(presence.LOOK, font_share=FONT_SHARE)))
+                            look=replace(presence.LOOK, font_share=FONT_SHARE),
+                            key_names=KEY_NAMES))
