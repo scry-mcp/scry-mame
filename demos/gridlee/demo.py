@@ -9,8 +9,11 @@ history shows behind the second. The README tells the story.
 from __future__ import annotations
 
 import sys
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
+
+from scry_core import presence
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
 from demos import decorated, free_set  # noqa: E402
@@ -243,6 +246,12 @@ MOMENTS = (
 DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
                      "Gridlee starting a game, then counting a coin after a saved state is loaded")
 
+#: The share of the picture the live drawer's text takes, so the clip's text matches the window:
+#: MAME's UI font is a fixed size against this window's picture, and the clip's own picture is
+#: shorter, so the default share would draw text twice as tall as the window does.
+FONT_SHARE = 17 / 720
+
 
 if __name__ == "__main__":
-    sys.exit(decorated.main(DEMO, LAYERS))
+    sys.exit(decorated.main(DEMO, LAYERS,
+                            look=replace(presence.LOOK, font_share=FONT_SHARE)))

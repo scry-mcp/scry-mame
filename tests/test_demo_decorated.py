@@ -6,13 +6,14 @@ from __future__ import annotations
 
 import subprocess
 import sys
+from dataclasses import replace
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import demo as core
-from scry_core import motion, timeline
+from scry_core import motion, presence, timeline
 from scry_core.committed_run import timeline_of
 from scry_core.demo import Demo, Moment, Reply, Run, Step
 from scry_core.overlay import Layer
@@ -106,6 +107,13 @@ def test_a_layer_not_declared_draws_nothing_and_one_declared_draws_its_events() 
 
 def test_a_clip_decorated_twice_is_the_same_bytes() -> None:
     assert _draw(0) == _draw(0)
+
+
+def test_a_look_the_demo_gives_is_the_one_the_clip_is_drawn_with() -> None:
+    each = decorated.decorator(_demo(), _run(), _timeline(), ("calls",),
+                               look=replace(presence.LOOK, font_share=1 / 12))
+    bigger = [p.rgb for p in each(0, range(30), _pictures(), RATE, BOX)]
+    assert bigger != _draw(0)
 
 
 def test_a_moment_that_is_no_recording_cannot_be_placed_in_the_timeline() -> None:

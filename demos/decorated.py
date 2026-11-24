@@ -11,7 +11,7 @@ from dataclasses import replace
 from typing import Any
 
 from scry_core import demo as core
-from scry_core import motion
+from scry_core import motion, presence
 from scry_core import overlay as ov
 from scry_core.verdict import Invalid
 
@@ -49,12 +49,13 @@ def passes(document: Mapping[str, Any], demo: core.Demo) -> list[dict[str, Any]]
 
 
 def decorator(demo: core.Demo, run: core.Run, document: Mapping[str, Any],
-              layers: Sequence[ov.Layer]) -> motion.Decorator:
+              layers: Sequence[ov.Layer],
+              look: presence.Look = presence.LOOK) -> motion.Decorator:
     """What `motion.build` draws each cut with: cut `n` starts at the frame its `record` began."""
     declared(layers)
     from scry_core import decorate  # the `decorate` extra: only the making of a loop needs it
     style = decorate.Style.of(ov.Overlay(calls="calls" in layers, keys="keys" in layers,
-                                         pointer=False, pause=False, record=False))
+                                         pointer=False, pause=False, record=False), look=look)
     tools = {step.name: step.tool for step in demo.steps}
     starts = []
     for moment in demo.moments:
@@ -74,8 +75,9 @@ def decorator(demo: core.Demo, run: core.Run, document: Mapping[str, Any],
     return each
 
 
-def main(demo: core.Demo, layers: Sequence[ov.Layer], argv: Sequence[str] | None = None) -> int:
+def main(demo: core.Demo, layers: Sequence[ov.Layer], argv: Sequence[str] | None = None,
+         look: presence.Look = presence.LOOK) -> int:
     """The demo's command line with its loop drawn in `layers`."""
     declared(layers)
     return core.main(replace(demo, decorator=lambda demo_, run, document: decorator(
-        demo_, run, document, layers)), argv)
+        demo_, run, document, layers, look)), argv)
