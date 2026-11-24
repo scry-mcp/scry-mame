@@ -54,7 +54,7 @@ def drawer(scratch: Path, look: presence.Look = presence.LOOK) -> str:
                              steps=look.steps, acting=look.acting_alpha, held=look.held_alpha,
                              fade=look.fade_s, reread=REREAD_S,
                              text_rgb=lua_source.Code(f"0x{look.caption_text_rgb:06X}"),
-                             cap_alpha=look.caption_alpha,
+                             band_rgb=lua_source.Code(f"0x{look.band_rgb(look.rgb):06X}"),
                              key_rgb=lua_source.Code(f"0x{look.keycap_rgb:06X}"),
                              key_text_rgb=lua_source.Code(f"0x{look.keycap_text_rgb:06X}"),
                              key_alpha=look.keycap_alpha, cps=look.scroll_cps,

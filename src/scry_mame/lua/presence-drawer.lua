@@ -20,9 +20,9 @@ local function stopped(err)
   manager.machine:logerror("MAME_MCP_PRESENCE stopped: " .. tostring(err) .. "\n")
 end
 local set_up, why = pcall(function()
-  local RGB, EDGE, STEPS = __SCRY_rgb__, __SCRY_edge__, __SCRY_steps__
+  local RGB, BAND_RGB, EDGE, STEPS = __SCRY_rgb__, __SCRY_band_rgb__, __SCRY_edge__, __SCRY_steps__
   local ACTING, HELD, FADE, REREAD = __SCRY_acting__, __SCRY_held__, __SCRY_fade__, __SCRY_reread__
-  local TEXT_RGB, CAP_ALPHA, KEY_RGB = __SCRY_text_rgb__, __SCRY_cap_alpha__, __SCRY_key_rgb__
+  local TEXT_RGB, KEY_RGB = __SCRY_text_rgb__, __SCRY_key_rgb__
   local KEY_TEXT_RGB, KEY_ALPHA = __SCRY_key_text_rgb__, __SCRY_key_alpha__
   local CPS, CAP_FADE, DWELL = __SCRY_cps__, __SCRY_cap_fade__, __SCRY_dwell__
   local REC_RGB, BLINK = __SCRY_rec_rgb__, __SCRY_blink__
@@ -288,8 +288,9 @@ local set_up, why = pcall(function()
             local room = right - left - 2 * pad * ux
             local text, width = shown_text(cap, room, running, t)
             local x = left + pad * ux + (room - width) / 2
-            -- the band is the call's own tint, as the clip draws it, never black on black
-            c:draw_box(left, y, right, y + rowh, 0, argb(CAP_ALPHA * fade, cap_rgb or RGB))
+            -- the band is the call's own tint darkened, and opaque once it has faded in: a
+            -- translucent tint left the text under WCAG AA over a bright picture
+            c:draw_box(left, y, right, y + rowh, 0, argb(fade, cap_rgb or BAND_RGB))
             c:draw_text(x, y + pad, text, argb(fade, TEXT_RGB), 0)
           end
         end
