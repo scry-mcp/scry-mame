@@ -13,13 +13,13 @@ dependencies = [
     "mcp>=2.1.0,<3",
     # What the Scry servers share (the reply contract, the probe, the live bench), pinned by
     # its release tag so a build reads exactly the core it was tested against.
-    "scry-core @ git+https://github.com/scry-mcp/scry-core@be15557d911aaaad87f61d64fd0c1aa01858affb",
+    "scry-core @ git+https://github.com/scry-mcp/scry-core@484fd29dbcd4247a03923089d9f554df89b0b7d9",
 ]
 
 [project.optional-dependencies]
 # Pillow and numpy, through scry-core's own `decorate` extra: only `demos/decorated.py` needs them,
 # to draw the presence layers into a demo's loop. The server and its users never load them.
-decorate = ["scry-core[decorate] @ git+https://github.com/scry-mcp/scry-core@be15557d911aaaad87f61d64fd0c1aa01858affb"]
+decorate = ["scry-core[decorate] @ git+https://github.com/scry-mcp/scry-core@484fd29dbcd4247a03923089d9f554df89b0b7d9"]
 
 [dependency-groups]
 dev = ["mypy>=1.11", "pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6", "scry-mame[decorate]"]

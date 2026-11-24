@@ -300,7 +300,7 @@ One entry matches, so it comes whole: the manual's rows first, with MAME's verdi
   ],
   "truncated": false,
   "examined": 7,
-  "served": 606,
+  "served": 624,
   "held_back": 0
 }
 ```
@@ -389,7 +389,7 @@ Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`, `s
 `held_back`; nothing matched: no entry, `nearest` and a `note`: it stays a number.
 `unconfirmed` lists ids held back.
 
-Scopes: acia6850, am9517a, ay8910, chip, i8251, i8255, ins8250, m68000, m6809, mc146818, mc6845, mc68681, msm5205, okim6295, pia6821, pic8259, pit8253, sega315_5124, sega315_5313, upd1990a, upd7759, v30, x1010, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, z80, z80scc, z80sio.
+Scopes: acia6850, am9517a, ay8910, chip, i8251, i8255, ins8250, m68000, m6809, mc146818, mc6845, mc68681, msm5205, okim6295, pia6821, pic8259, pit8253, saa1099, sega315_5124, sega315_5313, sn76496, upd1990a, upd7759, v30, x1010, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, z80, z80scc, z80sio.
 
 Reference: REFERENCE.md, Knowledge base.
 ```
