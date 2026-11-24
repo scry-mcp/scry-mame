@@ -4,7 +4,7 @@
  "title": "Z80 SCC channel registers",
  "kind": "register",
  "scope": "z80scc",
- "covers": "the control registers of each channel of the Zilog SCC family: write registers WR0 to WR10 and their bits",
+ "covers": "the control registers of each channel of the Zilog SCC family: write registers WR0 to WR15, including WR7 prime, the read registers RR11 to RR15, and their bits",
  "source": "official",
  "documents": [
   {
@@ -33,12 +33,15 @@
    "7039-7041",
    "7042-7052",
    "7060-7069",
+   "7082-7169",
    "7170",
    "7171-7178",
    "7188-7264",
    "7265-7270",
    "7284-7309",
-   "7318-7421"
+   "7318-7421",
+   "7422-7807",
+   "8275-8326"
   ]
  },
  "closed": [],
@@ -49,7 +52,9 @@
   "receive_register_reset",
   "safe_transmit_register_reset",
   "data_write",
-  "reset"
+  "reset",
+  "update_baudtimer",
+  "adjust"
  ],
  "entries": [
   {
@@ -3961,6 +3966,2339 @@
      "lines": "509-510",
      "as": "agrees",
      "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "access": "write",
+   "name": "WR11 clock mode",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7422-7527"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr11"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "511-512"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR11 is the Clock Mode Control register: its bits control the sources of the receive and transmit clocks, the signal on /SYNC and /RTxC, and the direction of /TRxC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7423-7428",
+       "sha": "d3f878d584082ae202acc0dda13310425bcb8504bdc55d984a9e9da58206c78f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR11 stores D7, the RTxC-XTAL/NO XTAL select: 0 expects a TTL signal on /RTxC; 1 connects a high-gain amplifier between /RTxC and /SYNC for a crystal.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7461-7467",
+       "sha": "7b629ad0c435e5dcdf824deac3f3b347c4f34cc53e1cec925de11e8e02935a54"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "With the oscillator selected its output is a clocking source and /SYNC is forced to zero internally; a hardware reset forces /NOXTAL.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7467-7472",
+       "sha": "4b24b27308fb3d045e78b6ed126cd2b6b5f09610499a2252f1b120a06a924b3a"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "WR11 stores D6-D5, the receive clock select: 00 /RTxC, 01 /TRxC, 10 the BRG output (printed SR in the scan), 11 the DPLL output.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7473-7479",
+       "sha": "7694280658dd9f4e12b8d1d16b031827238762c7de2e6aba255385b3840f6233"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7480-7485",
+       "sha": "b51f030a3a4731ef7185a7c2dc509aa37b59e285278cd53b352907792fe42263"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset forces the receive clock to come from the /RTxC pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7477-7479",
+       "sha": "2907b8b10f60aeb3a5d00faf6fa4276df67436dc383f0c884ffb24984abfec28"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "WR11 stores D4-D3, the transmit clock select: 00 /RTxC, 01 /TRxC, 10 the BRG output (printed SR in the scan), 11 the DPLL output.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7486-7496",
+       "sha": "7518d824abf87871a49ff849db7962921f52759b5392e2457aa477e1e3e94295"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7497-7502",
+       "sha": "b32c8659f8355e68dfb12bf1c4dc09811abbacab7b1f3e6242517b9d2d0a37d6"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset selects the /TRxC pin as the source of the transmit clock.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7494-7496",
+       "sha": "880e89fb585c6c0e7ac6dd97e56951acc0f87ef3ad18d56a7eaa4d8185dcbc31"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "WR11 stores D2, the /TRxC pin direction: 1 makes the pin an output carrying the signal of D1-D0; it is an input if a clock uses /TRxC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7503-7510",
+       "sha": "7485acb96d23c3d702f22dd848da11a265afdaaa6cdc61c037ede678e419a894"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset forces D2 to 0, so /TRxC is an input.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7509-7510",
+       "sha": "6f365db825b935f537b40d973cc027e4b3a25ec36660350af4d994db40c1209e"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "WR11 stores D1-D0, the /TRxC output source: 00 the XTAL oscillator, 01 the transmit clock, 10 the BRG output, 11 the receiver DPLL.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7511-7521",
+       "sha": "67f8b89ad0d4173772c579fbccb0cc13ab670daf029a635e0211eb25c5ea121e"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7522-7527",
+       "sha": "b68c8a02b9e68461244b1a9f10508bfeebe3bba69f9b3cc3c94236b7da5b9388"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "No signal is produced if /TRxC sources either clock, and D1-D0 are ignored when D2 is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7513-7521",
+       "sha": "7d42954ad34dc406dba16ce8a5f4a9447bf231e3d27cfbae15db398d8edfc84a"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset selects the XTAL oscillator as the /TRxC output source.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7520-7521",
+       "sha": "ae2c2a32bd2b8cb2215aef00cd18a70e2df3f1cd11d481adadb1a9ec7dbe9fed"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores the field and sets the receive clock for /RTxC and BRG sources; for /TRxC and DPLL it logs the source unimplemented and stops the receiver.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2096-2102",
+       "sha": "0eda9ca589b216e954431af793f60ebf74ff3e5a9c33543b86f5b47bd96f1187"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2885-2895",
+       "sha": "d0b6c9f56f228f2d008b187a0fde550200b49580f6739d66dcbd542681cee567"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2896-2907",
+       "sha": "ada15da4ee95e3b3423cf8cacb44b521f0fa78622258e325c57aa6a1929ce7be"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2081",
+       "sha": "25569785c4c304b2895ae4302679926dd08c984e3cf34b2a69cd3cf3f7a275a4"
+      }
+     ],
+     "vs": "differs",
+     "row": "4"
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores the field and sets the transmit clock for /RTxC and BRG sources; for /TRxC and DPLL it logs the source unimplemented and stops the transmitter.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2110-2116",
+       "sha": "e7f228d373cdb54ea663276ac74882aa319e433caa3640a48213f8edbefb9571"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2910-2919",
+       "sha": "0fecd41d29360804202a661e6ac86f4cfbfb883505c09ecb6f0cd06501924926"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2920-2929",
+       "sha": "18d3f8ab92237d1c023edccdca0295efc7b8db02f3f014cbe07b1c815d0d6e4a"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2930-2940",
+       "sha": "05b75e5e790c6d5eb0a1a6a66fd1be4e55c8d525660ae08a70afc9295693aa99"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2081",
+       "sha": "25569785c4c304b2895ae4302679926dd08c984e3cf34b2a69cd3cf3f7a275a4"
+      }
+     ],
+     "vs": "differs",
+     "row": "6"
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME logs the /TRxC pin direction and output source and drives no such pin.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2130-2141",
+       "sha": "3333b6e25b47c541b9b7b08066dfaf8ef1176ad4d9c2221e8645a4cc23203d06"
+      }
+     ],
+     "vs": "absent",
+     "row": "8"
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME logs the /TRxC output source and drives no such pin.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2130-2141",
+       "sha": "3333b6e25b47c541b9b7b08066dfaf8ef1176ad4d9c2221e8645a4cc23203d06"
+      }
+     ],
+     "vs": "absent",
+     "row": "10"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2081",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "511-512",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "511-512",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "511-512",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "511-512",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7422",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7429-7460",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2082-2143",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x0C",
+   "access": "write",
+   "name": "WR12 BRG low",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7528-7558"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr12"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR12 contains the lower byte of the time constant for the baud rate generator.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7528-7533",
+       "sha": "5725b383d73809a9484f79b66aaee1cdbcab3a6448e122cb9742401471dbbf22"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The time constant can change at any time, but the new value does not take effect until the next load into the down counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7531-7536",
+       "sha": "e49ca441da600b91f203c5b69ab2aa7326864e6612f9ec76ea3d6af1040ebd6c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "It is advisable to disable the baud rate generator while WR12 and WR13 are loaded, to avoid a load between the upper and lower bytes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7536-7540",
+       "sha": "9fcc8840dd88250efbc6ca08f3b45c632194c305ca5970b540584b6746824043"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The time constant is the clock frequency divided by twice the desired rate and the BR clock period, minus two; the scan flattens the fraction.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7541-7550",
+       "sha": "43b43a7bc4a74257b0ef5fbebe3eeb3dceb021c7ca94824c50771ada19dc0168"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "WR12 stores TC4 through TC7 of the time constant.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7551-7558",
+       "sha": "32503cdfb0af0d0097b0c84146f80730ff58404fd2a131bf86a67acddcf126f0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2163",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "access": "write",
+   "name": "WR13 BRG high",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7559-7576"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr13"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR13 contains the upper byte of the time constant for the baud rate generator.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7559-7563",
+       "sha": "b052e853f45df958ac39e0869856782c00191f655fffd06f11013b668b96a48f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR13 stores the upper byte of the time constant.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7559-7563",
+       "sha": "b052e853f45df958ac39e0869856782c00191f655fffd06f11013b668b96a48f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Its bits are TC8 through TC15, the upper byte of the time constant.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7564-7572",
+       "sha": "89aa798805d08414d378272c301c502caaa21ff32b91e8a17403817b99c724ae"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2171",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7573-7576",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0E",
+   "access": "write",
+   "name": "WR14 BRG and loopback",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7577-7733"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr14"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1203-1206"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1149-1150"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "513-516"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR14 contains miscellaneous control bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7579-7581",
+       "sha": "a60ec5a4ee7d81fc6caa31844f94194368790beb0eb5eccb5bc4246c759c37f5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR14 stores D7-D5, the three-bit DPLL command, one of eight commands.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7613-7617",
+       "sha": "b2f00f9805bb6178fb060372694a5e4511c6406f2a13801023450c83f41e24c3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset disables the DPLL, resets the missing clock latches, sets the source to /RTxC and selects NRZI mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7615-7617",
+       "sha": "01bbce6040fc527127624edef270347864bf193db325d59d228fd457f74f059f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The Null command has no effect on the DPLL.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7620-7621",
+       "sha": "d68ddf113c311ed89fa3cb023d76cf142dca27ae290542889bc70e4359d7089b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Enter Search Mode makes the DPLL search for a locking edge in the incoming data stream.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7622-7626",
+       "sha": "d89f313a4d5709da44ef1b115964ee77fa728e1162814fb1fd21e3ab44f80ef7"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Reset Clock Missing and Disable DPLL disable the DPLL, reset the missing clock latches and force a continuous Search mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7660-7665",
+       "sha": "1d96555fec8c86fbcfe93a14993ea5344f5396cdcfea8796286fcac83b8f56a9"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Set Source to BRG takes the DPLL clock from the BRG; Set Source to /RTxC from the /RTxC pin or crystal oscillator.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7666-7673",
+       "sha": "7e0f3b1563486b21ca0a81f0bdf7832cba9608202624a35dbfce5c9bf27f2374"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "Set FM Mode forces FM operation; Set NRZI Mode forces NRZI, also selected by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7674-7681",
+       "sha": "9fd26f7390782729babb956607768a8b326393e79272a1fb1d87b361099ad291"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "WR14 stores D4, Local Loopback: transmitted data is routed back to the receiver and to the TxD pin, and /CTS and /DCD are ignored as enables.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7682-7692",
+       "sha": "23d1cb60200f618fe977896b2a4b65eb1799d28a08c2461653f959f389d22809"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "reset",
+     "of": "doc",
+     "text": "D4 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7691-7692",
+       "sha": "228081e0eb78b13c709c8893b7ea6325ccfe2b2628c1c2a6929209f459bab760"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "In Local Loopback transitions on /CTS and /DCD still cause interrupts if programmed, and the mode works with any transmit/receive mode except Loop.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7686-7690",
+       "sha": "38796f3e6bd451225ca75b427591054bc24ce8143a2c664ba2c29661f4e36262"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "doc",
+     "text": "WR14 stores D3, Auto Echo: TxD is connected to RxD but the receiver still listens to RxD, and transmitted data is never seen.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7693-7699",
+       "sha": "56f0f26dd3ce9ec41c02fd7f46bc753445d06fee8cc37a22bd97e5432ece0aa0"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "reset",
+     "of": "doc",
+     "text": "D3 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7698-7699",
+       "sha": "ba3861561198d5ee660f6a177cdda3b757204fc6aa4d3d7b6e8eef7f72c1f84f"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "WR14 stores D2, the /DTR//REQ function: 0 the pin follows WR5's DTR bit; 1 it goes Low when the transmit buffer is empty and after CRC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7700-7710",
+       "sha": "bc046f0d524ae4348ffd5b80458abfafb1228fae4f4c1c3e37598aed2670206c"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7711-7716",
+       "sha": "c68eb26d0a2268eb53eb597cfe7b77d201e308aa695cf95a660ff789746238c6"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "reset",
+     "of": "doc",
+     "text": "D2 is reset by a channel or hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7715-7716",
+       "sha": "f6717c4a1810e9e9c9e69343f62ec88e1124043e5e39cdd4302d016cd4ecea9a"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "doc",
+     "text": "WR14 stores D1, the BRG source: 0 the /RTxC pin or XTAL oscillator, 1 the PCLK input.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7717-7724",
+       "sha": "cd9a647161cff3127c1142ec070f9f4f93669a513e906cb08bc059cdf79aafdb"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "reset",
+     "of": "doc",
+     "text": "A hardware reset sets D1 to 0, selecting the /RTxC pin as the BRG clock.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7723-7724",
+       "sha": "09f4e1e03195f4957770dca4e6007c7c588f95daa98eafcf274de8b488632314"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "doc",
+     "text": "WR14 stores D0, the BRG enable: 1 enables the counter and 0 inhibits it immediately; a change to 1 is not reflected for two counts.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7725-7733",
+       "sha": "089877fd6d715f3c907cd2717fcd41ffcc3e9c0879c909294f4f09bca5c96452"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "reset",
+     "of": "doc",
+     "text": "D0 is reset by a hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7732-7733",
+       "sha": "0997b639967904e2aee00a87b0108b3faf62001d2ac41a1bbe918ae52a9ab4d8"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores the byte and logs every DPLL command but the Null one as not implemented; the Null command is logged by name.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2182-2187",
+       "sha": "55d397611a125827e56e2c8c6b363e06f490ea984897d3be52be06640fd46557"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2207-2216",
+       "sha": "763d3274576bf0789f9bb680d3cf29c3c762e6dcebfc7ce49a946915f2f15238"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2217-2225",
+       "sha": "6bc43b81bfc1378e06700a5c84ece02fcda4a92347f49fbbe865326a81b03ebb"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2226-2234",
+       "sha": "98962c3b41214734cad33b793dec989b84f8258acb1784780ce6137472247f9d"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2255",
+       "sha": "80c302d7b8261871e2e047e7344801a591e1a9d7a1f84bcc838c43e5e7aaadf0"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    },
+    {
+     "n": "21",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME's resets keep D7 and D6 and set D5, so they do not force the NRZI command the document gives.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "513-516",
+       "sha": "62c255e230ed798e6c58d44a6a5be727c8398ee5205329eb6ce44f60adf04bd4"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1149-1150",
+       "sha": "17b838d26e6070d23ea243e8b987e439b47a6591469f35d30ba0719972c76a17"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    },
+    {
+     "n": "22",
+     "on": "reset",
+     "of": "mame",
+     "text": "MAME clears D4 on a channel reset but sets it on a hardware reset, where m_wr14 is set to 0x30.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1149-1150",
+       "sha": "17b838d26e6070d23ea243e8b987e439b47a6591469f35d30ba0719972c76a17"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "513-516",
+       "sha": "62c255e230ed798e6c58d44a6a5be727c8398ee5205329eb6ce44f60adf04bd4"
+      }
+     ],
+     "vs": "differs",
+     "row": "10"
+    },
+    {
+     "n": "23",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME routes transmitted bits back to the receiver and to TxD in Local Loopback, but /CTS and /DCD still enable the transmitter and receiver through the auto-enables bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1203-1206",
+       "sha": "26d66b8b9fe8cb105208907a7bb6cc4a84cdca74267bbd232cdea605fd21c188"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2601-2612",
+       "sha": "8dee5e6a42caee3420e0b8c65dcb0b47641fb429a38b346afd12fd2db481e964"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2638-2647",
+       "sha": "5d22355a123982f54591af68b44805834eb7a09bc4c6a54f6d0af24b666be8b3"
+      }
+     ],
+     "vs": "differs",
+     "row": "9"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2255",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2255",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2255",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2255",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1149-1150",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1149-1150",
+     "as": "agrees",
+     "row": "15"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "513-516",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "513-516",
+     "as": "agrees",
+     "row": "19"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2240-2248",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2251-2252",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2182-2238",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2250-2257",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7577-7578",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7582-7612",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7618-7619",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7627-7659",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0F",
+   "access": "write",
+   "name": "WR15 status enables",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7734-7807"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr15"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1997-1998"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR15 is the External/Status Source Control register: with External/Status interrupts enabled via WR1, its bits control which conditions cause an interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7734-7743",
+       "sha": "aa166e341439a14438798e4d95ee3209ff240ed5e1069a5006b76092b9976805"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Only conditions that occur after the controlling bit is set to 1 cause an interrupt, even if one is pending when the bit is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7739-7742",
+       "sha": "51ea895c846fdb2d6e8c081f823afa7203f2cf08c5e2f364fe62c032473b49ab"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "On the CMOS version bits D2 and D0 are reserved; on the NMOS version D2 is reserved, and these bits should be written as 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7744-7746",
+       "sha": "9c03b353f0b4cf489efa460189921f429dbc6e1a64d0f08c30ca457b4be8453e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D7, the Break/Abort interrupt enable.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7758-7759",
+       "sha": "acdbed1471e8fb76ba962be5b147ca9d98bd69a2955a53663b58fbdf8b95b938"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset sets D7 to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7760-7761",
+       "sha": "f407cd4a90f4fe0531243f22aaf521a7784222995e568fa7d8c5b53cd38134d5"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D6, the Transmit Underrun/EOM interrupt enable.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7762-7763",
+       "sha": "d01923d2abc92d38ccdd332c7a0fb370ce32eec59c87856951a867dc157bbd8c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset sets D6 to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7764-7765",
+       "sha": "db0956ceb1fc745116b60a1f79d91a5f67849efcc9f9c15df7e4021ad109dd12"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D5, the CTS interrupt enable.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7766-7767",
+       "sha": "c5b4b0e040fbced6c7aafe441cc030376f4fea479d2c041673aa9782a4afbd8d"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset sets D5 to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7768-7769",
+       "sha": "4ec5f1ff3dcc355a517db0ddb999a0353a0cf757b3a58c33e379ee19d60c516f"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D4, the SYNC/Hunt interrupt enable: a change on /SYNC in asynchronous mode, or in the Hunt bit in synchronous modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7770-7775",
+       "sha": "d1190f0922fad523dc85a7f884969001458b119c2242dc506b3ae60611c75b00"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset sets D4 to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7774-7775",
+       "sha": "31092f24f07320a0c0af15b021eee303d725ca00d95fcb5b1f9ecfd8a6063d65"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D3, the /OCO Interrupt Enable, the scan's spelling of DCD: a change of state on the /OCO pin causes an External/Status interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7776-7779",
+       "sha": "8cfd5e90a7461d00e95394885b661e2cfec6fa9efbb765a559fe06be8731c256"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset sets D3 to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7778-7779",
+       "sha": "4e50d0afed85c6ce19478f97db5480d874d764c3954ba3bd8f06e79d09506966"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D2, the Status FIFO enable (CMOS/ESCC): set in SDLC/HDLC mode, status of up to ten frames is held until read.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7780-7786",
+       "sha": "4f19993285a36644372011dc39a309e87e56710834dbf9f56f948e8e4a855cb4"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7787-7792",
+       "sha": "e59e9212dca0cd4ee1b9bf286ab1ec7b3b6d869c9a440b4c57a99acf3a59c276"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset resets D2 to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7788-7792",
+       "sha": "3bdfb85dc9e4369861e61279347498def8abd1d1e91ba33e3ca7c13a034d67cc"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D1, the Zero Count interrupt enable: an External/Status interrupt comes when the BRG counter reaches 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7793-7797",
+       "sha": "df6b498a8037a08012efd2be0d6ebcf4928cc9cd7cfe66404024791a108ee05b"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "reset",
+     "of": "doc",
+     "text": "A channel or hardware reset resets D1 to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7796-7797",
+       "sha": "56f3c09b238a4d922dc73c6b11947e62eaa96b10c033c1aab3eb810a7b894d35"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "doc",
+     "text": "WR15 stores D0, the point-to-WR7-Prime bit (ESCC only): 1 sends writes of the WR7 address to WR7 prime.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7798-7807",
+       "sha": "7d59816063162079f2c81489f14f529d8f5a0ed47c93a3f094dfa5d14e40fdff"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "reset",
+     "of": "doc",
+     "text": "D0 remains set until cleared by writing a 0 or by a hardware or software reset; on NMOS/CMOS it is reserved.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7802-7807",
+       "sha": "abf6de4332c8c131a361b3aac2e1fa9b9d44d62d041166948c6636c742b16623"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores the byte and logs the status FIFO as not implemented; RR6 returns 0 while D2 is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1554-1558",
+       "sha": "dd7a0c218accecf2f3934689a0fded8ece1d4de0c21782cdb8b5cde0d37a1192"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2280",
+       "sha": "fe835f2b51d5fdf11f5aba8bcf3f5e605e308a64bb858f8c2f3b682da4b14c42"
+      }
+     ],
+     "vs": "differs",
+     "row": "14"
+    },
+    {
+     "n": "21",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME routes a write to the WR7 address into m_wr7p when D0 is set and the variant is an ESCC or 85C30.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1997-2000",
+       "sha": "ddd400e700dce8c76a75e6539a78db7293e8fa90d8736a03a80b26ec5f8ff2eb"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "22",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores D7 and tests it in the external/status mask, but logs the Break/Abort interrupt as not implemented.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2280",
+       "sha": "fe835f2b51d5fdf11f5aba8bcf3f5e605e308a64bb858f8c2f3b682da4b14c42"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "802",
+       "sha": "105caccf96b2851771488ee63e25eea12c2832aa07b662aff664d332563344ac"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2277",
+       "sha": "8da33f010bbb01818108701c8130a22df2038d9c3d266d997e5886166bd0f3a1"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2264-2265",
+       "sha": "2c877d7c426c2af4da8c32e56343b4e2f580653b34cf922c0fb1d9260d896a10"
+      }
+     ],
+     "vs": "differs",
+     "row": "4"
+    },
+    {
+     "n": "23",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores D6 and tests it in the external/status mask, but logs the Transmit Underrun/EOM interrupt as not implemented.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2280",
+       "sha": "fe835f2b51d5fdf11f5aba8bcf3f5e605e308a64bb858f8c2f3b682da4b14c42"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "802",
+       "sha": "105caccf96b2851771488ee63e25eea12c2832aa07b662aff664d332563344ac"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2276",
+       "sha": "c9325fbbaaac26d29055ba076ded4552341ba1ac3e6f7a411050b22707ada736"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2264-2265",
+       "sha": "2c877d7c426c2af4da8c32e56343b4e2f580653b34cf922c0fb1d9260d896a10"
+      }
+     ],
+     "vs": "differs",
+     "row": "6"
+    },
+    {
+     "n": "24",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores D4 and sync_w raises the SYNC/Hunt interrupt when it is set, but the log calls it not implemented.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2280",
+       "sha": "fe835f2b51d5fdf11f5aba8bcf3f5e605e308a64bb858f8c2f3b682da4b14c42"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2695-2700",
+       "sha": "95c376f87cbea2401ffa79453cd6002184b6e5290665dd06ed48edeebad75958"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2274",
+       "sha": "55acff061ab185e99bd5420cce53c642e4e2eb58cf7be8e9cef94823f8c76bc4"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2264-2265",
+       "sha": "2c877d7c426c2af4da8c32e56343b4e2f580653b34cf922c0fb1d9260d896a10"
+      }
+     ],
+     "vs": "differs",
+     "row": "10"
+    },
+    {
+     "n": "25",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores D1 and the baud-rate timer raises the zero count interrupt, but the log calls it not implemented.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2280",
+       "sha": "fe835f2b51d5fdf11f5aba8bcf3f5e605e308a64bb858f8c2f3b682da4b14c42"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2833-2835",
+       "sha": "9a4fa5e3b2c9b07e86961ffac43eed78a3e1f30d7df0a62698916bc8b0db4352"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1175-1176",
+       "sha": "2782e92ccbee736d21d3e6b466940591583b8566f93e82a856dca7efaf9a0c19"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2271",
+       "sha": "52f2b90bff1a80c21de164994c99ac7eb8c0029138af3106a412d4aff83ef377"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2264-2265",
+       "sha": "2c877d7c426c2af4da8c32e56343b4e2f580653b34cf922c0fb1d9260d896a10"
+      }
+     ],
+     "vs": "differs",
+     "row": "16"
+    },
+    {
+     "n": "26",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores D0 and routes WR7 writes to m_wr7p with it, but logs it as an unimplemented WR7 prime interrupt.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2280",
+       "sha": "fe835f2b51d5fdf11f5aba8bcf3f5e605e308a64bb858f8c2f3b682da4b14c42"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1997-1998",
+       "sha": "1b71e2df4903997509c77b95d6e1200f32d44445a2048bc6fd12ab45a3d41bb1"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2270",
+       "sha": "7085ace16ff588d1ca7f7a78013b0ddb180157e73b0923d1f069f34ae4d0a5e6"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2264-2265",
+       "sha": "2c877d7c426c2af4da8c32e56343b4e2f580653b34cf922c0fb1d9260d896a10"
+      }
+     ],
+     "vs": "differs",
+     "row": "18"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2280",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2280",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "15"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "agrees",
+     "row": "19"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7747-7757",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2272-2273",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2275",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2281-2284",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x10",
+   "access": "write",
+   "name": "WR7 prime",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7082-7169"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1238-1246"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1229-1237"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR7 prime is used only with the ESCC and is written at the WR7 address when bit D0 of WR15 is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7082-7087",
+       "sha": "5f27ad11c8183921ecadf26a83a01a655a8e8e11aa215662ef1cc04ce05b5085"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Features enabled in WR7 prime remain enabled unless disabled, and a hardware or channel reset leaves the features intact.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7087-7090",
+       "sha": "d935c51298ef032a260d58def23f437198fd1a9861d78d23f7d76962a755971f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 7 is reserved, not used, and must be written zero.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7101-7102",
+       "sha": "83d9bbabda7a6273c88b61c22efb07f564bd5a2e0ac170579eb0104bc8420f89"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "WR7' stores D6, Extended Read Enable: WR3, WR4, WR5, WR7 prime and WR10 are then read at RR9, RR4, RR5, RR14 and RR11.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7103-7110",
+       "sha": "470c459619a17d5e4d0886ccb6c3c6671e0a63c11a02f28db3cd2710d3d40f4c"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 5 is the Transmit FIFO Interrupt Level: set, the transmit buffer empty interrupt comes when the FIFO is completely empty; reset, when the entry location is empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7111-7122",
+       "sha": "62110536eee0269d249b7b85e35f9f5433d833715576eb470ec65550ddbf4e99"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7123",
+       "sha": "a9df226d941e50eae1d7248348c9b802d94acb81cc8dcbb6146db180109c9161"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 4 is /DTR//REQ timing: set and in Request mode, the pin deactivates like /W//REQ; reset, deactivation takes four clock cycles.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7125-7131",
+       "sha": "ae1b0e9d6b439440c5f7c90d4ad819f9f4467010981cefbc41bc3e6e8c1d6b26"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 3 is the Receive FIFO Interrupt Level: set with Receive Interrupt on All Characters, the interrupt triggers when the Rx FIFO is half full.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7132-7139",
+       "sha": "8fe9dfe0633dbaa7c2ba25acf55fbee14a12e985c0015c8a88b1a0b9f85208a7"
+      },
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7140-7145",
+       "sha": "d71351e5260dd00eb27f039dce87cc0a8b51fdc1d28717127f60baf439781989"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "A character with a special condition interrupts when it is loaded into the FIFO, so RR1 should be read before the data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7136-7142",
+       "sha": "e09512b8dff4c7547b31d37a2e67d784a99190cca9380450e6e5f79b1751674f"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 2 is /RTS pin deactivation: in SDLC mode with Flag-On-Underrun and RTS reset, /RTS deasserts at the last bit of the closing flag.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7146-7153",
+       "sha": "02a38143393b6661b8b50fbd806d5d29976ef7ba89d96470ca13bdc1b6a51564"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 1 is Automatic EOM Reset: it resets the Tx Underrun/EOM latch and presets the transmit CRC generator, so the Reset command is not needed.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7154-7161",
+       "sha": "f48e2f7f86cf513afbba0b220ce0eecb29d823b87886a3d5f8a5c2e7758b8021"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 0 is Automatic Tx SDLC Flag: it transmits an SDLC flag before data, removing the need to reset mark idle or enable the transmitter.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7162-7169",
+       "sha": "7ede9d559bb6810210c7afdcbbe9bc1bbb7f9300de78a5d1e61df44d350e3de1"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME stores the byte in m_wr7p when WR15 D0 is set on an ESCC or 85C30, but honours D6's extended read only when WR15 D2 is also set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1997-1998",
+       "sha": "1b71e2df4903997509c77b95d6e1200f32d44445a2048bc6fd12ab45a3d41bb1"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1664",
+       "sha": "26e1ba08c71b778ad4b4288f59158a81253ae955002ecb0f290dd8df2a1ac652"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1670-1678",
+       "sha": "888d40c002975d52625bc82f48e845ec1ed349c1e2cb429b96a499421528ab83"
+      }
+     ],
+     "vs": "differs",
+     "row": "4"
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME tests bit 0x04 of m_wr7p for the transmit FIFO empty interrupt level, where the document puts that level in D5.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1252-1256",
+       "sha": "bbfc7b46eb1c6ddc98da99280dcdc4da0d6dd7060bfbe9c922ea124ed6c2cf09"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2542-2546",
+       "sha": "bbfc7b46eb1c6ddc98da99280dcdc4da0d6dd7060bfbe9c922ea124ed6c2cf09"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "281",
+       "sha": "9f17653f79098bb31782c0738e764b01c0096d1cd970ef6fe71a178c40d6a8f2"
+      }
+     ],
+     "vs": "differs",
+     "row": "5"
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME reads bit 0x04 of m_wr7p for the transmit FIFO level instead of the /RTS deassertion timing.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1252-1256",
+       "sha": "bbfc7b46eb1c6ddc98da99280dcdc4da0d6dd7060bfbe9c922ea124ed6c2cf09"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "281",
+       "sha": "9f17653f79098bb31782c0738e764b01c0096d1cd970ef6fe71a178c40d6a8f2"
+      }
+     ],
+     "vs": "differs",
+     "row": "9"
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME drives /DTR//REQ from the transmit-buffer-empty state in Request mode and implements no deactivation timing; a TODO names the timing as still to be configured.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "3010-3013",
+       "sha": "7966a23a60f9ca0d0b65bcce5089e5e9f8a0232aa6ceb8218c247843fe397256"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "3001-3006",
+       "sha": "286b13112b6ff9bbadef58d6d78ce6a295997291df53437edf9e7b9a0ed837e3"
+      }
+     ],
+     "vs": "differs",
+     "row": "6"
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME raises the receive interrupt whenever a character is available, with no half-full FIFO level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "3033-3044",
+       "sha": "73f75823385e05b6093422ead5a4adb693490fa22e6dafc39176f6358e160a3a"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "3045-3048",
+       "sha": "804db6f3502a0272cca09c6dc3c11b5c5aa1fa3d1837a33d041aab4885ddfb90"
+      }
+     ],
+     "vs": "differs",
+     "row": "7"
+    },
+    {
+     "n": "17",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME sets the all-sent bit and raises /RTS when the transmitter empties, and resets no EOM latch nor presets the CRC at the end of a message.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1238-1246",
+       "sha": "0d1795fd5c56a2c9d8258682fd4364fb272b24642013bed1605e192a60e899a3"
+      }
+     ],
+     "vs": "absent",
+     "row": "10"
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME reloads the shift register from the transmit FIFO when a character finishes, with no SDLC flag sent before the data.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1229-1237",
+       "sha": "ce85d4a8057acd4c6fde64997791fffcda8fe464018ae94f8236fb221ffc7fca"
+      }
+     ],
+     "vs": "absent",
+     "row": "11"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1997-1998",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1999-2001",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7091-7100",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7124",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1238-1246",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1229-1237",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "access": "read",
+   "name": "RR11 WR10 or RR15",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8275-8281"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_rr11"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1144"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "On the ESCC, RR11 reflects the contents of WR10 provided the Extended Read option has been enabled; otherwise it returns an image of RR15.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8275-8279",
+       "sha": "f5ebb3caecda8836301f749f36774158d8f386159980006df58af6e03faf1c5d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "On the NMOS/CMOS version, a read to this location returns an image of RR15.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8280-8281",
+       "sha": "5fecdebcd2a55a6bf7e5061ab088c32ac12edf471aea0c16d8ceb11bdf8f9863"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "A read returns WR10 when the Extended Read option is enabled, and the RR15 image otherwise.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8276-8279",
+       "sha": "ab42de5e198e6b67a0693e85af51bf6442d28db996f21d4010bd12976777ac08"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "text": "With WR15 D2 clear MAME remaps RR11 to RR15 and returns m_wr15 & 0xfa; with D2 set and Extended Read on it returns m_wr10.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1664-1668",
+       "sha": "5e62e7c99ceed373900f3825dce2e832fb0412098a7f4078b2e63aa20ffeb1ae"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1670-1676",
+       "sha": "8a8091f2b099588584a2fd43b5bb8fbf27fd80fe32070eca7289dc5b70b006f2"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1700",
+       "sha": "c5ebf0c486c45f0bad76f6276fad9047db0466930a4be145e289aa53f1b0f586"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1650",
+       "sha": "b3389814dae4601d0210bc51eba79905cb2ef68f3af6e42ccd3781cb25baeddb"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1608-1611",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "509-510",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1147",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2062",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1144",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x0C",
+   "access": "read",
+   "name": "RR12 BRG low",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8282-8292"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_rr12"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2163"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RR12 returns the value stored in WR12, the lower byte of the time constant for the BRG.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8282-8284",
+       "sha": "78e06963d4059a27babbd973273cc44164019af231f5d64ec93b03fb43a20aa5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of RR12 returns the WR12 byte.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8282-8284",
+       "sha": "78e06963d4059a27babbd973273cc44164019af231f5d64ec93b03fb43a20aa5"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1619",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2163",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8285-8292",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "access": "read",
+   "name": "RR13 BRG high",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8293-8307"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_rr13"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2171"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RR13 returns the value stored in WR13, the upper byte of the time constant for the BRG.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8293-8296",
+       "sha": "d97766eb8c08c9406fb253dc67ac74c8064bf40ef99b0d34aa375da2cea73b0d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of RR13 returns the WR13 byte.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8293-8296",
+       "sha": "d97766eb8c08c9406fb253dc67ac74c8064bf40ef99b0d34aa375da2cea73b0d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1627",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2171",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8297-8307",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0E",
+   "access": "read",
+   "name": "RR14 WR7 prime or RR10",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8308-8314"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_rr14"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1998"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1158"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "On the ESCC, RR14 reflects the contents of WR7 Prime provided the Extended Read option has been enabled; otherwise it returns an image of RR10.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8308-8312",
+       "sha": "6e01ecf8dcc166c961408777b11f4832281a87c50cd9df9d4054f61ea95010cb"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "On the NMOS/CMOS version, a read to this location returns an image of RR10.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8313-8314",
+       "sha": "ccc214318eff70aa87dd1c7a62da5f527db7f2c74d9b96557e392d582bc33e3d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "A read returns WR7 prime when the Extended Read option is enabled, and the RR10 image otherwise.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8309-8312",
+       "sha": "df48b78f6e5be11514829692b84aed3f0d99843fcfba77f099dbd5b64c12dcd7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1637-1640",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1998",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1158",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x0F",
+   "access": "read",
+   "name": "RR15 status enables",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8315-8326"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_rr15"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2280"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RR15 reflects the value stored in WR15, the External/Status IE bits, and the two unused bits are always returned as 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8315-8318",
+       "sha": "3f28c69c8378175506849d7006fb638a261cbcfce7835935a8a2fdfcabe19c1a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of RR15 returns WR15 with the two unused bits as 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "8315-8318",
+       "sha": "3f28c69c8378175506849d7006fb638a261cbcfce7835935a8a2fdfcabe19c1a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1650",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1021-1023",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1151",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2280",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "8319-8326",
+     "as": "layout"
     }
    ]
   }

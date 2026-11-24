@@ -1,0 +1,1333 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80scc-ports",
+ "title": "Z80 SCC bus ports as MAME maps them",
+ "kind": "register",
+ "scope": "z80scc",
+ "covers": "the direct port handlers MAME declares for the Zilog SCC family, keyed 0x100 plus the index of the handler in the header: universal-bus decode in either bit order, the data and control ports of each channel, the Z-bus, and the interrupt acknowledge",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SCC-UserManual-1992.raw.txt",
+   "variant": "SCC family"
+  }
+ ],
+ "official": {
+  "SCC-UserManual-1992.raw.txt": [
+   "965-973",
+   "975-994",
+   "996-999",
+   "1151-1169",
+   "1475-1509"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+   "lines": "1475",
+   "as": "layout"
+  }
+ ],
+ "engine": [
+  "control_read",
+  "control_write",
+  "data_read",
+  "data_write",
+  "scc_register_read",
+  "scc_register_write",
+  "z80daisy_irq_ack"
+ ],
+ "entries": [
+  {
+   "key": "0x100",
+   "access": "read",
+   "name": "dc_ab read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "979-980"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::dc_ab_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "/RD is the read input, active Low; it indicates a read operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "979-980",
+       "sha": "b61a9ef2caa66163d0a5ad22ae1284dc69f07633c085bda606cc9834cc5cb3d4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "When the Z85X30 is selected, /RD low indicates a read operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "979-980",
+       "sha": "b61a9ef2caa66163d0a5ad22ae1284dc69f07633c085bda606cc9834cc5cb3d4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "dc_ab_r decodes offset bit 0 as A//B and bit 1 as D//C, and calls the selected channel's data or control read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "905-907",
+       "sha": "9fe0b30d68a5bec5db1ab63698a6cd1f4fed028e8c8d5fb9d9e408fa009a9b8f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "916-918",
+       "sha": "4d0b7c504e2253108e8dc735305fd20fa7c004cefc072379f5d44f4f3ba18e26"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "text": "dc_ab_r decodes the offset and returns the selected channel's register; it models no /RD select.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "903-914",
+       "sha": "e10356a5a3b4ea0e115bab3e79bf82fc93db1e83a2129449c9227e640df551b8"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "915-918",
+       "sha": "4d0b7c504e2253108e8dc735305fd20fa7c004cefc072379f5d44f4f3ba18e26"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x100",
+   "access": "write",
+   "name": "dc_ab write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "984-985"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::dc_ab_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "/WR is the write input, active Low.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "984",
+       "sha": "5d0fa53fb556525a5a2ba709ca1c8404fe4b60978af2f4be687e40d95e3888f5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "When the Z85X30 is selected, /WR low indicates a write operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "984-985",
+       "sha": "b175dda925f30155ec6e513d30d2a69b764bf7e7df2b0e234f8005beb3794eea"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "dc_ab_w decodes offset bit 0 as A//B and bit 1 as D//C, and calls the selected channel's data or control write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "925-927",
+       "sha": "9fe0b30d68a5bec5db1ab63698a6cd1f4fed028e8c8d5fb9d9e408fa009a9b8f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "936-941",
+       "sha": "28091a4cd241cabb2c48e57b30c6f2338ec6ed06f8f8a4f9968fff65e865b7ad"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "dc_ab_w decodes the offset and calls the selected channel's data or control write; it models no /WR select.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "923-934",
+       "sha": "e023dcdf07cf3b7ec845b119fb7d23ea1cf2170304e88a6451c6dd1326f5407c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "935-941",
+       "sha": "28091a4cd241cabb2c48e57b30c6f2338ec6ed06f8f8a4f9968fff65e865b7ad"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x101",
+   "access": "read",
+   "name": "ab_dc read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "981-983"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::ab_dc_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "During an interrupt acknowledge cycle, /RD gates the interrupt vector onto the bus if the Z85X30 is the highest-priority device requesting one.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "981-983",
+       "sha": "a1254b1e512cf0de6c15f41e77d65613446d382fa251730098b72a6b6056d620"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "During an interrupt acknowledge cycle, /RD gates the interrupt vector onto the bus if the Z85X30 is the highest priority device requesting one.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "981-983",
+       "sha": "a1254b1e512cf0de6c15f41e77d65613446d382fa251730098b72a6b6056d620"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "ab_dc_r decodes offset bit 1 as A//B and bit 0 as D//C, the reverse of dc_ab_r.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "948-950",
+       "sha": "3182cd5cac2fe99726b653e3bfd200fcc99efb5aced586cf55f8b6926bdf7b5c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "905-906",
+       "sha": "49353efa64eb21407e3987e896ff0a5b56cf23e6d6fc790ab21d983e7e38e943"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "text": "ab_dc_r returns the selected channel's register; it has no interrupt acknowledge cycle and models no /RD select.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "946-957",
+       "sha": "0af1a3ca4e58d4cf0b29aa4c83faff5d841a28f44770b64c37b4f52a0a0e9f29"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "958-961",
+       "sha": "c614882a3666ebe0efd4380e7d8c564b7cac9650aa959b870b1db34dbe2c7eb0"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x101",
+   "access": "write",
+   "name": "ab_dc write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "986-987"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::ab_dc_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The CPU wants to write command bytes or data to the Z85X30 write registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "986-987",
+       "sha": "3909c2542c66724df8dfcd6558c284e5dacc4ffae4e60750d3287dcae185c96f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The write cycle carries the command bytes or data to the Z85X30 write registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "986-987",
+       "sha": "3909c2542c66724df8dfcd6558c284e5dacc4ffae4e60750d3287dcae185c96f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "ab_dc_w decodes offset bit 1 as A//B and bit 0 as D//C, the reverse of dc_ab_w.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "969-971",
+       "sha": "3182cd5cac2fe99726b653e3bfd200fcc99efb5aced586cf55f8b6926bdf7b5c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "925-926",
+       "sha": "49353efa64eb21407e3987e896ff0a5b56cf23e6d6fc790ab21d983e7e38e943"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "ab_dc_w decodes the offset and calls the selected channel's data or control write; it models no /WR select.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "967-978",
+       "sha": "bb47945141d246b0f539807162f7fb6a4a0019adbcb35fab9e2eafd32e88d496"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "979-986",
+       "sha": "241e29eb625aa69cb76a21d41af390b3967a37a775d6c67c05533ea6e183a704"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x102",
+   "access": "read",
+   "name": "data A read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "975-976"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1486-1488"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::da_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "D7-D0 is the bidirectional data bus: it carries data and commands to and from the Z85X30.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "975-976",
+       "sha": "2bb7cdbf8a586601cdfc6ed2142c0ff8316342d2df6a7266c4eb75d4fff9237e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read brings data or commands from the Z85X30 on the data bus D7-D0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "975-976",
+       "sha": "2bb7cdbf8a586601cdfc6ed2142c0ff8316342d2df6a7266c4eb75d4fff9237e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "da_r ignores the offset and always reads channel A's data register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2448",
+       "sha": "68579b714030d904826fb84ecdb64f8c02e9856416daf094b12cc34226a7140c"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "RR8, the receive data FIFO, is read through the pointer or directly with D//C high.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1486-1488",
+       "sha": "6417fa7893275fcf80a2a31f771c08b76d01fe12a184e49aa68463d61862aa25"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2448",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x102",
+   "access": "write",
+   "name": "data A write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "991-994"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1489-1492"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::da_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "D//C defines the type of information transferred: High means data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "991-993",
+       "sha": "d0accac6004f7448001afeb8d123857df24e3c97b767a1bd8f8f8471ba755db8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With D//C high during a write, data is transferred to the Z85X30 with command bytes at Low.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "991-994",
+       "sha": "9c7d2c9054ddd28cea5971574d79144b64a28a720ec9e52b1eb8b919d06e06e3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "da_w ignores the offset and always writes channel A's data register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2449",
+       "sha": "0bdba18b31f01600c10fed7ceaebb6f71fd6ac55a8efd9d10516780b08ae85fe"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "A write with D//C high reaches the data registers directly, independently of the pointer bits, allowing single-cycle access without disturbing them.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1489-1492",
+       "sha": "9e98dc0752eff8e5835937eacd17f0db3f66ba12e960b656f2dcc88768e004e9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2449",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x103",
+   "access": "read",
+   "name": "data B read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "988-989"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1504-1506"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::db_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "A//B selects the channel in which the read or write operation occurs.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "988-989",
+       "sha": "6bbec305556bf5ead4a8f8252ccff35c7d85afbd34358b646d0cbac4ff98d34b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read is performed in the channel that A//B selects.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "988-989",
+       "sha": "6bbec305556bf5ead4a8f8252ccff35c7d85afbd34358b646d0cbac4ff98d34b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "text": "db_r ignores the offset and always reads channel B's data register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2450",
+       "sha": "a87256e0887b1202739891715b3ea7275e070e82dcd3b463fd4a215d7f15033b"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "If the state of the pointer bits is unknown, they may be reset to 0 by a read cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1504-1506",
+       "sha": "1b9db154c75f0f7af348c8a548b9052adfc2b1ca30fa7802e672ababb5ac7a95"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2450",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x103",
+   "access": "write",
+   "name": "data B write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "990"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1507-1509"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::db_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "A//B low selects channel B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "990",
+       "sha": "fcdd4da0dd0838b4d02f6345a74bf7c2d138763083309124652ead925195a0f9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A low on A//B sends the write operation to channel B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "990",
+       "sha": "fcdd4da0dd0838b4d02f6345a74bf7c2d138763083309124652ead925195a0f9"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "text": "db_w ignores the offset and always writes channel B's data register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "2451",
+       "sha": "06b3b1dc951ae095da2401ddb04d9a6ef64093bd01c3ced1522bee4ad66810ac"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Once the pointer bits are set, the desired channel is selected by A//B during the actual read or write of the register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1507-1509",
+       "sha": "322f2fb1db5ff995c666a8c50d65bfb724d1b9b91a70a30cb0611fcbe4e620fb"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x104",
+   "access": "read",
+   "name": "control A read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "977-978"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1476-1482"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::control_read"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "356"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "/CE is the chip enable input, active Low: it selects the Z85X30 for a read or write operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "977-978",
+       "sha": "788a7ba6f78f00b440a13aa71631239f64efab9a74d298420dec79ed1aea1729"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Registers are accessed in two steps: the pointer bits are set by writing WR0, then the next read or write with D//C low reaches the desired register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1476-1482",
+       "sha": "00a824a113416ae51a68c784214336d7ea4e1e6d2cf5631047661471b7185a88"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "A read cycle with the pointer bits set returns the register the pointer selects.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1478-1482",
+       "sha": "7a06a8f271ebd9271fea737c4b464b61090de0f079b506bba269c75ec8bd042f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1716-1736",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "356",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1719-1724",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1732-1735",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x104",
+   "access": "write",
+   "name": "control A write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1483-1485"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1493-1496"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::control_write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "357"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "At the conclusion of the read or write cycle the pointer bits are reset to 0s, so the next control write is to the pointers in WR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1483-1485",
+       "sha": "b0b39292d22a5d79b2b3b0e2fab503b17d799d5ea722bf1123be77ad2ee8dadf"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Because the pointer bits reset to 0, WR0 and RR0 may also be accessed in a single cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1493-1496",
+       "sha": "db566de4ce56ffa521056c74dc4d5bd3019649e9a3f5578df64a651e45e6ab58"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A control write may reach WR0 in a single cycle, because the pointer bits are reset to 0 unless explicitly set otherwise.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1493-1496",
+       "sha": "db566de4ce56ffa521056c74dc4d5bd3019649e9a3f5578df64a651e45e6ab58"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2354",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2333-2355",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "357",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x105",
+   "access": "read",
+   "name": "control B read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1497-1498"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::control_read"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "358"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 holds three pointer bits for register access.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1497-1498",
+       "sha": "101e6bb8ad1b7fd41f7f2d30c39d97f72767e5f3042a6a29c0407500e1aaa3c8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read is reached through the three pointer bits of WR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1497-1498",
+       "sha": "101e6bb8ad1b7fd41f7f2d30c39d97f72767e5f3042a6a29c0407500e1aaa3c8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1716-1736",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "358",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1719-1724",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1732-1735",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x105",
+   "access": "write",
+   "name": "control B write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1499-1503"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::control_write"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "359"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "A command may be written to WR0 at the same time as the pointer bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1499-1500",
+       "sha": "a1a9d73c08ec615d09a26841d91b7846471af355a62167cce37ddfdc181648ed"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "To access registers 15 through 8 the Point High command must accompany the pointer bits, which precludes issuing a command at the same time.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1500-1503",
+       "sha": "63a0ebad1c8fbe16fa6d65e5e66e08bec36cd9ef875694f9a026f031152f8e98"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A command may be written together with the pointer bits, except when Point High addresses registers 15 through 8.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1499-1503",
+       "sha": "5c02f003387cde84146b57663506bb8e0cb78776179e22ffe700cbaf748091ce"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2354",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2333-2355",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.h",
+     "lines": "359",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x106",
+   "access": "read",
+   "name": "zbus read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "1151-1169"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::zbus_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "In the Z80X30 the registers are addressed by the address on AD7-AD0, latched by the rising edge of /AS.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1151-1153",
+       "sha": "2d40ad69acf57a0a9d96cf056f26a6ae0d813b1e64b0664bcaabb23c40fcab27"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "The Shift Right/Shift Left bit in channel B WR0 controls which address bits are decoded to form the register address.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1153-1157",
+       "sha": "7fcb5339338b45aaa930238e0b7b47dd6744234878f9ae9c7697a833d67cb5cd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "A hardware reset forces Shift Left mode, where the address is decoded from AD5-AD1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1158-1159",
+       "sha": "f4269b3cb5e01133d7895fb7f62dc9ff148faae55b6f3a6281491673ebb1e533"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In Shift Right mode the address is decoded from AD4-AD0, and the Shift bit is written by a command so a WR0 write does not depend on it.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1159-1162",
+       "sha": "2f8fb3dcbf119803ba63938479adaf08147cc0177a7fbcb675c446219c59a19e"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "In Shift Left mode the register address is on AD4-AD1 and the channel select is AD5; in Shift Right mode the channel select is AD0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "1163-1169",
+       "sha": "d1a2a0c9ffb4a1c2f3374ad8caf079c28ffe28861e1a8fba00cd84922107cdd2"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "mame",
+     "text": "zbus_r takes the shift-left channel from offset bit 4 and the register from bits 3-0, one address line below the document's AD5 and AD4-AD1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "834-836",
+       "sha": "6f13ff8deed15142e869037245ebd1b30256c11d0bcafb36d0d14c7c1f4375f9"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "840-843",
+       "sha": "161125890a7f983d2d168ec2858fd0a6e5a7924ebe3964609bd55ee66bab7003"
+      }
+     ],
+     "vs": "differs",
+     "row": "5"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "852",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "855",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "857",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "846-850",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "852-857",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x106",
+   "access": "write",
+   "name": "zbus write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "996-999"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::zbus_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "AD7-AD0 are multiplexed lines that carry register addresses as well as data or control information.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "996-999",
+       "sha": "5fdea35f278ae40bebbc85870de9fd1e2b4017b074b8e8551b17523e222b71b7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write cycle on the multiplexed bus sends a register address and the data or control byte to the Z80X30.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "996-999",
+       "sha": "5fdea35f278ae40bebbc85870de9fd1e2b4017b074b8e8551b17523e222b71b7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "zbus_w sends registers 2 and 9 to both channels and any other register to the channel the offset selects.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "882-888",
+       "sha": "8c627d1482316f7962a2a8141529fddacc5b277647f8789f80c2ed4d02d9f658"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "889-895",
+       "sha": "f469ec750fe6ad7e2040b61396150668ae81c61cfe981566025ed2f6d79dfe45"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "870-874",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "876-880",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "890-893",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "897",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x107",
+   "access": "read",
+   "name": "interrupt acknowledge",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "965-973"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_device::m1_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "/INTACK is the interrupt acknowledge input, active Low; it strobes an interrupt acknowledge cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "965-966",
+       "sha": "f94d115af035bdbb267d93fee90b31b4b5427c7852386c6482b5f66586cc47a7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "During the acknowledge cycle the interrupt daisy chain is resolved, and the SCC can return an interrupt vector encoded with the type of interrupt pending.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "967-970",
+       "sha": "f92d991852311ff8740b76ec515b2b32e6b9ada68e89e8e040d037b7fda81049"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "During the acknowledge cycle, if IEI is high, the SCC places the interrupt vector on the data bus when /RD goes active.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "970-973",
+       "sha": "8dfa4de8be4cf2f7e364cadea49bbede990d1cee3b90e2d54804c779bd15e4b5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "text": "m1_r returns z80daisy_irq_ack(), which returns channel B's RR2 vector when an interrupt is pending and otherwise the CPU's default vector.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "825",
+       "sha": "15fac39ed452015c78f82c6c03279592729add9bd2e0df1c08484b6b9581d239"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "600-601",
+       "sha": "cff50b1b99933a90595275bd3ffd3d216cc2031263e6f861a54663511a82aaca"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "612-615",
+       "sha": "c60f3e0efe55a916f79ca01140c87c14f79e32e7cc2f33a7a5eae45eb47e6ac7"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "621-624",
+       "sha": "35599c8b1e018406cd36f0876673e63c10e5c596d7d295442782b8e97d81335a"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

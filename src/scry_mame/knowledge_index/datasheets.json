@@ -253,6 +253,17 @@
    "tool_version": "26.10.0",
    "pdf": "166f09331ba9df055f7a352f10c6a7843911470bc72d9347eda4a0de86e8cfce",
    "capture": "3e3ba9ffaa2dddda0d038e0acea88e0f34077fc2c9779ffdc9cd4361bf8bb64c"
+  },
+  "XR68C681.raw.txt": {
+   "title": "Exar XR68C681 CMOS dual channel UART (DUART)",
+   "url": "https://www.maxlinear.com/ds/xr68c681v210.pdf",
+   "archive": "http://web.archive.org/web/20250213183816/https://www.maxlinear.com/ds/xr68c681v210.pdf",
+   "class": "maker-datasheet",
+   "text": "ocr",
+   "tool": "ocrmypdf --force-ocr --deskew --tesseract-thresholding sauvola --oversample 450 -l eng (tesseract), then pdftotext -raw",
+   "tool_version": "ocrmypdf 17.14.2, tesseract 5.5.4, pdftotext 26.10.0",
+   "pdf": "57cf7847a3b8911a836d5e0d7e4ee1c25be3bf73780ba48dede72dc4c4fa5e58",
+   "capture": "0180a76365a38f35727923df6068d4189a4cdd08cc4845f5ce8c5a507104f756"
   }
  }
 }

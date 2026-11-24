@@ -300,7 +300,7 @@ One entry matches, so it comes whole: the manual's rows first, with MAME's verdi
   ],
   "truncated": false,
   "examined": 7,
-  "served": 624,
+  "served": 696,
   "held_back": 0
 }
 ```
