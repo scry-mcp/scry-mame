@@ -1,6 +1,6 @@
 -- A fake MAME world for the presence drawer: the engine's names, a clock the scenario sets, and a
 -- UI container that records what is drawn as one line per primitive.
-local drawn, clock, frame_done = {}, 0, nil
+local drawn, clock, frame_done = {}, 0, {}
 local pixels, size, turn = {}, { 320, 200 }, { 0, false, false }
 
 local function show(...)
@@ -35,7 +35,8 @@ local screen = {
 }
 emu = {
   register_frame_done = function(fn)
-    frame_done = fn
+    -- MAME runs them all; replacing hides a second load.
+    frame_done[#frame_done + 1] = fn
   end,
   osd_ticks = function()
     return math.floor(clock * 1000)
@@ -70,7 +71,9 @@ function put(path, text)
 end
 function frame(t)
   clock, drawn = t, {}
-  frame_done()
+  for _, callback in ipairs(frame_done) do
+    callback()
+  end
   return drawn
 end
 function paint(x, y, colour)

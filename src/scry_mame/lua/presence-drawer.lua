@@ -4,6 +4,13 @@
 -- Written by the mame MCP server for ONE session: the presence edge and the layers over it. The
 -- state file says what to draw (caption, keys, pause, recording, where); this only animates it.
 local path, broke = __SCRY_path__, __SCRY_broke__
+-- `scry_drawn` marks this chunk loaded: MAME runs every callback registered, so a second load
+-- would register a second drawer and draw each box twice, darkening a band drawn at less than
+-- full alpha. One line, because the console takes no script longer than the transport's bound.
+if _G.scry_drawn then
+  return
+end
+_G.scry_drawn = true
 local function stopped(err)
   local f = io.open(broke, "w")
   if f then

@@ -96,6 +96,16 @@ def lit(text: str) -> str:
     return '"' + text.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
 
 
+def test_a_drawer_loaded_twice_draws_once(tmp_path: Path) -> None:
+    """MAME runs every registered callback, so a second load that registered again would draw
+    each box twice and a semi-transparent band would darken."""
+    body = lit(state(""))
+    once = run(tmp_path, f"put_state({body})\nshot(1.0)\n")
+    twice = run(tmp_path, f"dofile({lit(str(tmp_path / 'drawer.lua'))})\n"
+                          f"put_state({body})\nshot(1.0)\n")
+    assert boxes(twice[0]) == boxes(once[0]) == presence.LOOK.steps * 4
+
+
 def test_a_state_with_only_the_edge_draws_the_edge_and_nothing_over_it(tmp_path: Path) -> None:
     frames = run(tmp_path, f"put_state({lit(state(''))})\nshot(1.0)\n")
     assert boxes(frames[0]) == presence.LOOK.steps * 4 and texts(frames[0]) == []
