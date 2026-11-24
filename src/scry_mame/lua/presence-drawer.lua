@@ -22,7 +22,7 @@ local set_up, why = pcall(function()
   --- __SCRY_placement__
   local ui = manager.ui
   local cur, raw, since, read_at, broken = { state = "off" }, nil, -1e9, -1e9, false
-  local cap, cap_up, gone_at = nil, 0, nil
+  local cap, cap_rgb, cap_up, gone_at = nil, nil, 0, nil
   local rec_since, rec_w = -1e9, nil
   local band, streak, sampled_at = START, 0, -1e9
   -- The repaints drawn in each state: what the live cells read back to see it drawn.
@@ -190,6 +190,7 @@ local set_up, why = pcall(function()
           if cur.caption ~= was.caption or cur.serial ~= was.serial then
             if cur.caption then
               cap, gone_at = measure(cur.caption), nil
+              cap_rgb = cur.rgb or RGB -- the state file drops the tint with the caption
               if cur.serial ~= was.serial then
                 cap_up = t
               end
@@ -277,12 +278,11 @@ local set_up, why = pcall(function()
             cap, gone_at = nil, nil
           elseif fade > 0 then
             local y = row_y(0)
-            local bar = lh * 0.3 * ux
-            local room = right - left - bar - 3 * pad * ux
+            local room = right - left - 2 * pad * ux
             local text, width = shown_text(cap, room, running, t)
-            local x = left + bar + 2 * pad * ux + (room - width) / 2
-            c:draw_box(left, y, right, y + rowh, 0, argb(CAP_ALPHA * fade, 0x000000))
-            c:draw_box(left, y, left + bar, y + rowh, 0, argb(fade, cur.rgb or RGB))
+            local x = left + pad * ux + (room - width) / 2
+            -- the band is the call's own tint, as the clip draws it, never black on black
+            c:draw_box(left, y, right, y + rowh, 0, argb(CAP_ALPHA * fade, cap_rgb or RGB))
             c:draw_text(x, y + pad, text, argb(fade, TEXT_RGB), 0)
           end
         end

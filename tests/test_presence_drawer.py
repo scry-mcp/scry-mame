@@ -17,6 +17,9 @@ from scry_mame import presence as mpresence
 CHAR_WIDTH = 0.01
 LUA_DIR = Path(__file__).parent / "lua"
 WORLD = LUA_DIR / "presence_world.lua"
+#: The caption tint the fixtures send: not the edge's own colour, so a band drawn with the
+#: fallback would be told apart from one drawn with the call's tint.
+CAPTION_TINT = 0x5AC8FA
 LUA = ("lua5.4", "/opt/homebrew/opt/lua@5.4/bin/lua5.4", "lua")
 Frame = list[list[str]]
 
@@ -34,11 +37,11 @@ def _lua() -> str:
 
 def state(lines: str, *, caption: str = "", keys: tuple[str, ...] = (), layers: str = "edge",
           place: str = "top", paused: bool = False, serial: int = 1, held: str = "held",
-          rec: str = "") -> str:
+          rec: str = "", tint: int = CAPTION_TINT) -> str:
     """A state file as `mpresence.encode` writes it, by hand so the test names each line."""
     body = [held, f"paused={int(paused)}", f"place={place}", f"layers={layers}"]
     if caption:
-        body += [f"serial={serial}", "rgb=FF8C00", f"caption={caption}"]
+        body += [f"serial={serial}", f"rgb={tint:06X}", f"caption={caption}"]
     body += [f"key={k}" for k in keys]
     if rec:
         body.append(f"rec={rec}")
@@ -73,8 +76,9 @@ def texts(frame: Frame) -> list[str]:
 
 def fits(frame: Frame) -> bool:
     """Whether the caption's text, as the fake world measures it, ends inside the box behind it
-    (the one filled black), whose right edge is its fourth word."""
-    (box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == 0 and int(p[6]) > 0]
+    (the one filled with the call's tint), whose right edge is its fourth word."""
+    (box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == CAPTION_TINT
+              and int(p[6]) > 0]
     text = next(p for p in frame if p[0] == "text")
     return float(text[1]) + len(" ".join(text[3:-2])) * CHAR_WIDTH <= float(box[3]) + 1e-9
 
@@ -148,6 +152,18 @@ def test_a_caption_wider_than_the_band_scrolls_while_running_and_is_cut_while_st
     assert shown[1] != shown[0] and shown[2] != shown[1], "a running caption moves"
     cut = texts(halted)[0]
     assert cut.endswith("..") and cut[:-2] == said[:len(cut) - 2], "a stopped one is cut"
+
+
+def test_a_leaving_caption_keeps_its_own_tint_while_it_fades(tmp_path: Path) -> None:
+    """The state file drops the caption's tint with the caption, and the band goes on drawing
+    the leaving text: it keeps the tint it was drawn with, never the edge's."""
+    kept = lit(state("", caption="log", layers="edge,calls"))
+    gone = lit(state("", layers="edge,calls"))
+    fading = run(tmp_path, f"put_state({kept})\nshot(0.0)\nshot(1.0)\nput_state({gone})\n"
+                 "shot(2.0)\n")[-1]
+    assert texts(fading) == ["log"]
+    assert [p for p in fading if p[0] == "box"
+            and int(p[6]) & 0xFFFFFF == CAPTION_TINT and int(p[6]) > 0], fading
 
 
 def test_a_caption_fades_out_when_it_leaves_and_at_once_on_a_stopped_machine(
@@ -308,7 +324,7 @@ def test_the_mark_leaves_the_pause_mark_and_a_top_caption_clear_of_it(tmp_path: 
                      paused=True))
     frame = run(tmp_path, f"put_state({body})\nshot(0.0)\nshot(0.1)\n")[1]
     dot = min(float(p[1]) for p in red(frame))
-    (caption_box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == 0
+    (caption_box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == CAPTION_TINT
                       and int(p[6]) > 0 and float(p[2]) < 0.3]
     assert float(caption_box[3]) <= dot, "the caption's box ends where the mark begins"
 
@@ -317,7 +333,7 @@ def test_a_bottom_caption_keeps_its_whole_width_while_the_mark_is_shown(tmp_path
     def caption_right(rec: str) -> float:
         body = lit(state("", caption="log", layers="edge,calls,record", place="bottom", rec=rec))
         frame = run(tmp_path, f"put_state({body})\nshot(0.0)\nshot(0.1)\n")[1]
-        (box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == 0
+        (box,) = [p for p in frame if p[0] == "box" and int(p[6]) & 0xFFFFFF == CAPTION_TINT
                   and int(p[6]) > 0]
         return float(box[3])
 
