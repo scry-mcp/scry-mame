@@ -60,7 +60,7 @@ While a session is live MAME's window has an orange edge, so a person at the com
 
 Over the edge it can also show a caption naming each call, a keycap for each input field held, and a pause mark while the session holds the machine stopped. `start(overlay=...)` chooses them and where they go. MAME has no pointer, so `start` says that layer is lacking.
 
-A stopped machine keeps its overlay still (`overlay.notes` says so): a long caption is cut with `..`, and the mark of a `record` in progress stays lit.
+A caption wider than the window is cut with `..` and marked, running or stopped. A stopped machine keeps its overlay still (`overlay.notes` says so): the caption comes and goes without its fade, and the mark of a `record` in progress stays lit.
 
 The tools: [Session](docs/reference/session.md), [Machine](docs/reference/machine.md).
 

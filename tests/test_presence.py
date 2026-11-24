@@ -41,8 +41,8 @@ def test_the_drawer_draws_on_the_ui_container_from_the_look_and_reads_its_file(
     assert has(text, "local RGB, BAND_RGB, EDGE, STEPS = 0x123456, 0x0B1F34, 0.05, 3")
     assert has(text, f"local ACTING, HELD, FADE, REREAD = 0.9, 0.45, 1.5, {mpresence.REREAD_S!r}")
     assert has(text, "local TEXT_RGB, KEY_RGB = 0xFFFFFF, 0x202020")
-    assert has(text, f"local CPS, CAP_FADE, DWELL = {look.scroll_cps!r}, "
-                     f"{mpresence.CAPTION_FADE_S!r}, {mpresence.SCROLL_DWELL_S!r}")
+    assert has(text, f"local CAP_FADE, CAP_ALPHA = {mpresence.CAPTION_FADE_S!r}, "
+                     f"{look.caption_alpha!r}")
     assert has(text, 'execution_state == "run"'), "a stopped machine is never drawn a fade"
     state = str(tmp_path / 'a"b' / mpresence.STATE_FILE)
     assert has(text, '"' + state.replace("\\", "\\\\").replace('"', '\\"') + '"')

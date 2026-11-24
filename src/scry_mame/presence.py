@@ -33,8 +33,6 @@ STILL_TOOLS = frozenset({
 REREAD_S = 0.05
 #: Seconds a caption fades in and out: the emulator's animation, so not in `Look`.
 CAPTION_FADE_S = 0.25
-#: Seconds a scrolling caption rests at its head before it moves.
-SCROLL_DWELL_S = 1.0
 #: The layers MAME cannot draw and why: its inputs are port fields and it has no pointer.
 LACKING: dict[overlay.Layer, str] = {
     "pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"}
@@ -57,8 +55,8 @@ def drawer(scratch: Path, look: presence.Look = presence.LOOK) -> str:
                              band_rgb=lua_source.Code(f"0x{look.band_rgb(look.rgb):06X}"),
                              key_rgb=lua_source.Code(f"0x{look.keycap_rgb:06X}"),
                              key_text_rgb=lua_source.Code(f"0x{look.keycap_text_rgb:06X}"),
-                             key_alpha=look.keycap_alpha, cps=look.scroll_cps,
-                             cap_fade=CAPTION_FADE_S, dwell=SCROLL_DWELL_S,
+                             key_alpha=look.keycap_alpha,
+                             cap_fade=CAPTION_FADE_S, cap_alpha=look.caption_alpha,
                              rec_rgb=lua_source.Code(f"0x{look.record_rgb:06X}"),
                              blink=look.record_blink_s,
                              placement=lua_source.Code(placement_lua()))
@@ -107,8 +105,8 @@ def encode(state: presence.State, payload: presence.Payload) -> str:
 #: What a layer is drawn without while the machine is stopped: the console command that repaints
 #: it is the only animation clock there, and the server sends none.
 STOPPED_LIMITS: dict[overlay.Layer, str] = {
-    "calls": "a stopped machine is not repainted to animate, so a caption wider than the window "
-             "is cut with `..` and not scrolled",
+    "calls": "a stopped machine is not repainted to animate, so a caption comes and goes "
+             "without its fade",
     "record": "a stopped machine is not repainted to animate, so the mark stays lit and does "
               "not blink"}
 

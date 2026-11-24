@@ -22,7 +22,7 @@ local set_up, why = pcall(function()
   local ACTING, HELD, FADE, REREAD = __SCRY_acting__, __SCRY_held__, __SCRY_fade__, __SCRY_reread__
   local TEXT_RGB, KEY_RGB = __SCRY_text_rgb__, __SCRY_key_rgb__
   local KEY_TEXT_RGB, KEY_ALPHA = __SCRY_key_text_rgb__, __SCRY_key_alpha__
-  local CPS, CAP_FADE, DWELL = __SCRY_cps__, __SCRY_cap_fade__, __SCRY_dwell__
+  local CAP_FADE, CAP_ALPHA = __SCRY_cap_fade__, __SCRY_cap_alpha__
   local REC_RGB, BLINK = __SCRY_rec_rgb__, __SCRY_blink__
   --- __SCRY_placement__
   local ui = manager.ui
@@ -71,31 +71,29 @@ local set_up, why = pcall(function()
     return out
   end
 
-  -- The caption's text with the width of every prefix of it, looped once for the scroll.
+  -- The caption's text with the width of every prefix of it, so a text too wide for its room
+  -- is cut to what fits and marked with a dot pair: a line that moves cannot be read.
   local function measure(text)
-    local loop = text .. "   " .. text
     local widths = { [0] = 0 }
-    for i = 1, #loop do
-      widths[i] = widths[i - 1] + ui:get_string_width(loop:sub(i, i))
+    for i = 1, #text do
+      widths[i] = widths[i - 1] + ui:get_string_width(text:sub(i, i))
     end
-    return { text = text, loop = loop, widths = widths, whole = widths[#text], lap = #text + 3 }
+    return { text = text, widths = widths, whole = widths[#text] }
   end
 
-  local function shown_text(m, room, running, t)
+  local function shown_text(m, room)
     if m.whole <= room then
       return m.text, m.whole
     end
-    local from = 0
-    if running then
-      from = math.floor(math.max(0, t - cap_up - DWELL) * CPS) % m.lap
+    local cut = ui:get_string_width("..")
+    if cut > room then
+      return "", 0
     end
-    local to = from
-    local cut = running and 0 or ui:get_string_width("..")
-    while to < #m.loop and m.widths[to + 1] - m.widths[from] + cut <= room do
+    local to = 0
+    while to < #m.text and m.widths[to + 1] + cut <= room do
       to = to + 1
     end
-    local text = m.loop:sub(from + 1, to) .. (running and "" or "..")
-    return text, m.widths[to] - m.widths[from] + cut
+    return m.text:sub(1, to) .. "..", m.widths[to] + cut
   end
 
   local function sample()
@@ -278,10 +276,10 @@ local set_up, why = pcall(function()
           elseif fade > 0 then
             local y = row_y(0)
             local room = right - left - 2 * pad * ux
-            local text, width = shown_text(cap, room, running, t)
+            local text, width = shown_text(cap, room)
             local x = left + pad * ux + (room - width) / 2
-            -- opaque once faded in: a translucent tint left the text under WCAG AA
-            c:draw_box(left, y, right, y + rowh, 0, argb(fade, cap_rgb or BAND_RGB))
+            -- laid at the look's alpha, so the picture shows through it
+            c:draw_box(left, y, right, y + rowh, 0, argb(fade * CAP_ALPHA, cap_rgb or BAND_RGB))
             c:draw_text(x, y + pad, text, argb(fade, TEXT_RGB), 0)
           end
         end

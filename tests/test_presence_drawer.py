@@ -165,8 +165,7 @@ def test_a_pause_mark_adds_a_backdrop_and_two_bars_only_while_paused(tmp_path: P
     assert boxes(second) - boxes(first) == 3
 
 
-def test_a_caption_wider_than_the_band_scrolls_while_running_and_is_cut_while_stopped(
-        tmp_path: Path) -> None:
+def test_a_caption_wider_than_the_band_is_cut_to_it_and_never_moves(tmp_path: Path) -> None:
     said = "write_memory 0x1000 " + "00112233445566778899AABBCCDDEEFF" * 4
     body = lit(state("", caption=said, layers="edge,calls"))
     head, later, much_later, halted = run(
@@ -174,11 +173,16 @@ def test_a_caption_wider_than_the_band_scrolls_while_running_and_is_cut_while_st
         "halt(true)\nshot(9.5)\n")[1:]
     for frame in (head, later, much_later, halted):
         assert fits(frame), "the text stays inside its box"
-    shown = [texts(f)[0] for f in (head, later, much_later)]
-    assert shown[0] == said[:len(shown[0])] and len(shown[0]) < len(said)
-    assert shown[1] != shown[0] and shown[2] != shown[1], "a running caption moves"
-    cut = texts(halted)[0]
-    assert cut.endswith("..") and cut[:-2] == said[:len(cut) - 2], "a stopped one is cut"
+    cut = texts(head)[0]
+    assert cut.endswith("..") and cut[:-2] == said[:len(cut) - 2], "cut to the box, the cut marked"
+    assert texts(later) == texts(much_later) == texts(halted) == [cut], "a cut caption holds still"
+    # the cut keeps as much as the box holds: one more character does not fit whole
+    longer = lit(state("", caption=said[:len(cut) - 1], layers="edge,calls"))
+    assert len(cut) == 94, "92 characters and the dot pair: one more would not fit"
+
+    (box,) = [p for p in head if p[0] == "box" and int(p[6]) & 0xFFFFFF == CAPTION_TINT]
+    assert int(box[6]) >> 24 == round(255 * presence.LOOK.caption_alpha), \
+        "the band at the look's alpha, so the picture shows through"
 
 
 def test_a_leaving_caption_keeps_its_own_tint_while_it_fades(tmp_path: Path) -> None:
@@ -211,8 +215,9 @@ def test_a_new_caption_with_the_same_text_starts_again(tmp_path: Path) -> None:
     again = lit(state("", caption=said, layers="edge,calls", serial=2))
     frames = run(tmp_path, f"put_state({first})\nshot(0.0)\nshot(0.5)\nshot(9.0)\n"
                  f"put_state({again})\nshot(9.1)\nshot(9.5)\n")
-    head, scrolled, restarted = frames[1], frames[2], frames[4]
-    assert texts(scrolled) != texts(head) == texts(restarted), "it scrolls on, then begins again"
+    full, back = frames[2], frames[4]
+    assert texts(frames[3]) == [], "the serial changed: it leaves and fades back in"
+    assert texts(back) == texts(full), "and the same text is drawn again"
 
 
 def test_auto_leaves_the_busy_band_after_two_samples_and_never_on_a_still_picture(

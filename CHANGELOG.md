@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- A caption wider than the window is cut and marked with `..`, never scrolled: a line that moves
+  cannot be read while the machine runs.
 - Replies and captions call a number by its name where the server knows one. A reply lists
   each in `names` and in its `summary`; `names=false` on `start` leaves replies bare, and the
   window's captions keep their names. A symbol you typed names itself; an address is named by a
@@ -21,13 +23,13 @@ What a client of the server notices.
   apart by direction, sits in a range or in a second bank. With `names=false` a disassembled line carries no note either.
 - `disassemble` gains `line_notes` for an instruction that states an operand the base names, and
   the stop's `instruction` a `note`. They are apart from `comment_list`'s comments.
-- `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a long
-  caption is cut and the record mark stays lit.
+- `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a caption
+  comes and goes without its fade, and the record mark stays lit.
 - The orange edge can carry a caption naming each call and its arguments, a keycap for each
   input field held and a pause mark while the session holds the machine stopped. `start` takes
   `overlay` to choose them and where they go, and `start` and `status` answer with an `overlay`
-  that lists what is drawn and why a layer is not: MAME has no pointer. A long caption scrolls
-  while the machine runs. No capture carries any of it.
+  that lists what is drawn and why a layer is not: MAME has no pointer. A caption wider than the
+  window is cut and marked with `..`, never scrolled. No capture carries any of it.
 - While `record` or `audio_record` runs, a red dot blinks in the top right corner of the window:
   with REC for a video, with a note for audio, with both for both. `overlay` can turn it off
   (`record`). Like the rest of the edge, no capture carries it.

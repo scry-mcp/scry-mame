@@ -59,7 +59,7 @@ Every call of the run with its reply, in order: 35 calls. `<volatile>` stands fo
     "place": "auto",
     "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
     "notes": {
-      "calls": "a stopped machine is not repainted to animate, so a caption wider than the window is cut with `..` and not scrolled",
+      "calls": "a stopped machine is not repainted to animate, so a caption comes and goes without its fade",
       "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
     }
   },
