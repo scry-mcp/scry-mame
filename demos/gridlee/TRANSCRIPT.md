@@ -1,4 +1,4 @@
-Every call of the run with its reply, in order: 29 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
+Every call of the run with its reply, in order: 35 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
 
 **1. `start`**: OK start: gridlee on MAME 0.289 (unknown), rom_check OK, pc 0x0000f000
 
@@ -54,6 +54,15 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "keys", "calls", "pause", "record"],
+    "place": "auto",
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "calls": "a stopped machine is not repainted to animate, so a caption wider than the window is cut with `..` and not scrolled",
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "machine": {
     "cpus": 1,
     "spaces": 1,
@@ -167,7 +176,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "scan start: 0x0, 2048 1-byte candidates on :maincpu",
+  "summary": "scan start: 0x0 (spriteram), 2048 1-byte candidates on :maincpu",
   "status": "ok",
   "ref": "0x0",
   "addr": "0x00000000",
@@ -176,6 +185,10 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   "hits_total": 2048,
   "cpu": ":maincpu",
   "space": "program",
+  "names": [
+    {"field": "given.ref", "number": "0x0", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x00000000", "kind": "memory", "name": "spriteram"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -272,7 +285,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 295,
+      "frame_after": 300
     },
     {
       "op": "run_for",
@@ -320,7 +335,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 300,
+      "frame_after": 419
     },
     {
       "op": "scan",
@@ -360,6 +377,30 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
         "truncated": false,
         "cpu": ":maincpu",
         "space": "program",
+        "names": [
+          {"field": "hits[].addr", "number": "0x0000008c", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000008d", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000008e", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000d9", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000db", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000dd", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000df", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000e1", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000e3", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000e5", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000e7", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000e9", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000eb", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x00000172", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x00000278", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x00000297", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x00000298", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000002ff", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000003ee", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000042c", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000007f6", "kind": "memory", "name": "spriteram"}
+        ],
         "session": {
           "alive": true,
           "running": false,
@@ -367,7 +408,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 419,
+      "frame_after": 419
     }
   ],
   "steps_completed": 3,
@@ -469,7 +512,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 419,
+      "frame_after": 424
     },
     {
       "op": "run_for",
@@ -517,7 +562,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 424,
+      "frame_after": 543
     },
     {
       "op": "scan",
@@ -538,6 +585,11 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
         "truncated": false,
         "cpu": ":maincpu",
         "space": "program",
+        "names": [
+          {"field": "hits[].addr", "number": "0x000003ee", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000042c", "kind": "memory", "name": "spriteram"}
+        ],
         "session": {
           "alive": true,
           "running": false,
@@ -545,7 +597,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 543,
+      "frame_after": 543
     }
   ],
   "steps_completed": 3,
@@ -646,7 +700,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 543,
+      "frame_after": 548
     },
     {
       "op": "run_for",
@@ -694,7 +750,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 548,
+      "frame_after": 667
     }
   ],
   "steps_completed": 2,
@@ -741,6 +799,11 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   "truncated": false,
   "cpu": ":maincpu",
   "space": "program",
+  "names": [
+    {"field": "hits[].addr", "number": "0x000003ee", "kind": "memory", "name": "spriteram"},
+    {"field": "hits[].addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"},
+    {"field": "hits[].addr", "number": "0x0000042c", "kind": "memory", "name": "spriteram"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -775,7 +838,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
       "op": "watch_add",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "watch_add 0x42b: change watch armed at 0x0000042b, 1 byte",
+        "summary": "watch_add 0x42b (spriteram): change watch armed at 0x0000042b (spriteram), 1 byte",
         "status": "ok",
         "ref": "0x42b",
         "by": "address",
@@ -794,6 +857,10 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
         "write_maps_to": "memory@0",
         "read_maps_to": "memory@0",
         "values_from": "memory",
+        "names": [
+          {"field": "given.ref", "number": "0x42b", "kind": "memory", "name": "spriteram"},
+          {"field": "addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"}
+        ],
         "session": {
           "alive": true,
           "running": false,
@@ -801,13 +868,15 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 667,
+      "frame_after": 667
     },
     {
       "op": "watch_add",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "watch_add 0x42c: change watch armed at 0x0000042c, 1 byte",
+        "summary": "watch_add 0x42c (spriteram): change watch armed at 0x0000042c (spriteram), 1 byte",
         "status": "ok",
         "ref": "0x42c",
         "by": "address",
@@ -826,6 +895,10 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
         "write_maps_to": "memory@0",
         "read_maps_to": "memory@0",
         "values_from": "memory",
+        "names": [
+          {"field": "given.ref", "number": "0x42c", "kind": "memory", "name": "spriteram"},
+          {"field": "addr", "number": "0x0000042c", "kind": "memory", "name": "spriteram"}
+        ],
         "session": {
           "alive": true,
           "running": false,
@@ -833,7 +906,9 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 667,
+      "frame_after": 667
     }
   ],
   "steps_completed": 2,
@@ -1144,7 +1219,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "disassemble 0xb583: 5 lines at 0x0000b583",
+  "summary": "disassemble 0xb583 (maincpu): 5 lines at 0x0000b583 (maincpu)",
   "status": "ok",
   "ref": "0xb583",
   "addr": "0x0000b583",
@@ -1154,6 +1229,10 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   "flow": ["unknown", "unknown", "unknown", "unknown", "unknown"],
   "flow_source": "none",
   "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified",
+  "names": [
+    {"field": "given.ref", "number": "0xb583", "kind": "memory", "name": "maincpu"},
+    {"field": "addr", "number": "0x0000b583", "kind": "memory", "name": "maincpu"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1166,7 +1245,67 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**13. `run_for`**: OK settle: ran on to frame 702 with no other write
+**13. `record`**: OK routine: recorded 150 frames in ./tmp/demos/gridlee/routine.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 150,
+  "dest": "./tmp/demos/gridlee/routine.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/gridlee/routine.avi",
+  "frames": 150,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "watches": "<volatile>",
+  "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
+  "how": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**14. `run_for`**: OK settle: ran on to frame 856 with no other write
 
 <details><summary>call and reply</summary>
 
@@ -1179,40 +1318,40 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "run_for 500 ms: ELAPSED, frame 673 to 702",
+  "summary": "run_for 500 ms: ELAPSED, frame 826 to 856",
   "status": "ok",
   "verdict": "ELAPSED",
-  "frame_before": 673,
-  "frame_after": 702,
-  "emulated_before_s": 11.37291,
-  "emulated_after_s": 11.872913,
+  "frame_before": 826,
+  "frame_after": 856,
+  "emulated_before_s": 13.973011,
+  "emulated_after_s": 14.473014,
   "cycles": 625004,
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
-  "stop_seq": 12,
-  "pc": "0x0000ae19",
+  "stop_seq": 13,
+  "pc": "0x0000c492",
   "cpu": ":maincpu",
-  "frame": 702,
+  "frame": 856,
   "regs": {
-    "A": "0x01",
-    "B": "0xd5",
-    "D": "0x01d5",
-    "X": "0x014e",
-    "Y": "0xf2e6",
-    "U": "0xab79",
-    "PC": "0xae19",
+    "A": "0x00",
+    "B": "0x00",
+    "D": "0x0000",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0x021e",
+    "PC": "0xc492",
     "S": "0x07fe",
-    "CC": "0xe4",
+    "CC": "0xe0",
     "DP": "0x00"
   },
   "instruction": {
-    "address": "AE19",
-    "bytes": "7F02DF",
-    "text": "CLR    $02DF",
+    "address": "C492",
+    "bytes": "9684",
+    "text": "LDA    <$84",
     "symbol": {"available": false, "why": "no symbol table places this address"},
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
-  "following": ["AE1C: A6 0A       LDA    $A,X", "AE1E: 85 01       BITA   #$01", "AE20: 10 27 00 B0 LBEQ   $AED4", "AE24: 85 40       BITA   #$40", "AE26: 27 06       BEQ    $AE2E", "AE28: BD B8 34    JSR    $B834", "AE2B: 7E AE D4    JMP    $AED4", "AE2E: 85 80       BITA   #$80", "AE30: 10 26 00 82 LBNE   $AEB6", "AE34: 85 20       BITA   #$20", "AE36: 10 26 00 AA LBNE   $AEE4"],
+  "following": ["C494: 26 22    BNE    $C4B8", "C496: 96 8E    LDA    <$8E", "C498: 26 05    BNE    $C49F", "C49A: B6 02 46 LDA    $0246", "C49D: 27 06    BEQ    $C4A5", "C49F: B6 02 47 LDA    $0247", "C4A2: B7 02 46 STA    $0246", "C4A5: 9F D3    STX    <$D3", "C4A7: A6 0A    LDA    $A,X", "C4A9: 84 40    ANDA   #$40", "C4AB: 26 04    BNE    $C4B1", "C4AD: 86 02    LDA    #$02", "C4AF: 20 02    BRA    $C4B3", "C4B1: 86 04    LDA    #$04"],
   "errorlog": "<volatile>",
   "watches": [
     {
@@ -1242,7 +1381,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**14. `read_memory`**: OK both: credits 4 in binary, 04 in BCD
+**15. `read_memory`**: OK both: credits 4 in binary, 04 in BCD
 
 <details><summary>call and reply</summary>
 
@@ -1255,13 +1394,17 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "read_memory 0x42b: 2 bytes at 0x0000042b: 0404",
+  "summary": "read_memory 0x42b (spriteram): 2 bytes at 0x0000042b (spriteram): 0404",
   "status": "ok",
   "ref": "0x42b",
   "addr": "0x0000042b",
   "length": 2,
   "hex": "0404",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x42b", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1274,7 +1417,67 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**15. `state_write`**: OK save: state four-credits saved at frame 702
+**16. `record`**: OK credits: recorded 150 frames in ./tmp/demos/gridlee/credits.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 150,
+  "dest": "./tmp/demos/gridlee/credits.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/gridlee/credits.avi",
+  "frames": 150,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "watches": "<volatile>",
+  "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
+  "how": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**17. `state_write`**: OK save: state four-credits saved at frame 1009
 
 <details><summary>call and reply</summary>
 
@@ -1292,8 +1495,8 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   "name": "four-credits",
   "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four-credits.sta",
   "bytes": "<volatile>",
-  "frame": 702,
-  "pc": "0x0000ae19",
+  "frame": 1009,
+  "pc": "0x0000fd80",
   "errorlog": "<volatile>",
   "session": {
     "alive": true,
@@ -1307,7 +1510,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**16. `input`**: OK press start: START stopped on the binary: Stopped at watchpoint 1 writing 03 to 042B (PC=D676)
+**18. `input`**: OK press start: START stopped on the binary: Stopped at watchpoint 1 writing 03 to 042B (PC=D676)
 
 <details><summary>call and reply</summary>
 
@@ -1322,14 +1525,14 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "input :IN1 '1 Player Start': still HELD from frame 702, releases at 706",
+  "summary": "input :IN1 '1 Player Start': still HELD from frame 1009, releases at 1013",
   "status": "ok",
   "verdict": "OTHER_STOP",
-  "frame_before": 702,
-  "frame_after": 703,
-  "emulated_before_s": 11.877906,
-  "emulated_after_s": 11.882058,
-  "cycles": 5189,
+  "frame_before": 1009,
+  "frame_after": 1010,
+  "emulated_before_s": 17.064978,
+  "emulated_after_s": 17.083171,
+  "cycles": 22741,
   "polls": 2,
   "lines_ahead": 0,
   "thread_errors": 0,
@@ -1344,7 +1547,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   "mask": "0x00000004",
   "defvalue": "0x00000004",
   "port_before": "0x000000cf",
-  "frame_set": 702,
+  "frame_set": 1009,
   "released": false,
   "active": {
     "available": false,
@@ -1354,13 +1557,13 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
     "available": false,
     "why": "the field is still HELD: the port is read at its release, which the run has not reached"
   },
-  "frame_release_planned": 706,
+  "frame_release_planned": 1013,
   "note": "the field is still HELD: the run stopped before the release frame, and the script releases it when the machine reaches it",
   "cause": "watch 0x42b: 0x0000042b written by pc 0x0000d676",
-  "stop_seq": 13,
+  "stop_seq": 15,
   "pc": "0x0000d679",
   "cpu": ":maincpu",
-  "frame": 703,
+  "frame": 1010,
   "regs": {
     "A": "0xcb",
     "B": "0xff",
@@ -1426,7 +1629,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**17. `run_for`**: OK start bcd: then on the BCD credits: Stopped at watchpoint 2 writing 03 to 042C (PC=D67F)
+**19. `run_for`**: OK start bcd: then on the BCD credits: Stopped at watchpoint 2 writing 03 to 042C (PC=D67F)
 
 <details><summary>call and reply</summary>
 
@@ -1439,20 +1642,20 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "run_for 1 frame: OTHER_STOP, frame 703 to 703",
+  "summary": "run_for 1 frame: OTHER_STOP, frame 1010 to 1010",
   "status": "ok",
   "verdict": "OTHER_STOP",
-  "frame_before": 703,
-  "frame_after": 703,
-  "emulated_before_s": 11.882069,
-  "emulated_after_s": 11.882069,
+  "frame_before": 1010,
+  "frame_after": 1010,
+  "emulated_before_s": 17.083182,
+  "emulated_after_s": 17.083182,
   "cycles": 0,
   "polls": 1,
   "cause": "watch 0x42c: 0x0000042c written by pc 0x0000d67f",
-  "stop_seq": 14,
+  "stop_seq": 16,
   "pc": "0x0000d682",
   "cpu": ":maincpu",
-  "frame": 703,
+  "frame": 1010,
   "regs": {
     "A": "0x03",
     "B": "0xff",
@@ -1518,7 +1721,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**18. `history`**: OK trail: the trail: DEC $042B, then LDA #$99, ADDA $042C, DAA, STA $042C
+**20. `history`**: OK trail: the trail: DEC $042B, then LDA #$99, ADDA $042C, DAA, STA $042C
 
 <details><summary>call and reply</summary>
 
@@ -1547,7 +1750,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**19. `registers`**: OK registers: the stop landed at PC 0xd682, A 0x03
+**21. `registers`**: OK registers: the stop landed at PC 0xd682, A 0x03
 
 <details><summary>call and reply</summary>
 
@@ -1585,7 +1788,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**20. `declaration_clear`**: OK unwatch: both watches cleared
+**22. `declaration_clear`**: OK unwatch: both watches cleared
 
 <details><summary>call and reply</summary>
 
@@ -1615,7 +1818,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**21. `record`**: OK play: the game plays on for eight seconds
+**23. `record`**: OK play: the game plays on for eight seconds
 
 <details><summary>call and reply</summary>
 
@@ -1672,7 +1875,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**22. `read_memory`**: OK after start: credits 3 in binary, 03 in BCD
+**24. `read_memory`**: OK after start: credits 3 in binary, 03 in BCD
 
 <details><summary>call and reply</summary>
 
@@ -1685,13 +1888,17 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "read_memory 0x42b: 2 bytes at 0x0000042b: 0303",
+  "summary": "read_memory 0x42b (spriteram): 2 bytes at 0x0000042b (spriteram): 0303",
   "status": "ok",
   "ref": "0x42b",
   "addr": "0x0000042b",
   "length": 2,
   "hex": "0303",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x42b", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1704,7 +1911,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 </details>
 
-**23. `screen_view`**: OK screen: the game in play, 256x240
+**25. `screen_view`**: OK screen: the game in play, 256x240
 
 <details><summary>call and reply</summary>
 
@@ -1718,13 +1925,13 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "screen_view render :screen frame 1186 from indices; 512x480 PNG x2, inline",
+  "summary": "screen_view render :screen frame 1493 from indices; 512x480 PNG x2, inline",
   "status": "ok",
   "mode": "render",
   "screen": ":screen",
   "width": 256,
   "height": 240,
-  "frame_screen": 1186,
+  "frame_screen": 1493,
   "palette": ":palette",
   "entries": 2048,
   "screen_indexed": true,
@@ -1743,13 +1950,13 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "call": "MAME_MCP_LUA_END#7",
+  "call": "MAME_MCP_LUA_END#9",
   "pc_before": "0x0000fd80",
   "cause": "screen_view: one step",
-  "stop_seq": 16,
+  "stop_seq": 18,
   "pc": "0x0000fd82",
   "cpu": ":maincpu",
-  "frame": 1186,
+  "frame": 1493,
   "regs": {
     "A": "0x00",
     "B": "0x00",
@@ -1759,7 +1966,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
     "U": "0x0080",
     "PC": "0xfd82",
     "S": "0x07f4",
-    "CC": "0xf8",
+    "CC": "0xd8",
     "DP": "0x00"
   },
   "instruction": {
@@ -1785,7 +1992,64 @@ Also attached: image/png.
 
 </details>
 
-**24. `state_write`**: OK load: state four-credits loaded and verified, frame 702
+**26. `record`**: OK view: recorded 150 frames in ./tmp/demos/gridlee/view.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 150,
+  "dest": "./tmp/demos/gridlee/view.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/gridlee/view.avi",
+  "frames": 150,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**27. `state_write`**: OK load: state four-credits loaded and verified, frame 1009
 
 <details><summary>call and reply</summary>
 
@@ -1798,138 +2062,24 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "state_write load: four-credits, rom_check OK, verified True, frame 702, pc 0x0000ae19",
+  "summary": "state_write load: four-credits, rom_check OK, verified True, frame 1009, pc 0x0000fd80",
   "status": "ok",
   "name": "four-credits",
   "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four-credits.sta",
   "rom_check": "OK",
   "verified": true,
-  "saved": {"frame": 702, "pc": "0x0000ae19"},
+  "saved": {"frame": 1009, "pc": "0x0000fd80"},
   "output": "State load attempted.  Please refer to window message popup for results.",
   "mark": "<volatile>",
   "cause": "stateload four-credits",
-  "stop_seq": 17,
-  "pc": "0x0000ae19",
-  "cpu": ":maincpu",
-  "frame": 702,
-  "regs": {
-    "A": "0x01",
-    "B": "0xd5",
-    "D": "0x01d5",
-    "X": "0x014e",
-    "Y": "0xf2e6",
-    "U": "0xab79",
-    "PC": "0xae19",
-    "S": "0x07fe",
-    "CC": "0xe4",
-    "DP": "0x00"
-  },
-  "instruction": {
-    "address": "AE19",
-    "bytes": "7F02DF",
-    "text": "CLR    $02DF",
-    "symbol": {"available": false, "why": "no symbol table places this address"},
-    "delta": {"available": false, "why": "no symbol table places this address"}
-  },
-  "following": ["AE1C: A6 0A       LDA    $A,X", "AE1E: 85 01       BITA   #$01", "AE20: 10 27 00 B0 LBEQ   $AED4", "AE24: 85 40       BITA   #$40", "AE26: 27 06       BEQ    $AE2E", "AE28: BD B8 34    JSR    $B834", "AE2B: 7E AE D4    JMP    $AED4", "AE2E: 85 80       BITA   #$80", "AE30: 10 26 00 82 LBNE   $AEB6", "AE34: 85 20       BITA   #$20", "AE36: 10 26 00 AA LBNE   $AEE4"],
-  "errorlog": "<volatile>",
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": true,
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
-    "omitted": ["altering_writes", "console"],
-    "how": "<volatile>"
-  }
-}
-```
-
-</details>
-
-**25. `read_memory`**: OK back: credits 4 in binary, 04 in BCD
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "ref": "0x42b",
-  "length": 2
-}
-```
-
-```json
-{
-  "summary": "read_memory 0x42b: 2 bytes at 0x0000042b: 0404",
-  "status": "ok",
-  "ref": "0x42b",
-  "addr": "0x0000042b",
-  "length": 2,
-  "hex": "0404",
-  "cpu": ":maincpu",
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": true,
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
-    "omitted": ["altering_writes", "console"],
-    "how": "<volatile>"
-  }
-}
-```
-
-</details>
-
-**26. `input`**: OK coin 5: a coin, held four frames and released
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "port": ":IN1",
-  "field": "Coin 1",
-  "frames": 4,
-  "seconds": 300
-}
-```
-
-```json
-{
-  "summary": "input :IN1 'Coin 1': held 4 frames, active True, released at frame 706",
-  "status": "ok",
-  "verdict": "ELAPSED",
-  "frame_before": 702,
-  "frame_after": 707,
-  "emulated_before_s": 11.877904,
-  "emulated_after_s": 11.962385,
-  "cycles": 105601,
-  "polls": 6,
-  "lines_ahead": 0,
-  "thread_errors": 0,
-  "console_reruns": 0,
-  "route": "ioport",
-  "port": ":IN1",
-  "field": "Coin 1",
-  "value": "0x00000001",
-  "frames": 4,
-  "name": "Coin 1",
-  "player": 0,
-  "mask": "0x00000001",
-  "defvalue": "0x00000001",
-  "port_before": "0x000000cf",
-  "frame_set": 702,
-  "released": true,
-  "port_held": "0x000000ce",
-  "frame_released": 706,
-  "active": true,
-  "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 18,
+  "stop_seq": 20,
   "pc": "0x0000fd80",
   "cpu": ":maincpu",
-  "frame": 707,
+  "frame": 1009,
   "regs": {
-    "A": "0xfe",
-    "B": "0xd0",
-    "D": "0xfed0",
+    "A": "0xfd",
+    "B": "0xa2",
+    "D": "0xfda2",
     "X": "0x0100",
     "Y": "0x00f1",
     "U": "0xc66d",
@@ -1960,13 +2110,134 @@ Also attached: image/png.
 
 </details>
 
-**27. `record`**: OK fifth credit: recorded 120 frames in ./tmp/demos/gridlee/fifth-credit.avi
+**28. `read_memory`**: OK back: credits 4 in binary, 04 in BCD
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "frames": 120,
+  "ref": "0x42b",
+  "length": 2
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x42b (spriteram): 2 bytes at 0x0000042b (spriteram): 0404",
+  "status": "ok",
+  "ref": "0x42b",
+  "addr": "0x0000042b",
+  "length": 2,
+  "hex": "0404",
+  "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x42b", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"}
+  ],
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**29. `input`**: OK coin 5: a coin, held four frames and released
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":IN1",
+  "field": "Coin 1",
+  "frames": 4,
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "input :IN1 'Coin 1': held 4 frames, active True, released at frame 1013",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 1009,
+  "frame_after": 1014,
+  "emulated_before_s": 17.064975,
+  "emulated_after_s": 17.149456,
+  "cycles": {
+    "available": false,
+    "why": "MAME's debugger refreshes `totalcycles` only when the cpu executes, so right after `state_write(method=load)` replaced the machine it still holds the count from before; the next run reports cycles"
+  },
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":IN1",
+  "field": "Coin 1",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "Coin 1",
+  "player": 0,
+  "mask": "0x00000001",
+  "defvalue": "0x00000001",
+  "port_before": "0x000000cf",
+  "frame_set": 1009,
+  "released": true,
+  "port_held": "0x000000ce",
+  "frame_released": 1013,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 21,
+  "pc": "0x0000fd80",
+  "cpu": ":maincpu",
+  "frame": 1014,
+  "regs": {
+    "A": "0xfd",
+    "B": "0x9d",
+    "D": "0xfd9d",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd80",
+    "S": "0x07f4",
+    "CC": "0xf4",
+    "DP": "0x00"
+  },
+  "instruction": {
+    "address": "FD80",
+    "bytes": "0CB2",
+    "text": "INC    <$B2",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**30. `record`**: OK fifth credit: recorded 150 frames in ./tmp/demos/gridlee/fifth-credit.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 150,
   "dest": "./tmp/demos/gridlee/fifth-credit.avi",
   "seconds": 300
 }
@@ -1987,7 +2258,7 @@ Also attached: image/png.
   "thread_errors": 0,
   "console_reruns": 0,
   "path": "./tmp/demos/gridlee/fifth-credit.avi",
-  "frames": 120,
+  "frames": 150,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -2018,7 +2289,7 @@ Also attached: image/png.
 
 </details>
 
-**28. `read_memory`**: OK five: credits 5 in binary, 05 in BCD
+**31. `read_memory`**: OK five: credits 5 in binary, 05 in BCD
 
 <details><summary>call and reply</summary>
 
@@ -2031,13 +2302,17 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "read_memory 0x42b: 2 bytes at 0x0000042b: 0505",
+  "summary": "read_memory 0x42b (spriteram): 2 bytes at 0x0000042b (spriteram): 0505",
   "status": "ok",
   "ref": "0x42b",
   "addr": "0x0000042b",
   "length": 2,
   "hex": "0505",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x42b", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -2051,7 +2326,183 @@ Also attached: image/png.
 
 </details>
 
-**29. `close`**: OK close: closed: MAME quit on its own
+**32. `input`**: OK start again: START, held four frames and released
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":IN1",
+  "field": "1 Player Start",
+  "frames": 4,
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "input :IN1 '1 Player Start': held 4 frames, active True, released at frame 1171",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 1167,
+  "frame_after": 1172,
+  "emulated_before_s": 19.734546,
+  "emulated_after_s": 19.819023,
+  "cycles": 105597,
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":IN1",
+  "field": "1 Player Start",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "1 Player Start",
+  "player": 0,
+  "mask": "0x00000004",
+  "defvalue": "0x00000004",
+  "port_before": "0x000000cf",
+  "frame_set": 1167,
+  "released": true,
+  "port_held": "0x000000cb",
+  "frame_released": 1171,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 23,
+  "pc": "0x0000fd80",
+  "cpu": ":maincpu",
+  "frame": 1172,
+  "regs": {
+    "A": "0xdd",
+    "B": "0xdd",
+    "D": "0xdddd",
+    "X": "0x3a26",
+    "Y": "0x03ff",
+    "U": "0x0433",
+    "PC": "0xfd80",
+    "S": "0x07f0",
+    "CC": "0xd9",
+    "DP": "0x00"
+  },
+  "instruction": {
+    "address": "FD80",
+    "bytes": "0CB2",
+    "text": "INC    <$B2",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**33. `record`**: OK playing: recorded 150 frames in ./tmp/demos/gridlee/playing.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 150,
+  "dest": "./tmp/demos/gridlee/playing.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/gridlee/playing.avi",
+  "frames": 150,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "<volatile>",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**34. `read_memory`**: OK started: credits 4 in binary, 04 in BCD
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x42b",
+  "length": 2
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x42b (spriteram): 2 bytes at 0x0000042b (spriteram): 0404",
+  "status": "ok",
+  "ref": "0x42b",
+  "addr": "0x0000042b",
+  "length": 2,
+  "hex": "0404",
+  "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x42b", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"}
+  ],
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**35. `close`**: OK close: closed: MAME quit on its own
 
 <details><summary>call and reply</summary>
 

@@ -352,7 +352,7 @@ Call:
 scan(method="filter", operator="=", value=3)
 ```
 
-Reply, 3 of 12 fields:
+Reply, 3 of 13 fields:
 
 ```json
 {
@@ -404,11 +404,11 @@ Call:
 disassemble(ref="0xb583", length=12)
 ```
 
-Reply, 2 of 11 fields:
+Reply, 2 of 12 fields:
 
 ```json
 {
-  "summary": "disassemble 0xb583: 5 lines at 0x0000b583",
+  "summary": "disassemble 0xb583 (maincpu): 5 lines at 0x0000b583 (maincpu)",
   "lines": [
     "B583: 7C 04 2B INC    $042B",
     "B586: 86 01    LDA    #$01",
