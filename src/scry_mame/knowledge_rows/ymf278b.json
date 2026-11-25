@@ -1,0 +1,1814 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ymf278b",
+ "title": "The YMF278B wave table registers",
+ "kind": "register",
+ "scope": "ymf278b",
+ "covers": "the YMF278B's system, mix and per-channel wave table registers at their chip addresses, as MAME's ymfm models them; the captured Yamaha catalog's register grid comes out of its OCR with addresses and bit columns rejoined, so no line of it is quotable",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "ymfm_pcm.h and ymopl.cpp name the chip and its registers and cite no document."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search found no Yamaha page holding the YMF278B manual, only a product brochure."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The Yamaha components listing holds YMF262, YMF289B and YMF701, no YMF278B."
+  },
+  {
+   "where": "archive-org",
+   "gave": "The item yamaha-chip-jpn holds a 20-page Japanese scan of the same catalog."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com answered YMF278B with a search page that served no document list."
+  }
+ ],
+ "entries": [
+  {
+   "key": "0x02",
+   "name": "system control",
+   "access": "write",
+   "aliases": [
+    "memory access mode"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "176-179"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1723-1727"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "404-408"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1830-1832"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x02 holds the memory access mode in bit 0, the memory type in bit 1, the wave table header in bits 2-4 and the device ID in bits 5-7.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "176-179",
+       "sha": "2a4569dbc43b7c6d188d724d4fd709841deb5a043ad6a7022db966bd2d95bf76"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x02 stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read through the PCM data port returns the stored byte with bit 5 set.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1723-1727",
+       "sha": "5631c530d4a88bd11b2200f2a6e4d26c9fabcafdc334574af954de3cad33728c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The wave table header selects a 512 KB bank for wave tables numbered 384 and above.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "404-408",
+       "sha": "2ae84e5bd6dbd104e6340eceb8de98b648f60b2af578ef24436af5f9ddf16f45"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "PCM data writes are ignored until the FM register file's NEW2 flag is set.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1830-1832",
+       "sha": "5cc71a0b0217c8c93201e5959db95df04f1006c438cc5fd83936b8fd32217a05"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "memory address high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "180"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "213-216"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x03 holds bits 16-21 of the external memory address.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "180",
+       "sha": "8dd21db22aa067d4a522a3b2a5c00bc3ea16986858f7b2327f4165fa150ee344"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "210-218",
+       "sha": "b4f9ffd08bc9cb61dc3890590e71fa6f4c5f9276acd7385efa0e8cdbedb453d2"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "679-680",
+       "sha": "4f23acc60cb83a950f38a23b6c40c91009787da7a874e85c9e69da7aa45664c5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x03 stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "order",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The auto-increment writes the new address's bits 16-21 into 0x03.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "213-216",
+       "sha": "db6ee2c07d0a8b2b61054e83c5c4130ea5d97ab37993af20ba43261242703250"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "memory address mid",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "180"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "213-216"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x04 holds bits 8-15 of the external memory address.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "180",
+       "sha": "8dd21db22aa067d4a522a3b2a5c00bc3ea16986858f7b2327f4165fa150ee344"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "210-218",
+       "sha": "b4f9ffd08bc9cb61dc3890590e71fa6f4c5f9276acd7385efa0e8cdbedb453d2"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "679-680",
+       "sha": "4f23acc60cb83a950f38a23b6c40c91009787da7a874e85c9e69da7aa45664c5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x04 stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "order",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The auto-increment writes the new address's bits 8-15 into 0x04.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "213-216",
+       "sha": "db6ee2c07d0a8b2b61054e83c5c4130ea5d97ab37993af20ba43261242703250"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "memory address low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "180"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "213-216"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x05 holds bits 0-7 of the external memory address.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "180",
+       "sha": "8dd21db22aa067d4a522a3b2a5c00bc3ea16986858f7b2327f4165fa150ee344"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "210-218",
+       "sha": "b4f9ffd08bc9cb61dc3890590e71fa6f4c5f9276acd7385efa0e8cdbedb453d2"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "679-680",
+       "sha": "4f23acc60cb83a950f38a23b6c40c91009787da7a874e85c9e69da7aa45664c5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x05 stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "order",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The auto-increment writes the new address's low byte into 0x05.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "213-216",
+       "sha": "db6ee2c07d0a8b2b61054e83c5c4130ea5d97ab37993af20ba43261242703250"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "memory data",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "181"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "693-696"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "679-680"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "212-216"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x06 is the external memory data register.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "181",
+       "sha": "bec85fdcc143660de1db9fb29e009c6c2b7d3646ab79ab701fe367e52f262ded"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "679-680",
+       "sha": "4f23acc60cb83a950f38a23b6c40c91009787da7a874e85c9e69da7aa45664c5"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "693-696",
+       "sha": "075af85d0721d5219b9c0a42bc7c87d0220730e3cb2815b0665efeb390eaf2b5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the memory access mode set, a write to 0x06 writes external memory and returns before the store.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "693-696",
+       "sha": "075af85d0721d5219b9c0a42bc7c87d0220730e3cb2815b0665efeb390eaf2b5"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the mode set, a read of 0x06 returns the byte at the address and increments the address.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "679-680",
+       "sha": "4f23acc60cb83a950f38a23b6c40c91009787da7a874e85c9e69da7aa45664c5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the mode clear, a write to 0x06 stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "693-696",
+       "sha": "075af85d0721d5219b9c0a42bc7c87d0220730e3cb2815b0665efeb390eaf2b5"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "order",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The auto-increment writes the new address back into 0x05, 0x04 and 0x03.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "212-216",
+       "sha": "7e4bc04f18be881fe41ae9e1c58f5e4397f5079ef7f8339e55e3af050076fb1d"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xF8",
+   "name": "FM output mix",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "182-183"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "48-49"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1897-1901"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1930-1932"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0xF8 holds the FM right mix in bits 3-5 and the FM left mix in bits 0-2.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "182-183",
+       "sha": "cdafe70e83ed3bc9c93d00cc8d288691a0c4561f282eff300217c6a886452279"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reset clears the register file and then sets 0xF8 to 0x1B.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "48-49",
+       "sha": "0df538f0e4535bd0c984b6a9c2f468de49c123cebecd3efd6a214751c10c021d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0xF8 stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each mix value indexes one of eight scale factors, from 0x7FA at 0 down to 0 at 7.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1897-1901",
+       "sha": "cc3b647e7172f56171f030dd460793f3fcec29c4414596f5ccf2d58f00c036c4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The FM mix scales the FM part of the mixed DO2 output.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1930-1932",
+       "sha": "bb5bf09e5188a1b65b6071c7e02d191b0dac6ef1b472584789ac497f00267135"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xF9",
+   "name": "PCM output mix",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "184-185"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "48"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1897-1901"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1930-1932"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0xF9 holds the PCM right mix in bits 3-5 and the PCM left mix in bits 0-2.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "184-185",
+       "sha": "48e7e3b1b5451e62621c75dd8ccbb0e107c30679198b0d386409a25dc63282ee"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reset clears 0xF9 to 0.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "48",
+       "sha": "f2476dcbc075fb8b69f10851389decd69e5586a1934d5a0a6b87806106e6ea29"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0xF9 stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each mix value indexes one of eight scale factors, from 0x7FA at 0 down to 0 at 7.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1897-1901",
+       "sha": "cc3b647e7172f56171f030dd460793f3fcec29c4414596f5ccf2d58f00c036c4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The PCM mix scales the wave table part of the mixed DO2 output.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1930-1932",
+       "sha": "bb5bf09e5188a1b65b6071c7e02d191b0dac6ef1b472584789ac497f00267135"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x1F",
+   "name": "wave table number low",
+   "access": "write",
+   "aliases": [
+    "wave table number",
+    "wavetable number"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "188"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "710-711"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1840-1843"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1702-1703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "1938-1940"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "400-408"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "411-414"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "415-416"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "419-427"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "429-434"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "436-437"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x08..0x1F holds the low eight bits of a channel's wave table number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "188",
+       "sha": "dbe60df46ad8eef2b1bc2aaf8eb8dd1b5b24685b084f1f2c7a928d8dc9c294dd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte and then loads that channel's wave table.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "710-711",
+       "sha": "08c20fa9b68c9c4966937ca373482eaa28b17b1fe56e9fe9665d8a3786f2e8d6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The write sets the load wait counter to 13 samples, which raises the LD status bit.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1840-1843",
+       "sha": "d08cca637578ca424f99a635a4c5f34c817b3af0b4347cf3e0990adaf3f504f1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1702-1703",
+       "sha": "d581ec2f1c0947648748553642db6fad9ff76317dbe0b1e05f5c2cdc194d4572"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The wait counter falls with each sample generated until it reaches 0.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "1938-1940",
+       "sha": "b455281c086ae8ebb414565248eeabfc1a8a4b818caafbac635cb946fa2310e1"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The load reads twelve bytes at twelve times the number; from 384 up, a nonzero header moves the read to its bank.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "400-408",
+       "sha": "1b7c7dff61a00ca7484c68f14a6f672b657cdf5b5353f1332e7f1e89d5e683f5"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The first byte gives the sample format in bits 6-7 and the base address's top six bits.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "411-414",
+       "sha": "8140ac5ad5786315d1e613ccdcd8a8de2b91bb493b3a9f2dcd80067c568c2856"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The next bytes complete a 22-bit base address and the loop and end positions, the end negative.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "411-414",
+       "sha": "8140ac5ad5786315d1e613ccdcd8a8de2b91bb493b3a9f2dcd80067c568c2856"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "415-416",
+       "sha": "9fbf86e6c8a76ad5161b067c058a5b4a26e0884b05a118a2c180ffd989769c81"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "419-427",
+       "sha": "6fb797efe3d22db74e9ac1dd67eb64c5d1f4ce54387ed06badfc16ff0de3a0c2"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The last five bytes are written into registers 0x80, 0x98, 0xB0, 0xC8 and 0xE0 of the channel.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "429-434",
+       "sha": "9a3371dda40fafa5798ce8685644118a1866d523298608cb6bd9c213ae95d482"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The load resets the channel's envelope attenuation to 0x3FF.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "436-437",
+       "sha": "272be31ff79afe704e7e517af19ef2792b19c3d98dd39c4a4789bdd4996cfab3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x20..0x37",
+   "name": "wave table number high",
+   "access": "write",
+   "aliases": [
+    "F-number low"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "188-189"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "188"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "189"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x20..0x37 holds the wave table number's ninth bit in bit 0 and F-number bits 0-6 in bits 1-7.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "188-189",
+       "sha": "1c96b0a2142f277d69a8e6dce9409c9924ba6cb87e77ed3865f75bb46b134b70"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The nine-bit wave table number combines 0x08..0x1F with bit 0 of this register.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "188",
+       "sha": "dbe60df46ad8eef2b1bc2aaf8eb8dd1b5b24685b084f1f2c7a928d8dc9c294dd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "F-number bits 0-6 combine with bits 0-2 of 0x38 to give the ten-bit F-number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "189",
+       "sha": "003fd73344a33bfbf5c2c5518459812484788e9d26d7821374a64f17db130983"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x38..0x4F",
+   "name": "F-number high, octave",
+   "access": "write",
+   "aliases": [
+    "octave",
+    "pseudo-reverb"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "189-191"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "72-74"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "117-121"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "534-536"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x38..0x4F holds F-number bits 7-9 in bits 0-2, pseudo-reverb in bit 3 and octave in bits 4-7.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "189-191",
+       "sha": "4bad37eee013336e2834e7c8efabde784c9e81615a1d386d1006c71f311b7f66"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Octave and the ten-bit F-number set the sample step as a shifted value.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "72-74",
+       "sha": "789835380defce2c5daa96705b5b6645cb94121dcc79603be1b0a860b38b3020"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "189",
+       "sha": "003fd73344a33bfbf5c2c5518459812484788e9d26d7821374a64f17db130983"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The octave also enters the key scale correction.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "117-121",
+       "sha": "ab3cf0931e1cfed12ebacad0f9f065a781f7471fc6c647756f7b7c2f6a1a1e98"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With pseudo-reverb set, a decay, sustain or release envelope passes into a reverb state at -18 dB.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "534-536",
+       "sha": "bcb05077d7949fde5d88abce7d73ca65d75a4bfd57016b1193238b1b2bce3f79"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x50..0x67",
+   "name": "total level",
+   "access": "write",
+   "aliases": [
+    "level direct"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "192-193"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "77"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "252-253"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "292-300"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x50..0x67 holds the total level in bits 1-7 and level direct in bit 0.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "192-193",
+       "sha": "d7890ec579c9d0d4c8f5a177c6cbd24e8548067870f3ba61ca2acdb84411063e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The total level is held as a .10 attenuation value.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "77",
+       "sha": "c7caf3e27c7c47debe2273c165ce7c0b0707959732838ea86ae59c95bcf7532c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With level direct set, the channel takes the total level immediately instead of interpolating it.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "252-253",
+       "sha": "c349fb6c729191963217d955c04168b52fa1ef3615507f1b0a4e4a03b35d7508"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "292-300",
+       "sha": "567dd8f62ce9fe3fc3f87e91b4f95bbd7056ab3b523f3bf7e351227de3fadc17"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x68..0x7F",
+   "name": "key on, damp, panpot",
+   "access": "write",
+   "aliases": [
+    "key on",
+    "panpot"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "194-198"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "706-707"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "350-353"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "237-243"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "244-249"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "463-465"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "130-138"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "79-85"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "86-92"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "340-342"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x68..0x7F holds key on in bit 7, damp in bit 6, LFO reset in bit 5, output channel in bit 4 and panpot in bits 0-3.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "194-198",
+       "sha": "bf178f765ccdfe13e626ec9d7eed3f7d15c64a1411256d44de3eb021eda0cb4c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte and passes bit 7 to the channel's key handler.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "706-707",
+       "sha": "0db65570dee5d1f322e369a3786f5b315347d91d6c6ad687ae4bc3eb319421d3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The key handler marks a key-on or key-off pending, and the next prepare starts the attack or the release when the key-on bit changes.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "350-353",
+       "sha": "d5f9643a356f49c17d7cc001b9d0c85a2501bc7c4a345f86ba453b7e015eba21"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "237-243",
+       "sha": "64718c88f67633aa7510b531ce703bb44d0cd19d369d45a5ea39a8398a57638d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "244-249",
+       "sha": "9384db857505a523fdca411228e464eb72c18102f88d4f95d48bf66242619aca"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With LFO reset set, a key-on clears the channel's LFO counter.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "463-465",
+       "sha": "3398e4a6bf2110f15f96264b54d7d155d527a9b68ac6982c320a41667eb125fd"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With damp set, the channel decays at rate 48 to -12 dB and then at the maximum rate.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "130-138",
+       "sha": "bc34b761fbd9e3d9b8ae72c5b5f9e705d459f5f4ec4cbe687345752f7a286763"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The panpot is signed: 0 to 7 fades the left side, -7 to -1 the right, and -8 silences both.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "79-85",
+       "sha": "e62e34f28a38345c53d83e43460966a9b1890045d4d7cd02de8929bbb9b91a36"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "86-92",
+       "sha": "77867165695650b660043e36f51f37d88313c63cf38a09e640c45845ef1842ee"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The output channel selects the pair of output samples the channel's left and right are added to.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "340-342",
+       "sha": "18ae4caf05977c7cfdb800dc2f4e692260acde943291411b994e0d838fba8200"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x80..0x97",
+   "name": "LFO speed and vibrato",
+   "access": "write",
+   "aliases": [
+    "LFO speed",
+    "vibrato"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "199-200"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "94-98"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "105-109"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "266-268"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "273-284"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x80..0x97 holds the LFO speed in bits 3-5 and the vibrato depth in bits 0-2.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "199-200",
+       "sha": "d2083283d4e107e5904dba19ca8c3eb6cc153dd57a92dcbc064bdedb314287b2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The LFO speed indexes eight step values, from 1 to 42, into the channel's LFO counter.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "94-98",
+       "sha": "e9129da2598c6a9b3df3049c5810240c99f1822a515b42c5f0731a2a0ce42fd6"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "266-268",
+       "sha": "5780b3e1cecb00d628772614b18741133b9c8ccc5d56b0fd09682b17dd2ddf02"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The vibrato depth indexes eight F-number depths, from 0 to 48.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "105-109",
+       "sha": "a82fa24631db3c545b1b757b51083823907467a66e0a4bb09d6be5ad9dc0b294"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The LFO counter advances by the step each sample, and vibrato shifts the sample step by the depth.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "266-268",
+       "sha": "5780b3e1cecb00d628772614b18741133b9c8ccc5d56b0fd09682b17dd2ddf02"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "273-284",
+       "sha": "9f3128fdc21caaddd6e18ed8f82457287ac931be1038272397a3112bef92bbb7"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x98..0xAF",
+   "name": "attack and decay rate",
+   "access": "write",
+   "aliases": [
+    "attack rate",
+    "decay rate"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "201-202"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "149-153"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "155-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "124-125"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x98..0xAF holds the attack rate in bits 4-7 and the decay rate in bits 0-3.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "201-202",
+       "sha": "34a69485432c433fab3c34a785c41c74ced2a051f92a686a123f09c8cb9cc722"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A raw rate of 0 stays 0 and a raw rate of 15 becomes 63.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "149-153",
+       "sha": "006f32b0bf3db809d0384823fb2d4b789a889b5e80406d845f15f42ad9fad4c9"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Any other rate is multiplied by four, the correction added and the result clamped to 63.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "155-156",
+       "sha": "dfa49b37ae8be047f7ef0d062a76cb4b7d54672dc52d9ec3e4fd346ef36d8ec7"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The attack and decay rates become the envelope's attack and decay rates.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "124-125",
+       "sha": "166ada1aa6e2acf159e570aa7b00a4c4b7b509e813d97a7c405327199df31983"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xB0..0xC7",
+   "name": "sustain level and rate",
+   "access": "write",
+   "aliases": [
+    "sustain level",
+    "DL",
+    "D2R"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "203-204"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "111-114"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "126"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0xB0..0xC7 holds the sustain level in bits 4-7 and the sustain rate in bits 0-3.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "203-204",
+       "sha": "9c196435021ec6c9adced1393a50faef3a3c9f6df4e9bec53cf922e11678f41f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A sustain level of 15 becomes 31, so the level is effectively five bits.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "111-114",
+       "sha": "78fc45f467bbb98a3a9930e6c638d6c860d31e3e10fc229d22a6771b3ad6b551"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The sustain rate becomes the envelope's sustain rate.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "126",
+       "sha": "cb6a913a8cbafaa9919d36f92476a0db402e4d17f804cc57baae517cbabd4b0e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xC8..0xDF",
+   "name": "rate correction, release",
+   "access": "write",
+   "aliases": [
+    "rate correction",
+    "release rate",
+    "RR"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "205-206"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "116-121"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "149-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0xC8..0xDF holds the rate correction in bits 4-7 and the release rate in bits 0-3.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "205-206",
+       "sha": "a36a1ba7942a13cf4b22d844cb23aeca04d8b63319381e82c75125e7099675b4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A rate correction of 15 leaves the rates uncorrected; any other doubles the sum of the octave and the correction and adds the F-number's top bit.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "116-121",
+       "sha": "2cf31f205d3b4c95a1acde3153a19fa9251d5c9d2a19c2b31e4e4e69c5dd53a4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The release rate is scaled as the attack rate is, its raw 15 giving 63.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "124-127",
+       "sha": "b6333e016726b49897d2bc0a927513e6dac482147590a577c40a05a66d4843bb"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "149-156",
+       "sha": "6e765693c5ee3d7facd051ffdcbfc320efe3c12c62de1cd03ca35f4e7f3abb0e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xE0..0xF7",
+   "name": "AM depth",
+   "access": "write",
+   "aliases": [
+    "tremolo"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "100-103"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "317-324"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+     "lines": "703"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0xE0..0xF7 holds the AM depth in bits 0-2.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.h",
+       "lines": "207",
+       "sha": "a6de55109dc40d4f56eb863b02b80e6d7683ec4f6b598e8e556eee270384bdc3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The AM depth indexes eight depth values, from 0 to 0x80.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "100-103",
+       "sha": "60696d9d70576755ee345275f81b2f35bf2c74510c0b368542215b8d8a1f3aa0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The depth modulates the envelope by the LFO value in the output stage.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "317-324",
+       "sha": "0be5374414a8e4eb3cfe25b2dc9c5c2857f2c4c0dd126d8c1e04f4d311c0e197"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_pcm.cpp",
+       "lines": "703",
+       "sha": "aeaa6d4d2be3cb5c7e36752ccbae4955f873707bf2598b4b42d0704d13a0e22b"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

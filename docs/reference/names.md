@@ -389,7 +389,7 @@ Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`, `s
 `held_back`; nothing matched: no entry, `nearest` and a `note`: it stays a number.
 `unconfirmed` lists ids held back.
 
-Scopes: acia6850, am9517a, ay8910, chip, i8251, i8255, ins8250, m68000, m6809, mc146818, mc6845, mc68681, msm5205, okim6295, pia6821, pic8259, pit8253, saa1099, sega315_5124, sega315_5313, sn76496, upd1990a, upd7759, v30, x1010, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, z80, z80scc, z80sio.
+Scopes: acia6850, aica, am9517a, ay8910, c140, c219, c352, c6280, chip, es5505, es5506, hd44780, i8251, i8255, ins8250, k007232, k054539, m68000, m6809, mc146818, mc6845, mc68681, msm5205, nes_apu, okim6295, pia6821, pic8259, pit8253, pokey, ppu2c0x, qsound, rf5c68, saa1099, scsp, sega315_5124, sega315_5313, sn76496, tms9928a, upd1990a, upd7759, v30, v9938, x1010, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, ymf278b, z80, z80scc, z80sio.
 
 Reference: REFERENCE.md, Knowledge base.
 ```

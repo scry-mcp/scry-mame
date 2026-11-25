@@ -1,0 +1,2624 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "pokey",
+ "title": "The POKEY registers, write and read",
+ "kind": "register",
+ "scope": "pokey",
+ "covers": "the registers of the Atari C012294 POKEY as the Atari 400/800 Hardware Manual describes them, and MAME's handling of each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "Atari-400-800-Technical-Reference-Notes.raw.txt",
+   "variant": "pokey"
+  }
+ ],
+ "official": {
+  "Atari-400-800-Technical-Reference-Notes.raw.txt": [
+   "20782-20814",
+   "21201-21279",
+   "21320-21324",
+   "21325-21327",
+   "21350-21359",
+   "21396-21434",
+   "21435-21452",
+   "21453-21455",
+   "21456-21479",
+   "21593-21601",
+   "21602-21613",
+   "21614-21627"
+  ]
+ },
+ "engine": [
+  "adjust",
+  "synchronize",
+  "scheduler",
+  "timer_expired_delegate"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x07",
+   "name": "audio registers",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21231-21279"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDF1_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDC1_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDF2_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDC2_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDF3_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDC3_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDF4_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDC4_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "AUDF1, AUDF2, AUDF3 and AUDF4 are the audio frequency registers at D200, D202, D204 and D206.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21231",
+       "sha": "6f77b7f77b633397a5b8fb9c0117a4d6eaa40c5d4151b34b868b6baa5501115b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write puts data into the four frequency control registers, each of which controls a divide-by-N counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21232-21233",
+       "sha": "f998b1a40b0d78e82a54ef60b9ff3b722687e28be200089dec747559c53fb35e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "N is one greater than the binary number in the frequency register.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21254-21257",
+       "sha": "5e9a2fa72aecda7ed47aef46677a0dc9f25724d86f9a1cade1dee2ad9152069a"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "All bits zero give N = 1 and all bits one give N = 256.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21235-21246",
+       "sha": "d39d8b1baf393178d3f2941cd8d1f879c7cc82b432eb14988c50a0844a02a4ef"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21247-21253",
+       "sha": "13117add57cfe08006658a6a8f069dc4fb7c76dc8d95a80767ba7e05a23e9f54"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "AUDC1, AUDC2, AUDC3 and AUDC4 are the audio channel control registers at D201, D203, D205 and D207.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21258-21260",
+       "sha": "707268febcae2cef0c9a513bb29083aed9c48420b339ffe2b2f704f321525a14"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "A write puts data into the four control registers, each controlling the noise content and volume of its channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21258-21261",
+       "sha": "9050e00735193de2dc19fd0fa22b50226c648a19395dd686e4922769d82200c6"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The table pairs hex 0, 2, 4, 6, 8, A and C with a distortion source and a divisor N set by the frequency register.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21262-21273",
+       "sha": "2c53f9b1ebf95a7ca0576a6410904e6d6636de17618502d696bbfbfc0703c867"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21274",
+       "sha": "db778a24c56847918e8f523af44d0c7bea410f5471cb2e7a376deae2a43aebb2"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "A value with bit 4 set forces the output on: volume only.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21275-21276",
+       "sha": "9a3e555c6f0df271c75ec1f004eeaff8a287f9f254e345941d6dc3b54aae15a1"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The low four bits select one of sixteen volume levels: 0 is the lowest (off), 8 half and F the highest.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21277-21279",
+       "sha": "df7e50d1a1d17c8ad37140c39fb8b3d2a4b16e91b112a99e08a3051ece766b6b"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the audio writes through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1012",
+       "sha": "e6c94f7ae717f136bb1de0760bca07ca72244a48750f5edea3c8bad1094d9f15"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to an AUDC register also marks the raw output for recalculation.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1019-1020",
+       "sha": "ebda07767993a32ce7ddd1acc85d71a877498e248d0f9b4e66b3a58f4482eceb"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1029-1031",
+       "sha": "580bf6cf638dc0c04220141ab70f4b8d78d5f1ab5abb30d8ce61ef486167effd"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1040-1042",
+       "sha": "3f606a42628cd7706aa48b003129e153af0a60809eebf71987137768bd379050"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1051-1054",
+       "sha": "086666a2a71df7ce0df35c4ee0759cd28e24f2c272237618d59e8875263d13d6"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21234",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1013-1014",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1024-1025",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1035-1036",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1046-1047",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1018-1019",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1029-1030",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1040-1041",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1051-1052",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x00..0x07",
+   "name": "pot values",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21593-21601"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT0_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT1_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT2_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT3_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT4_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT5_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT6_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "POT7_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "POT0 to POT7 are the pot value registers at D200 to D207.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21593",
+       "sha": "3d09d5efad0f7db843fb8ab37218ec3a4ba7da1a65eefa29c80447a7a140e6d2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "They read the value of 8 pots (paddle controllers) connected to the 8-line pot port, from 0 to 228.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21593-21594",
+       "sha": "6354f88ab0b58c1f21eaba7a2147d2dfbf4ff90b835aa27ed4eaa3010706fb5f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The paddles are numbered from left to right, and turning a knob clockwise decreases its value.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21595-21597",
+       "sha": "1db0b273f220aa8adf836406001206d74f450cb439b37bb2a42dbc0e0477c76d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The values are valid only after 228 TV lines following POTGO, or after ALLPOT changes.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21597-21598",
+       "sha": "5f9c7abcc38f06343e23c758ab80cc634739cee10c775b293a32e4a0475fdc8c"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The OS keeps shadows in PADDL0 to PADDL7 at hex 270 to 277.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21601",
+       "sha": "b1c6bcbc7838611890b217b5b2fbaba4ba1569e47fe6515f2f902128440ec2df"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of one of these addresses returns that pot's value.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21593-21594",
+       "sha": "6354f88ab0b58c1f21eaba7a2147d2dfbf4ff90b835aa27ed4eaa3010706fb5f"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the pot reads through a switch on the low four bits and takes the pot number from the low three.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "914",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "916-918",
+       "sha": "d67138f6a4405d8be57aacccc7efb368dd9064dd921a0694197d5553525a4a62"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "8",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME returns the measured value once the pot's ALLPOT bit is set, and the pot counter value before then.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "919-929",
+       "sha": "8a5495c6044d4eb18ed1e352ba83bad5a1ab65be142cc21f41e9627877329164"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21599-21600",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "918-929",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "audio control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21201-21230"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "AUDCTL_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1a",
+     "on": "is",
+     "of": "doc",
+     "text": "AUDCTL is the Audio Mode Control Register at D208.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21201-21202",
+       "sha": "34e9353b6e7e5b7e0efed96f2acd4b74aa83804092cb079a34a02fc4163350b1"
+      }
+     ]
+    },
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to D208 puts data into the Audio Mode Control Register.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21201",
+       "sha": "8577eec6d2823fbe0485ee36631993f976f771375f68c4fd7d4f0bb23b91d432"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21202",
+       "sha": "a24004b86924db384d7b0eb0b51a9743ba8617a4f2f711888ca256d5f1be19f5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bit 7",
+     "of": "doc",
+     "text": "D7, stored, changes the 17-bit polynomial into a 9-bit one.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21204",
+       "sha": "a2a00540c22323cffccd08130ee95ea30feba7275a7297403a3bfd7bc633656c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 6",
+     "of": "doc",
+     "text": "D6, stored, clocks channel 1 with 1.79 MHz instead of 64 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21205",
+       "sha": "58b8d0119a15a4bc925e8ac20448b310cc5a3eaf24fa8178a01a9181bd4c47cd"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 5",
+     "of": "doc",
+     "text": "D5, stored, clocks channel 3 with 1.79 MHz instead of 64 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21206",
+       "sha": "d0c65ceb7798bdb7e69a4659c050dad8d1064017e04bba558f8998a0cd87dabc"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bit 4",
+     "of": "doc",
+     "text": "D4, stored, clocks channel 2 with channel 1 instead of 64 kHz, a 16-bit counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21207",
+       "sha": "a61b98f4869fb687ea1e2a77aef759bf9927a369fd34c09bf7b3eeee857f96d4"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bit 3",
+     "of": "doc",
+     "text": "D3, stored, clocks channel 4 with channel 3 instead of 64 kHz, a 16-bit counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21208",
+       "sha": "7451e7bf8fc7a8ba448f812b2261ffb457eb3c1e62479c43bc141849d5edd02f"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "bit 2",
+     "of": "doc",
+     "text": "D2, stored, inserts a high-pass filter in channel 1, clocked by channel 3.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21209",
+       "sha": "8460a760d9e97ae28a3b0b80bfb458dd5a1ce5e84e65f4d4dc8646d3a2b891fb"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21210",
+       "sha": "ffaee9c64b292b8153d5186024e69bfba63756f30b0b9941a4748765a8770bca"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bit 1",
+     "of": "doc",
+     "text": "D1, stored, inserts a high-pass filter in channel 2, clocked by channel 4.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21211",
+       "sha": "6c196bc557acecf69d08a20d5044e5185f5dbdb30327baaeb8bf38595fdf9b60"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "bit 0",
+     "of": "doc",
+     "text": "D0, stored, changes the normal 64 kHz frequency into 15 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21212",
+       "sha": "e4523157b81fe1a01c894ac1f27275db71b714754198086899b18790abfb9b5f"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The exact clock frequencies are 1.78979 MHz, 63.9210 kHz and 15.6999 kHz (NTSC; PAL differs).",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21213-21220",
+       "sha": "e8f1cbfd9dd03d61531fe4ed779a3036190ac678e7d1e791556a8e93daaa4dde"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The output frequency is Fin/2N, where N is the value in the frequency register plus one.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21221-21223",
+       "sha": "311cf7e2322c565b6a5413c6d487126dd8cf9065c0f6251a30a349e1ce0df47e"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "With 1.79 MHz a modified formula Fin/(2(AUDF+M)) takes M as 4 for an 8-bit counter and 7 for a 16-bit one.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21224-21230",
+       "sha": "19a9e43d0bec91d7ba81a8e570c7090b7b1d309d7d8d1dccc17329d6c9d6829a"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters AUDCTL through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1056",
+       "sha": "9f894c2e1abd3155f88e43c8b12a21243b7ab7575d178dba700ef557b805ab13"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write of the value already stored returns before storing it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1057-1058",
+       "sha": "554c56940d53e6b618f27a419f789101e6a9a4caead197b6670b9827b4205fca"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in m_AUDCTL, marks the raw output for recalculation and logs the value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1059-1061",
+       "sha": "dbc9d87e3d4eeb7d636746dd308de184350dca0849a052a27ef6ba15d7982d68"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21203",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1060",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "all pots",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21602-21613"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "ALLPOT_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "ALLPOT at D208 reads the present state of the 8-line pot port.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21602-21603",
+       "sha": "a8a47ef141d392a3d530c4bab6f3cf84b1788954200e79a9f8a39ee34b825138"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The capacitor dump transistors must be turned off by going to fast pot scan mode (bit 2 of SKCTL) or by starting pot scan (POTGO).",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21604-21607",
+       "sha": "d47b27f8d00b4b4e5686c0e89893da0a245269b3b8b2ba30e0e1941dcb6721f5"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Each bit is one pot's flag: 0 means the pot register value is valid, 1 that it is not.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21611-21612",
+       "sha": "909729759ee7ba8da46bb6d9a4c303c13be5de00007c73a84f09562648ebbcbf"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of D208 returns the eight pot line states.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21602-21603",
+       "sha": "a8a47ef141d392a3d530c4bab6f3cf84b1788954200e79a9f8a39ee34b825138"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the ALLPOT read through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "914",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "932",
+       "sha": "7a89c6390cf5b2bf7c69b380056b91dd9d3fee97057370b690e4658c5a93b796"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "mame",
+     "text": "While the two low bits of SKCTL are zero, MAME returns m_ALLPOT; with a board callback it stores and returns its value; otherwise it returns the register inverted.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "937-941",
+       "sha": "38fa690b601deb37afcc835725a39f4fb76fdc3e129a166839beefd481de4b5c"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "942-946",
+       "sha": "2dea5eb61563e2297490f48bb877582cfbed851c30ff3c545f440d02af0933fd"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "947-951",
+       "sha": "449aea07cbe4052a4d3af42e68e7ddf32e165e36cd09a7f4f07b42c49c6e2a63"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21608-21610",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21613",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "937-941",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "942-951",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "name": "start timers",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21320-21324"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "STIMER_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.h",
+     "function": "pokey_channel::reset_channel"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "STIMER is the start timer register at D209.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21320",
+       "sha": "5208644fa408669805ca041dd0735e09198452e5c85e5420825119fdb582c8f9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to D209 resets all audio frequency dividers to their AUDF value.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21320-21321",
+       "sha": "0c6da74477577c87bd1247f77a8db01dedee0ea831c9ef33b4a4114f59d5c066"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The dividers generate timer interrupts when they count down to zero, if IRQEN enables them.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21321-21323",
+       "sha": "80f8f91563514d3fc0117a7791a8cd71d9f711cdfc1f7cef336aaf23ece87f70"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters STIMER through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1064-1065",
+       "sha": "121c87b839e42ff99d3c46a1f3dd5ecf8ef035d9e429f9677f6d4297dbbc396b"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME zeroes each channel output and sets its filter sample to 1 on channels 1 and 2, 0 on 3 and 4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1075-1076",
+       "sha": "b57c2083d86bc15391fee0e3851fed42e5ac007e3608a68c5c5d37216933bb42"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21324",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1072-1078",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.h",
+     "lines": "217",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "name": "keyboard code",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21350-21359"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "KBCODE_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "KBCODE at D209 reads the keyboard code.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21350",
+       "sha": "6374776a32cea8cc423f70730458161d4d2931f00b96fb1d09e140e2db412777"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It is usually read in response to a keyboard interrupt, bit 6 or bit 7 of IRQST.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21351-21352",
+       "sha": "f71bdea61e88ec1b1740a7c947acfa55ee29f3060cf390370fc54916236f74e8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 7 is the control key and bit 6 the shift key.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21355-21356",
+       "sha": "83efb023d5936a41ecde851c391a3a8ab9d74b6d4121dba53799cb4c04475ac6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of D209 returns the keyboard code; the OS reads it into shadow CH and a get-character function converts it to ATASCII.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21350-21353",
+       "sha": "fd911adc5040b7a5d1b1b6f49129115ba9ae6b25dc66e23b99c62ec6e2a1cbed"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21358-21359",
+       "sha": "9a9c689813a75afd84a8877d2a5d5ede8844589dbeefe6b7f4120d49955ab5cd"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the keyboard code read through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "914",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "954",
+       "sha": "4c21b12cb3df370a211926bd95086297e8f477d10f6192592a06c77477ddfa0a"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21354",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "954-956",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21357",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0A",
+   "name": "serial port reset",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21453-21455"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "SKREST_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SKRES is the serial port reset register at D20A, with no data bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21453",
+       "sha": "5f51337554baa0528b7748f77163c7b8b21a10b1efdeeb429ea501983d429f57"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21455",
+       "sha": "91e5fc2337da7b5c71431121a4e2ad00df8b935b91d1ff668051a1410288ba52"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to D20A resets bits 7, 6 and 5 of the serial port and keyboard status register to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21453-21454",
+       "sha": "558f028e478a85e2517855cd06018e179ed37e4727df3767a01c75b27db8f023"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters SKRES through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1081-1083",
+       "sha": "65479c2192617760191ac4db90522e5f87b5c5e40b58e70b4dd212ecc0f871cf"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME keeps the status active high internally and clears there what the status reads as bits 7, 6 and 5.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "983-986",
+       "sha": "349aca314f7ce51ba764db426b737c7609e504ce15c7133247eecfefc497698a"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1084",
+       "sha": "be2dde658a7f1946abb641c7bccc5ad39a0c18b0ca584712224adba41536db7a"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1084",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0A",
+   "name": "random number",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21325-21327"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "RANDOM_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RANDOM is the random number generator register at D20A.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21325",
+       "sha": "3d8030e7594978626e5ee8d885b08a117750c6f7d3270195bb5ee93850684841"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read returns the high-order 8 bits of a 17-bit polynomial counter, or of a 9-bit one if bit 7 of AUDCTL is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21325-21326",
+       "sha": "12ffc6b7c3df38a68b84c7939961a1fa72f002c3d3d53e6f21b901f0f2056975"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the random read through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "914",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "958",
+       "sha": "39bec4dcccb65dbd9639c7569675a21ade35f95103896612a370fce37a24781f"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21327",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "958-968",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "name": "pot scan start",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21614-21627"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "POTGO_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::pokey_potgo"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::step_pot"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::sync_pot"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "POTGO is the start pot scan register at D20B; no data bits are used.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21614",
+       "sha": "e3c237f75472688a958f0a6b1d083ee6a06f1593ea2d13343344b9c6ded10f2e"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21615-21616",
+       "sha": "3545a6348ac79f8e6ad73d3e7f0dc4285d8794971b836b9c3d4ad4c4c2cf252e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to D20B starts the pot scan sequence, the scan counter cleared to zero.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21617-21620",
+       "sha": "13ba12291a9b9790ef249a3d5ea75d60b01942c7131eec1bfb409b603f0dc676"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The document asks that the pot values be read before the write.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21618",
+       "sha": "cf77cfb86002a3601072daf8622bce0bca3eb87f2d3b46837a3f29da174aa5f6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The capacitor dump transistors turn off at the start of the scan and on again when the counter reaches 228.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21621",
+       "sha": "9dd57795a2ec65f8204ccf17596c57cd38e36d74e02d9b8e355709c879a4b12a"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21625-21626",
+       "sha": "231e914fb11c2e07f0ff49c227f0e82602c8daa1a69ac417b2a686a9a405e7ee"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "The scan counter counts, and each pot's value is captured in its register when its line crosses the trigger voltage.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21622-21624",
+       "sha": "b8f22662d1180a9be1b2126e17d4be3b7bbff9c9ca4b3590dc0c5659f8a30ef4"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The OS vertical blank code writes this register.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21627",
+       "sha": "542949bdbbab8588a6c602cc71f45a4338c3630ace0fc84e54e56f1bbc1f115a"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME starts the scan only when the two low bits of SKCTL are not both zero, and then clears ALLPOT and the scan counter at once.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1089-1090",
+       "sha": "46a0d42e410d41f1ad70e6ee33dbd9a7244f9fb0a82e1b01953d5ed45440df6d"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1284-1285",
+       "sha": "46f4bf33a084835da723d167acc5eabca6b1fab23770e1283e6e9dcdd5b9fef6"
+      }
+     ],
+     "row": "2"
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "text": "Nothing in MAME models the capacitor dump transistors the document turns off at the start and on again at 228.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1281-1310",
+       "sha": "6812e8d669bb647b47ef7be9659f9f9d18dfcb43f4c364ddb472658bbb9e7b82"
+      }
+     ],
+     "row": "4"
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "MAME counts to 228 and marks a pot as the counter passes its value, but a read before the mark returns the running counter, not a captured value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "599-610",
+       "sha": "326d2488888386cacfa2eeab646de03a293bf19dbdffca9f6931c5f75a671e72"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "611-614",
+       "sha": "cee336b6b33802b8d543bced95ab5989e8f39b7d1dcc53fe2db144a9885f7baa"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "479-483",
+       "sha": "5b26411db95d9d1e59f362854958cf44633437bee05a8e5abd03fe3c6a598dcc"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "918-929",
+       "sha": "e3a478e04de3aa67dfd0507a543abdae953477008a4b595428e835015322c8bb"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME takes each pot's value from the board's callback, capped at 228, or 228 when there is none.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1287-1295",
+       "sha": "b46b296ef20322be43351b5d78f945c79c4f7dfec85b891961450054b9abc471"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1296-1307",
+       "sha": "fb6d44ab1c332643ce96cfe2bd76a1799eba01d626864c12f1bc6c63c04edbf5"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME enters the scan from the POTGO case; the routine logs, loops over the eight pots and marks a pot ready when its callback returns 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1087-1088",
+       "sha": "0c9715a917dcca875609e13368e3c5a7f7435b22c88e154cbf4859436d911c76"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1280-1288",
+       "sha": "458de3e6a281c633fe5c6929f08cb247665eb4071ee239c0fd9e9635accf3859"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1296-1303",
+       "sha": "28fcf8eee0f6f747397a719176e919ef726f4cae3844ca04fc62e1a0b7253016"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1304-1310",
+       "sha": "cc012809cd91c16c7ab2726035b2998b74472c5b4428b5a911a0393058d4759f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x0D",
+   "name": "serial out",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21474-21479"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "SEROUT_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SEROUT is the 8-bit parallel holding register for serial output data at D20D.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21474-21476",
+       "sha": "b4823338cb8423c9bf8926d4dbb0dcf29e6ddb1424c1acb7f72c8ceb99c6df04"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to D20D puts a byte into the holding register, transferred to the output shift register once the previous byte is transmitted.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21474-21476",
+       "sha": "b4823338cb8423c9bf8926d4dbb0dcf29e6ddb1424c1acb7f72c8ceb99c6df04"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "A write is usually made in response to the serial output data interrupt, bit 4 of IRQST.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21477-21478",
+       "sha": "f5e9c438cd938974d37e27e315b4084258366c8ce521b7536156eed61d07d8d8"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters SEROUT through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1093-1094",
+       "sha": "c522b81b8a681716cc3c3832612134444575b82c55d3f598cd95aa1d0d850e92"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "When the two low bits of SKCTL are not both zero, MAME marks the output register full.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1096-1097",
+       "sha": "22a7fa0d4bef81dcc4b7424dd14fdf77e44e6a0a15ae587582cac8e99037d6f4"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21479",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1095",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "name": "serial in",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21456-21473"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "SERIN_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SERIN at D20D reads the 8-bit parallel holding register loaded by a received byte.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21456-21458",
+       "sha": "370f23402b62c11bd1ecded1bad081f250aa2b6bb34cf98565d70dca34941f23"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "A read is usually made in response to the serial input interrupt, bit 5 of IRQST.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21458-21459",
+       "sha": "7e3708ba51a1970a6b180501a9d3e277d2021e8ece4499ca499f77e11ff71256"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of D20D returns the received byte.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21456-21459",
+       "sha": "b60d055d743abef2bd3c98405fe1ca9f50212d9df483bc1bea384ab6fe0a71ee"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the serial input read through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "914",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "971",
+       "sha": "7027219d8b3a444a5886d6bce89903167eb252c356d027f3673025d877bb5014"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21460",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21461-21473",
+     "as": "electrical"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "971-973",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x0E",
+   "name": "interrupt enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "20798-20814"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "IRQEN_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "IRQEN is the interrupt enable register at D20E.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20798",
+       "sha": "b4ab929d5124b3787761cd43a16acedd417ca87ff67578a1468b619861de689f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to D20E puts data into the interrupt enable bits: 0 disables an interrupt and sets its IRQST bit to 1, 1 enables it.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20798-20802",
+       "sha": "4be3879067ddb7f1800075852feea34c66e5ee4c9737bfb57d939135bb0558c5"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "D7 enables the break key interrupt, D6 the other key, D5 serial input data ready and D4 serial output data needed.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20804-20807",
+       "sha": "9198b847ad73b1432714a4f90c9485fda73dd914f166715b3f09a4b7d61edf67"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "D3 enables the transmission-finished interrupt, D2 timer 4, D1 timer 2 and D0 timer 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20808-20811",
+       "sha": "8b720fea3c9e99b064d3ff060e72818731ab4c9dfb4b5e928b52bbd9dd819dc2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The OS keeps a copy in POKMSK at hex 10.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20812",
+       "sha": "0b24b3b0420c2a19e4ab410a58bfe08553d27696238ff8afb9f6a8b0025e4338"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The document advises changing one bit of POKMSK with AND or OR and storing the value in both IRQEN and POKMSK.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20813-20814",
+       "sha": "f734257adca4e03efc6cc568e91a5e152b25dc6fd4f73568833ae3eac32eafae"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters IRQEN through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1100-1101",
+       "sha": "38eb9f0b051b9b4bfd7d45c01622e43c416d4b7170d9ee78d7c4e77be2887f16"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME asserts the interrupt line when the transmission-finished bit is enabled and set, and clears it when no enabled bit is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1112-1121",
+       "sha": "c19adc056674d63a561746c6ff15613b862aefb4272dbdb5b873a8b92a90058b"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "MAME stores the mask and clears the set status bits it disables, but the transmission-finished bit stays pending, reading 0 where the document sets it to 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1104-1110",
+       "sha": "ea77eabfdf000155146f9b95287a211d2ea0b2623237c6c428e95b042f2da3c5"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1112-1121",
+       "sha": "c19adc056674d63a561746c6ff15613b862aefb4272dbdb5b873a8b92a90058b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "20803",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0E",
+   "name": "interrupt status",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "20782-20797"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "IRQST_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "IRQST at D20E reads the interrupt status register.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20782-20783",
+       "sha": "2a3c9375f61fb7056269caf0142949f3ee338def47e7e31b4ee9e7b3f8a1d26a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read gives the status bits: 0 means an interrupt, 1 no interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20784-20786",
+       "sha": "916c4e285f0326a903c1a949d1fa04e2089771cc5747ec41bae895bcaf1fbef2"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "D7 is the break key, D6 the other key, D5 serial input ready and D4 serial output needed.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20788-20791",
+       "sha": "8c3a29c3e7a7ba7446b78123beb9bb15b403aa2e4b81f1d1fa3f1d396f6abc8a"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "D3 is transmission finished, D2 timer 4, D1 timer 2 and D0 timer 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20792-20795",
+       "sha": "31be10f351215b89ab1981190081914e7eb6bbd54c8b9c2ef23431c388a72720"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 3 generates two stop bits and has no direct reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "20796-20797",
+       "sha": "d73f063976312b36ad2a4f85380db8bb3c83d67a3b72e093ab7598b3671009c1"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the status read through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "914",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "976",
+       "sha": "d7872de6bcaf667361f1b9e1e2c1f47e5342a2d04ab7d3fe362c6c84603993ec"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "7",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME keeps the status active high internally and returns it inverted.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "977-981",
+       "sha": "52505e1ca7e63be65870e008f0509d074f016b74c327ddf47eae3a098c46b01a"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "20787",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "976-981",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0F",
+   "name": "serial port control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21396-21434"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::write_internal",
+     "case": [
+      "SKCTL_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SKCTL at D20F controls the configuration of the serial port, the fast pot scan and the keyboard enable.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21396-21398",
+       "sha": "6969dc754738edc10f8bbd42f81cde4c4cf085e57b1c1337ed7800264d0caeb8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to D20F puts data into the register that controls the serial port, the fast pot scan and the keyboard enable.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21396-21398",
+       "sha": "6969dc754738edc10f8bbd42f81cde4c4cf085e57b1c1337ed7800264d0caeb8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The bits are normally zero and perform their functions when true.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21408-21410",
+       "sha": "a5e6416b7e044a80aa519448aa254674720caf7797a08fe1b40153d77cedfa42"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "D7 is force break: the serial output is forced to zero (space).",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21400",
+       "sha": "2f434ba53bd39e7933d7e12070c4a783c41b3f1c68d9f14008cb29f7c3871a1e"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21411",
+       "sha": "ce3e8d2d0c43c5b2b8a5a1413fb6c567a51bdda1f07322433e70ec72382b6e57"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "D6, D5 and D4 are the serial port mode control, described by the mode chart on page II.34.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21401-21402",
+       "sha": "720614cfea22dff90c7ba7fbe91b56480a939461e177941fcb42da922acc943f"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21412-21413",
+       "sha": "912387359cd94e633eee35e642bda408bf7b44efbd46282168228d779cc050d8"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "D3 is two tone: the serial output is transmitted as a two tone signal instead of logic true and false.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21403",
+       "sha": "bed7abeac56e560a96b7fef4c846a691fe3deb2e4d1e5bbf1085b8d9e2c6e934"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21414-21415",
+       "sha": "7a0e7d5509b0c716d35fa6a383dacc65796a6606ab14f7d41d840af1d498c0f5"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "D2 is fast pot scan: the scan completes in two TV line times instead of one frame time, and the dump transistors are disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21404",
+       "sha": "2265f5336d7b6037b5b75ace727a6c482c37ae963dad3bd8eff402314e8548ab"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21416-21418",
+       "sha": "4c1f22ab3bb19b99339cad38b7c1533b14ab62c7979eff3e158980cc7d21b2a0"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "D1 enables keyboard scanning.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21405",
+       "sha": "28b7be9214671099cc8d7aa9af2a5ae353400e5da8f9af93adbc2f3f24154438"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21419",
+       "sha": "5eb413660cb8372b415b041875c479f38ae6ebbe3fb9453519007b7ab331101d"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "D0 enables keyboard debounce.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21406",
+       "sha": "d7d2c4b2da7a6478426f10a28d9f9eba59a188d1bf2835798742825d32a11125"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21420",
+       "sha": "bf783a771fbf4df95863d4344cc204eafec1d4138e0ea6f1cb202b099a950b4c"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "D0 and D1 both zero initialize the chip, the state used for testing and initializing it.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21421-21422",
+       "sha": "08d1f89a0a0438d52c1799b92c1dbe28ac1614bf1e5760727b9d56dc0da8a48e"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The OS keeps a shadow at SSKCTL, hex 232.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21423",
+       "sha": "83da9dc05853f8389f8048ba572c76bdfdfa250021b812521c2dedf9f90782ca"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The document advises writing hex 13 to both SKCTL and SSKCTL after I/O, since an aborted cassette operation may leave the two tone bit set.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21424-21428",
+       "sha": "3f34e4bea47a76fe7a1d2befb2e7ff1e01be2b5459bb75fd4106f70416d77ba5"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "Note: powered on, the serial output may stay low even with the break bit cleared; sending a byte (00 or FF recommended) makes it high.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21411",
+       "sha": "ce3e8d2d0c43c5b2b8a5a1413fb6c567a51bdda1f07322433e70ec72382b6e57"
+      },
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21429-21433",
+       "sha": "3f0fdc53d607bffc2242be5b4ceaa2504b1b6e5859221643061c36d04d614223"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "Note: POKEY has no reset pin and no original power-on state.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21434",
+       "sha": "c888580ebf12d47b5822a3c4a63be03af07342608d0c02f21ebefa59aee7e222"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters SKCTL through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1010",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1124",
+       "sha": "e6363b9de1d91af4081d95f4e6de1646f17b13e71eedaad18b11f219aa9c5411"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "mame",
+     "text": "A write of the value already stored returns before storing it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1125-1127",
+       "sha": "957c7d22b0034cf29bf07539a6e3745159c20f0e32b925251e7c17cd5e9aed60"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "17",
+     "on": "write",
+     "of": "mame",
+     "text": "With the two low bits zero, MAME clears IRQEN and the status bits, the polynomial and clock counters, sets the serial shifters to 1 and clears the busy bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1129-1140",
+       "sha": "8363477ea3817bd12f8c3cbcb9c02df3333e6126a001b036f364beb0b82baa89"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1141-1147",
+       "sha": "1cc929e02124a185919ac9fc6ae110fcbdc028d4a08b88ffb924f67ebe6abef5"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1148-1155",
+       "sha": "b4402ced9e1a71a4032846caf6c4790a25ec17b9cb6b859aa809ef3b5c7ecba6"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "mame",
+     "text": "When keyboard scanning is off, MAME clears the keyboard-pressed bit and the keyboard counters.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1156-1161",
+       "sha": "1fd740d8fb548590ffb82ed1f4eaecb0dd1d80c3e6e7aa20e694a93522e235cf"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "19",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME sets the input clock line true when the input clock bits are zero, and the output clock line false when the output clock bits are zero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1162-1165",
+       "sha": "9da309b6e9373f4dc880278de3be8534213144310957e821fdc1ca87d5d0a66e"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "20",
+     "on": "write",
+     "of": "mame",
+     "text": "In asynchronous mode with the serial input not busy, MAME resets channels 3 and 4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1166-1170",
+       "sha": "cda822aac060824fac16ee6779a778f28f303e913fc3cd304f1ce597684864bb"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "21",
+     "on": "write",
+     "of": "mame",
+     "text": "When the serial input is not busy and two tone is off, MAME drives the serial data line low for a break and high otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1171-1172",
+       "sha": "aeda9a6d2448417918c7aed58a0859ed024461f87544a3becffbe0c0a76946e0"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "22",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME marks the raw output for recalculation.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1173",
+       "sha": "132da3c5a014ba4d43761b16105203b897eaeaff4514515d09dac88352758840"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "1128",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21399",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21407",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0F",
+   "name": "serial port status",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21435-21452"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "function": "pokey_device::read",
+     "case": [
+      "SKSTAT_C"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SKSTAT at D20F reads the status register of the serial port and keyboard.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21435-21436",
+       "sha": "d599c6b19241a0b8a4940d60adca9109ff284a25ed503dabfe8d07824d74d34a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "The bits are normally true and give these facts when zero.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21438-21440",
+       "sha": "d76f796e36f5461ed6099599d6d5cc791f5cf48632543f9f77e5b96bfd16776f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "D7 is a serial data input frame error, D6 a serial input over-run and D5 a keyboard over-run, reset by SKRES.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21441-21445",
+       "sha": "c8e62361b73eaedae1f80b2ccec90f460737e05d2e718338bf42072d49493ae5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "D4 is the serial input line, D3 the shift key, D2 the last key still depressed and D1 the serial shift register busy.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21446-21451",
+       "sha": "34c62797ef80653b814901449146e992967f67fe816cc5cb25f5803b5a969945"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "D0 is not used and reads as logic true.",
+     "quotes": [
+      {
+       "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+       "lines": "21452",
+       "sha": "bbf4a7cf28aa7e46e4597b72801da0c051fa08da4ae92a26c77c6eeee100e079"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME enters the serial status read through a switch on the low four bits of the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "914",
+       "sha": "876116c9151ef5923f509f0f5648e79303d03ed8c340f965dfb104abac6fdb25"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "983",
+       "sha": "070a0d4802732fcaf0bf2c3128ec50ff0d0e59866c0d7af5370753def56c5c8f"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "7",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME keeps the status active high internally and returns it inverted.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "984-986",
+       "sha": "9e96c1d3e933139e18e6575066b30360143f5b974fd146e8834d7d893bb0ba46"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:Atari-400-800-Technical-Reference-Notes.raw.txt",
+     "lines": "21437",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/pokey.cpp",
+     "lines": "983-986",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  }
+ ]
+}

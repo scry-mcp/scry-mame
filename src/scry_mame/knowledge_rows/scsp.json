@@ -1,0 +1,1990 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "scsp",
+ "title": "The Sega/Yamaha SCSP registers",
+ "kind": "register",
+ "scope": "scsp",
+ "covers": "the slot registers KEYON, pitch, RR/DL and LFO by their offset within a slot, and the common control registers at their chip addresses, as the Saturn SCSP User's Manual defines them and MAME handles them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SCSP-UserManual-1994.raw.txt",
+   "variant": "SCSP"
+  }
+ ],
+ "official": {
+  "SCSP-UserManual-1994.raw.txt": [
+   "1382-1391",
+   "1686-1697",
+   "2659-2668",
+   "2830-2840",
+   "2860-2866",
+   "2922-2927",
+   "3231-3237",
+   "3249-3252",
+   "3319-3345",
+   "3384-3387",
+   "3391-3392",
+   "3394-3395",
+   "3417-3418",
+   "3466-3474",
+   "3475-3477",
+   "3478-3480",
+   "3525-3536",
+   "3537-3542",
+   "3543-3548",
+   "3549-3560",
+   "3563-3568",
+   "3569-3574",
+   "3604-3617",
+   "3659-3667",
+   "3710-3718",
+   "3734-3738",
+   "3740-3744",
+   "3746-3748",
+   "3749-3751",
+   "3752-3757",
+   "3767-3786"
+  ]
+ },
+ "engine": [
+  "set_output_gain",
+  "transmit_register_setup",
+  "m_irq_cb",
+  "m_main_irq_cb",
+  "adjust",
+  "from_ticks"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x01",
+   "name": "KEYON slot key on/off",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "1382-1391"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateSlotReg",
+     "case": [
+      "0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "KYONB is read and written and records KEY_ON or KEY_OFF for its slot.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1384-1386",
+       "sha": "2b053d989325c589f412e35877a1e409934a00cdc0717f5aac2c12e8285426e3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Writing 1B to KYONEX executes KEY_ON and KEY_OFF for all of the slots.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1382-1383",
+       "sha": "5776dfbd281b7c28c6668e38dabdf85ab8be3f056938df94943d79282a478244"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "KYONEX and KYONB exist in each slot, and a 1B written to KYONEX applies to all slots.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1388-1389",
+       "sha": "f0c8a5764a8bbc1147abb2a7a1091c834d0876e37ff37680821433584947fe67"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1391",
+       "sha": "498496f8bc2bd21780212dfbc92a58b599c4cd739789be6889da2b98de0cec36"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "After a 1B is written to KYONEX, no 0B has to be written to it.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1390",
+       "sha": "d19001ae6639b069997396f34ef447c1653ddfeb0231117b81f9f00a13afd644"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "1387",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "712",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "714-717",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "718-729",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "730-733",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x10..0x11",
+   "name": "step frequency",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "2659-2668"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateSlotReg",
+     "case": [
+      "0x10"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "OCT raises or lowers the sound generation frequency by octave, against the waveform stored in memory.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2659-2662",
+       "sha": "a0f7a1f5141de6554bc4382edc630a7f5e94411f6ea08fa1ef9dbd2b093d7e80"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "FNS adjusts the tone between the octaves OCT sets; with both zero the tone matches the sample data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2663-2668",
+       "sha": "fd273abcb325df1ae8172d641dc8f3e5ebc47800f794ae68a2e45edf041f30e2"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "OCT and FNS can be written by the CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2659",
+       "sha": "e6e45d5c60a25a283acfe5324bea4524e2ea131c949f82b2db47560063a4062c"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2663",
+       "sha": "9fdaf768959db5ea1a6cd1b84b9812b54530021e13700adc251e1f753c62a44a"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME recomputes the slot's frequency step from FNS plus 1024 shifted by the signed octave on either byte's write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "735-738",
+       "sha": "6886f40ce45026d1482d4a839cf1df28d9180447b1a6f3fc9f10e93c1897569f"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "546-557",
+       "sha": "47f0477319e3befc245f2cbbf530e41d6f1d7173cdb724466e7663edcd985be5"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "712",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "735-738",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x0A..0x0B",
+   "name": "RR and DL rates",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "1686-1697"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateSlotReg",
+     "case": [
+      "0xA"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RR designates the EG's change volume in the release state, minimum at 00H and maximum at 1FH.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1686-1690",
+       "sha": "33163b9166641bd3a4459d48ad120960f9a7af71e02c2857c0500c7d91cd9592"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "DL is the upper five bits of the attenuation at which decay 1 moves to decay 2; 00H is maximum and 1FH minimum.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1691-1697",
+       "sha": "7f62b02a8a174cca1ce835d62708c3ea6e5f64ed0f899420ac960121887b0b7d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "RR and DL can be written by the CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1686",
+       "sha": "cf7dee2f76c9eb95a5137a46c9e6eea70ebaf1b8538d411be3a101c07d8ec651"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "1691",
+       "sha": "a4e196fc6c70899261b895f6b479ec91042d0e429edc4e7158c3ec4fdf176832"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME converts RR through its rate table at key rate zero and stores 31 minus DL, the complement of the register value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "739-743",
+       "sha": "f741560b405da521dabc56979773fce593e396d3a02ee87f37615aeaeeb80e1b"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "470-473",
+       "sha": "903de3539eb94e61084768f390ca88bff32b4c5c3b5ab28bb116dd3c7fb77403"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "712",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "739-743",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x12..0x13",
+   "name": "LFO parameters",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "2830-2840"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "2860-2866"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "2922-2927"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateSlotReg",
+     "case": [
+      "0x12"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "1000"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "LFORE set to 1 resets the LFO; writing 0 starts its operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2830-2832",
+       "sha": "c6ec7d498e77ba4dae9231fa86d3001b0d6ba40d04989e0b7eb1e1af33774b7a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "LFOF designates the LFO oscillation frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2833-2834",
+       "sha": "1ec0aa2e46bc565839b36b6203d87888777f446c02af2a3f07184dcde201181f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "ALFOS sets the degree of amplitude modulation through the LFO, which produces a tremor effect.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2836-2840",
+       "sha": "885e2a4dbf8280220ab05ae69a17cf1365c71b9f82e221e9bdbe2c6a02b7773d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "ALFOWS and PLFOWS select the amplitude and the pitch modulation waveform.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2860-2862",
+       "sha": "35339c5b82b7e1fe55ccb863d960c7a412b7b770c0fd4dbe67866a12cea0a3bd"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2864-2866",
+       "sha": "379cbafe158e7a0e4fe1b402c3f0e6f709dd6167cdebe5945bda60b07d448e7b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "PLFOS specifies the degree of frequency modulation through the LFO, which produces a vibrato effect.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2922-2927",
+       "sha": "b6769ea0b3a3c0b8afc2713192329adc0ec7c4fcb7380ce43876a06317d17c11"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "The LFO fields can be written by the CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2830",
+       "sha": "1f25c8683a4ca98d047e7298d4fe484488629f72e4e0e3ea5a64acaba274bd96"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2833",
+       "sha": "55dad29cccff687c08858f013fda5794f19a4f27b3295438e6ec0c6f8983a26b"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2836",
+       "sha": "113601dbffc8109cc73286463d38f971db73c536172d6b9fc04f080ebe7f4b05"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2860",
+       "sha": "a08ca4730543ddabc38cb6d946054536076597d249e6f3e79b329942afcaf4f7"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2864",
+       "sha": "ccf27f7b4ffb6e447cf23af49b2d77935ce690762b79abdd9af41a567aec5894"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "2922",
+       "sha": "feb98454c2f32e82baea86076b1c8c55aae1d04c0075b2c7b18fc198f7ced656"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME computes the pitch and amplitude LFO phase steps on a write, each skipped when its sensitivity is zero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "744-747",
+       "sha": "23f9ed4500d9acd3d23fb857ce8e24e3843cd7f6da6e408ac8a253d3ee2fd76c"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "561-567",
+       "sha": "d4188aa3248ec76eb3165c2875b9601054ff1ebe5e57f5383ef8b979fa134e84"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "1633-1636",
+       "sha": "036411bf1afe268947147fcfaf1c7983908c910ea39d21a99b5d2e3b5b0d6846"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "2835",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "2863",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "712",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "1000",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x400",
+   "name": "MVOL master volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3231-3237"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x0"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "1007"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MVOL is the master volume to the D/A converter; lowering it for an output that overflowed does not remove the clipping noise.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3231-3237",
+       "sha": "06d22ee20440cfc8850f0c1822a09f126488f64bcce50fedce2537bc75287dfe"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "MVOL can be written by the CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3231",
+       "sha": "ad57e9e35814247efdea47c64d5e6e37d60cf5e266706eab66a99371b984e873"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 0-3",
+     "of": "mame",
+     "text": "A write applies the stored MVOL as the output gain of both channels, one fifteenth per step.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "755-758",
+       "sha": "893f980cecb73feda23a751bbf43e26980260720916f6e6b7a3318e82996123a"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "1007",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x402..0x403",
+   "name": "ring buffer RBL and RBP",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3767-3786"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RBL selects the ring buffer length: 8K, 16K, 32K or 64K words.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3767-3768",
+       "sha": "152c150b3d1b5670020b894a7f53bfc25773c991cc172348d6fe86c4e34fa79e"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3782-3786",
+       "sha": "65718f8d882487e35af6c456338e0e999af215ab4a51a6420b8857ad9a1cb417"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "RBP designates the first address of the ring buffer, at a 4K-word boundary.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3770-3772",
+       "sha": "b0359ee84af516527e76055a0646701a27d84ce6e53239d7e2aaed370732c119"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The ring buffer stores input data and returns it after a delay, for the DSP effects.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3773-3781",
+       "sha": "36ff0fc4aaddb6ccf8bc9f967495711f8e83318428fe3ba729df722fe54d626b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "RBL and RBP are marked write-only in the document.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3767",
+       "sha": "d43980186faeb19d64d829f57f747a0f09a708d0f91f906d18f2c74ac954ae4b"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3770",
+       "sha": "caf8c092d10a6a7f6b06707c294e5a776e3a5fb1c674c3009ef6c4b7a894360a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME shifts 8K words by RBL and stores RBP as only its six low bits, where the document defines seven.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "759-765",
+       "sha": "3ac3f00ff65a0e9a2213a59bfc4caa05786e5416ed9ae5866ce6efa6d95cb727"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "116",
+       "sha": "3bcdb6ccc5f23ccf541553ef82d2bf9af4839884c5ae3da4c190dcab6e55c412"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3769",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "759-765",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x406..0x407",
+   "name": "MIDI TX buffer",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3384-3387"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x6"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MOBUF is the MIDI output data buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3384-3385",
+       "sha": "f7def0b362285c0fc142b76c04ef6880ce4b0b50a70664ebee70ffa65b7392cd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Write data into MOBUF and it is transferred automatically.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3386-3387",
+       "sha": "22c9b20db24a845958c6139ef904ee23b076140574544a58d6420cd35fed7134"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "766-777",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x408..0x409",
+   "name": "MSLC monitor slot",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3249-3252"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "8"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MSLC selects the slot monitored by the CA register, 0H for SLOT0 and 1FH for SLOT31.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3249-3252",
+       "sha": "752df7b60caed60871ac390ac73e0aa44ec8f5690698aa93ddef7e28ec8461d3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "MSLC is marked write-only in the document.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3249",
+       "sha": "a8a0648087e778b73cabe55f72b22ec784f93ffe96939eecc07eb147ff6d0312"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "779-785",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x414..0x415",
+   "name": "DMEA high and DRGA",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3746-3748"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3749-3751"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x14"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "DMEA is the sound memory address, in word units, where the DMA transfer starts.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3746-3748",
+       "sha": "fda38450ac2041ba343998976e2dc85b1ff1ea5a1f4c364d8b0967bfd377d2e2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "DRGA is the block register byte address, in word units, where the transfer starts.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3749-3751",
+       "sha": "43de86f0eb0f914b58bf0cffa8750c5183a0c246ac09be7460d059988abb073f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "DMEA and DRGA are marked write-only in the document.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3746",
+       "sha": "2e600d3a554bfa0fdb81ac3d31d8e8ab60528c75f097ca426cdda1eb3acb8a5a"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3749",
+       "sha": "30c137ff2b8cf01b1c4784802e7e6320c0a1d50659ddeb1387e520f8d6619627"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "790-794",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x416..0x417",
+   "name": "DMA length dir gate",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3710-3718"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3734-3738"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3740-3744"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3752-3757"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x16"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "DGATE set to 1B executes a zero clear of the transfer area when DEXE runs; a 0 write does not affect the source data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3710-3718",
+       "sha": "21603787ff6f0901e9fe0f820221f18c706097d2ab76ea5826a3bd388ec1a949"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "DDIR selects the direction: 0B from sound memory to the LSI register, 1B the opposite.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3734-3738",
+       "sha": "f4355dc1d0e542588933e71ee881cb871ea9bf4f89505be83bfc0c309302b0e8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Writing 1 to DEXE starts the DMA transfer; writing 0 is invalid, and DEXE is reset when the transfer ends.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3740-3744",
+       "sha": "afe9e1d6c2ff82680252252f82ca443eb8978756b04c69c8a61a8d6a7029d6dc"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "DTLG designates the word count transferred.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3752-3757",
+       "sha": "4cfd8f43d68c32d0faecf2ede7af689942a0baca97e0876fb2a88537c5e9fd5e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "795-801",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x418..0x419",
+   "name": "timer A",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3391-3392"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3466-3474"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x18"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TACTL designates the increment cycle for timer A.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3391-3392",
+       "sha": "b6dec026e1bd5fdb4676ea1b15c5e6f2366a3e154ffcc2a5599a57def773d61c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "TIMA is timer A's count; the timer counts up and requests an interrupt when all its bits reach 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3472-3474",
+       "sha": "9138f258023f9ddfcb4f1b76eb44c9bb133f4dad3fb82eb2e91c1190386ee196"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Counting begins immediately after TIMA is set, and the interrupt time is 255 minus TIMA times the count cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3466-3471",
+       "sha": "254079645de1831df2737db0221e790d1f4cc48fb369a04a551bc596d2f9e762"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME uses 255 minus the count for the period, as the row says, but arms no timer when the count is 255.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "803-812",
+       "sha": "679af7ae4218fc92222e70e8bc8884a29d5c4b93586c174cf1a6cf4ba77a41a2"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "813-817",
+       "sha": "3b46a46047f57e47df1d68241dd2ea393f365c5bc27f0dbcaa2ef702774fbb19"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x41A..0x41B",
+   "name": "timer B",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3394-3395"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3475-3477"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x1a"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TBCTL designates the increment cycle for timer B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3394-3395",
+       "sha": "88ae9cc59e457607fbde98d72e986466cc715a687b7ccb8d048a14e7d689b262"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "TIMB is timer B's count; the timer counts up and requests an interrupt when all its bits reach 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3475-3477",
+       "sha": "6e442a096f5eb829a2cf927c03af58ae1e4de173d4a88e3a748b762bfe0a8453"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "TBCTL and TIMB are marked write-only in the document.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3394",
+       "sha": "e5e30397ffe1207e51f4255965d41f503aec31c1aa7959fc9e8b88bc68ccdab1"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3475",
+       "sha": "403a8092cf505ce56619eea473a2daddf0e055b073446405487907290156079c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME uses 255 minus the count for the period, but arms no timer when the count is 255.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "820-827",
+       "sha": "b20dfd3daf4c65a37b2f841768c16e8484767d71aa8c470978ec3ab877292a30"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "828-834",
+       "sha": "3bafa43eb6fa7d045cf22d62e4a3b27ee42a2dcd5262f09b8f7efa35834ec62b"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "820-827",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x41C..0x41D",
+   "name": "timer C",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3417-3418"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3478-3480"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x1c"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "TCCTL designates the increment cycle for timer C.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3417-3418",
+       "sha": "1ad711a6d929d1e8c7663a729b73191bef726f3d1eb9aaca4e5c220727fb4229"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "TIMC is timer C's count; the timer counts up and requests an interrupt when all its bits reach 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3478-3480",
+       "sha": "2b5f4411236ba38bffa6405b10e09915ead452461be27a002265bb22994fafaa"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "TCCTL and TIMC are marked write-only in the document.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3417",
+       "sha": "ad8c3aaa37edb77d8e199b30acecceb407e36fdbc1697dc24e6a9a57c9078203"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3478",
+       "sha": "9f703c96f798e2121fb56d022dae9097a8f24cd09b9fe65bf6ac7e7fee2237f4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME uses 255 minus the count for the period, but arms no timer when the count is 255.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "837-844",
+       "sha": "7351d140ef70829ef490effe6af60686223ada1a6a65cbec63ff663d238e74da"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "845-851",
+       "sha": "9e84773895c33ad1dbc0703ee556c297bfedd3b35ddd7a73d6cdcd69b335b4db"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "837-844",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x41E..0x41F",
+   "name": "SCI enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3537-3542"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x1e"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SCIEB enables interrupts to the sound CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3537-3538",
+       "sha": "c10de14f4a631dc3ab4d3b37d2d02b17b68739b93e1e604628bc5dca530dfb92"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Setting a bit of SCIEB to 1B enables the corresponding hardware interrupt; 0B is invalid.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3539-3542",
+       "sha": "1288b3c4a2800aa5d43d39eddc10e4f7cbd4d5a019d7f990248a210d6928cc1e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "854-863",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x420..0x421",
+   "name": "SCI pending",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3525-3536"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x20"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SCIPD monitors the sound CPU interrupt flags; reading it shows which interrupt occurred, whatever SCIEB holds.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3525-3532",
+       "sha": "581d7799d1cc28d6a76344fa4fd514d545433c228103cad74e482cac116e7b83"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Only bit 5 of SCIPD can be written; writing 1B to it applies an interrupt to the sound CPU, and 0B is invalid.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3533-3536",
+       "sha": "f0102656ee9d259260b4855545899f5f76d517b0c827afbe1a7ebe9abdb3b315"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 5",
+     "of": "mame",
+     "text": "MAME asserts no interrupt from this write; it only logs when bit 5 and its enable bit are set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "864-870",
+       "sha": "cc3ea726518327b0e53e06d3e83e1bf45b83c9a0091529f25a55cc3f0e15b6f2"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x422..0x423",
+   "name": "SCI reset",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3543-3548"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x22"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SCIRE resets the sound CPU interrupt requests.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3543-3544",
+       "sha": "dbd4c85939769935847afcb15190bb302db1ab28503bc0b11cd1b9c337f54641"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Writing 1B to a bit whose interrupt occurred changes its SCIPD flag from 1B to 0B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3545-3548",
+       "sha": "dc5163f2c0a5b9be10c188b81f6eb8e9f394ca84a08626c04d610aa69f0616b9"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME clears the written pending bits and then re-raises the bit of any timer already expired.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "873-882",
+       "sha": "eede01be02faad2257be6461a26b6ccec9972bf98e09fa7e2d9e83d99120b961"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "883-892",
+       "sha": "6916f3ad36e53edd041caf8295da7c2c871e56ef5e9d0375a55c7285e409a97a"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x424..0x429",
+   "name": "SCI interrupt levels",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3604-3617"
+    },
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3659-3667"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x24"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::DecodeSCI"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "SCILV0, SCILV1 and SCILV2 set the auto-vector interrupt level for the sound CPU, one bit of the three-bit code each.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3604-3610",
+       "sha": "713b067ba6a0c2af2fd1f1622c1e3fcda1c7dc4652de03e7f3467d940cf9cc31"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The code 101B is level 5, and 000B is level 0, which applies no interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3615-3617",
+       "sha": "e9f3c9ef9457d5c5c110e5237323810f6d6190d5b7a588fc45ed0e8c239b6ee6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "SCILV0 specifies bit 0 of the code, SCILV1 bit 1 and SCILV2 bit 2, in the bit of each interrupt factor.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3659-3667",
+       "sha": "31196f041d828549a5e44a6027e94cf3551cadf088eb4dee412eb3ae30bca132"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3611-3614",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "895-906",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "349-359",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x42A..0x42B",
+   "name": "MCI enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3563-3568"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x2a"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MCIEB enables interrupts to the main CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3563-3564",
+       "sha": "61d6459c170382257f71502c479c02024e3ded0905dd6f852dbd1fd4cc4f12f7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Setting a bit of MCIEB to 1B enables the corresponding hardware interrupt; 0B is invalid.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3565-3568",
+       "sha": "9c31691e2990060e99f7eb1da4c4f9bdb356f8495be5d85e63932156ad17325c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "908-915",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x42C..0x42D",
+   "name": "MCI pending",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3549-3560"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x2c"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MCIPD monitors the main CPU interrupt flags; reading it shows which interrupt occurred, whatever MCIEB holds.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3549-3557",
+       "sha": "931bff1e1f0f51a6d75630bbb79515828dfa30f94ff7da58d94fdfe4667b8b26"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Only bit 5 can be written; writing 1B to it applies an interrupt to the main CPU, and 0B is invalid.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3558-3560",
+       "sha": "ec839169ff7a56d7f3fa9106bf29949416cc6401c2dd2374b526bb3251f95aa6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "916-920",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x42E..0x42F",
+   "name": "MCI reset",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3569-3574"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateReg",
+     "case": [
+      "0x2e"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MCIRE resets the main CPU interrupt requests.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3569-3571",
+       "sha": "6ea153ae720798f4a748cc1edfca45dae8476560b5e09fc0b233b94ef090be0b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Writing 1B to a bit whose interrupt occurred changes its MCIPD flag from 1B to 0B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3572-3574",
+       "sha": "8e5700c8a5a4b71cb1394080bfd1b51b17fe4529d75a7d8e7aa229fef317b495"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "753",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "921-925",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x404..0x405",
+   "name": "MIDI RX buffer",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+     "lines": "3319-3345"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "function": "scsp_device::UpdateRegR",
+     "case": [
+      "4"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MIBUF is the MIDI input data buffer; external data is stored there automatically.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3319-3322",
+       "sha": "17e03755a3531dd31e329201a7c1fb41dbb5c875fdc3f4e090de3dfb6f17d9ba"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "MIOVF, MIFULL and MIEMP report an overflowed, a full and an empty MIDI input buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3323-3332",
+       "sha": "713d75eeb1ebe4e473db0073fa7de1a5e4b71813e069a5250919a459ef407317"
+      },
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3333-3339",
+       "sha": "25b911e26e698821f3ad213d6c3afcbbdff2f380b65c74b8e91ccb36b9852065"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "When the MIDI-IN buffer is emptied through reading, the interrupt is released.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCSP-UserManual-1994.raw.txt",
+       "lines": "3340-3345",
+       "sha": "ab86306bed96048313634cdfbc7bc28baa955b0568a1574ff52278dcfebabfce"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME sets none of the overflow, full and empty flags; a read returns the buffered byte and the stored status word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "938-948",
+       "sha": "8978a21b5f52effeb06112bbb98a51747de8983c4ef5bc48f4c9caaa0252fc9c"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "949-957",
+       "sha": "7ddd7d1738a9bdee9c229b06a9c44fc853f154e4c00b9b1aa15d498d9d14ef98"
+      },
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "1512-1518",
+       "sha": "4c11ea332763dca99acff18a14662c6f23a479aad8dd232224a0c8614feb7b57"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "936",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "938-948",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "949-956",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0xBF0",
+   "name": "DSP start",
+   "access": "write",
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "The header of scsp.cpp names the chip and cites no document; it records the on-board DSP capability added in 2007."
+    },
+    {
+     "where": "maker",
+     "gave": "A search of yamaha.com for YMF292 found no product page or datasheet for the part."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "The Yamaha component folder at bitsavers.org lists twenty-nine PDFs and none for the YMF292 or the SCSP."
+    },
+    {
+     "where": "archive-org",
+     "gave": "A full-text search of archive.org for YMF292 found nothing; the Sega SCSP manual archived there defines MPRO but no start register."
+    },
+    {
+     "where": "index",
+     "gave": "datasheetarchive.com answered HTTP 404 on the YMF292 search path I tried."
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/scsp.cpp",
+     "lines": "1022-1029"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "text": "The DSP micro program buffer occupies addresses 0x800-0xBFF.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "1022-1024",
+       "sha": "1474dbaa3900352a1cf2e9580a3eaf43ee21e03add5c00dca119585a2231e2f5"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to 0xBF0 stores the word in the micro program and starts the DSP, whose step count is the last non-empty step plus one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "1024-1029",
+       "sha": "62a535b9a675955d29c42108f9ed42ae5cf1b7fac8a3025540d7c23a240857f3"
+      },
+      {
+       "ref": "mame:src/devices/sound/scspdsp.cpp",
+       "lines": "294-304",
+       "sha": "22f4bf62e671968f48c72bc8e83fdf9a2adb0447205134de89fdf8abc65d64bc"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "The DSP start is reached at address 0xBF0, inside the micro program block at 0x800-0xBFF.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/scsp.cpp",
+       "lines": "1022-1027",
+       "sha": "3befbddedfcbb89e528ad7449418a330a6517be29f4e7c9e41434757b8d16adf"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

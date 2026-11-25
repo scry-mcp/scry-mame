@@ -1,0 +1,1176 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "rf5c68",
+ "title": "The Ricoh RF5C68A write registers",
+ "kind": "register",
+ "scope": "rf5c68",
+ "covers": "the nine write registers of the Ricoh RF5C68A PCM sound chip as its datasheet describes them, and MAME's handling of each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "RF5C68A.raw.txt",
+   "variant": "rf5c68a"
+  }
+ ],
+ "official": {
+  "RF5C68A.raw.txt": [
+   "509-519",
+   "520-591",
+   "599-675"
+  ]
+ },
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "envelope",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "517-519"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "665-666"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "668-671"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x00"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "ENV data is the internal memory at 0000H in the address map; the starred memories are set per channel through the control register's bank.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "517-519",
+       "sha": "477c9908ebb65a383a722553ecfa314b959d4a3f193bd33501f95b705a2f3bd3"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "665-666",
+       "sha": "6068387fb2e38b679de9c10965a5a4075859bcaa661a491ce9cb75a0cf2154dc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The envelope data multiplies the waveform data of a sounding channel to vary its amplitude.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "668-670",
+       "sha": "4af79bf8a6d04b8a8caa1929f1886da5bed630003aaa853f4c4920ec6bf14acd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 7 of ENV data is the most significant bit and bit 0 the least.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "671",
+       "sha": "1ba70dad52e89ab75e25f74466558f8e5273fd4bd2beb4b2199257836499e462"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0000H stores the envelope data.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "517-519",
+       "sha": "477c9908ebb65a383a722553ecfa314b959d4a3f193bd33501f95b705a2f3bd3"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "226-227",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "pan",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "516"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "637-641"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "655-664"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x01"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "PAN data is the internal memory at address 0001H that separates a channel's output into left and right.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "516",
+       "sha": "437b6591941f6bef2121c1d48748bc67d80546fc6e6fb8ca8a7c02abbc14a2d7"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "637-638",
+       "sha": "53d7a5abedc1e416f8ea66e32680744fd0df091808828352ac1194a29ab42b32"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "655-656",
+       "sha": "cbe548e150523b831368062e53aa987a208598225ce3eae41592413af5ac9554"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The higher four bits of PAN are the coefficient of the right output and the lower four bits the left.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "657-658",
+       "sha": "4e4ca149cc35b67931595f9c816317386345315c7f7d9917f5d70f44e585defb"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0001H stores the pan byte.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "516",
+       "sha": "437b6591941f6bef2121c1d48748bc67d80546fc6e6fb8ca8a7c02abbc14a2d7"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "637-638",
+       "sha": "53d7a5abedc1e416f8ea66e32680744fd0df091808828352ac1194a29ab42b32"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "655-658",
+       "sha": "ce53509146e1ef483c12034bbd2c18b2cac09f7b6d597095d6ae6c48dc38c8df"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "230-231",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "639-641",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "659-664",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "FDL",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "515"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "612-613"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "629-633"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "642-654"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x02"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "FDL data controls the address counter that says which waveform memory address is read while the IC sounds.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "515",
+       "sha": "0350e30844ba709088b64f28848088e95b32caa3b4b968d9c72adb8aadeeec86"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "629-632",
+       "sha": "8abdfc0969ad1f2529b262118be6f1b045b6c4f8cdf33cc98aa21c5ca8c2fe50"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Setting bits of FDL changes the address increment of one sampling time, as the next page's table shows.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "631-632",
+       "sha": "1a3aa0770d36d149e76905b7917f39ba7d095f09aa5754ced455c804a594efc7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The FDL table weights bit 7 as 2^-4 down to bit 0 as 2^-11; the capture's exponents are doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "642-650",
+       "sha": "f6075c7de7d5b0fc1038a56bce569d56374edb2491e20832c3ce260a73f97ecb"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "With only bits 4 and 3 of FDL set, the address is incremented by 2^-7 + 2^-8 counts in one sampling; the exponent glyph is doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "651-654",
+       "sha": "4b324e1e21f20a584726c82ee1d2803547b8edadb223c8c71f47d41713277c2b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0002H stores the FDL data.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "515",
+       "sha": "0350e30844ba709088b64f28848088e95b32caa3b4b968d9c72adb8aadeeec86"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "612-613",
+       "sha": "5e9a5148b3a9a1c6fa9487856a63bfd3dd02711e3d83ceb2fc28e467c2c5b539"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "629-632",
+       "sha": "8abdfc0969ad1f2529b262118be6f1b045b6c4f8cdf33cc98aa21c5ca8c2fe50"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME keeps the increment as a 16-bit step, with FDL as its low byte and FDH as its high byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/rf5c68.cpp",
+       "lines": "234",
+       "sha": "1d14a1153165d05bc1ab226b55fe621e50eaa4f4f522b8e73cb552407ef1785e"
+      },
+      {
+       "ref": "mame:src/devices/sound/rf5c68.cpp",
+       "lines": "238",
+       "sha": "22fd60749de7f8f7452e659ff2b399ad5347899efc38eb2dc3f2c87775c52fd3"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "234-235",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "633",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "FDH",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "514"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "610-611"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "614-628"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x03"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "FDH data controls the address counter that says which waveform memory address is read while the IC sounds.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "514",
+       "sha": "4d1610870e64fb13d63f4bd08e224bd21a9170b5812f6bea96c18a252c5d4c14"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "610-611",
+       "sha": "18d3d3a3d32eef55510777063408624f2f4a22a4c3787c167f0c6135a819610b"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "614-617",
+       "sha": "ab0de6979df9006802a6c00e306e87ff438c2c67e39ef1d90322a08732603508"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The FDH table weights bit 7 as 2^4 down to bit 0 as 2^-3; the capture's exponents are doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "618-626",
+       "sha": "02eb991e7392fc35d0ab27487f9b3466b82254564dc16e59bfe6120df7aa5341"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "With only bits 4 and 3 of FDH set, the address is incremented by 2^1 + 2^0 = 3 counts in one sampling.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "627-628",
+       "sha": "9b43be1e87cbb3bc099009a62da29ffe2936369719df6102b0ce9b413f4da5af"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0003H stores the FDH data.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "514",
+       "sha": "4d1610870e64fb13d63f4bd08e224bd21a9170b5812f6bea96c18a252c5d4c14"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "610-611",
+       "sha": "18d3d3a3d32eef55510777063408624f2f4a22a4c3787c167f0c6135a819610b"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "614-617",
+       "sha": "ab0de6979df9006802a6c00e306e87ff438c2c67e39ef1d90322a08732603508"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "238-239",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "LSL",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "513"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "607-609"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x04"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "LSL data is the internal memory at address 0004H.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "513",
+       "sha": "bce3b0aac77d0ceda361cf0e88a04c8c061fdd1710e30725357b984a18aba92d"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "607",
+       "sha": "b8884e2706aee9ae0e6626db307abe074fbb71d8945cdfb41a29bc2f8a97ab82"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "When the stop data is read while the IC sounds, the lower address is converted into LSL data and the memory is read again.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "607-609",
+       "sha": "510221055f57629b33303f2973564463a1625ace6757d2895128793dcdc97d69"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0004H stores the LSL data.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "513",
+       "sha": "bce3b0aac77d0ceda361cf0e88a04c8c061fdd1710e30725357b984a18aba92d"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "607-609",
+       "sha": "510221055f57629b33303f2973564463a1625ace6757d2895128793dcdc97d69"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "242-243",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "LSH",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "512"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "604-606"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x05"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "LSH data is the internal memory at address 0005H.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "512",
+       "sha": "718d341af42a774ffc280ba053698a39dd5422c0d8c4708f581c6613a60e66a4"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "604",
+       "sha": "7465eccc0e2703de36709c7c7236db0b6834c97c762ce699b716345906090a98"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "When the stop data is read while the IC sounds, its lower address is converted into LSH data and the memory is read again.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "604-606",
+       "sha": "560efa2ca5d0fbac800662c5c47564c033c5d2fd85c3f11e80f251081caaa815"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0005H stores the LSH data.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "512",
+       "sha": "718d341af42a774ffc280ba053698a39dd5422c0d8c4708f581c6613a60e66a4"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "604-606",
+       "sha": "560efa2ca5d0fbac800662c5c47564c033c5d2fd85c3f11e80f251081caaa815"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "246-247",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "ST",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "511"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "599-603"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x06"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "ST data is the internal memory at address 0006H, the higher eight bits of the address a channel starts reading at.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "511",
+       "sha": "6dddb310a15ff73ae893b21fa2d3e4136a33d6faaca88b46610cafd71b6c15ba"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "599-603",
+       "sha": "3b9e547137440ced5d5123e8b4ea1003bef75e1fcd2bedba7f1c1fc8d0e76926"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The lower address bits are set to 00H when the channel starts sounding.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "601-603",
+       "sha": "0b79d3d0bcc393f7cb9cae75d11d1319a0194452e00c5eb84925d7941828d14a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0006H stores the ST data.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "511",
+       "sha": "6dddb310a15ff73ae893b21fa2d3e4136a33d6faaca88b46610cafd71b6c15ba"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "599-603",
+       "sha": "3b9e547137440ced5d5123e8b4ea1003bef75e1fcd2bedba7f1c1fc8d0e76926"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME leaves the read address unchanged when ST is written to a channel that is enabled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/rf5c68.cpp",
+       "lines": "251-252",
+       "sha": "ed343eaef03d28fa4f56120792e2635c68dc6c237d8171010d75d043aebb4a40"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "control reg",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "510"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "520-591"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x07"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The control register at 0007H sets the IC's modes, the waveform memory bank address and the internal memory bank channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "510",
+       "sha": "81613e1b720055e0ae4279df7f81eef338b5881b5056238123768746dd691608"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "520-522",
+       "sha": "60b68dc76cb5d6c4a515d14f9d1d4c83e7739e26953ea8bf5ad8c765d0798ccc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It is a write-only register.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "523",
+       "sha": "654233ef2743cbadf10b3ab5ef6864d9d870ed5b471fbadabc1cf9759e895db3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 7",
+     "of": "doc",
+     "text": "Bit 7, the ON/OFF bit, is stored: the IC starts sounding when it is set and stops when it is reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "528",
+       "sha": "244ad9febaefd5e03f9d28c1b64816b1e1647b1851b65669020679843c200d89"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "539",
+       "sha": "9498ee9cc36f2d49bab4de2a38c7d2e022df95979d3bf1b82179ee4b133c5a09"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "External waveform memories can be read only while the IC is not sounding, and writing them while it sounds is restricted.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "540-541",
+       "sha": "dfebd95f2f5dd278ceed0416e1bb52a9728a75c4cc7a689f67216acabd683964"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bit 6",
+     "of": "doc",
+     "text": "MOD, bit 6, stored, picks the bank register: set, bits 2 to 0 go to the CBs; clear, bits 3 to 0 go to the WBs.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "542-545",
+       "sha": "d11b978e15e16144f3355a266987f16f1c5471fced7642c40847da48fe4465a7"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 2-0",
+     "of": "doc",
+     "text": "With MOD set, bits 2 to 0 are stored as the channel bank that selects the internal memories accessed: value 0 is channel 1 and 7 is channel 8.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "549-550",
+       "sha": "11fedbd37caf2fa7727bdbbd3451de7c1310ab1615af9f2fae31a1402d8be183"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "553-564",
+       "sha": "313a1b0bc3ac95e6a54ffba7997fdc21fa29a983b53439150ea4724201bf43e3"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "bits 3-0",
+     "of": "doc",
+     "text": "With MOD clear, bits 3 to 0 are stored as the high address of the external waveform memory, and their value picks memory 1 or 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "565-575",
+       "sha": "897565b7878653b119c790e9699c0e037ff4d5b0994c4f2e0c34416a180f71aa"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "576-581",
+       "sha": "faf6c0c76076af0049faa5d3c62e2f7e162b2d985b60e16e7e13af605a19d135"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "582-588",
+       "sha": "333be689b2de8c5d773bcd2698acb925514cdc476bef0e619a9e1adcd45bc712"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0007H sets bit 7 as the sounding state, bit 6 as the mode, and bits 3 to 0 as the bank value the mode routes.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "520-523",
+       "sha": "71ed52b14229e58d9f754a7b4bad23b25b3e270a790ae1f28bca443f5985f1ef"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "539-541",
+       "sha": "76d59408052d0d2e80f8ef0a8aa8953bd0c7ce60ad110eb531f57d7ae6530d33"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "542-545",
+       "sha": "d11b978e15e16144f3355a266987f16f1c5471fced7642c40847da48fe4465a7"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "565-567",
+       "sha": "629c9a729c5cc13de37aa9f7dc3c6b49d1d568a68b88b64334de4a881c7d418c"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "read",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "MAME reads the waveform memory while the IC is sounding; the read does not test the enable bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/rf5c68.cpp",
+       "lines": "279-282",
+       "sha": "fff3b840522abec4d7e701cef9846de660c75ecd4c7abe721047be0f08fb30fa"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "MAME writes the waveform memory while the IC is sounding; the write does not test the enable bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/rf5c68.cpp",
+       "lines": "289-293",
+       "sha": "256b8e72b466bf0ac009dba14db87c71fa41bbc9bb82935b1d6e8bde265ded65"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "256",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "257-260",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "259-260",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "524-527",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "529-538",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "546-548",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "551-552",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "256-260",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "589-590",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "591",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "257-258",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "channel on/off reg",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "509"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "667"
+    },
+    {
+     "ref": "datasheet:RF5C68A.raw.txt",
+     "lines": "672-675"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "function": "rf5c68_device::rf5c68_w",
+     "case": [
+      "0x08"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The channel ON/OFF register at 0008H starts and stops sounding for each channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "509",
+       "sha": "427c7d81c5a4a61f5cb798d7c0b6093f4a3a00c18c208332d7883252abe6030c"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "667",
+       "sha": "aefb0cf58bd62fc2de51cc5c239165a375801c5b6ba5a3d83b0f33761a31b9a9"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "672",
+       "sha": "fad12ce75a67eb86699d3c434ea6207610c57ccfc89f96d086901b38b7ed6e9a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The control register has priority: this register acts only while the control register sets the sounding state.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "673-674",
+       "sha": "fdb3401389bbadfc6f838cd939d6dfd11695f3eef5faf574ca67cbd790c4ddb0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 0",
+     "of": "doc",
+     "text": "Bit 0, stored, corresponds to channel 1 and bit 7 to channel 8.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "675",
+       "sha": "622bd19120761cc23ab4db425da077bab4f288b7d7382317125c20aefd2598d4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to 0008H sets the start and stop state of each channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "509",
+       "sha": "427c7d81c5a4a61f5cb798d7c0b6093f4a3a00c18c208332d7883252abe6030c"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "667",
+       "sha": "aefb0cf58bd62fc2de51cc5c239165a375801c5b6ba5a3d83b0f33761a31b9a9"
+      },
+      {
+       "ref": "datasheet:RF5C68A.raw.txt",
+       "lines": "672-675",
+       "sha": "f7dbc7f416c14c996abf2fa912284049081e2489e6618015f7e08864b1fe2c6a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME enables a channel when its data bit is 0 and returns a stopped channel's read address to its start address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/rf5c68.cpp",
+       "lines": "266",
+       "sha": "404082ce7afbd4ed1b8baa649b5dd4d6d822acd190ece527159aaf9b3bacccd3"
+      },
+      {
+       "ref": "mame:src/devices/sound/rf5c68.cpp",
+       "lines": "267-268",
+       "sha": "102ed056567dc0a3015716c7e97fc0ee3ceb8a0cdd3d1021e259cd9fc78d8db4"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "223",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "264-266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/rf5c68.cpp",
+     "lines": "264-269",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  }
+ ],
+ "closed": [
+  {
+   "ref": "datasheet:RF5C68A.raw.txt",
+   "lines": "634-636",
+   "as": "layout"
+  }
+ ]
+}

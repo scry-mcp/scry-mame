@@ -1,0 +1,2808 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "nes_apu",
+ "title": "The RP2A0X APU registers in MAME",
+ "kind": "register",
+ "scope": "nes_apu",
+ "covers": "the twenty-three CPU ports of the Ricoh RP2A0X audio processing unit as MAME's nes_apu device handles them; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of nes_apu.cpp names Matthew Conte's Nofrendo core, its authors and timing notes, and cites no document."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search for a Ricoh RP2A03 or 2A03 datasheet found no page of Ricoh or Nintendo holding one."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The ricoh folder under components holds two data books, 1988 and 1993; neither names the 2A03, the RP2A or the 2A07."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Searches for RP2A03 and for 2A03 found community write-ups and die analyses, no maker document."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com answered a search for 2A03 with unrelated components and no Ricoh document."
+  }
+ ],
+ "engine": [
+  "adjust",
+  "reset",
+  "update"
+ ],
+ "entries": [
+  {
+   "key": "0x4000",
+   "name": "SQ1 volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRA0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4000 is square 1's first register; a write stores the byte in the channel's regs[0].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "512",
+       "sha": "b8a1f8fe91c0657bf01aac0ec1db630928927bcb8391b6ce40cf6ed91ca05aed"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "517",
+       "sha": "9cef01a79b2a312bed26255e7ff871bcf68e15de93dc50e0df7b9694ce0862e9"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "519",
+       "sha": "e319891680ce99b4ce84778c3d4bdac13c8a896d4f1736eb1836dd0d05a7f241"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 0-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-3 choose the envelope step interval: the table's entry for the low nibble is the delay between steps.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "248",
+       "sha": "6bc8cc970f90612d2c55430007b076919f5c6eaebdae7e3a018b78a5f796d232"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "251-254",
+       "sha": "b9e08f4837b2745c314bf870bcc52f54fb3bd5b1129b7767ced7618b58208535"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 4 selects a fixed volume: set, the channel outputs bits 0-3 instead of the decayed level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "301-304",
+       "sha": "fa154df5356d2057215d1ef3db4f55df048f856835356ce207efe5131c8a2fc4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 5",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 5 loops the envelope, which then adds one and wraps to 0 at 16, and it holds the length counter.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "255-256",
+       "sha": "e9cc2cbea6234f03bb2ae89f052f54968f5da01960b945860c4faf769e3ab267"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "262",
+       "sha": "05c4da5377b5c0d45c5020500e0a79f4668c558d257471cdcfbaf730f11bde47"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 6-7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 6-7 select one of four duty patterns, and the pattern's bit chosen by bits 1-3 of the adder multiplies the output.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "306",
+       "sha": "676a8ee10a27157811e77213ca7f756281d7cbf03b2aa4936db3013806b4021f"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "242-248",
+       "sha": "1544ff72265ca78e60bd2d9f4696401710d0c3ba79819ac597f3fefd502612dc"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each step raises the decayed level by one until 15; a length write on an enabled channel starts it again at 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "257-258",
+       "sha": "12d99dfadf18acce6dfabfd572dd5f462e969ae8fd6c573bade8345d205c6025"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "541",
+       "sha": "a23c12d7b15dbe6285794de49b7688e2ad03e1bbf4689e5d488ee66ee49a4f3c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "538-543",
+       "sha": "fb15146fa4d343c47701202f94a354ed8ad762fff2a8208f9865048bda2da669"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 5 clear each call decrements the length counter, and at zero the channel's output is 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "262-268",
+       "sha": "d7604b96a44a521bdf55a193732ad885cf9b8c8ce99ed734a3f79aa060563a39"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The core maps 0x4000-0x4013 to write, so port 0x4000 arrives as offset 0x00.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "22",
+       "sha": "634a9ade5dc40b351a6f75994d9fbaeae6be1a847a63fe419877cd312de20d01"
+      },
+      {
+       "ref": "mame:src/emu/emumem_hedp.cpp",
+       "lines": "105",
+       "sha": "ae098a4fef0bbafd5c58c037c6f8d49f34bed474c00af7edd0178432de8f7810"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "518",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x4004",
+   "name": "SQ2 volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRB0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4004 is square 2's first register; a write stores the byte in the channel's regs[0].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "512",
+       "sha": "b8a1f8fe91c0657bf01aac0ec1db630928927bcb8391b6ce40cf6ed91ca05aed"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "518",
+       "sha": "f28db84b6bcb59170da86208e51dfd0d5a2d68606132bcd284cef00d127bab58"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "519",
+       "sha": "e319891680ce99b4ce84778c3d4bdac13c8a896d4f1736eb1836dd0d05a7f241"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 0-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-3 choose the envelope step interval: the table's entry for the low nibble is the delay between steps.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "248",
+       "sha": "6bc8cc970f90612d2c55430007b076919f5c6eaebdae7e3a018b78a5f796d232"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "251-254",
+       "sha": "b9e08f4837b2745c314bf870bcc52f54fb3bd5b1129b7767ced7618b58208535"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 4 selects a fixed volume: set, the channel outputs bits 0-3 instead of the decayed level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "301-304",
+       "sha": "fa154df5356d2057215d1ef3db4f55df048f856835356ce207efe5131c8a2fc4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 5",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 5 loops the envelope, which then adds one and wraps to 0 at 16, and it holds the length counter.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "255-256",
+       "sha": "e9cc2cbea6234f03bb2ae89f052f54968f5da01960b945860c4faf769e3ab267"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "262",
+       "sha": "05c4da5377b5c0d45c5020500e0a79f4668c558d257471cdcfbaf730f11bde47"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 6-7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 6-7 select one of four duty patterns, and the pattern's bit chosen by bits 1-3 of the adder multiplies the output.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "306",
+       "sha": "676a8ee10a27157811e77213ca7f756281d7cbf03b2aa4936db3013806b4021f"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "242-248",
+       "sha": "1544ff72265ca78e60bd2d9f4696401710d0c3ba79819ac597f3fefd502612dc"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each step raises the decayed level by one until 15; a length write on an enabled channel starts it again at 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "257-258",
+       "sha": "12d99dfadf18acce6dfabfd572dd5f462e969ae8fd6c573bade8345d205c6025"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "541",
+       "sha": "a23c12d7b15dbe6285794de49b7688e2ad03e1bbf4689e5d488ee66ee49a4f3c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "538-543",
+       "sha": "fb15146fa4d343c47701202f94a354ed8ad762fff2a8208f9865048bda2da669"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 5 clear each call decrements the length counter, and at zero the channel's output is 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "262-268",
+       "sha": "d7604b96a44a521bdf55a193732ad885cf9b8c8ce99ed734a3f79aa060563a39"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4001",
+   "name": "SQ1 sweep",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRA1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4001 is square 1's sweep register; a write stores the byte in the channel's regs[1].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "512",
+       "sha": "b8a1f8fe91c0657bf01aac0ec1db630928927bcb8391b6ce40cf6ed91ca05aed"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "522",
+       "sha": "2786ce0290ae0c7958ae81562bc7f330a66ed9d7acac1945f33d3198404d9b26"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "524",
+       "sha": "343f9da6edf7488511a872c4780e299fead44c9e66ff13ae54f48efe7babfc65"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the channel's register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "524",
+       "sha": "343f9da6edf7488511a872c4780e299fead44c9e66ff13ae54f48efe7babfc65"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The sweep runs only while bit 7 is set and the low three bits are nonzero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "272",
+       "sha": "273de2aaca1b1f9933691f8cd28009ac351a76c400522aaa01f509ace09cd57e"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "273-284",
+       "sha": "293a3d2dc0a4ab2af04b79413ac7e306c80b440acf82c1a1b5d6596d7066e840"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 3 chooses the direction: set, the frequency value falls by its own shifted part; clear, it rises, and a larger value is a longer period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "279-282",
+       "sha": "7d2c14eacfc947dffe8090c5acfd955491ca9a7956ef4f4c29106837980d6120"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "295-299",
+       "sha": "60e0b50ae72e1f099916e7ce482183fc2b4d37c052819ac332a90300762be3e1"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "531",
+       "sha": "47f53236c5611a0f9b8fe88570319d489a5e71fd4fa88ad5e5c12dc2447e8ba2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 4-6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 4-6 index the sync table for the delay between the sweep's steps.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "274-278",
+       "sha": "d8036d96d5473466eb8b5d51567a67dbcb1acf04e5732ac35f1f17df29ba7ad6"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 0-2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-2 are the shift count, so one step changes the period by one part in a power of two.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "280",
+       "sha": "990a607dfc87444049071378bad22af60ef4d15567f985c19444f8604a6682f8"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "282",
+       "sha": "abbc61191c1f241b07925ee804a667cf38767b5707ae2e5bcfce1d5ff2379ae4"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The channel goes silent when the period falls below 4, or, with bit 3 clear, once it passes the limit for the low three bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "286-290",
+       "sha": "fc255f7f79bcdb35e15544c24eb0a2883b62412e1197b6a4119c407f577d9a27"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "219-222",
+       "sha": "5b82453d80b03989e1188fd4db8c3acee5d588bc468ceb052b8319b29c26fa06"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "523",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x4005",
+   "name": "SQ2 sweep",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRB1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4005 is square 2's sweep register; a write stores the byte in the channel's regs[1].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "512",
+       "sha": "b8a1f8fe91c0657bf01aac0ec1db630928927bcb8391b6ce40cf6ed91ca05aed"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "523",
+       "sha": "d9e1fc744b12aef6212d49adab6407249a3a2ec4f6a882fd88db8d0b1821e4db"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "524",
+       "sha": "343f9da6edf7488511a872c4780e299fead44c9e66ff13ae54f48efe7babfc65"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the channel's register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "524",
+       "sha": "343f9da6edf7488511a872c4780e299fead44c9e66ff13ae54f48efe7babfc65"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The sweep runs only while bit 7 is set and the low three bits are nonzero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "272",
+       "sha": "273de2aaca1b1f9933691f8cd28009ac351a76c400522aaa01f509ace09cd57e"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "273-284",
+       "sha": "293a3d2dc0a4ab2af04b79413ac7e306c80b440acf82c1a1b5d6596d7066e840"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 3 chooses the direction: set, the frequency value falls by its own shifted part; clear, it rises, and a larger value is a longer period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "279-282",
+       "sha": "7d2c14eacfc947dffe8090c5acfd955491ca9a7956ef4f4c29106837980d6120"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "295-299",
+       "sha": "60e0b50ae72e1f099916e7ce482183fc2b4d37c052819ac332a90300762be3e1"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "531",
+       "sha": "47f53236c5611a0f9b8fe88570319d489a5e71fd4fa88ad5e5c12dc2447e8ba2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 4-6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 4-6 index the sync table for the delay between the sweep's steps.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "274-278",
+       "sha": "d8036d96d5473466eb8b5d51567a67dbcb1acf04e5732ac35f1f17df29ba7ad6"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 0-2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-2 are the shift count, so one step changes the period by one part in a power of two.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "280",
+       "sha": "990a607dfc87444049071378bad22af60ef4d15567f985c19444f8604a6682f8"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "282",
+       "sha": "abbc61191c1f241b07925ee804a667cf38767b5707ae2e5bcfce1d5ff2379ae4"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The channel goes silent when the period falls below 4, or, with bit 3 clear, once it passes the limit for the low three bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "286-290",
+       "sha": "fc255f7f79bcdb35e15544c24eb0a2883b62412e1197b6a4119c407f577d9a27"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "219-222",
+       "sha": "5b82453d80b03989e1188fd4db8c3acee5d588bc468ceb052b8319b29c26fa06"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4002",
+   "name": "SQ1 freq low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRA2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4002 is the low byte of square 1's 11-bit period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "527",
+       "sha": "e19f5a75bc18fca0c81e68eda18b9151579d021444a39f4a6d58ced805465c4b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "529",
+       "sha": "10de7d2e5b54154b97272f07414b5c737d5deff75e460a436ce7bc4c2001fc69"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "531",
+       "sha": "47f53236c5611a0f9b8fe88570319d489a5e71fd4fa88ad5e5c12dc2447e8ba2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the channel is enabled a write rebuilds the period from the high bits, this byte, plus one, shifted 16 places.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "530-531",
+       "sha": "3963698e3f2339ac80c04b93c4a024e3c800ecc4d5f2822cfef291d25d78aa35"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While the channel is disabled the byte is only stored; the period waits for the next recomputation.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "528-532",
+       "sha": "ec679003d0e91a6251642fe7ea479a94d5a6a0a872687e2b94300f500b0120af"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "542",
+       "sha": "f2333ef17651ab5ba8de3c94222ddbbebd793444ba5ccba708688042c3dc4c7b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4006",
+   "name": "SQ2 freq low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRB2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4006 is the low byte of square 2's 11-bit period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "528",
+       "sha": "152ee91b81abcd5cec24e720383e2d6077830d7f82be4277d5929f708a4a0709"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "529",
+       "sha": "10de7d2e5b54154b97272f07414b5c737d5deff75e460a436ce7bc4c2001fc69"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "531",
+       "sha": "47f53236c5611a0f9b8fe88570319d489a5e71fd4fa88ad5e5c12dc2447e8ba2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the channel is enabled a write rebuilds the period from the high bits, this byte, plus one, shifted 16 places.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "530-531",
+       "sha": "3963698e3f2339ac80c04b93c4a024e3c800ecc4d5f2822cfef291d25d78aa35"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While the channel is disabled the byte is only stored; the period waits for the next recomputation.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "528-532",
+       "sha": "ec679003d0e91a6251642fe7ea479a94d5a6a0a872687e2b94300f500b0120af"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "542",
+       "sha": "f2333ef17651ab5ba8de3c94222ddbbebd793444ba5ccba708688042c3dc4c7b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4003",
+   "name": "SQ1 freq high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRA3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4003 carries the high three bits of square 1's period and the length index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "534",
+       "sha": "8495cef014252621f84f2e94e7404ec4754aaa7848d3be56b1ac04a9aa985a17"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "536",
+       "sha": "c1d1cc412ffcc893048c3a93e560fd9c5d717d8c69b365494d97672dff198dca"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "540",
+       "sha": "880208d1c6d567c974f3b6e6cf1ae92fc1a19fa2d568830b8af41be18e26794d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "542",
+       "sha": "f2333ef17651ab5ba8de3c94222ddbbebd793444ba5ccba708688042c3dc4c7b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the channel is enabled a write loads the length from the top five bits, restarts the envelope at 0 and rebuilds the period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "538-543",
+       "sha": "fb15146fa4d343c47701202f94a354ed8ad762fff2a8208f9865048bda2da669"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 0-2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-2 are the period's high bits and bits 3-7 index a thirty-two entry length table.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "540",
+       "sha": "880208d1c6d567c974f3b6e6cf1ae92fc1a19fa2d568830b8af41be18e26794d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "542",
+       "sha": "f2333ef17651ab5ba8de3c94222ddbbebd793444ba5ccba708688042c3dc4c7b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "212-216",
+       "sha": "7dfecd331dad74af0d54205155a30031bde429381fa32c927bc9f54b0913dbd9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The loaded length is the table's value times half the samples of a sync, so the table is scaled to the renderer's rate.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "92",
+       "sha": "418beba7145f0a35a0a0d906be85ae88e18e5e688879f50848215c331066c36a"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "540",
+       "sha": "880208d1c6d567c974f3b6e6cf1ae92fc1a19fa2d568830b8af41be18e26794d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "212-216",
+       "sha": "7dfecd331dad74af0d54205155a30031bde429381fa32c927bc9f54b0913dbd9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "535",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x4007",
+   "name": "SQ2 freq high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRB3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4007 carries the high three bits of square 2's period and the length index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "535",
+       "sha": "c06f2cbb267f85d3b9a161bb0de3942e79b042eb07153baac7884ff275d8b97f"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "536",
+       "sha": "c1d1cc412ffcc893048c3a93e560fd9c5d717d8c69b365494d97672dff198dca"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "540",
+       "sha": "880208d1c6d567c974f3b6e6cf1ae92fc1a19fa2d568830b8af41be18e26794d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "542",
+       "sha": "f2333ef17651ab5ba8de3c94222ddbbebd793444ba5ccba708688042c3dc4c7b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the channel is enabled a write loads the length from the top five bits, restarts the envelope at 0 and rebuilds the period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "538-543",
+       "sha": "fb15146fa4d343c47701202f94a354ed8ad762fff2a8208f9865048bda2da669"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 0-2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-2 are the period's high bits and bits 3-7 index a thirty-two entry length table.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "540",
+       "sha": "880208d1c6d567c974f3b6e6cf1ae92fc1a19fa2d568830b8af41be18e26794d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "542",
+       "sha": "f2333ef17651ab5ba8de3c94222ddbbebd793444ba5ccba708688042c3dc4c7b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "212-216",
+       "sha": "7dfecd331dad74af0d54205155a30031bde429381fa32c927bc9f54b0913dbd9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The loaded length is the table's value times half the samples of a sync, so the table is scaled to the renderer's rate.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "92",
+       "sha": "418beba7145f0a35a0a0d906be85ae88e18e5e688879f50848215c331066c36a"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "540",
+       "sha": "880208d1c6d567c974f3b6e6cf1ae92fc1a19fa2d568830b8af41be18e26794d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "212-216",
+       "sha": "7dfecd331dad74af0d54205155a30031bde429381fa32c927bc9f54b0913dbd9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4008",
+   "name": "TRI linear counter",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRC0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4008 is the triangle's first register; a write stores the byte in the channel's regs[0].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "548",
+       "sha": "b2fc05ad4bbf650a5cdef6e0683d6e71263776ee3c56853cbf523f140b7842e7"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "549",
+       "sha": "670c6ff2155e05132b60cac2fca7c81fb43b855988f518ccfa932de531e38005"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While the channel is enabled and the counter has not started, a write loads the linear length from the low seven bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "551-555",
+       "sha": "0db98a4c495ad1fdf9e70cc11d85bcdb388a9ff3d3a376e2de1dd7ee888d270b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 holds the counter: while it is set the reload flag is not cleared, so once the counter starts every renderer call reloads the linear length.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "320",
+       "sha": "16e43b2fec2bd6887914cd841cb1dc36e29b09044815f3daf36bacef099d9838"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "330-338",
+       "sha": "3c89c88bfb26dab016365aace6447462595f0d7d0a6a4ba264a6c2a62ebbadcf"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "340-341",
+       "sha": "b9542699873f958bdb58ebd36f10676719f812c12cb7b49c61de573307b72fd0"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "770-780",
+       "sha": "0425d0df188ec3aa5936c99b982ef1053246ee7ab68493dff9457ccd5ab1177f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bits 0-6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-6 index the sync table that gives the linear length.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "554",
+       "sha": "c9c59e80739f8522208d48bc56cfa4b1face6331bb4716b40e82c349e89b517b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "332-333",
+       "sha": "0d989f3ce8f0c1cd44359420aa929816b1b74d7f1e208bce953d0235b2b7b789"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The counter starts on the first renderer call that finds bit 7 of 0x4008 clear, once any latency set by a 0x400B write has run out.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "320",
+       "sha": "16e43b2fec2bd6887914cd841cb1dc36e29b09044815f3daf36bacef099d9838"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "322-328",
+       "sha": "a3144056e5b1a6dc934020ad787adf98c0773421512fff5312e30e50ecc94db1"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "587",
+       "sha": "e7ab471eb36c9cb6d8a0098e3d058736a31fcf400cf82c4d757ac46be892b7f9"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "568",
+       "sha": "366d36b7e3b3494d1cbdf4399b26e471b1b57226168fc1eb3e57e8a601d756dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "127",
+       "sha": "09b8ba3aa7efd592abddc4c02cbe4f396f6834733e20c8e2032bd26c1c23cd43"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "770-780",
+       "sha": "0425d0df188ec3aa5936c99b982ef1053246ee7ab68493dff9457ccd5ab1177f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4009",
+   "name": "TRI unused reg",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "0x4009"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4009 is unused: the case compares the offset with 0x4009, while the address map passes this port as offset 0x09.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "559",
+       "sha": "8b508faef7a989ad66738d8c8dbf18ee7345cbfcbba343a1e2fda70ca29e99cf"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "514",
+       "sha": "1392ee559992d5b54baaa7d890f85dc60f5a2b9d3f49cb4b80f60947504a874f"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "22",
+       "sha": "634a9ade5dc40b351a6f75994d9fbaeae6be1a847a63fe419877cd312de20d01"
+      },
+      {
+       "ref": "mame:src/emu/emumem_hedp.cpp",
+       "lines": "105",
+       "sha": "ae098a4fef0bbafd5c58c037c6f8d49f34bed474c00af7edd0178432de8f7810"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to port 0x4009 reaches the default case, which only logs under a debug build; the triangle's second register stays as it was.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "559-562",
+       "sha": "dc3e90e48fd361374768134658555fdcc3c8ce78de81abd2457f4c99d51b042c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "722-727",
+       "sha": "b1e602fec6976acf4b20e129e686f27b48dcd298c3fbc38d243271ea830ae20a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "22",
+       "sha": "634a9ade5dc40b351a6f75994d9fbaeae6be1a847a63fe419877cd312de20d01"
+      },
+      {
+       "ref": "mame:src/emu/emumem_hedp.cpp",
+       "lines": "105",
+       "sha": "ae098a4fef0bbafd5c58c037c6f8d49f34bed474c00af7edd0178432de8f7810"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The case, were it reached, would store the byte in the triangle's second register, which the header marks unused.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "561",
+       "sha": "860c3daf2bb5966e0b25d98c76f9c5780bd1e3b938dc3a295befc3dd2f39148f"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "63",
+       "sha": "205928a2db1161682ab14352fbcacc44ee304e9090d6dd7f46b9255c2e2996d8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x400A",
+   "name": "TRI freq low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRC2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x400A is the low byte of the triangle's 11-bit period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "564",
+       "sha": "a923eb54f4c8f0136d63f6243374081480ce7b265c7f84ce46ab690cee96bb12"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "565",
+       "sha": "c9082e9c5e86bce86b94971ebf3941dc3116d361a4bcaad48bf087386d5bb58c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "347",
+       "sha": "87fae01521eb61200e91a6742021488360c520f13c72749f0b937ab689a76ed2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write only stores the byte; the renderer rebuilds the period from both bytes each sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "564-566",
+       "sha": "9fcd9f4e55067121e9c82c2dbbb5ebd4c40e67ff3faf832d3fe4f01d4d2bce0b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "347",
+       "sha": "87fae01521eb61200e91a6742021488360c520f13c72749f0b937ab689a76ed2"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "770-780",
+       "sha": "0425d0df188ec3aa5936c99b982ef1053246ee7ab68493dff9457ccd5ab1177f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The period is the eleven bits plus one, and a period of 1 returns before the phase moves.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "347",
+       "sha": "87fae01521eb61200e91a6742021488360c520f13c72749f0b937ab689a76ed2"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "350-351",
+       "sha": "f4f41101c0251c729562f7ad90d9f560b167fd146f0bf28fed78a42f8e204249"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A period below two returns before the phase moves, so the channel's output holds its last value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "350-351",
+       "sha": "f4f41101c0251c729562f7ad90d9f560b167fd146f0bf28fed78a42f8e204249"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "353-359",
+       "sha": "747e86924004ef1b2e010a9961b2eca0178b3168248506f8396206479c8240b0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x400B",
+   "name": "TRI freq high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRC3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x400B carries the triangle's period high bits and its length index; a write stores the byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "568",
+       "sha": "366d36b7e3b3494d1cbdf4399b26e471b1b57226168fc1eb3e57e8a601d756dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "569",
+       "sha": "e42f9d7cdb5c65f93924a5aabab6f024619c545433bb99905d902740e1ff0f7b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "592",
+       "sha": "82de20d0b98a94ae90731e1e2769e73371a1a96706671f622bf1a7a7f4f24588"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "347",
+       "sha": "87fae01521eb61200e91a6742021488360c520f13c72749f0b937ab689a76ed2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write sets a latency of a 240th of a frame, counted in renderer calls, during which the linear counter cannot start.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "587",
+       "sha": "e7ab471eb36c9cb6d8a0098e3d058736a31fcf400cf82c4d757ac46be892b7f9"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "591",
+       "sha": "f5af18912ac1075e07eb780d0a9141ce92f361c57ab8f68f780db03f872c86d2"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "322-328",
+       "sha": "a3144056e5b1a6dc934020ad787adf98c0773421512fff5312e30e50ecc94db1"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "87",
+       "sha": "685c9d65b694146747c2d37d7d7f9b3e407f71679f8586a41a66c901fc7daa4c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "114",
+       "sha": "700b016949390e0623971178af61844d67e8ec28ec0581e5e9a70f8b6860f007"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "770-780",
+       "sha": "0425d0df188ec3aa5936c99b982ef1053246ee7ab68493dff9457ccd5ab1177f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While the channel is enabled the write clears the start flag, loads the length, reloads the linear length and marks the reload.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "589-595",
+       "sha": "09412d4e950d90e9f2cb0d7ff8fdd83f44c79fd9f0961844fe528c102b10e673"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bits 0-2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-2 extend the period above the low byte and bits 3-7 index the length table.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "592",
+       "sha": "82de20d0b98a94ae90731e1e2769e73371a1a96706671f622bf1a7a7f4f24588"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "347",
+       "sha": "87fae01521eb61200e91a6742021488360c520f13c72749f0b937ab689a76ed2"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "212-216",
+       "sha": "7dfecd331dad74af0d54205155a30031bde429381fa32c927bc9f54b0913dbd9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x400C",
+   "name": "NOISE volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRD0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x400C is the noise channel's first register; a write stores the byte in the channel's regs[0].",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "600",
+       "sha": "ecd2fee3fb5c2eba2048c1e2136ef127359ea282c8ce312fde97246bd104a243"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "601",
+       "sha": "87203859e77c41e339e23d19d4f379c8b67a443b7ff76986a66209ec49cdd508"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the channel's register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "601",
+       "sha": "87203859e77c41e339e23d19d4f379c8b67a443b7ff76986a66209ec49cdd508"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 0-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-3 choose the envelope step interval from the sync table.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "382",
+       "sha": "6bc8cc970f90612d2c55430007b076919f5c6eaebdae7e3a018b78a5f796d232"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "385-388",
+       "sha": "b9e08f4837b2745c314bf870bcc52f54fb3bd5b1129b7767ced7618b58208535"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 4 makes the volume fixed: the channel outputs bits 0-3 instead of the decayed level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "422-425",
+       "sha": "fa154df5356d2057215d1ef3db4f55df048f856835356ce207efe5131c8a2fc4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bit 5",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 5 loops the envelope and stops the length counter from counting down.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "389-392",
+       "sha": "d4f202b8c06e710d1ed1951d120ffde1a35bb9e6fdb7108eb8d913717d3ceefa"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "396-399",
+       "sha": "2581edcf9747eb92a4f70f08a133465bd756255f9aef16c65d1e05f6b579ad28"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 5 clear each call decrements the length counter, and at zero the channel's output is 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "396-405",
+       "sha": "a0a6a766dfbc095332943035f75900b9fdeb06af11bf6184b21c834a112b9f6a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x400D",
+   "name": "NOISE unused reg",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "0x400D"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x400D is unused: the case compares the offset with 0x400D, while the address map passes this port as offset 0x0D.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "604",
+       "sha": "62ad7f474473895f2eef3d80de0ea90c2233b04b3eb1c964ad1f334e3bdb7a01"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "514",
+       "sha": "1392ee559992d5b54baaa7d890f85dc60f5a2b9d3f49cb4b80f60947504a874f"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "22",
+       "sha": "634a9ade5dc40b351a6f75994d9fbaeae6be1a847a63fe419877cd312de20d01"
+      },
+      {
+       "ref": "mame:src/emu/emumem_hedp.cpp",
+       "lines": "105",
+       "sha": "ae098a4fef0bbafd5c58c037c6f8d49f34bed474c00af7edd0178432de8f7810"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to port 0x400D reaches the default case, which only logs under a debug build; the noise's second register stays as it was.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "604-607",
+       "sha": "b03645cbfc06b752bef17833702f9c2bb34f1030484e207a7dfe645dab7bd0a6"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "722-727",
+       "sha": "b1e602fec6976acf4b20e129e686f27b48dcd298c3fbc38d243271ea830ae20a"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "22",
+       "sha": "634a9ade5dc40b351a6f75994d9fbaeae6be1a847a63fe419877cd312de20d01"
+      },
+      {
+       "ref": "mame:src/emu/emumem_hedp.cpp",
+       "lines": "105",
+       "sha": "ae098a4fef0bbafd5c58c037c6f8d49f34bed474c00af7edd0178432de8f7810"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The case, were it reached, would store the byte in the noise's second register, which the header marks unused.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "606",
+       "sha": "e55dd7bb1e4cf6c9fc3e62859cd5ebf2707e48edf0ddea661c9ee4ef1a06ce9c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "84",
+       "sha": "205928a2db1161682ab14352fbcacc44ee304e9090d6dd7f46b9255c2e2996d8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x400E",
+   "name": "NOISE freq low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRD2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x400E holds the noise period and the sequence-mode flag; a write stores the byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "609",
+       "sha": "eed22f734e828f405768823cd678ef990eeebd5c14de5225d286dba8447d3543"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "610",
+       "sha": "c6bc9d6ad9908d9271541aa450f172c8b626997684add74acc0bee4d40de3d42"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "408",
+       "sha": "4b10d3d10169974c73fd467ab90552c96e42ec03d09dcc720d19452dc7c9f578"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "430",
+       "sha": "2e827ff35ec83a43815fb706ca157822e11987c21d492d1b0fc6087dfbf3dc6e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the channel's register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "610",
+       "sha": "c6bc9d6ad9908d9271541aa450f172c8b626997684add74acc0bee4d40de3d42"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 0-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-3 index a period table, which has a PAL variant selected by the device's clock.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "408",
+       "sha": "4b10d3d10169974c73fd467ab90552c96e42ec03d09dcc720d19452dc7c9f578"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "226-230",
+       "sha": "9b16f4e42e39940deddcce8887bb6860e6a8148828d4038ef44758b84ea37721"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "82",
+       "sha": "717bc135a95839f63a5b0aa87fe3dadab6fe630d2ce2300bb75def1b8c546c47"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 selects the shift tap: six, for the small 93-byte sample, when set, and one when clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "430",
+       "sha": "2e827ff35ec83a43815fb706ca157822e11987c21d492d1b0fc6087dfbf3dc6e"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "371",
+       "sha": "d458171d7cee4e284bbb9a6b1c8ccae9972c5460df88f3f26b352868664a66c1"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The RP2A03 subclass ignores bit 7 and always shifts with tap one, so the flag changes nothing on that device.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "434-438",
+       "sha": "1e67acb16e5e7ceede3377bd9476bbbbf95951b8b82fe187b393b1f332e80f8d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "413",
+       "sha": "f8be967141c1d7225bea2a3292eea4c28a86e2ad3153acd0ee5d9ef1b2e95ca5"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.h",
+       "lines": "63",
+       "sha": "26b2ff79cd03ec5b0796d2bfb8b4635128c68a03f9d23c6b397d55d48ec7aac0"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.h",
+       "lines": "104",
+       "sha": "d6410289451f2e3efcd6aa35b3f8d1eb2cb1d0bca870f84fbe9b272dd18144c4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x400F",
+   "name": "NOISE freq high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRD3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x400F holds the noise length index and a write stores the byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "613",
+       "sha": "cce21642a930097187c66f7a4c06e1a79d0fe8f91dd486ca189c9f8d1d3393fb"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "614",
+       "sha": "08c99541082ff6c3e1c2d5c1ab1acc5805805aab4a49d84d49364b20704ea46d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "618",
+       "sha": "dd43ef439984cc1f6272a01cb0964f3bb721258a17dc5eb280ef49cb0c6ea69f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While the channel is enabled a write loads the length from the top five bits and resets the envelope volume.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "616-620",
+       "sha": "0d41322c4147b6c787da7804318080966ebcf880bc0014fe7be42624965835e4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The length load shifts the byte right three places, so its top five bits choose the table entry.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "618",
+       "sha": "dd43ef439984cc1f6272a01cb0964f3bb721258a17dc5eb280ef49cb0c6ea69f"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "212-216",
+       "sha": "7dfecd331dad74af0d54205155a30031bde429381fa32c927bc9f54b0913dbd9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4010",
+   "name": "DMC control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRE0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4010 is the DMC's control register; a write stores the byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "624",
+       "sha": "338e33eef86e00e8f717c5b12ec1612471ca42008b6b9acdf1890191686be41d"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "625",
+       "sha": "a6d40239ba82405db859b331017c1f9038f27889bb7cc3f6329e38c49ff29590"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the channel's register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "625",
+       "sha": "a6d40239ba82405db859b331017c1f9038f27889bb7cc3f6329e38c49ff29590"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 enables the DMC's interrupt at the end of a sample; clearing it drops the pending request.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "477-481",
+       "sha": "02ca86a638a41d038dbd7b80582c580486d3e233cb183feea99ab9cb8649cce7"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "626-631",
+       "sha": "a13ad0171233f001c54f19f5dd1dfa65c598a0b631236b42f49f3626a6fb0613"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "470-475",
+       "sha": "515e44c3d0f5220d23deb29680011c2ca71de790b0632912eaea8cce2e1b2d8b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 6 loops the sample: at the end of the length the address and length are reloaded instead of stopping.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "470-475",
+       "sha": "515e44c3d0f5220d23deb29680011c2ca71de790b0632912eaea8cce2e1b2d8b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "441-447",
+       "sha": "fa1f67679440436c382634861b3285d79de5b06b83b828bb66b0a782930cf0d2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 0-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-3 index the clock table that sets the DMC's output rate, one table for NTSC and one for PAL.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "463",
+       "sha": "d47f88119384b1d92295d3e1cc747dab57a66f9391a704e1a2bc0c0e7ec83641"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_defs.h",
+       "lines": "234-238",
+       "sha": "ae98409afa0d1404cf1502356317471fd965bcb4e9225b79de1d0b4e85a16453"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write with bit 7 clear also clears the DMC interrupt flag and, when no frame interrupt is pending, lowers the line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "626-631",
+       "sha": "a13ad0171233f001c54f19f5dd1dfa65c598a0b631236b42f49f3626a6fb0613"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "718-719",
+       "sha": "6dd9046a2b83f0fd6fc72710b94fd3323f42dd908887774c56dcce03ea494b31"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4011",
+   "name": "DMC level",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRE1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4011 sets the DMC's output level; a write keeps the low seven bits of the byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "634-635",
+       "sha": "54391414407ee6db459872c19dbe62d34c304b95fcaca29b1dbe3932e02eedfa"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The stored level is the accumulator that each bit of the sample moves by two.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "636",
+       "sha": "ecdfc7fe0b4bc61eef5be63834d33bff3aa9eeea39ad37c1ba88de7bc15f3419"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "495-500",
+       "sha": "f65286906862845f499e9b52a6f8f41fd8792fff301ee5012c2c80c53870a6a2"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "504",
+       "sha": "dfc787ae943c4fea142ad31b8a84a070d4960f1cb0f28b9ba74a592932edb890"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A set bit raises the level by two while it is at most 125; otherwise, and at 2 or above, it falls by two, staying within 0 and 127.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "495-500",
+       "sha": "f65286906862845f499e9b52a6f8f41fd8792fff301ee5012c2c80c53870a6a2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4012",
+   "name": "DMC address",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRE2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4012 holds the DMC sample address in 64-byte units, counted from 0xC000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "639",
+       "sha": "8ee10933e110618b3b1c7ef6fdc53d15019e44ab5c16b1cfd477d56770240837"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "443",
+       "sha": "c11e2461b94295f85b3ef11d0f3b1d427565bab2e841e94f18a913828b5dcc87"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte; the address is rebuilt at 0xC000 plus 64 times it when the channel starts or loops.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "640",
+       "sha": "7a51efd1a60ce35560563a46941a4ef5b8082e51f020d4011d7b7bfe791cbc86"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "443",
+       "sha": "c11e2461b94295f85b3ef11d0f3b1d427565bab2e841e94f18a913828b5dcc87"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "708-712",
+       "sha": "a7735e43b498103571d717a83b928e8f9ceac39ed29849499ec6322ae616fe7b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "470-474",
+       "sha": "34dc27b0c365e37a67cde77d9431da7f3b96581e7ac6a627ec24595aec6c5604"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4013",
+   "name": "DMC length",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::WRE3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4013 holds the DMC sample length in 16-byte units plus one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "644",
+       "sha": "d126f8a399e711af343399a73ba39142c8ad9e724710f1aab1a996aed500895a"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "444",
+       "sha": "4703dfc204c77a1c30bcc6de252e755b01ac275b72adacd10843d074e23d0e1b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte; the length and its bit count are rebuilt when the channel starts or loops.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "645",
+       "sha": "c8c02984076e4a4d087c2063c333ec3b9e5c6701c6ad591ea9c03a9153e38b1c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "444-445",
+       "sha": "8902a40262dcae6983f9ce0755eea4e3199b9c53f68d0da099a7f3f6a976b19a"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "708-712",
+       "sha": "a7735e43b498103571d717a83b928e8f9ceac39ed29849499ec6322ae616fe7b"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "470-474",
+       "sha": "34dc27b0c365e37a67cde77d9431da7f3b96581e7ac6a627ec24595aec6c5604"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4015",
+   "name": "APU enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::SMASK"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "apu_dpcmreset"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to port 0x4015 enables the four tone channels and the DMC, one bit each.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "670-671",
+       "sha": "11bfa3148764114bbfeacf5c3625f865349771cb11996f30b2bd100e179a7217"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "678-679",
+       "sha": "f5ef0bf57973fbacbad8098754cc97362ae3fb7db84ab1a23e639cbaf2172686"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "686-687",
+       "sha": "db3d310b505a119debdbe6fd302084f0e404dd2aab3802fc0a620eb16a5a9730"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "697-698",
+       "sha": "aa26e6b1b90b541d131975e2cdb59f670c06a4e1fee7283dd27e7caa01a325d0"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "705-713",
+       "sha": "65c0cd037f1d80f3175d849c386e69a0ea3921da32745aa1e85e7dd6314bd198"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores no register value; clearing a channel's bit stops it and zeroes the length counters it holds.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "669-680",
+       "sha": "f18108d1d2be9395ff288af0ac05fbeece3c6ff47d55230b6a757a5d2ccae5aa"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "681-692",
+       "sha": "29419abcfee480e2b4ff421dd34c0fb4482a47c7f5e79335ff3ca8cec1d44a36"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "693-704",
+       "sha": "9d4be964f4ec7582e1c93890cefdaf826214e275afc6746c1fe096920585cde3"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "705-716",
+       "sha": "16da508f7fef171d4034abf2dbdb0debf326f371f3613a618e829c878beb326a"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "717-721",
+       "sha": "6c8fcf905c1ac484201aecb367ab5e0b57bf53cb408d9a1d72204caa7a88efb8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 0-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-3 enable the two squares, the triangle and the noise; clearing one stops it and zeroes its length counters.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "670-676",
+       "sha": "ad2ee10f55aebfb2536bf346e0a77811b18f9dd3a60ae81413620716530b0b4c"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "678-684",
+       "sha": "5dfde76ac660857917789dad504ca8fcf7210862f6d3a32080fa334704233b1a"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "686-695",
+       "sha": "c9cc258ead18dc8de68d6db7a331b7122969364ef563937c96de84e73401031f"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "697-703",
+       "sha": "8897475fc0d173d30e18c4d1d6b4a3fada08d1356e906523141c5b9c62f4269e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 4 enables the DMC: when it was disabled, a write reloads the address, the length and its bit count, and marks the channel enabled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "705-713",
+       "sha": "65c0cd037f1d80f3175d849c386e69a0ea3921da32745aa1e85e7dd6314bd198"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "443-446",
+       "sha": "c90759e42d1069d4a486f6e86af58cd17b37e4d09bf61ee3ace857353a7c9db8"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bit 4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Clearing bit 4 stops the DMC and leaves the address and length it had.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "714-715",
+       "sha": "10c4e2c8c75251da19ee23d426c8c331840d08c1993b17bd2547cd7827213a6c"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write clears the DMC interrupt flag and, when no frame interrupt is pending, lowers the interrupt line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "717-719",
+       "sha": "1f56fe06ff602ab068f11708d1e23d9e76d2b00f73a9a45fb0051d0b0ff47e45"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The core maps 0x4015's write to a lambda that calls write with offset 0x15.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "23",
+       "sha": "fad46140838aca2bf0ae8d864bcd2ff9ecf5be65875fd52cecb9530b2b6f3beb"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x4015",
+   "name": "APU status",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::status_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of port 0x4015 reports the channels whose length counters run, the DMC's enable and the two interrupt flags.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "731",
+       "sha": "356ae6eae657b22aaa04270a53d12c30ef8ed31658f3ca453f3a76823d72e3e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "736-737",
+       "sha": "db2fff9e6e0cdcf8c43855dfb5e19d5528c9e5a9bf5dbba2b163adfd9cf6cad4"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "749-756",
+       "sha": "f8afb655d5fccd12c18ddd93b4afb0af019894a767338fcc97260007d895c1c1"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "762",
+       "sha": "e838aa603f9d81a50b9d6633af5600a12d6064d7876f357070b2da37e0f813d3"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "740-747",
+       "sha": "c9f3670e5f1566b93fbd6b5f1440c135f61124072a599a4c7189b015c62062b2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 0-4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0-3 are set when a square, the triangle or the noise holds a nonzero length; bit 4 follows the DMC's enable.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "737-738",
+       "sha": "76da8279e420daa50ebff36439af7cae2529ad49203e93b02f1ed896f783c8ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "740-741",
+       "sha": "d417c7f6e1ba2621ea2af555ad6ecd8c5f7a3ab5e8435581b768b00e61591126"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "743-744",
+       "sha": "f3466f13484a9b4684db179f6c0445cea1a8e5c027099d911525a27a2c635b49"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "746-747",
+       "sha": "5381f5591446e64161bd0ce1a08482779fe7cd9ff82ec10d5996647a7c3f473f"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "749-750",
+       "sha": "5ce9aeb59f2e25df957a40d28ee3c7411f560b33a8b4958d8df7d3330d89ffe8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 6-7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 6 reports the frame interrupt and bit 7 the DMC's, and the read clears the frame flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "752-758",
+       "sha": "d754aa0a019e551524c042303a58c297199457319960957dd3557863f976440e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read also lowers the interrupt line when no DMC interrupt is pending.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "759-760",
+       "sha": "2fbb1294854bdff7d85a91c72fb28d140e1db81786bcb345a0d2966293c439e2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The driver maps port 0x4015's read to status_r and its write to a lambda that calls write with offset 0x15.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "23",
+       "sha": "fad46140838aca2bf0ae8d864bcd2ff9ecf5be65875fd52cecb9530b2b6f3beb"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "25",
+       "sha": "bde7ca5f573efb039215b2ca025eba920b8eaccf86f17b04ce39093461aefd35"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x4017",
+   "name": "Frame counter",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "function": "nesapu_device::write",
+     "case": [
+      "apu_t::IRQCTRL"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x4017 selects the frame sequencer's step mode and its interrupt.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "648",
+       "sha": "a0fe8799d1ebf07c48aaf1c1221ee475b7e4439e97ede72e9055287d0bc75cba"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "649-654",
+       "sha": "90ff4d02fb48d6746f1f6e67d2213be92bf06918e85e8cefb6b85ecf6c07148a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores no register of its own: the byte sets the step mode and the interrupt enable in the device's state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "648-659",
+       "sha": "2b2c6a890a5933ee5e2044decdf3bd93731ed0bc297865147493b2d2f9c47415"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "660-667",
+       "sha": "fb4430310764c1dbb4516d4a09762cd17c96e753dbb668768fb97eeeba56326d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 selects the five-step mode and clearing it selects four steps.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "649-652",
+       "sha": "059b6dea664c36e17ae56c60bfb8f79e071b7eb935b4a7b9afed6388314d7508"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 6 inhibits the frame interrupt: set, the timer stops and the pending flag clears; clear, the timer is rearmed each period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "654-665",
+       "sha": "a7f7ee4b49393108987607ad09b88052259869ffd6ea1b52b19ebfabfd5b3976"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The timer callback raises the frame interrupt only when the mode is four steps and the interrupt is enabled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "215-224",
+       "sha": "cc458fee4f586e03e3af185d1e252a24fa77f805f2d21f561d073d1bbfe470de"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The frame timer counts 29830 clocks for NTSC and 33254 for PAL, converted at the device's clock rate.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/nes_apu.cpp",
+       "lines": "114-115",
+       "sha": "d12a2c3e8f639b09aaa396b6f5624c3324710bc65a92f0a3850753b65d74f218"
+      },
+      {
+       "ref": "mame:src/devices/sound/nes_apu.h",
+       "lines": "69-70",
+       "sha": "b1c9df1f70da4c46112900cdc2d1914a51aa7ea6cc643491159b5d0304ec2420"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The core maps 0x4017's write to a lambda that calls write with offset 0x17.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6502/rp2a03.cpp",
+       "lines": "24",
+       "sha": "e9f875c10482f70aff53e3e31274d05ff4317ae4cfa1f5c657b5153a380cd1d6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/nes_apu.cpp",
+     "lines": "514",
+     "as": "key"
+    }
+   ]
+  }
+ ]
+}

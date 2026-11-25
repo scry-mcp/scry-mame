@@ -1,0 +1,1254 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "k007232",
+ "title": "The Konami 007232 PCM controller registers",
+ "kind": "register",
+ "scope": "k007232",
+ "covers": "the write registers of the Konami 007232 two-channel PCM controller as MAME's device handles them; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of k007232.cpp names the Konami PCM controller and its two authors and cites no document."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search for the part found no page of Konami, its maker, holding a manual or datasheet."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The components listing at bitsavers.org has no Konami folder and no Konami name."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search aimed at archive.org found no manual, datasheet or schematic for the part."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com answered HTTP 404 on the two search paths I tried, with no document list."
+  }
+ ],
+ "engine": [
+  "update",
+  "read_sample"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "channel A step low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0 is the low byte of channel A's address step, whose high part is the low four bits of register 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "129",
+       "sha": "9ac5ab7fb64bd247e6769fb8d9c2f9bb62364934396ae6a2d3663b5c6ea1193a"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "131",
+       "sha": "bda08480e12c4f7b5165050909f7dbaf07966ba79d885d16427aa916cee1629e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to this register stores the byte at its offset and recomputes the step from registers 0 and 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "129-133",
+       "sha": "70ca73aac2c2db5824108be67aebdf744a1e60af3e54b5891ce9ac70d31e4723"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "channel A step high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 1's low four bits are the high part of channel A's address step; bits 4-5 are the frequency divider the code does not implement.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "130-132",
+       "sha": "3a3ce4c7f54faecf111913ab6484887c14ec8fc3be569d94c9dfd561ae8d5f93"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to this register stores the byte at its offset and recomputes the step from registers 0 and 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "130-133",
+       "sha": "f9fa1b3cf326a24772ff3d380b4b31cee8b6a2e88084fb55cef9fdf4180ef532"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "channel A start low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 2 is the low byte of channel A's start address, completed by registers 3 and 4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "137-138",
+       "sha": "2a90f58b2b140b757dc212376c070ba88544796ccc9d23ccf034520a3bdbb31a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to registers 2, 3 or 4 stores the byte and rebuilds the start address from the three bytes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "134-139",
+       "sha": "34ad360d74024696cee938978d456188d59fc1a403374077c3b1c683c06afd85"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "channel A start mid",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 3 is the middle byte of channel A's start address, shifted eight bits into it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "137-138",
+       "sha": "2a90f58b2b140b757dc212376c070ba88544796ccc9d23ccf034520a3bdbb31a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to registers 2, 3 or 4 stores the byte and rebuilds the start address from the three bytes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "135-139",
+       "sha": "b9a0b7aa88206fd80ea241cc423b48e8045d9e3748fc43bfca75244b023b4d58"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "channel A start high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "4"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 4 supplies bit 0 alone, as the high byte of channel A's start address shifted sixteen bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "137-138",
+       "sha": "2a90f58b2b140b757dc212376c070ba88544796ccc9d23ccf034520a3bdbb31a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to registers 2, 3 or 4 stores the byte and rebuilds the start address from the three bytes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "136-139",
+       "sha": "5ed03beffd1a4aa34e6e6ebdb103869526c023f2f5c8b9938665ab89df129bbf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "channel A trigger",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "5"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::start"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::read"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 5 is channel A's start trigger: a write to it starts the sample at the address registers 2-4 hold.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "140",
+       "sha": "a48519659593b534a32b98f5a3b8e5bf55780a21a1e238b36d2c7d01c7e0c05a"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "141",
+       "sha": "b9651d63d132f51b82ea08131476fa14bfbe2c2fb969292a58ecf0bd36c47abe"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "138",
+       "sha": "37c1d90b52540f850ff00737cab490036445dcb66ff59420637cb110fb636319"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "151-155",
+       "sha": "6d7abcf375fc83021b49f6c32b009ed11fc41c174feacfcb41f782a06abbb768"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to this register calls start() for channel A; when its start address is below the memory limit the channel starts playing with a counter of 0x1000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "141",
+       "sha": "b9651d63d132f51b82ea08131476fa14bfbe2c2fb969292a58ecf0bd36c47abe"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "151-155",
+       "sha": "6d7abcf375fc83021b49f6c32b009ed11fc41c174feacfcb41f782a06abbb768"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reading the same offset starts the channel too, unless side effects are disabled, and the read returns 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "182-190",
+       "sha": "446bf058e697f30f07b1e77012111e0fef8e3cb45120a58189360741f14ea4da"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "151-155",
+       "sha": "6d7abcf375fc83021b49f6c32b009ed11fc41c174feacfcb41f782a06abbb768"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "157-172",
+     "as": "dead"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "channel B step low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 6 is the low byte of channel B's address step, whose high part is the low four bits of register 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "129",
+       "sha": "9ac5ab7fb64bd247e6769fb8d9c2f9bb62364934396ae6a2d3663b5c6ea1193a"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "131",
+       "sha": "bda08480e12c4f7b5165050909f7dbaf07966ba79d885d16427aa916cee1629e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The write to this register selects channel B and recomputes its step from registers 6 and 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "129-133",
+       "sha": "70ca73aac2c2db5824108be67aebdf744a1e60af3e54b5891ce9ac70d31e4723"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "channel B step high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 7's low four bits are the high part of channel B's address step; bits 4-5 are the frequency divider the code does not implement.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "130-132",
+       "sha": "3a3ce4c7f54faecf111913ab6484887c14ec8fc3be569d94c9dfd561ae8d5f93"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The write to this register selects channel B and recomputes its step from registers 6 and 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "130-133",
+       "sha": "f9fa1b3cf326a24772ff3d380b4b31cee8b6a2e88084fb55cef9fdf4180ef532"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "channel B start low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 8 is the low byte of channel B's start address, completed by registers 9 and 10.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "137-138",
+       "sha": "2a90f58b2b140b757dc212376c070ba88544796ccc9d23ccf034520a3bdbb31a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The write to this register selects channel B and rebuilds its start address from registers 8, 9 and 10.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "134-139",
+       "sha": "34ad360d74024696cee938978d456188d59fc1a403374077c3b1c683c06afd85"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "name": "channel B start mid",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 9 is the middle byte of channel B's start address, shifted eight bits into it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "137-138",
+       "sha": "2a90f58b2b140b757dc212376c070ba88544796ccc9d23ccf034520a3bdbb31a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The write to this register selects channel B and rebuilds its start address from registers 8, 9 and 10.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "135-139",
+       "sha": "b9a0b7aa88206fd80ea241cc423b48e8045d9e3748fc43bfca75244b023b4d58"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x0A",
+   "name": "channel B start high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "4"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 10 supplies bit 0 alone, as the high byte of channel B's start address shifted sixteen bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "137-138",
+       "sha": "2a90f58b2b140b757dc212376c070ba88544796ccc9d23ccf034520a3bdbb31a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The write to this register selects channel B and rebuilds its start address from registers 8, 9 and 10.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "136-139",
+       "sha": "5ed03beffd1a4aa34e6e6ebdb103869526c023f2f5c8b9938665ab89df129bbf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "name": "channel B trigger",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "case": [
+      "5"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::start"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::read"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 11 is channel B's start trigger: a write to it starts the sample at the address registers 8-10 hold.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "140",
+       "sha": "a48519659593b534a32b98f5a3b8e5bf55780a21a1e238b36d2c7d01c7e0c05a"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "141",
+       "sha": "b9651d63d132f51b82ea08131476fa14bfbe2c2fb969292a58ecf0bd36c47abe"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "138",
+       "sha": "37c1d90b52540f850ff00737cab490036445dcb66ff59420637cb110fb636319"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "151-155",
+       "sha": "6d7abcf375fc83021b49f6c32b009ed11fc41c174feacfcb41f782a06abbb768"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to this register calls start() for channel B; when its start address is below the memory limit the channel starts playing with a counter of 0x1000.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "124-125",
+       "sha": "87fbfb4c208d2e4be7c196a76bd3be473dd2599d883b61ba96141779adf1a27b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "141",
+       "sha": "b9651d63d132f51b82ea08131476fa14bfbe2c2fb969292a58ecf0bd36c47abe"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "151-155",
+       "sha": "6d7abcf375fc83021b49f6c32b009ed11fc41c174feacfcb41f782a06abbb768"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reading the same offset starts channel B too, unless side effects are disabled, and the read returns 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "182-190",
+       "sha": "446bf058e697f30f07b1e77012111e0fef8e3cb45120a58189360741f14ea4da"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "151-155",
+       "sha": "6d7abcf375fc83021b49f6c32b009ed11fc41c174feacfcb41f782a06abbb768"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "113",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "118",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "122",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "127",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "lines": "157-172",
+     "as": "dead"
+    }
+   ]
+  },
+  {
+   "key": "0x0C",
+   "name": "external volume port",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "value": "offset=12"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 12 is an external port: the byte goes to the board's port write callback, which the driver usually wires to volume control.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "113-116",
+       "sha": "733b6f8fcbff4cd6fe4634def28de7daa8c9bd177070c534e5811eb5c1129ab0"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.h",
+       "lines": "17",
+       "sha": "dee901183d02cb6d664290c7c47f852081bce9661a98975b5cc3d73f964fda51"
+      },
+      {
+       "ref": "mame:src/mame/konami/tmnt.cpp",
+       "lines": "912",
+       "sha": "e0f014bb5f078757c7922db8e0d612efea30247f066facdc56b445b14ac72eb4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to this register stores the byte in the register file and passes it to the callback.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "116",
+       "sha": "58edc1a2c2e709e28a2d78bbc20d934a1910eda448240dfdfab2d0b49246acd4"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x0D",
+   "name": "loop flags",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k007232.cpp",
+     "function": "k007232_device::write",
+     "value": "offset=13"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 13 holds the loop flags, one bit per channel, which the sound stream tests to loop a sample instead of stopping it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "120",
+       "sha": "a68198add2dda1271735632b3577a19e5eb7e15713b90fbfd7242a0466cb1405"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "221",
+       "sha": "5f205d1652d6810e3dd18be562b6cc7ffe7bd6336c32bfab07f0c3a80000b665"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "236-239",
+       "sha": "5c8f6674096c5bb8bfcabcff3cf5166a074cfe5478cde72205c22e10b6be8bcf"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "241-245",
+       "sha": "07911cbca090d808a588562eb4b3d9bc4b6da8bac0178ac415c9a2346d0c094b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "216",
+       "sha": "9531cc438523865d64edb964043525b5a41669417fa43952f47923acd4d24d71"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to this offset stores the byte and the branch below it runs no statement; the stream reads the bits from the register file.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "111",
+       "sha": "36c6ce5e828a8601577073f8c6783ce65f118f234237a03cf6cc28ed2382b8dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "118-121",
+       "sha": "ce51e23c6218a894a9ab41363c6287d7cb9c8e7ddf47a73c9a8225878aab1a5b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "236",
+       "sha": "9a8730da2187b68ce303297198844774a2f57a846cc62524f81397c16e7599cb"
+      },
+      {
+       "ref": "mame:src/devices/sound/k007232.cpp",
+       "lines": "216",
+       "sha": "9531cc438523865d64edb964043525b5a41669417fa43952f47923acd4d24d71"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

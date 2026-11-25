@@ -1,0 +1,1010 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "c6280",
+ "title": "The Hudson C6280 PSG write registers",
+ "kind": "register",
+ "scope": "c6280",
+ "covers": "the write registers of the Hudson C6280 PSG as MAME's device handles them; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of c6280.cpp thanks Paul Clifford for his PSG documentation and cites no document of Hudson."
+  },
+  {
+   "where": "maker",
+   "gave": "hudson.co.jp did not answer and hudsonsoft.net does not resolve; Hudson Soft was absorbed by Konami."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The components listing at bitsavers.org has no Hudson folder and no Hudson name."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search for HuC6280 at archive.org returned fourteen items, none a maker datasheet or manual of the part."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com answered a search page for c6280 that names no document and no Hudson maker."
+  }
+ ],
+ "engine": [],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "channel select",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x00"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0 selects the channel: bits 0-2 choose channel 0 to 5.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "181-187",
+       "sha": "450eec7cb71d3be3a68083eefeb8c61a11d14d9a9fd8e2b99748a3b06e2d8f2e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "232",
+       "sha": "76138bf724711b684f142b2bfe0817505728fea3d8421118d0a7d332fb56407a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the three low bits of the data in the channel selector.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "232",
+       "sha": "76138bf724711b684f142b2bfe0817505728fea3d8421118d0a7d332fb56407a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 0-2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Values 6 and 7 are stored in the selector as well, indexing two entries of the channel array outside the six the renderer loops over.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "232",
+       "sha": "76138bf724711b684f142b2bfe0817505728fea3d8421118d0a7d332fb56407a"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "224",
+       "sha": "04b562e88aa512cb09586ce54b07310bff2c3836772d1d01c1eb58cec7140190"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.h",
+       "lines": "49",
+       "sha": "f9ad04d4fcba7cacdc9d4cb560fc7d37f7c009b90a9a38859984766102f6a02a"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "63",
+       "sha": "89b6be125f36409a1d0f820458c37c4760a8e53ff3f63823288553fd4971292b"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "45",
+       "sha": "7a04495a2447c69d943b63fb68a68a98a787e5b27c3726c518dd4fd54c709e5f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "global balance",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x01"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 1 is the global volume: bits 4-7 are the left level and bits 0-3 the right.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "189-190",
+       "sha": "5ec61920590d4d8c155735d500a7460679233ebf7444680e5c9ac8cb8ecdc586"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "236",
+       "sha": "2a8cd66769d26618d05ba9ec99ae46dea3b4d9d77fc0f8c39e8a904421e4ea6b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the global volume, which the stream reads for both outputs.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "236",
+       "sha": "2a8cd66769d26618d05ba9ec99ae46dea3b4d9d77fc0f8c39e8a904421e4ea6b"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "57-58",
+       "sha": "10f23793bf126a993da352518562227447857b03df74395137ea10aca67bc2d5"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "45",
+       "sha": "7a04495a2447c69d943b63fb68a68a98a787e5b27c3726c518dd4fd54c709e5f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "75-79",
+       "sha": "9c2a465199e3380d6dded04429b95817475e6b183af94a824b39d769ebc0e3a4"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "168-169",
+       "sha": "6bd89066f19f86801d36d715c0ad05bd5959ad5777543b4b3c8bd37b05d790cc"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "channel frequency low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x02"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 2 is the low byte of the selected channel's 12-bit frequency.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "192",
+       "sha": "e3b872bcd071912d406fc512149af15ffc9f08afb785cd9618b5518d6d195682"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "240",
+       "sha": "d6ebc72f146c09e862accc4ebf2063ec9b71f0b6feea9d59924b632d9b9db831"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "224",
+       "sha": "04b562e88aa512cb09586ce54b07310bff2c3836772d1d01c1eb58cec7140190"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write replaces the low eight bits of the frequency and keeps bits 8-11.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "240",
+       "sha": "d6ebc72f146c09e862accc4ebf2063ec9b71f0b6feea9d59924b632d9b9db831"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "channel frequency high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x03"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 3 holds bits 8-11 of the frequency in its four low bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "194",
+       "sha": "3dc43e1668d9464bdc33934b882d167ff2e1e9b1665e916caa01cc141382d10a"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "244",
+       "sha": "a83b0db5dfe0c2179b03ad018d25a5d1d875e9431dcec624cc0e0c33e1653102"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the data's low four bits as frequency bits 8-11 and keeps bits 0-7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "244",
+       "sha": "a83b0db5dfe0c2179b03ad018d25a5d1d875e9431dcec624cc0e0c33e1653102"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "channel control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x04"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 4 controls the channel: bit 7 enables it, bit 6 selects direct D/A and bits 4-0 are the volume.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "196-202",
+       "sha": "2df57aaee296357a923db771a4e8a8033c4ca73589acb06cc1d6d1d1a6cae613"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "258",
+       "sha": "a27671db2db81d5dbbdac33bc234654bae7bb1443182677d7c17523408dc61d5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the channel control and bit 7 of it in the channel's enable bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "258",
+       "sha": "a27671db2db81d5dbbdac33bc234654bae7bb1443182677d7c17523408dc61d5"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "261-262",
+       "sha": "9770ead23ebfa6f860957f4e0cf64f09b8bb96731f58d13ca7143463f9b793fa"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When bit 6 falls from one to zero the waveform index returns to zero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "250-253",
+       "sha": "264ffaab4a14c411429f3c3fe179df182319cea89b73bc56752ecaa62d674eaa"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "155-160",
+       "sha": "86ef260862d57a7f916bf761f37aff18a470282a90a2a85694c0c86e8d237b08"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When bit 7 rises from zero to one the channel's counter is loaded with its frequency.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "254-257",
+       "sha": "bf360658df28043ee34a0ba226298221c591b02b0c092f2e2e5fae47225ddc15"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "156-160",
+       "sha": "8a38ede73f10ae607d83fcf407cfa840cdcfc8d942c8080e65abe7f4a43d5886"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "224",
+       "sha": "04b562e88aa512cb09586ce54b07310bff2c3836772d1d01c1eb58cec7140190"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 7-6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The code reads bit 6 to choose direct D/A and bit 7 to enable; the layout pairs the two bits into four modes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "196-202",
+       "sha": "2df57aaee296357a923db771a4e8a8033c4ca73589acb06cc1d6d1d1a6cae613"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "250-256",
+       "sha": "5234a73ec80e6828df5b1c74455f5d90163294f5d4dff96c474f8893f001787a"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "261-262",
+       "sha": "9770ead23ebfa6f860957f4e0cf64f09b8bb96731f58d13ca7143463f9b793fa"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "271",
+       "sha": "95cf13859469c4b733f498415c88953783588cc30c4bffd3a80b51508b12a1d9"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Of the six channels the renderer loops over, a channel sounds while its enable bit is set, and this write stores bit 7 in that bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "45",
+       "sha": "7a04495a2447c69d943b63fb68a68a98a787e5b27c3726c518dd4fd54c709e5f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "63",
+       "sha": "89b6be125f36409a1d0f820458c37c4760a8e53ff3f63823288553fd4971292b"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "66",
+       "sha": "1c79049bd2262f0311c5dda217b1f5cb13f7b6fde32fd6c866d58065f22b9e4f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "162-163",
+       "sha": "a69d04b41bfedadf006d25230050426bdc2297400a5671a4f7c72891ee6b4329"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "261-262",
+       "sha": "9770ead23ebfa6f860957f4e0cf64f09b8bb96731f58d13ca7143463f9b793fa"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "channel balance",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x05"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 5 is the channel volume: bits 4-7 are the left level and bits 0-3 the right.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "204-205",
+       "sha": "939914f6613e5b61d0f6efdd548d686d0c1facbf7efa8c2b6b09f761896ebd7b"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "266",
+       "sha": "e8602a03313a126fd2b4b7ac4e884a68cc90a83169be841b428dc83aecc8ef65"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the selected channel's balance.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "266",
+       "sha": "e8602a03313a126fd2b4b7ac4e884a68cc90a83169be841b428dc83aecc8ef65"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "224",
+       "sha": "04b562e88aa512cb09586ce54b07310bff2c3836772d1d01c1eb58cec7140190"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The stream takes the high nibble as the channel's left level and the low nibble as the right.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "45",
+       "sha": "7a04495a2447c69d943b63fb68a68a98a787e5b27c3726c518dd4fd54c709e5f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "70-71",
+       "sha": "9ca7272da91286c8a45263237cee35ddf850e1d48d05fcbef61b3bb10079d715"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "75-79",
+       "sha": "9c2a465199e3380d6dded04429b95817475e6b183af94a824b39d769ebc0e3a4"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "168-169",
+       "sha": "6bd89066f19f86801d36d715c0ad05bd5959ad5777543b4b3c8bd37b05d790cc"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "channel waveform data",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x06"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 6 writes a sample: the low five bits of the data, into the waveform or the direct D/A value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "207",
+       "sha": "e28b05bb5400154c7953c2183489446e953fcc85c6e0493905c26766d7dd9935"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "271",
+       "sha": "95cf13859469c4b733f498415c88953783588cc30c4bffd3a80b51508b12a1d9"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "273-274",
+       "sha": "6904729b6541419a506730f06a69099d6f2c38769f0c365378589cbb8560d249"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "279-280",
+       "sha": "3603318d44790d492823048f00b6435c05c82f36627f7a209de9013654b48f27"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the low five bits of the byte in the waveform at the current index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "271-277",
+       "sha": "b102ab4ba61f192b16e8a34c13917e8a08e2b183a3b9ac6759c002c20e2ee219"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In waveform mode, while the channel is off the waveform index advances after each sample written.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "273",
+       "sha": "2b583aedbccc350212e9dab59f31d1c3ca425c02c8f59bf167f7822b8ef6aa01"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "275-276",
+       "sha": "bef68a7c774ac2c39030d211cbcd62d417ecf6633a5a9d8d837c66b311ed3534"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 6 of the control set the low five bits of the data are stored as the channel's direct D/A value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "271",
+       "sha": "95cf13859469c4b733f498415c88953783588cc30c4bffd3a80b51508b12a1d9"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "279-281",
+       "sha": "48a3d233b74938a275e4532f75057dd9fe5f150d1f3b6368da7977120d0f3c9f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "224",
+       "sha": "04b562e88aa512cb09586ce54b07310bff2c3836772d1d01c1eb58cec7140190"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "noise control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x07"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 7 is the noise control: bit 7 enables noise on the last two channels and bits 0-4 set its frequency.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "209-210",
+       "sha": "4d0a44d59357ca5efcc7b0ebbbe11f15a0673619a07261706510974bbe67497b"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "85",
+       "sha": "97736f554376846a3972851ebd6c7ce0d7478143c43c0dc7139bfa4ae955c8c2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 0-4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The stream inverts bits 0-4 and shifts the result six places for the noise counter.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "45",
+       "sha": "7a04495a2447c69d943b63fb68a68a98a787e5b27c3726c518dd4fd54c709e5f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "88",
+       "sha": "02c9e46015d96f03e731b1ae9a0953d154829c1e638546cd0300e4a197394982"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "93",
+       "sha": "ae0cc4a3c10e3611983bea316c683186a8e5f6b3db41faeb50290a41ece63891"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the selected channel's noise control.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "287",
+       "sha": "b2354adfff891ff97f885b915b4ef69bcd61dc6c6ece0b1514723c51ffc40c69"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "224",
+       "sha": "04b562e88aa512cb09586ce54b07310bff2c3836772d1d01c1eb58cec7140190"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "LFO frequency",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x08"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 8 is the LFO frequency, one byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "212",
+       "sha": "1b416e8efc67c76d4fa578920dba47a0cb276df66b5a9e811f7d0162054a7bbe"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "291",
+       "sha": "912baf2fb596e316ba7caf551e6d9349d46daf096c8fac3e932104c13597fd3a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte as the LFO frequency.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "291",
+       "sha": "912baf2fb596e316ba7caf551e6d9349d46daf096c8fac3e932104c13597fd3a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The LFO source counter is set to channel 1's step times this byte, so a larger value slows the LFO.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "114",
+       "sha": "c6a601781a2cac71ea20755281feaa68e460c2bd45ddfd10881041a68a386582"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "116",
+       "sha": "8b06a0c771d375a45b8f2275a3438551346091ef3e98b6b21813355ccfc0a139"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "120",
+       "sha": "c67bc08b1b2a5125e159a9c70036137e60bb8cb4224d8c0d21e970007281f74d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "126-131",
+       "sha": "ab28aca8374dd3d8b1102e0857f3c82ee8dd18b5aabe175ddcd6935797996543"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "value 0x00",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A zero value reloads the counter on every sample, the fastest LFO rate.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "126-131",
+       "sha": "ab28aca8374dd3d8b1102e0857f3c82ee8dd18b5aabe175ddcd6935797996543"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "name": "LFO control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "function": "c6280_device::c6280_w",
+     "case": [
+      "0x09"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 9 controls the LFO: bit 7 resets it and bits 0-1 choose the mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "214-219",
+       "sha": "1dd6edc6e945b8090d27781970c7d0bb0f1b75918b10d09c0369353969afdf9e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "295",
+       "sha": "0261a7e3b4d991fdc5954242cf40d87fd97ddc74d44060c0a273eaac75ed2c3a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte as the LFO control.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "295",
+       "sha": "0261a7e3b4d991fdc5954242cf40d87fd97ddc74d44060c0a273eaac75ed2c3a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the LFO on and bit 7 clear in waveform mode, the stream adds channel 1's waveform, shifted 0, 2 or 4 bits for modes 1-3, to channel 0's step.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "45",
+       "sha": "7a04495a2447c69d943b63fb68a68a98a787e5b27c3726c518dd4fd54c709e5f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "101-109",
+       "sha": "48015d34364e0a54f90b3fa89b09fb00d3c81a4356ed215201238abdbd81a197"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "114-115",
+       "sha": "fe2e0b2636703ba008b853ea41f0e668192359e66f5d2a91f4c99c8e39a14e59"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "118",
+       "sha": "ac2b55235587ae45edc37bda14e4819bdb393aafe901b08bc6d4eaf9e4f4ceb4"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "123",
+       "sha": "7dd530c4d36da47cd33396718ef1fa1e8c0f7d91ee551d7fdc1c73aa65edb454"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "132",
+       "sha": "59d2677fce08a25564b2dd723faeca799398fcc7c31e57a694b8b7017a28a9d1"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the LFO on and bit 7 set, the stream resets channel 1's waveform index and reloads its counter.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "45",
+       "sha": "7a04495a2447c69d943b63fb68a68a98a787e5b27c3726c518dd4fd54c709e5f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "109",
+       "sha": "4bdae7cd145e51a01abd545adfaa9100f32bf5ee434144e788e1d06519892a36"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "114",
+       "sha": "c6a601781a2cac71ea20755281feaa68e460c2bd45ddfd10881041a68a386582"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "118-122",
+       "sha": "3ecfa615c062ba040836ccfad0106bd425ab25bb962b5358d8b56d0d0883e7e9"
+      },
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "126-127",
+       "sha": "2747e4868b51d0d5f107ee6fb090b6c7043f71ad370f080ab439f1b04e2272d9"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While the LFO runs channel 1 keeps playing its own waveform.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c6280.cpp",
+       "lines": "144-149",
+       "sha": "e3fec79f48c5f46e588afedff0084fdb3b7e59be6de24a5b918fad1f38c3bebc"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c6280.cpp",
+     "lines": "229",
+     "as": "key"
+    }
+   ]
+  }
+ ]
+}

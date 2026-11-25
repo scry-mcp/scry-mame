@@ -1,0 +1,1429 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "k054539",
+ "title": "The Konami 054539 PCM registers",
+ "kind": "register",
+ "scope": "k054539",
+ "covers": "the registers of the Konami 054539 eight-channel PCM chip as MAME's device handles them; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of k054539.cpp names the Konami 054539 PCM sound chip, thanks Amuse and cites no document."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search for the part on konami.com and konami.co.jp found only support and investor pages, no chip document."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The components listing at bitsavers.org answered HTTP 403 and a web search found no Konami folder or name."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search aimed at archive.org found a schematic-free System 16 chip list and game manuals, no datasheet."
+  },
+  {
+   "where": "index",
+   "gave": "A search named datasheetarchive.com for the part and returned an emulator source tree and no document list."
+  }
+ ],
+ "engine": [
+  "update",
+  "read_byte",
+  "put_int",
+  "from_hz",
+  "adjust",
+  "m_apan_cb",
+  "m_timer_handler"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x02",
+   "name": "pitch",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "137"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 0x00 to 0x02 of a channel hold its pitch, the 24-bit step added to the position fraction each sample, low byte first.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "38",
+       "sha": "4e234d5283444109f7e6cff116e673b71bd0c24d3aac703787831968ae679962"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "133",
+       "sha": "238917d6d989380884d93b5e3b98f4df4233f606eb508f82d4511e6054520cd8"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "137",
+       "sha": "749bb2f1c57ca968020c7cad823b2573a575c4362f13b51b377d83ab6370d867"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "123",
+       "sha": "63e5df2264c6a7e1cb1eb215a2fec87937480bc7785beec2e571802882c1e64e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "197",
+       "sha": "4675c396802160d89a1461e63f95298addf4923bc893e8ea95996067c308bbbe"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the register area, and the stream rebuilds the step from the three bytes at its next update.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "348",
+       "sha": "48354aa610673f513dcaecec9b3ac500531bc608b6049698da7d77a5d11a2933"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "109",
+       "sha": "01caa83889c6f5dde121961b7e807d3bd6b27c6f4f4678f73aae0aed301b7948"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "123",
+       "sha": "63e5df2264c6a7e1cb1eb215a2fec87937480bc7785beec2e571802882c1e64e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "137",
+       "sha": "749bb2f1c57ca968020c7cad823b2573a575c4362f13b51b377d83ab6370d867"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "139"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x03 is a channel's volume as an attenuation: 0 is the loudest and 0x40 is minus 36 dB.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "139",
+       "sha": "751e2364d4a6b7e0f06cf1d7e74368a745209e9fbfd2957086ee14dd9aee04b9"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "519-521",
+       "sha": "559cf839c39336067889fa7f9f676136fff5c74fa529b62bd5744af4b7203339"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the volume byte where the stream reads it as the channel's gain.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "139",
+       "sha": "751e2364d4a6b7e0f06cf1d7e74368a745209e9fbfd2957086ee14dd9aee04b9"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "reverb volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "141-143"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x04 is added to the volume for the reverb send, and the sum is clamped to 0xff.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "141-143",
+       "sha": "23903c5c0371e52e2735933c1a6266431d58b0db78c04982d5d7d9101a52d2df"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "164",
+       "sha": "ea5a4010716cacd117110a5df4bb738a517699c545985a9e440207a5499dd4e4"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "287",
+       "sha": "1310db975baf49f710426282b1d74566f79edb995af51956bebbc28c17bd7e43"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the reverb volume byte of the channel it addresses.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "141",
+       "sha": "2dca12a05c867d5deda343cfbe1af68db2c28941ef8c8592b9d7cefed361efe3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "pan",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "145-152"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x05 is a channel's pan: 0x81 to 0x8f and 0x11 to 0x1f select a position, and any other value the middle.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "145-152",
+       "sha": "b6ad8522213df81c3c6244b1d5005ce02e820a67879841ea133cc20ac7abfcd8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the pan byte, and the stream maps it to a level in the pan table.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "145",
+       "sha": "1e44f775cf1d9814d4ca4b9c8864922dd830e7b9631602d4b32a4c4b277a2c29"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "156",
+       "sha": "c8e50007cb11182e6ccba0b20da276928c225d001b5ddb643ccd82ebf075502d"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "160",
+       "sha": "6576947217ae6542894a533c75eda72adeb024c1e824984e900525e7dd83f9b7"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x06..0x07",
+   "name": "reverb delay",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "168-169"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 0x06 and 0x07 are a channel's reverb delay: the 16-bit value shifted right three bits is added to the reverb position.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "168-169",
+       "sha": "1e75b932e1db3a35b8f9f650d01aae52f075d3c99a057e2a1c9599ce8b1002f5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores one of the delay's two bytes and the stream rebuilds the delay from them.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "168",
+       "sha": "582c8d4ee9bf34cfcc8ff5d41bad70b9fb42f088e46b74881e4de031f66f49ba"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0A",
+   "name": "loop start",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "205-206"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 0x08 to 0x0a are a channel's loop start, the 24-bit position the pointer returns to when the end marker is read with loop on.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "204-207",
+       "sha": "936e64a81e46c1b4e62f6f0bcba8b9a121b5e751a79c404d3301a64129ee796e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "227-230",
+       "sha": "550ce25e9a747802b5eefb0a67f2b439386ddcb80440d55f834b314ce7a39d68"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "255-258",
+       "sha": "e02c7d6c3d0846a756d517f0a767cdcda4afbe8ef89961b4b9e79ef94ff52629"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "134",
+       "sha": "6587d72dce08da61dfe02e979175d2ec3aefb345aba6d0cee6f88609a67c6d80"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "51",
+       "sha": "7c87ea228d5b1202460c9bcd677970ab73f4e08e431362386e6b90c8d44368d3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores one of the three loop start bytes in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "205",
+       "sha": "8bb72a1cc351489248346439dcf9024559ac91c94da41e5d802c047b02c114fc"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x0C..0x0E",
+   "name": "start position",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "171"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "294-298"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372-381"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 0x0c to 0x0e are a channel's sample position; the stream resumes from it and writes the played position back while register updates are enabled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "171",
+       "sha": "a9f5567a44fe241ef27f2df080f513b6c4f30ec5e233b2ca238e301384f8e2ea"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "184-193",
+       "sha": "084f245118bd0011ce13010162b0ac1a9c6aa3cbab23154f182f53b03eb518df"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "294-298",
+       "sha": "6f8975a435ce1297cf32748c59a86cc8f0c84e9c4976bf940c0a7d7e6175bc73"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While the device's update-at-key-on flag and bit 0 of 0x22f are set, a write to 0x0c to 0x0e goes to a per-channel latch instead.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "370-381",
+       "sha": "62c4eb8367468818d3d1041d6abcbd062f4802d165d28b53713346ca5e6a60ed"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the latch not active a write stores the position byte in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "370-372",
+       "sha": "b07164cee1290b35b4375ccc10b024109ad340aa17ea4915cd834a35907485ba"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Key on copies the three latched bytes into the channel's position registers before it starts the channel.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "397-405",
+       "sha": "fd73e9b6a42349341b630be7172fde8df932264a5fb8f0e5158ced51ba3d0976"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x200",
+   "name": "sample type / reverse",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "174-181"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "195"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "281-283"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x200 of a channel holds the sample type in bits 2-3 and the reverse flag in bit 5.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "49-50",
+       "sha": "f3bbede73a369c2a7c641013b333854f8cbe0fd7237b8235af50940ead856794"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "134",
+       "sha": "6587d72dce08da61dfe02e979175d2ec3aefb345aba6d0cee6f88609a67c6d80"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "174",
+       "sha": "6c6b1c3231e080bb536cc6a04f92647fe658da70fa958526b4094ba9653e649c"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "195",
+       "sha": "0aa800cd8cc28e4510c23f03d01a120ec72fb1592846ec0dfc8b33dc1a0927e6"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bit 5",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 5 reverses the channel: the pitch step is negated and the pointer walks backwards through the sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "174-181",
+       "sha": "f4345ac423447b340222f6e89e0414f0de86da615b92fb36bd7f6059f4280d3b"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "137",
+       "sha": "749bb2f1c57ca968020c7cad823b2573a575c4362f13b51b377d83ab6370d867"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "200",
+       "sha": "234ffd4501c7ced24916e97584606824b7fe4d0f74bd7d89cc2f109e94f90590"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 2-3",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 2-3 select the encoding: 0 is 8-bit PCM, 4 is 16-bit PCM and 8 is 4-bit DPCM; another value logs an unknown type and keeps the last sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "195-196",
+       "sha": "d41ed318a379a645065f66b8902521f3ff008c2eb330f4c6ac14b082c4fdac0a"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "217",
+       "sha": "9dcc5549cf677ab04ed0035bcc10ef442ba55b24c8d6e1920caf493a936f5a89"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "240",
+       "sha": "2210362d795d823f8fd864a929ec37b2548b294ea75b091e1bffff10058d74ac"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "281-282",
+       "sha": "604cc5855931be9ac85c808a32ee7674056336956327b4c6bb15ea9f3ef4e997"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "190-192",
+       "sha": "af12bbdc9c94010fe5555e4847082e7c2a3a170b61743ab1a97237b1e6a271ab"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "285",
+       "sha": "4401ab7793d7d100c9aa338be7bc707c8fa3fadf9b78086e095505ea435dbc85"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte, and the stream reads it as the channel's type and direction.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "134",
+       "sha": "6587d72dce08da61dfe02e979175d2ec3aefb345aba6d0cee6f88609a67c6d80"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "174",
+       "sha": "6c6b1c3231e080bb536cc6a04f92647fe658da70fa958526b4094ba9653e649c"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "195",
+       "sha": "0aa800cd8cc28e4510c23f03d01a120ec72fb1592846ec0dfc8b33dc1a0927e6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "283",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x201",
+   "name": "loop enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "204-207"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 0 of register 0x201 enables looping: when the end marker is read with the bit set, the pointer jumps to the loop start.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "204-207",
+       "sha": "936e64a81e46c1b4e62f6f0bcba8b9a121b5e751a79c404d3301a64129ee796e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "227-230",
+       "sha": "550ce25e9a747802b5eefb0a67f2b439386ddcb80440d55f834b314ce7a39d68"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "255-258",
+       "sha": "e02c7d6c3d0846a756d517f0a767cdcda4afbe8ef89961b4b9e79ef94ff52629"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "134",
+       "sha": "6587d72dce08da61dfe02e979175d2ec3aefb345aba6d0cee6f88609a67c6d80"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "51",
+       "sha": "7c87ea228d5b1202460c9bcd677970ab73f4e08e431362386e6b90c8d44368d3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the loop enable byte of the channel it addresses.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "204",
+       "sha": "26206f5a8ad087b1d8308e749ec812af0feddd8b55774d7a23c9a5d80395040f"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x13F",
+   "name": "analog input pan",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::write",
+     "case": [
+      "0x13f"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x13f sets the analog input's pan: 0x11 to 0x1f picks a position and any other value the middle.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "385-390",
+       "sha": "35f502068d19c74e56a8be959fed1c9c3b2f2e114ee8d31154a6d69a637439f2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "47",
+       "sha": "9fcda306a5b71e73fbf75962ed9433df77f49004179dfa73d3f01bbb10f1d7fb"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "146",
+       "sha": "6b7ea0fdfb72974a82a1d5748d6681d741c7da1dba88d26ba3556f15ba467abe"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "527-528",
+       "sha": "ab3c9a3c05d6a6b06bd4e021d3f9f3331c8b86b3291a3b3355ff796b24baa49b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write computes the pan and calls the analog callback with the left and right levels.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "386-389",
+       "sha": "dbcff83bc0364b657e22e7d3f43793316e83c70c1616268697be7eef4021e96f"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "366",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "384",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x214",
+   "name": "key on",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::write",
+     "case": [
+      "0x214"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x214 keys channels on: bit n of the byte starts channel n.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "392-393",
+       "sha": "951ad35bf080e70955ea8755cf069a2c57d01552b900b9741e3ae58a1d8a7f69"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "409-411",
+       "sha": "23570c9d0804217b611708cbd7515e4ae5737cef89f6ee765d7baf6bf41af22e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write sets the active bit of each channel it names, and with the latch active first copies the latched start position into its registers.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "393-404",
+       "sha": "fa3e3fed2465e36b3cb3572ece3c2378217c71b48ff3cf923d24ce12a661c87e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "405",
+       "sha": "a995f4e0d67a49aad81504b67de7f207790aaa8d506482f26a7d45bc6563d261"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "97-101",
+       "sha": "361d6e288baa458cd42d4efac5967b236f529c354eecd98d92c3f8b88198f938"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the device's update-at-key-on flag and bit 0 of 0x22f set, key on takes the start position from the latch instead of the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "370",
+       "sha": "78e8842d87ac8d1f67c4b17d0dd8240edd5d463bd1b3f0d4e8da4a28b67f6094"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "393-404",
+       "sha": "fa3e3fed2465e36b3cb3572ece3c2378217c71b48ff3cf923d24ce12a661c87e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "408-412",
+       "sha": "cc0f8fd118880886710452573facf501dd5dcb01684a09e61fb4b2d1bbcb6029"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "366",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "384",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "408",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x215",
+   "name": "key off",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::write",
+     "case": [
+      "0x215"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x215 keys channels off: bit n of the byte stops channel n.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "415-418",
+       "sha": "83f6bf62deb8f5b2a48d4ff823350f6f42b602ab24466210aff43388c7b16f53"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write clears the active bit of each channel it names.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "415-418",
+       "sha": "83f6bf62deb8f5b2a48d4ff823350f6f42b602ab24466210aff43388c7b16f53"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "103-107",
+       "sha": "98a6024be32f1a5cbf2a381f9ad4316fd9fd4fc2226bbc8902024c6b94454915"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "366",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "384",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x227",
+   "name": "timer frequency",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::write",
+     "case": [
+      "0x227"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::call_timer_handler"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x227 sets the timer period from its value plus 38, and the timer fires at half that period.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "421-424",
+       "sha": "fbd5a2d7375f0820cb1bfaac435a7b5c31a159d13099fa4e7bd3cedabcb2733a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The timer handler toggles its state and calls the board's timer handler while bit 5 of 0x22f is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "309-313",
+       "sha": "bb92137026799a6f90f8d35394ab44bbc9ab6b86d6b30ff88cacb9b9da9d69cb"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write programs the period, clears the timer state and calls the handler with state 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "421-427",
+       "sha": "e3ab0ef7ee469ae44da4159ff024a6a4bd0fc27502c115a32d22810e0384c228"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "366",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "384",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x22C",
+   "name": "channel active",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::keyon"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::keyoff"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::read",
+     "case": [
+      "0x22c"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x22c holds one active bit per channel: key on sets a channel's bit and key off clears it, both only while register updates are enabled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "97-107",
+       "sha": "5fc2e6c6c1960d41d187a505761dfae845e24666fe1de92eb7d74ecaaa776d4c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of register 0x22c returns the register's byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "490-498",
+       "sha": "3f08bb3b72b381cb4e51d18bbbe2b3454193722641e96d4a8eb4d5bc208248ab"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x22c stores the byte, and the stream plays a channel whose bit is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "470",
+       "sha": "db2b81a4e547e98e9dc1a7c2a56eac427f3333a5f787c833ba132a73a195f5e2"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "132",
+       "sha": "4057f23d01245352ee6def56b6b5bf2bc9102207091b9024f869ed35a83312c8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "479",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x22D",
+   "name": "data read/write port",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::write",
+     "case": [
+      "0x22d"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::read",
+     "case": [
+      "0x22d"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x22d is the data port: with the reverb RAM selected a write stores the byte at the pointer and the pointer advances.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "431-437",
+       "sha": "5f06b139c3f038a3fb4f6101356d48714556467f47e954bba6ad717c38335426"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "63",
+       "sha": "6cc7140dd5feb106eb654d6f060399ab85dd460cbbfa847c40161603d5eb596e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "118-129",
+       "sha": "e065c87726f42e2c08a4f9c05d0fd1ae8a99704c284e058ec5d488fc20e13f7a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of 0x22d, enabled by bit 4 of 0x22f, returns the byte at the pointer in the chosen bank or reverb RAM and advances the pointer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "480-489",
+       "sha": "78520a25ceb7fcf4f416bdb78fe239a4af26ea27e87160d27c150655704c26d7"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "63",
+       "sha": "6cc7140dd5feb106eb654d6f060399ab85dd460cbbfa847c40161603d5eb596e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "118-129",
+       "sha": "e065c87726f42e2c08a4f9c05d0fd1ae8a99704c284e058ec5d488fc20e13f7a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write advances the pointer whether or not the reverb RAM is selected, and stores only when it is.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "432-436",
+       "sha": "8c5a813f429cd2bd4542aa431f834cfeeb5d74dd499336c4a007fbe0fc2fcd16"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "63",
+       "sha": "6cc7140dd5feb106eb654d6f060399ab85dd460cbbfa847c40161603d5eb596e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "118-129",
+       "sha": "e065c87726f42e2c08a4f9c05d0fd1ae8a99704c284e058ec5d488fc20e13f7a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "366",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "384",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "479",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "490",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "440-441",
+     "as": "parent",
+     "owner": "k054539:register:0x22E:write"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "324-325",
+     "as": "unseen",
+     "reason": "the chip's start clears both before any register is written"
+    }
+   ]
+  },
+  {
+   "key": "0x22E",
+   "name": "ROM/RAM select",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::write",
+     "case": [
+      "0x22e"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x22e selects the bank the data port addresses: 0x80 the reverb RAM and any other value a ROM bank.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "439-442",
+       "sha": "53a33c455b444f1e71bd41d30635498a41d5cc6a86a3dad6ca0d49cc6762b0d5"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "483",
+       "sha": "d772498547d5cd776ac7d12d6ef71f225d571c2a50c604e74587398c20913034"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "63",
+       "sha": "6cc7140dd5feb106eb654d6f060399ab85dd460cbbfa847c40161603d5eb596e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "118-129",
+       "sha": "e065c87726f42e2c08a4f9c05d0fd1ae8a99704c284e058ec5d488fc20e13f7a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the bank and resets the data pointer to zero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "439-442",
+       "sha": "53a33c455b444f1e71bd41d30635498a41d5cc6a86a3dad6ca0d49cc6762b0d5"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "366",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "384",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x22F",
+   "name": "global control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "function": "k054539_device::write",
+     "case": [
+      "0x22f"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x22f is the global control: bit 0 enables the PCM stream, bit 4 the data readback, bit 5 the timer output and bit 7 stops register updates.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "120",
+       "sha": "e5739213930a1b237a6000ffe77310dcd39d99416270545ace77fed8b1a03eac"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "481",
+       "sha": "d5a66ba9da4f909a458ef64e8f42c1c2d661fc727ef5acdebd418642fe848781"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "311",
+       "sha": "b35559632931028a54e6ff6128f9a34ba7a2da06ef59f8d2dc53365c40f2943e"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "94",
+       "sha": "fdee648e1107de8868aec7f23fccb1a4667c548ab52bc775b60fbea488e5871c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 stops the register area from changing: the stream does not store the played position and key on and off leave 0x22c alone.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "94",
+       "sha": "fdee648e1107de8868aec7f23fccb1a4667c548ab52bc775b60fbea488e5871c"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "294-298",
+       "sha": "6f8975a435ce1297cf32748c59a86cc8f0c84e9c4976bf940c0a7d7e6175bc73"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "99-100",
+       "sha": "7b4996752dfc212c9b75012e50731b33684e664e333132c39337089b5662ec38"
+      },
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "105-106",
+       "sha": "947272b4fe8eaf999d3ddbf56fec7d348887ffda79140d9ea92e8fa6f6fc6b85"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write with bit 5 clear resets the timer state and calls the timer handler.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/k054539.cpp",
+       "lines": "444-448",
+       "sha": "8a05f976087aac58173d3f7753e4d54a364cdab3ab24b966bd06e2f41f9cefd7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "366",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "372",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/k054539.cpp",
+     "lines": "384",
+     "as": "key"
+    }
+   ]
+  }
+ ]
+}

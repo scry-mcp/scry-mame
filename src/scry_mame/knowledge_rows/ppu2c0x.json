@@ -1,0 +1,1279 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ppu2c0x",
+ "title": "The 2C0x PPU registers in MAME",
+ "kind": "register",
+ "scope": "ppu2c0x",
+ "covers": "the eight CPU ports 0x2000 to 0x2007 of the Ricoh 2C0x picture processing unit and the sprite DMA port 0x4014, as MAME's ppu2c0x device handles them",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of ppu2c0x.cpp names Nintendo's 2C0x PPU and its authors and cites no document."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search for a Ricoh 2C02 datasheet found no page of Ricoh or Nintendo holding one."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The components listing answered HTTP 403 and a search found no Ricoh folder with a 2C0x document."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Searches for 2C02 and for the NES service manual found no PPU document."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com answered a search for 2C02 with unrelated components and no Ricoh document."
+  }
+ ],
+ "engine": [
+  "read_byte",
+  "adjust_icount",
+  "execute",
+  "m_latch"
+ ],
+ "entries": [
+  {
+   "key": "0x2000",
+   "name": "PPUCTRL",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1248-1261"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2000 is the control register: a write stores the byte, and the bit definitions name its NMI enable, sprite height, two pattern selects and increment.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1249",
+       "sha": "98172804f9d71f7c7c96d49d1d6e0d5c4cb0beedb110c7913d6fa618c6466f03"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.h",
+       "lines": "126-132",
+       "sha": "585b8f4200a380155e6d237327db7340f23d75ebc8c883136b24cdbafd600a00"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The driver maps CPU addresses 0x2000 to 0x3FFF to the chip's read and write, so the eight ports repeat every eight bytes.",
+     "quotes": [
+      {
+       "ref": "mame:src/mame/nintendo/nes.cpp",
+       "lines": "387",
+       "sha": "2482a03c62c14362c443810f2581394d1733beb6248ad74ab9e69b247fe6c8fc"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1144",
+       "sha": "f16b417f9d637b41e6f259d3d87f60f2877f86f0fa2341d8088eb832baa0a0be"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1246",
+       "sha": "f16b417f9d637b41e6f259d3d87f60f2877f86f0fa2341d8088eb832baa0a0be"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the control register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1249",
+       "sha": "98172804f9d71f7c7c96d49d1d6e0d5c4cb0beedb110c7913d6fa618c6466f03"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 2 selects the address increment: set, a data write moves the video address by 32, clear by 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1259",
+       "sha": "ca5b6d86004234b7be1e3c477c9ee733c52fe9deb7942d5083d6b56ae4a9a071"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "99",
+       "sha": "a6b83b9341219dc9b0f22026765bdffa04b0256a5d3d2b7523128d2f88a2899d"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "113",
+       "sha": "9f7ee4063c9c339f9f78cfe6fb9f3325ad74eed911ecfba0c8bc4dacb08f206a"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1331",
+       "sha": "19b285959e472bc902534a218addf8c9665b135438853a255bb8ad1b2895193b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 0-1",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 0 and 1 carry the name table number into bits 10 and 11 of the refresh latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1252-1253",
+       "sha": "874e49ab2dee70ea61465c4e739a09e3a463d8d11b43b75a53022bb215226eeb"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 3-4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 3 selects the sprite pattern page and bit 4 the background page: 0 the first page, 1 the second.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1256-1257",
+       "sha": "b15ec0db76fee03bea2ffc1061d75a1290ee5371fef5d140e1415506299d5507"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "688",
+       "sha": "acb505b53ad1f79bd240843049b7001567e90e8ad0ed48b14020d76e072219cd"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "839",
+       "sha": "abfc67c3c0443476e3ae1b39e6f3dfbe22b4b4eab7e6eec620a037100bab17cd"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "bit 5",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 5 sets the sprite height: 16 pixels when set, 8 when clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "849",
+       "sha": "fa0e77d4c2d9b6e5beaef662afb897b5f34a79bfdbaa2d73affadc8087247303"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 7 enables the NMI: at the vblank start an NMI timer is armed four CPU cycles on only when the bit is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "550-560",
+       "sha": "087d89a78aef0a1e28b1e714a7c5fd1bd524c8f94723921d533ce18adb0aeb07"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of port 0x2000 returns the data latch: the last byte written, or what a read of 0x2002, 0x2004 or 0x2007 left.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1185-1189",
+       "sha": "09cc4a2d0ec552eab62b0c039e5cd640828f81dac072f59139dee8ad40375c86"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1340",
+       "sha": "c7e4cf0e0b975c24b4b31660abc9cc60c33547023e6df1b99a27cb95df49c010"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1152",
+       "sha": "5c6f8131e35cf374804497a722544a9a2bf6410c22f7a2b15c259e85f8743d49"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1178",
+       "sha": "01cdb6e9affeba8a15fa3df677d11e51df3d80a4692aef49fa9b94766d4f6054"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1248-1261",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2001",
+   "name": "PPUMASK",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1263-1266"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2001 is the mask register: a write stores the byte, and rendering and the palette path read its bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1265",
+       "sha": "6a688e25a526d8508b85e6ec6378a25c6d961906092943e57d8beab1e18683ad"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.h",
+       "lines": "134-139",
+       "sha": "cddf3e645a58dd165a4391f533d992f61f005b102245c8c953b3873029d188db"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "508",
+       "sha": "185cb3113f063d5f31f71df8fb603ea8ed93777997227fc8ba36e77a06bff825"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "326",
+       "sha": "8c1f91307ec9955e9cb424e9ad18de31b1ba00d972013ca45fa29ab7b4ba851d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the mask register and leaves it in the data latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1263-1266",
+       "sha": "730956fb4ac592701695d07ee51af02c28deebcbc150abab2872a48615187ad3"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1340",
+       "sha": "c7e4cf0e0b975c24b4b31660abc9cc60c33547023e6df1b99a27cb95df49c010"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 0",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 0 is the monochrome bit: the palette value is masked to its upper two bits when it is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "326",
+       "sha": "8c1f91307ec9955e9cb424e9ad18de31b1ba00d972013ca45fa29ab7b4ba851d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bits 1-2",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 1 shows the background and bit 2 the sprites in the leftmost eight pixels: cleared, they are blanked there.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "708-717",
+       "sha": "e9fa04de12e04d2278a8750f0b5cfbb29cb9f026d0506c8bf61a3a23cc75b674"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "851",
+       "sha": "1faee99e9e4de2fa285566d4395deb9c530a9f0ee12c993ae335d8683f4b77ce"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 3-4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bit 3 enables the background and bit 4 the sprites; with both clear the scanline is blanked.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "508",
+       "sha": "185cb3113f063d5f31f71df8fb603ea8ed93777997227fc8ba36e77a06bff825"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "997",
+       "sha": "3413a5315ff329e5f68725c4b8bc6be348e945fa6c7bf8b4c39cf55c38499db7"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 5-7",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 5 to 7 are the colour emphasis, shifted left one and added to the palette value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "327",
+       "sha": "3618c1d685ec0abe8be93f63f66c9761e668c721901771bee908dc9abd17f195"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of port 0x2001 returns the data latch: the last byte written, or what a read of 0x2002, 0x2004 or 0x2007 left.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1185-1189",
+       "sha": "09cc4a2d0ec552eab62b0c039e5cd640828f81dac072f59139dee8ad40375c86"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1340",
+       "sha": "c7e4cf0e0b975c24b4b31660abc9cc60c33547023e6df1b99a27cb95df49c010"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1152",
+       "sha": "5c6f8131e35cf374804497a722544a9a2bf6410c22f7a2b15c259e85f8743d49"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1178",
+       "sha": "01cdb6e9affeba8a15fa3df677d11e51df3d80a4692aef49fa9b94766d4f6054"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1263-1266",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2002",
+   "name": "PPUSTATUS",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1146-1160"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2002 is the status register: rendering sets its vblank, sprite-0 hit and sprite overflow bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "550",
+       "sha": "9c4996fa36929dcb67fbcbeaa6c3751d90e6883cd3be7ccdd6e437b1e20617aa"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "812",
+       "sha": "e5f36cd3f385cc2ddea9801bc349b42c14c423233415e3f2cc75ab84b86507c0"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "919",
+       "sha": "53cc620762bfed5ed01207b2993a8766589f9f7f97614f31a94edd8e9f5cda7c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read builds the data latch from the status register and the low five bits of the previous latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1152",
+       "sha": "5c6f8131e35cf374804497a722544a9a2bf6410c22f7a2b15c259e85f8743d49"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On a security part the latch is the top two status bits with the part's fixed byte ORed in.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1149-1150",
+       "sha": "f799448f7606d1a55cf7cdc072cbcb573981cc73cdb7db38d7d19828bcf3adf1"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read clears the write toggle, so the next scroll or address write is a first write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1155",
+       "sha": "56315c66bc9b1ae0337de767ccc738b0c863763801f1c7bcf40ce11af909ba64"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1277-1279",
+       "sha": "5fd8e2bb32b86fdea278de2f93c20721126cf95028f7931d5d3f28eea59e511a"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1285-1287",
+       "sha": "aab26c95d3faf1f9ea75dd378a9a5a756ae4ad04061644aaf5ecca207e2977d4"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1299-1301",
+       "sha": "5fd8e2bb32b86fdea278de2f93c20721126cf95028f7931d5d3f28eea59e511a"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1309-1311",
+       "sha": "aab26c95d3faf1f9ea75dd378a9a5a756ae4ad04061644aaf5ecca207e2977d4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read that finds the vblank bit set clears the vblank bit of the status register and keeps the two sprite flags.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1158-1159",
+       "sha": "50c8a9f4d2466880823b275a35aa289d114a0c30466f3c31584ff1155711a3e8"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The read returns the data latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1189",
+       "sha": "746e90b01f337baa65d228cbee32f732ea51613aa12aff142ea92fe7523f362b"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to port 0x2002 stores the byte in the data latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1340",
+       "sha": "c7e4cf0e0b975c24b4b31660abc9cc60c33547023e6df1b99a27cb95df49c010"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1146-1160",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2003",
+   "name": "OAMADDR",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1268-1270"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2003 holds the sprite memory address that the data register at 0x2004 reads and writes use.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1220-1223",
+       "sha": "298d48eccc6f70bb0130613c157fe2236cf8cb0ac0a0febf4cd51b5e40c12256"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte as the sprite address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1269",
+       "sha": "a00a5f4d13088d49c18c21f7852e4963e048650e95ac5d35005a34370a52a1ce"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data write past the last visible scanline or with rendering off advances the address by one and wraps it at 256.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1220-1223",
+       "sha": "298d48eccc6f70bb0130613c157fe2236cf8cb0ac0a0febf4cd51b5e40c12256"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of port 0x2003 returns the data latch: the last byte written, or what a read of 0x2002, 0x2004 or 0x2007 left.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1185-1189",
+       "sha": "09cc4a2d0ec552eab62b0c039e5cd640828f81dac072f59139dee8ad40375c86"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1340",
+       "sha": "c7e4cf0e0b975c24b4b31660abc9cc60c33547023e6df1b99a27cb95df49c010"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1152",
+       "sha": "5c6f8131e35cf374804497a722544a9a2bf6410c22f7a2b15c259e85f8743d49"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1178",
+       "sha": "01cdb6e9affeba8a15fa3df677d11e51df3d80a4692aef49fa9b94766d4f6054"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1268-1270",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2004",
+   "name": "OAMDATA",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1162-1164"
+    },
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1272-1274"
+    },
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "function": "ppu2c0x_device::write_to_spriteram_with_increment"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2004 is the sprite memory data port: a read returns the byte at the sprite address; a write stores one outside the visible scanlines or with rendering off.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1220-1223",
+       "sha": "298d48eccc6f70bb0130613c157fe2236cf8cb0ac0a0febf4cd51b5e40c12256"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read copies into the data latch the byte of sprite memory at the sprite address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1189",
+       "sha": "746e90b01f337baa65d228cbee32f732ea51613aa12aff142ea92fe7523f362b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the sprite address and advances the address by one, but only past the last visible scanline or with rendering off.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1220-1223",
+       "sha": "298d48eccc6f70bb0130613c157fe2236cf8cb0ac0a0febf4cd51b5e40c12256"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "During rendering the write changes neither sprite memory nor the address; a comment says the address's glitchy increment is not modelled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1216-1225",
+       "sha": "72ea8e9e0dfe0b2b4f2befbc49440143b5d5b93d4a17742966b53c7e52074662"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to the data register calls the sprite memory writer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1273",
+       "sha": "41f9ae66e399037d53e691aa6ad07342e46624bf2c2b0c235cfce37f9ed4f5e9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1162-1164",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1272-1274",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2005",
+   "name": "PPUSCROLL",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1276-1296"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2005 writes the scroll in two bytes, sharing its toggle with the address register at 0x2006.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1277-1279",
+       "sha": "5fd8e2bb32b86fdea278de2f93c20721126cf95028f7931d5d3f28eea59e511a"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1285-1287",
+       "sha": "aab26c95d3faf1f9ea75dd378a9a5a756ae4ad04061644aaf5ecca207e2977d4"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1295",
+       "sha": "c9c76d8ae4e03336c85f4bde6caa856cb44e9d354ca534e843694a89258de181"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1298-1299",
+       "sha": "c3de3a40f65d46378a1bbe3fad5c15996a658c5ebb1c679e1dd3a9b7c2db220b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A first write sets the coarse X scroll from bits 3 to 7 into latch bits 0 to 4 and the fine X scroll from bits 0 to 2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1288-1291",
+       "sha": "bbd690997199fed7168551c86e31d4028800bc5f4353ec27b1af990b6a3bd636"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A second write sets the fine Y, bits 0 to 2, into latch bits 12 to 14, and the coarse Y, bits 3 to 7, into bits 5 to 9.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1280-1282",
+       "sha": "44d6227304262d398661666aff8d470592782559aef7eaebff9f7464a9367a4c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each write flips the toggle, and a status read is what clears it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1295",
+       "sha": "c9c76d8ae4e03336c85f4bde6caa856cb44e9d354ca534e843694a89258de181"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1155",
+       "sha": "56315c66bc9b1ae0337de767ccc738b0c863763801f1c7bcf40ce11af909ba64"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of port 0x2005 returns the data latch: the last byte written, or what a read of 0x2002, 0x2004 or 0x2007 left.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1185-1189",
+       "sha": "09cc4a2d0ec552eab62b0c039e5cd640828f81dac072f59139dee8ad40375c86"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1340",
+       "sha": "c7e4cf0e0b975c24b4b31660abc9cc60c33547023e6df1b99a27cb95df49c010"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1152",
+       "sha": "5c6f8131e35cf374804497a722544a9a2bf6410c22f7a2b15c259e85f8743d49"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1178",
+       "sha": "01cdb6e9affeba8a15fa3df677d11e51df3d80a4692aef49fa9b94766d4f6054"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1276-1296",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2006",
+   "name": "PPUADDR",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1298-1318"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2006 writes the video memory address in two bytes, sharing its toggle with the scroll register at 0x2005.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1299-1301",
+       "sha": "5fd8e2bb32b86fdea278de2f93c20721126cf95028f7931d5d3f28eea59e511a"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1309-1311",
+       "sha": "aab26c95d3faf1f9ea75dd378a9a5a756ae4ad04061644aaf5ecca207e2977d4"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1317",
+       "sha": "c9c76d8ae4e03336c85f4bde6caa856cb44e9d354ca534e843694a89258de181"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1276-1277",
+       "sha": "033e2797cfa00141afc495189f833bb5c3f006dde92186b103194d0d787567c3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A first write sets the latch's high six bits from bits 0 to 5 of the byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1312-1313",
+       "sha": "781b718120fdcaa5582e69f3db0f1580b3ecaa0ece31829ec168ef7a4d2ad29f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A second write sets the low eight bits, copies the latch into the refresh data and makes it the address the data register uses.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1302-1306",
+       "sha": "d054642c16c63ac4861f80a9344e6b4ef19b8619ba6043f0d026d06aeb817f08"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Each write flips the toggle, and a status read is what clears it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1317",
+       "sha": "c9c76d8ae4e03336c85f4bde6caa856cb44e9d354ca534e843694a89258de181"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1155",
+       "sha": "56315c66bc9b1ae0337de767ccc738b0c863763801f1c7bcf40ce11af909ba64"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of port 0x2006 returns the data latch: the last byte written, or what a read of 0x2002, 0x2004 or 0x2007 left.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1185-1189",
+       "sha": "09cc4a2d0ec552eab62b0c039e5cd640828f81dac072f59139dee8ad40375c86"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1340",
+       "sha": "c7e4cf0e0b975c24b4b31660abc9cc60c33547023e6df1b99a27cb95df49c010"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1152",
+       "sha": "5c6f8131e35cf374804497a722544a9a2bf6410c22f7a2b15c259e85f8743d49"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1163",
+       "sha": "756cb0bec312a4ab5b474abdcdeb5e6ede5f918657d8a781d700ded1d0ae46c2"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1178",
+       "sha": "01cdb6e9affeba8a15fa3df677d11e51df3d80a4692aef49fa9b94766d4f6054"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1298-1318",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2007",
+   "name": "PPUDATA",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1166-1183"
+    },
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1320-1333"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Port 0x2007 reads and writes video memory at the address latch and moves the address by the increment after each access.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1322",
+       "sha": "0beeffd2f662b399b3211e77d4b9c48acef5557850878c2e9b9eade93cba5233"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1331",
+       "sha": "19b285959e472bc902534a218addf8c9665b135438853a255bb8ad1b2895193b"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1182",
+       "sha": "19b285959e472bc902534a218addf8c9665b135438853a255bb8ad1b2895193b"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1172",
+       "sha": "ce93aba7f5f3c937ce8821699aecde01fc98a978abc1e1948113906220ee7822"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1179",
+       "sha": "bc54c6859c0c3c2096341c47e9b4326cba5446eefb4cf6046764141fdbb7a9b1"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1328",
+       "sha": "673afc826ba9c52f8ea176ae46319bc74ede2b47d2e51fa67dc0c85ffa0df9f5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Outside the palette branch a read returns the previously buffered byte and buffers the byte at the video address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1176-1179",
+       "sha": "5952ae376d639e76f5b7393248e4bc595f102d16315369630e86a5679b3dbf1a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the palette in PPU space and an address of 0x3F00 or above, the read returns the byte directly and buffers the mirrored name table byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1170-1174",
+       "sha": "039509459beddf1ed8015dd7759e7fbd2856540b8b568ba4e2eeec68ba88f556"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The read advances the video address by the increment before it returns.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1182",
+       "sha": "19b285959e472bc902534a218addf8c9665b135438853a255bb8ad1b2895193b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the video address masked to 0x3FFF and advances the address by the increment.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1322",
+       "sha": "0beeffd2f662b399b3211e77d4b9c48acef5557850878c2e9b9eade93cba5233"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1328",
+       "sha": "673afc826ba9c52f8ea176ae46319bc74ede2b47d2e51fa67dc0c85ffa0df9f5"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1331",
+       "sha": "19b285959e472bc902534a218addf8c9665b135438853a255bb8ad1b2895193b"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "97",
+       "sha": "83e39ad15851650c6b06711fe0664398a7de02a7a819b54db1825b8d95ec4bb9"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Before the store the latch callback runs with the masked address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1324-1325",
+       "sha": "a928c8588db0d95c52330cd6c92a6c74d285cd544a2d0f71a05d2aff4be72a95"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Before the read the latch callback runs with the video address masked to 0x3FFF.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1167-1168",
+       "sha": "70b88b325cd7186a484d363d573447391399840303745018813ff7bdf9576b4e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1166-1183",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1320-1333",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x4014",
+   "name": "OAM DMA",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "function": "ppu2c0x_device::spriteram_dma"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to port 0x4014 hands the byte to the sprite DMA routine as the page of a 256-byte copy.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1407-1409",
+       "sha": "b083d725dd31827c3903d024d9e5d462d3bdcd8ace7476665c22e8c67ea93497"
+      },
+      {
+       "ref": "mame:src/mame/nintendo/nes.cpp",
+       "lines": "388",
+       "sha": "2a0b11e99cc7d0cd5da5d9ba2e9973d8473a8ea644b7ebd906e308ee07a88446"
+      },
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1411",
+       "sha": "9ac69aa377da3dc1713d017bcda0a03de49970a019876e991419e218ebd54fb9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The routine reads the bytes at page times 256 plus the index from the CPU's address space and writes each through port 0x2004.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1411-1415",
+       "sha": "e71e2b4d2d4e0665c63e9f401eb207781c9682aa1add19f3485a96eba731408f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After the copy the CPU's instruction count is reduced by 513, the copy's cycle cost.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/ppu2c0x.cpp",
+       "lines": "1417-1418",
+       "sha": "984d2b21253c8f576c1802b0a9604ff233d86c6088cb918ecba824947b29a847"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The driver maps port 0x4014 as a write handler and nothing else, so a read of it reaches no PPU code.",
+     "quotes": [
+      {
+       "ref": "mame:src/mame/nintendo/nes.cpp",
+       "lines": "384-394",
+       "sha": "c59ffff158000a97a8514bcbc4126eecef3442af718ccbf83d7d90cea4e74f09"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/ppu2c0x.cpp",
+     "lines": "1407-1419",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

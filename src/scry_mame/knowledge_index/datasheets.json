@@ -264,6 +264,94 @@
    "tool_version": "ocrmypdf 17.14.2, tesseract 5.5.4, pdftotext 26.10.0",
    "pdf": "57cf7847a3b8911a836d5e0d7e4ee1c25be3bf73780ba48dede72dc4c4fa5e58",
    "capture": "0180a76365a38f35727923df6068d4189a4cdd08cc4845f5ce8c5a507104f756"
+  },
+  "ES5505.raw.txt": {
+   "title": "Ensoniq ES5505 (OTIS) specification, the 32-voice audio device",
+   "url": "https://drive.google.com/uc?export=download&id=1O-qBbXW9oKCTsWpCb22k8ClBph7wQIql",
+   "archive": "https://drive.google.com/open?id=1O-qBbXW9oKCTsWpCb22k8ClBph7wQIql",
+   "class": "maker-datasheet",
+   "text": "ocr",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "caeffa132a84bacce827baa45aaf5ce90feb52e6122f1c314cedbb98f72eab20",
+   "capture": "107fd7ab259d7db16499255e413cb32da24c521e1326caaa5253fc81bd1512fd"
+  },
+  "Atari-400-800-Technical-Reference-Notes.raw.txt": {
+   "title": "Atari 400/800 Technical Reference Notes: Operating System User's Manual, Operating System Source Listing and Hardware Manual (CO16555)",
+   "url": "https://bitsavers.org/pdf/atari/400_800/CO16555_Atari_Home_Computer_Technical_Reference_Notes_1982.pdf",
+   "archive": "https://archive.org/details/atari-400-800-technical-reference-notes-operating-system-user-s-manual-operating",
+   "class": "maker-guide",
+   "text": "ocr",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "aa6fa84297d59cb6c6e12ad18f39e1b170da9e843867a4a8a55502f30bb0cdf2",
+   "capture": "25ca129add5508ecac677fa2286153753463a36c053f63a159c0750e900e826c"
+  },
+  "RF5C68A.raw.txt": {
+   "title": "Ricoh RF5C68A PCM sound generator IC datasheet (EK-013-8811)",
+   "url": "https://wiki.console5.com/tw/images/2/22/RF5C68A.pdf",
+   "archive": "http://web.archive.org/web/20250528085150if_/https://wiki.console5.com/tw/images/2/22/RF5C68A.pdf",
+   "class": "maker-datasheet",
+   "text": "ocr",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "a7bc717d7e78face56dfe2e6bb86f484b66b20f806a7222faf29895686cf093a",
+   "capture": "a98243fc537b50ce3cb1f3916dd05ef1dbe55a3416e05406ecc1af49ee115aa9"
+  },
+  "ES5506.raw.txt": {
+   "title": "Ensoniq ES5506 (OTTO) Soundscape wavetable synthesizer specification, revision 2.3",
+   "url": "https://archive.org/download/es5506_copy/es5506_copy_text.pdf",
+   "archive": "https://archive.org/details/es5506_copy",
+   "class": "maker-datasheet",
+   "text": "ocr",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "58ce3915687e0cec054524d800cd0f24ad753105e0e1bd05a8ad391436c9dc4c",
+   "capture": "e6504ff4ac9c63d64fe937abba6fd9a0e1bf44f51bfef0ff5dbe0b09c58b85b3"
+  },
+  "SCSP-UserManual-1994.raw.txt": {
+   "title": "Sega Saturn SCSP User's Manual, document ST-77-R2-052594",
+   "url": "https://antime.kapsi.fi/sega/files/ST-077-R2-052594.pdf",
+   "archive": "https://archive.org/details/237-r-1",
+   "class": "maker-guide",
+   "text": "layer",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "e4e02013a901d084b2e5156ce1035a5d85cda3857235443c3b4dca41244eba9c",
+   "capture": "30296f6e54b2c65d35051a456452100cbf926265de47f29e1f9371ab777530eb"
+  },
+  "HD44780.raw.txt": {
+   "title": "Hitachi HD44780U (LCD-II) dot matrix liquid crystal display controller/driver, Rev. 0.0",
+   "url": "https://www.sparkfun.com/datasheets/LCD/HD44780.pdf",
+   "archive": "http://web.archive.org/web/20250107084229/https://www.sparkfun.com/datasheets/LCD/HD44780.pdf",
+   "class": "maker-datasheet",
+   "text": "layer",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "4324d67ec14fc8e7ba8cf7db7256749c9b80b94b3f8bedfa614a0d2839c7dea9",
+   "capture": "91d571c4f8666701bb390490f0f51a5d733195b771ae13265248d2430c61762f"
+  },
+  "TMS9918.raw.txt": {
+   "title": "Texas Instruments TMS9918A/TMS9928A/TMS9929A Video Display Processors data manual, November 1982",
+   "url": "https://www.bitsavers.org/components/ti/TMS9900/TMS9918A_TMS9928A_TMS9929A_Video_Display_Processors_Data_Manual_Nov82.pdf",
+   "archive": "https://archive.org/details/Texas_Instruments_TMS9918A",
+   "class": "maker-datasheet",
+   "text": "ocr",
+   "tool": "pdftotext -raw",
+   "tool_version": "26.10.0",
+   "pdf": "1eec7c0261f43fad8e03c09081a9e4fe39e7c0bc4986962bf6ffc75b130561e2",
+   "capture": "6767be790c7a4b1dd42067c70530aca9d253da0d779b757cbc97ddaad845075d"
+  },
+  "V9938.raw.txt": {
+   "title": "Yamaha V9938 MSX-VIDEO technical data book, ASCII Corporation and Nippon Gakki (Yamaha), as the MSX Assembly Page's transcription of the maker's manual",
+   "url": "http://map.grauw.nl/resources/video/v9938/v9938.xhtml",
+   "archive": "http://web.archive.org/web/20251205193750/http://map.grauw.nl/resources/video/v9938/v9938.xhtml",
+   "class": "maker-guide",
+   "text": "layer",
+   "tool": "html-text.py",
+   "tool_version": "2026-11-22",
+   "pdf": "80685f0e5e9ac87789b84f0302d71833a32996b7a196ff1656d02b1862e95367",
+   "capture": "41765db5ed8e84b84ee1ce0eed6ce579992b6ed17868f5080063dbf5536c9ca9"
   }
  }
 }

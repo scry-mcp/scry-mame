@@ -35,23 +35,24 @@
  ],
  "entries": [
   {
-   "key": "0x00..0x7F",
-   "name": "channel registers",
+   "key": "0x00",
+   "name": "status and key on",
+   "access": "write",
    "aliases": [
-    "channel"
+    "status"
    ],
    "regions": [
     {
      "ref": "mame:src/devices/sound/x1_010.cpp",
-     "function": "x1_010_device::write"
+     "lines": "216-219"
     },
     {
      "ref": "mame:src/devices/sound/x1_010.cpp",
-     "function": "x1_010_device::read"
+     "lines": "252-253"
     },
     {
      "ref": "mame:src/devices/sound/x1_010.cpp",
-     "function": "x1_010_device::sound_stream_update"
+     "lines": "272-275"
     }
    ],
    "rows": [
@@ -60,55 +61,41 @@
      "on": "is",
      "of": "mame",
      "vs": "extra",
-     "text": "A channel is 8 registers: R0 status, R1 volume or waveform number, R2 and R3 frequency or pitch, R4 start or envelope time, R5 end or envelope number.",
+     "text": "Register 0 is the channel status: bit 0 keys the channel, bit 1 selects PCM or waveform, bit 2 the repeat flag and bit 7 the divider.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "24-28",
-       "sha": "5e20e13c0542bc28f695b8cc7344384b7ada0a4a0a6dc0ee7f5d611c1473b797"
+       "lines": "24",
+       "sha": "d3ff1c7622e5b1ddf2450988e017d3142459e8c669d33961f5c9b9304b3a17e0"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "30-32",
-       "sha": "a4eb3ffaeec1f1e338eda630c4edcbf6e31bf569603221291ebb576900898a70"
+       "lines": "26",
+       "sha": "6ae345986af06996fd03887ebd5b8fe785201c9f824d511f163977b1188f6a36"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "34-37",
-       "sha": "b11c41ad2198a22080aa337a4811076805bbbd82a62cf8901c604d81fa149135"
+       "lines": "27",
+       "sha": "69ed93d83f5c9cadd59cfd84f85af40bfb19b775f49fa4c55f4e155d7e94d0ba"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "39-43",
-       "sha": "98cdd635dcd85624d8bc4c25e05e0538324aaed5ce12e4d34aca78da3417c949"
+       "lines": "28",
+       "sha": "188bd9424e2b31dec5a47a3a7c1b8036de7799e888bf0af783f4bbd9260f72d7"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "44-45",
-       "sha": "8f1bebc8d78e6ee7140d4ed5b5f24680b38d013290edd681474c7ed8464caea1"
+       "lines": "73",
+       "sha": "b397b8b37b91555f20725ae132c50fc345087b96ac50c2977863e0c749606101"
       }
      ]
     },
     {
      "n": "2",
-     "on": "place",
-     "of": "mame",
-     "vs": "place",
-     "text": "The channel is the offset divided by 8 and the register is the offset modulo 8.",
-     "quotes": [
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "172-173",
-       "sha": "7ae4ce7e0b109d800585af7c4c06af75fa2b0e8c99934c21eaebe70100dc5b34"
-      }
-     ]
-    },
-    {
-     "n": "3",
      "on": "write",
      "of": "mame",
      "vs": "extra",
-     "text": "A write stores the byte at its offset in the register area.",
+     "text": "A write stores the byte at the register's offset in the register area.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -118,58 +105,39 @@
      ]
     },
     {
-     "n": "4",
+     "n": "3",
      "on": "write",
      "of": "mame",
      "vs": "extra",
-     "text": "A write that changes bit 0 of R0 from 0 to 1 on a channel below 16 restarts that channel's sample and envelope offsets at 0.",
+     "text": "A write to register 0 that turns bit 0 from 0 to 1 restarts the channel's sample and envelope positions at 0.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "175-179",
+       "lines": "174-179",
        "sha": "306193eee859bf3bc4083f99af771a5bcf1bb9e14fd30d7686e38706de8e2a28"
       }
      ]
     },
     {
-     "n": "5",
-     "on": "read",
-     "of": "mame",
-     "vs": "extra",
-     "text": "A read returns the byte stored at the offset.",
-     "quotes": [
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "167",
-       "sha": "1a19eb9aad5e2d824d38b4424663d655bc7da03b1689ce53e8d632906d76ee25"
-      }
-     ]
-    },
-    {
-     "n": "6",
+     "n": "4",
      "on": "bit 0",
      "of": "mame",
      "vs": "extra",
-     "text": "R0 bit 0 is key on: a channel produces sound only while it is set.",
+     "text": "Bit 0 is the key: the stream's playback for a channel runs under a test of bit 0 of its status.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "28",
-       "sha": "188bd9424e2b31dec5a47a3a7c1b8036de7799e888bf0af783f4bbd9260f72d7"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "216",
-       "sha": "5d06ad9e4436c16a40255968be49a9e24d4867eb6166a89bf8a69ac899ed0ec2"
+       "lines": "216-217",
+       "sha": "23ec8d5997f552c8dffc0abe037ab4c98d9702789fbbe1cd2bfb91a621f1b7a6"
       }
      ]
     },
     {
-     "n": "7",
+     "n": "5",
      "on": "bit 1",
      "of": "mame",
      "vs": "extra",
-     "text": "R0 bit 1 selects the sound source: 0 plays PCM from ROM and 1 plays a waveform from RAM.",
+     "text": "Bit 1 selects the source: cleared, the channel plays PCM from the sample ROM; set, it plays a waveform.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -178,18 +146,23 @@
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "42",
+       "sha": "f7c7a9d89595c710c0df91ff2cd8366e63d8d92ab17beb49e2090a1503faa9de"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "219",
        "sha": "90bf7e75e3982884d07423c63818f878d9a8db9e8de075aa4b3a28f9c3f3bfce"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "252-253",
-       "sha": "6ef1249b77ce10ba24c041bd81f467aefa23170aaf1995ec68284854b095389a"
+       "lines": "245",
+       "sha": "46859616bfde0637aa8c888e711212952052279f55616a88f02e16b5d9c145fa"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "245",
-       "sha": "46859616bfde0637aa8c888e711212952052279f55616a88f02e16b5d9c145fa"
+       "lines": "252-253",
+       "sha": "6ef1249b77ce10ba24c041bd81f467aefa23170aaf1995ec68284854b095389a"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -199,11 +172,11 @@
      ]
     },
     {
-     "n": "8",
+     "n": "6",
      "on": "bit 2",
      "of": "mame",
      "vs": "extra",
-     "text": "R0 bit 2 is the waveform repeat flag, 0 repeating and 1 playing once; with 1 the channel keys off when the envelope position passes 128.",
+     "text": "Bit 2 is the repeat flag, 0 repeat and 1 once; set, the stream keys the channel off when the envelope position passes 128.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -223,11 +196,11 @@
      ]
     },
     {
-     "n": "9",
+     "n": "7",
      "on": "bit 7",
      "of": "mame",
      "vs": "extra",
-     "text": "R0 bit 7 is the frequency divider flag: when set the frequency value is shifted right by one.",
+     "text": "Bit 7 is the frequency divider: when set, the frequency value is shifted right by one before it steps a position.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -246,102 +219,92 @@
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "230",
+       "sha": "592c252a0d1e15d24ee2962cb4485f6dfcb71bf384333be323be095ea7e4513b"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "248",
+       "sha": "5f7089c8f365c92d2a8b92c329496883165e2f64a19bf850cb9e7439dd3bce88"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "256",
        "sha": "a437479f87fc72c772285b0598c3bfd3beab61dea2e679fa37c665a0d3d67794"
       }
      ]
-    },
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x01",
+   "name": "volume or waveform",
+   "access": "write",
+   "aliases": [
+    "volume"
+   ],
+   "regions": [
     {
-     "n": "10",
-     "on": "bits 4-7",
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "lines": "223-224"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
      "of": "mame",
      "vs": "extra",
-     "text": "In PCM mode the high nibble of R1 is the left volume and its low nibble the right volume, each scaled by a volume base.",
+     "text": "In PCM mode the high nibble of register 1 is PCM Volume 1, marked L? in the header, and the low nibble PCM Volume 2, marked R?.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "30-31",
-       "sha": "a4d6bbd89d15186f2a71fc7b96a627bf46e0a613a398b9aed31a5382f262ef79"
+       "lines": "30",
+       "sha": "27a42e1a5494e4f709b46a50c618b8126040bd89c7e670b86d81332f27236cb8"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "31",
+       "sha": "a0882545c3f35a27f072ebf8b83606829ac494f059f472fffe0f8663bde5b7c9"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "74",
+       "sha": "6427fc8a82cfda3a47f795f71369aacb36abdd2e4eaabfe16cd5191a9e188ce8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The two volumes are each multiplied by a volume base before they scale the two outputs.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "68",
+       "sha": "29fbefa66a6246c550717ee919d05f438f210b7b834fb35e243d9018a10c9d29"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "223-224",
        "sha": "28cd546baede9a7508865767dd3c8859b159c0a4f01568729bf31f4d09df49ae"
-      }
-     ]
-    },
-    {
-     "n": "11",
-     "on": "is",
-     "of": "mame",
-     "vs": "extra",
-     "text": "In PCM mode a frequency of 0 is played as 4, a workaround for Meta Fox.",
-     "quotes": [
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "227-229",
-       "sha": "54f16f203e21296a7614abc950217c5f11268d18db912aa55f5b46acc23b1e47"
-      }
-     ]
-    },
-    {
-     "n": "12",
-     "on": "is",
-     "of": "mame",
-     "vs": "extra",
-     "text": "In PCM mode the sample starts at R4 times 0x1000 and ends at 0x100 minus R5, times 0x1000, in the ROM.",
-     "quotes": [
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "39",
-       "sha": "38996fb97d402a52a186064f419b349e4dc1c19c243989cbd90ff1da74fbf84e"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "42",
-       "sha": "f7c7a9d89595c710c0df91ff2cd8366e63d8d92ab17beb49e2090a1503faa9de"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "221-222",
-       "sha": "194976977c0e14e6aeb58a97eab085df6b843da994b05d784581d825abb046b4"
+       "lines": "246-247",
+       "sha": "f76e35f11e3cf8f12bb611fff8c2923a64bef45e860ca6f0b5666c5dbd859134"
       }
      ]
     },
     {
-     "n": "13",
-     "on": "when",
-     "of": "mame",
-     "vs": "extra",
-     "text": "PCM playback keys the channel off, clearing bit 0 of R0, when the read position reaches the end address.",
-     "quotes": [
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "239-244",
-       "sha": "a6de8f7c4866576d62303917566b71da758a9a2d11565874a3cd615c65da28a9"
-      }
-     ]
-    },
-    {
-     "n": "14",
+     "n": "3",
      "on": "is",
      "of": "mame",
      "vs": "extra",
-     "text": "PCM data are signed bytes read from the ROM and added to the left and right outputs, scaled by their volumes.",
-     "quotes": [
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "245-247",
-       "sha": "03d4ab591fce4c74fa3f3e224a35e0d26bfc6274e4961e5b572810012f515060"
-      }
-     ]
-    },
-    {
-     "n": "15",
-     "on": "is",
-     "of": "mame",
-     "vs": "extra",
-     "text": "In waveform mode R1 is the waveform number: the waveform starts at 0x1000 plus 128 times R1 in the register area.",
+     "text": "In waveform mode register 1 is the waveform number: the waveform starts at 0x1000 plus 128 times it.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -356,16 +319,179 @@
      ]
     },
     {
-     "n": "16",
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the register's offset in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x02",
+   "name": "frequency or pitch low",
+   "access": "write",
+   "aliases": [
+    "frequency"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "lines": "226-229"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
      "on": "is",
      "of": "mame",
      "vs": "extra",
-     "text": "In waveform mode R3 and R2 form a 16-bit pitch, shifted right by the divider, added to the position each sample.",
+     "text": "Register 2 is the PCM frequency in 4.4 fixed point and, in waveform mode, the low byte of a 6.10 pitch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "34",
+       "sha": "3ff277197a96593dc3f8717314b0d43b84193c7381c8ee25e457b2b16e2d396d"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "35",
+       "sha": "0fd9be38e226cf963118a329ea7849d5dae2d31294eced6bc3a59c1228de47ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "75",
+       "sha": "b00ca149f061ce9f1cc53bee4a92037ed905f5e4703835bae203728a1e5c7265"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In PCM mode the frequency, shifted right by the divider, steps a 4.4 position; 0 plays as 4, a hack the source says is broken for Arbalester.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "34",
+       "sha": "3ff277197a96593dc3f8717314b0d43b84193c7381c8ee25e457b2b16e2d396d"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "226-230",
+       "sha": "1dac32135d87a6df34de4fa421fb6b5f6b332ab78e8816571673784774a988fb"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "238",
+       "sha": "1108b8fb5681b1100b7c0e34a952485f860fedda03dc316447cab5651ce85f8f"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "248",
+       "sha": "5f7089c8f365c92d2a8b92c329496883165e2f64a19bf850cb9e7439dd3bce88"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In waveform mode register 3 is the high byte and register 2 the low byte of the 6.10 pitch, shifted by the divider.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "35",
+       "sha": "0fd9be38e226cf963118a329ea7849d5dae2d31294eced6bc3a59c1228de47ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "37",
+       "sha": "2a9766a9152530fe25093ad9e289e346155939e94c4faf9467868871746a99ab"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "256-257",
+       "sha": "25d843bf6a6b347b319862f05d9ad98584e0ad21bde1f404a164ab66c7cbc391"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the register's offset in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x03",
+   "name": "pitch high",
+   "access": "write",
+   "aliases": [
+    "pitch hi"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "lines": "256-257"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In waveform mode register 3 is the high byte of the 16-bit pitch value.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
        "lines": "37",
        "sha": "2a9766a9152530fe25093ad9e289e346155939e94c4faf9467868871746a99ab"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "76",
+       "sha": "e199193c9e207e6b9ba7118eb32ac10c889bef1e4abf4475335a8332faab164f"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "256",
+       "sha": "a437479f87fc72c772285b0598c3bfd3beab61dea2e679fa37c665a0d3d67794"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The pitch, shifted right by the divider, is added to the waveform position each output sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "218",
+       "sha": "eb65f86eb689155e78658d88e348ed54ab8a4375b664fb2d0c101fe34ad08128"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -380,11 +506,75 @@
      ]
     },
     {
-     "n": "17",
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the register's offset in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x04",
+   "name": "start or envelope time",
+   "access": "write",
+   "aliases": [
+    "start"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "lines": "221"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "lines": "261"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
      "on": "is",
      "of": "mame",
      "vs": "extra",
-     "text": "In waveform mode R4 is the envelope time, added to the envelope position each sample, and R5 the envelope number, 128 bytes each.",
+     "text": "In PCM mode register 4 times 0x1000 is the sample start address in the sample ROM.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "39",
+       "sha": "38996fb97d402a52a186064f419b349e4dc1c19c243989cbd90ff1da74fbf84e"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "42",
+       "sha": "f7c7a9d89595c710c0df91ff2cd8366e63d8d92ab17beb49e2090a1503faa9de"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "221",
+       "sha": "6691dfc4217927960d1f31efe93147ac03721e5abea1dec7cb2b6d70e903869f"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "245",
+       "sha": "46859616bfde0637aa8c888e711212952052279f55616a88f02e16b5d9c145fa"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In waveform mode register 4 is the envelope time, added to the envelope position at each output sample.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -393,13 +583,8 @@
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "43",
-       "sha": "5c76c1dc4b5821a621f3e825a6fa24e6e407ce42e83576dedc6f306768e607db"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "259-261",
-       "sha": "7535895938819b36a0cb6734f2ee5068ed46f6bb01897ea517ff9c477c3f04ae"
+       "lines": "261",
+       "sha": "a6f0a06cde07cd4af8d353376e8e45dd0da13d22a81f2a6695657c2addc52537"
       },
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
@@ -409,72 +594,303 @@
      ]
     },
     {
-     "n": "18",
-     "on": "when",
+     "n": "3",
+     "on": "write",
      "of": "mame",
      "vs": "extra",
-     "text": "Each stream update starts a channel at its saved sample position and, for a waveform, envelope position, and saves them again when it ends.",
+     "text": "A write stores the byte at the register's offset in the register area.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "209",
-       "sha": "ec8f168cb59c25e7d67569498e5e0a54f38bd53b0dc1de067da8206a096560d0"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "225",
-       "sha": "392f4e04189e5dd65f532f723d71a6bca51cb88cee0447244e1e2cd399103cba"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "250",
-       "sha": "15e5f643d7f19156b9ba06c2bae8ab4817811ae3dc8f91f798e5a1079220236d"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "255",
-       "sha": "392f4e04189e5dd65f532f723d71a6bca51cb88cee0447244e1e2cd399103cba"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "260",
-       "sha": "38391bc828dd128aa96c0782a3ffe3a071e7fae2cdd55faaaa899486a93d217f"
-      },
-      {
-       "ref": "mame:src/devices/sound/x1_010.cpp",
-       "lines": "286-287",
-       "sha": "dba447958017c8d90fa1c32b27fe4117a907751da57217d5ee4de22272a09642"
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
       }
      ]
     }
    ],
-   "closed": [
+   "closed": []
+  },
+  {
+   "key": "0x05",
+   "name": "end or envelope number",
+   "access": "write",
+   "aliases": [
+    "end"
+   ],
+   "regions": [
     {
      "ref": "mame:src/devices/sound/x1_010.cpp",
-     "lines": "213",
-     "as": "structure"
-    },
-    {
-     "ref": "mame:src/devices/sound/x1_010.cpp",
-     "lines": "231-235",
-     "as": "log"
-    },
-    {
-     "ref": "mame:src/devices/sound/x1_010.cpp",
-     "lines": "236",
-     "as": "structure"
-    },
-    {
-     "ref": "mame:src/devices/sound/x1_010.cpp",
-     "lines": "263-267",
-     "as": "log"
-    },
-    {
-     "ref": "mame:src/devices/sound/x1_010.cpp",
-     "lines": "268",
-     "as": "structure"
+     "lines": "240-243"
     }
-   ]
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In PCM mode the sample ends at 0x100 minus register 5, times 0x1000, in the sample ROM.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "42",
+       "sha": "f7c7a9d89595c710c0df91ff2cd8366e63d8d92ab17beb49e2090a1503faa9de"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "222",
+       "sha": "e0fb394e4b1a289e3475c89cdc3089ef7f459a54c3bd2cae6e499ec315729864"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Playback keys the channel off, clearing bit 0 of the status, when the position reaches that end.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "240-243",
+       "sha": "61956052cbee8334a09820a9fe152521fb10863c4e6ff9931e8552abdef84c3d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In waveform mode register 5 selects a 128-byte envelope at 128 times it in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "43",
+       "sha": "5c76c1dc4b5821a621f3e825a6fa24e6e407ce42e83576dedc6f306768e607db"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "259",
+       "sha": "1a7e41bc077a2e438b565b367035896b944555471ab0b6791e2c1a5b56a2c09b"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "277",
+       "sha": "1cf89e8534b09c1d6777b49e8e3fa8099e4195838893b19f88e617a2d73ee570"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the register's offset in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x06",
+   "name": "reserved byte 1",
+   "access": "write",
+   "aliases": [
+    "reserved"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "lines": "182"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 6 is reserved: the channel struct keeps two spare bytes after the end register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "44",
+       "sha": "6309112fa041a3cf33f3bdcc6ff06819df1fd5708b3f58c42030ca721b44447d"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "79",
+       "sha": "315e275466b87bcb289f6caf2719ff50dd8226f61fed3b4c60dd4351ef5d3a32"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the register's offset in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x07",
+   "name": "reserved byte 2",
+   "access": "write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "lines": "182"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 7 is the second reserved byte of the channel's eight registers.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "20",
+       "sha": "bcd56949d52b4330d899160a579615e74d56fc6efa4041fb8ed3917e565f331b"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "45",
+       "sha": "196baecd9066f8ada81d93db16b8eb4da6ac3961e28daa6bea25dbc44a8674ee"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "79",
+       "sha": "315e275466b87bcb289f6caf2719ff50dd8226f61fed3b4c60dd4351ef5d3a32"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at the register's offset in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x08..0x7F",
+   "name": "other channel registers",
+   "aliases": [
+    "channel"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::write"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::read"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offsets 8 to 127 hold the registers of channels 1 to 15: eight per channel, at offset channel times 8 plus the register number.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "15",
+       "sha": "08c86b3423f2417dc760ba52ec369996a102fbd1187a07773b6ba039b022c493"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "20",
+       "sha": "bcd56949d52b4330d899160a579615e74d56fc6efa4041fb8ed3917e565f331b"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "47",
+       "sha": "d26e061a92a1b2b196213a4a10ed03b37685f9ca410108add11473e4122597ba"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "172-173",
+       "sha": "7ae4ce7e0b109d800585af7c4c06af75fa2b0e8c99934c21eaebe70100dc5b34"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the register area.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "182",
+       "sha": "0bb707478db606b88c6bb0bdc9d64eb7a750270096d84038c3bddd1460a78220"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write that turns bit 0 of a channel's register 0 from 0 to 1 restarts its sample and envelope positions at 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "175-179",
+       "sha": "306193eee859bf3bc4083f99af771a5bcf1bb9e14fd30d7686e38706de8e2a28"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the byte stored at the offset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "167",
+       "sha": "1a19eb9aad5e2d824d38b4424663d655bc7da03b1689ce53e8d632906d76ee25"
+      }
+     ]
+    }
+   ],
+   "closed": []
   },
   {
    "key": "0x80..0xFFF",

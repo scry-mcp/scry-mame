@@ -1,0 +1,1258 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "hd44780",
+ "title": "The HD44780U instruction set",
+ "kind": "command",
+ "scope": "hd44780",
+ "covers": "the eight instructions an MPU sends to the HD44780U with RS = 0: their codes, the bits each carries, and what each does to the display, the address counter and the display memory",
+ "source": "official",
+ "documents": [
+  {
+   "name": "HD44780.raw.txt",
+   "variant": "hd44780u"
+  }
+ ],
+ "official": {
+  "HD44780.raw.txt": [
+   "1625-1630",
+   "1631-1638",
+   "1640-1646",
+   "1648-1654",
+   "1656-1661",
+   "1663-1667",
+   "1669-1674",
+   "1676-1681",
+   "1743",
+   "1761-1766",
+   "1767-1770",
+   "1771-1779",
+   "1780-1790",
+   "1792-1799",
+   "1800-1808",
+   "1809-1811",
+   "1974-1978",
+   "1986-1991",
+   "1992-2002"
+  ]
+ },
+ "entries": [
+  {
+   "key": "0x01",
+   "name": "Clear Display",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1625-1630"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1761-1766"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "719-730"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "731-733"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Clear display is instruction 0000 0001: RS and R/W are 0 and DB7 to DB0 are 0000 0001.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1625-1628",
+       "sha": "32825a5d44bfed56d0c1ef93b0ba25755b8e181b987ee848a98716cb9c060597"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Clear display writes space code 20H into all DDRAM addresses, and character code 20H must hold a blank pattern.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1762-1763",
+       "sha": "71f4125558ea8484da7233fc26d651376105685840d435068e76f118069c9ea0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "It sets DDRAM address 0 into the address counter and returns the display to its original status if it was shifted.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1763-1764",
+       "sha": "c7df2ad1a19c7752054144ade6c881e4b5f4543d665f3ff4b91a3b574740206e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The display disappears and the cursor or blinking goes to the left edge, the first line in a 2-line display.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1764-1765",
+       "sha": "2dd3e0fa0503dd0d440a2e2cd6edb553360c8aad4b832aefae0df94ed3124e0f"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "Clear display stores I/D as 1 (increment mode) in entry mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1765-1766",
+       "sha": "e761dc2a4864fb91dbf296792a0558d9091bab9da4a9cc041e5ce85628d27a3c"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "S of entry mode does not change.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1766",
+       "sha": "480260afe5a81f4323a8468edb49d7f6fd1df0ce80316d0792a9cd43c4b41275"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says clear display sets DDRAM address 0 in the address counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1629-1630",
+       "sha": "b5870f81a5a2dcf716edf9d5ac3e84c1a52c0d31681b40c8901893c51c335e5d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME raises the busy flag for 410 device-clock cycles after clear display, counted at the device clock divided by the busy factor.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "729",
+       "sha": "faf880eac1ca7b612d16eecd0286cd6980484b86f5ed6596ecbceaf421db62e5"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "376-380",
+       "sha": "682f48ea86cb3b11f4f45fd6c422d1b289689154d55959539c7bd9b0b3ee472e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1761",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "726",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "719-730",
+     "as": "agrees",
+     "row": "6",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "719-733",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x02..0x03",
+   "name": "Return Home",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1631-1638"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1743"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1767-1770"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "708-718"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Return home is instruction 0000 001x: DB1 is 1 and DB0 is a dash, which Table 6's note reads as no effect, so 0x02 and 0x03 both return home.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1631-1633",
+       "sha": "b66683804daafaedca6c861090a424e7f5e565e64e91acdd2e0e8cddd30c6fd6"
+      },
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1743",
+       "sha": "ba56456d0eb569f246678dd21650e59d6fb979ebe9a71cf2cd20a95907d2f957"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Return home sets DDRAM address 0 into the address counter and returns the display to its original status if it was shifted.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1768-1769",
+       "sha": "58c01e253e07505dbef1520b90bc08c0de300375a06c480d1745b1b137d04556"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The cursor or blinking goes to the left edge of the display, in the first line if 2 lines are displayed.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1770",
+       "sha": "c41b2eb8d8c149f6ba80a9b81c9d2df392f4045e35171398e401f16d700b97fa"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The DDRAM contents do not change.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1769",
+       "sha": "9409158f33607f444e70f31b661bc27de59fd6a61c3654d49d349675e3c52d51"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says return home also returns a shifted display to its original position, and DDRAM contents remain unchanged.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1634-1638",
+       "sha": "63490f21e11a72145504a12bd66dd6206c2c55d18aeedcd8faabf20a20784f25"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME records DDRAM as the active memory and sets the entry direction to +1 on return home.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "714-715",
+       "sha": "2381c0a2bc3869db2a38c986059bf2f7c65dbb86af3644b85d4ae2d886a4aecd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1767",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "713-716",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "708-718",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x04..0x07",
+   "name": "Entry Mode Set",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1640-1646"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1771-1779"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "699-707"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Entry mode set is instruction 0000 01IS: DB2 is 1 and DB1 and DB0 carry I/D and S.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1640-1642",
+       "sha": "f165acbca871982f768a040484fd1e01b4faf7daef91b575d1700b8698e05fab"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Entry mode set stores I/D, which makes a later DDRAM character write or read increment the address when I/D is 1 and decrement it when I/D is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1772-1773",
+       "sha": "98e9504506a6ebe0115179731841ce4c6eee161534945012c01eacc528e92d83"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The cursor or blinking moves right when the address is incremented and left when it is decremented; the same applies to CGRAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1774-1775",
+       "sha": "322229335f762f3f0f5ed28821da6c70693b294e7760e2d8ac1da7dac807409f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Entry mode set stores S, which shifts the entire display right when I/D is 0 and left when I/D is 1; the display does not shift when S is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1776-1777",
+       "sha": "23b1a792fcff86169d6e2b42a5901ca0ec40a47f6e9430033783f953dbcccd35"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "With S = 1 it seems as if the cursor does not move but the display does.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1778",
+       "sha": "cebec1045d988bb9ded04af43bf1104c3401ac3b6eab3a10c84bc7851b10c97e"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "A DDRAM read does not shift the display, and writing into or reading out from CGRAM does not shift it.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1778-1779",
+       "sha": "eb5e916d616f6753843c1efb116dbd30980ede36ff22f8c03a2776ee9306b32f"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says it sets the cursor move direction and specifies display shift, performed during data write and read.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1642-1646",
+       "sha": "4a50006f3f20d5ab3a505f5e7869d0af702993fa168efa573a083b2a3435b1d6"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME leaves a DDRAM read unshifted, as the row says, but with S set it shifts the display after a CGRAM write, which the row says it does not.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "780-783",
+       "sha": "575f55d819ada3ee16005f1578fb0aed3047a25b74628002e9656384ccf1d020"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "787-788",
+       "sha": "bb957c549ab057102be6b17d11158f7ac6c895e0282add82325bd3184a67aaf8"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "791-802",
+       "sha": "3aeb9a81082edc24b5fd9a87f8d3e61ad310172896d37d4cfd58cd93c84246d6"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "803-812",
+       "sha": "5d61d20b27c76ac8746d3f8154856cc7392db7e0cec647e2255e154931598d63"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1771",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "702",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "703",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "699-707",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0F",
+   "name": "Display On/Off Control",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1648-1654"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1780-1790"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "689-698"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Display on/off control is instruction 0000 1DCB: DB3 is 1 and DB2, DB1 and DB0 carry D, C and B.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1648-1651",
+       "sha": "7a8c3c99f1869b2c16e53b9b14787963aa6156bf67c8b8dffba7f2211adaa823"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Display on/off control stores D, which turns the display on when 1 and off when 0; the display data stays in DDRAM while off.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1781-1782",
+       "sha": "e2fc849224739241bc8d1fc66ee2eb090d3ce84e7ab59baef292a90cc72363b8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Display on/off control stores C, which shows the cursor when 1 and hides it when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1783",
+       "sha": "daee1bc62452a3ca95e863e3089bd3b5a15fbc2dc39d7249a7ffc5eabc887f1b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Even when the cursor disappears, I/D and other specifications do not change during a display data write.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1783-1784",
+       "sha": "05817c49d5520b4208c99a3eb3fee59c51b7659f32946c150e8e520605fb32ab"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The cursor uses 5 dots in the 8th line for the 5x8 font and in the 11th line for the 5x10 font (Figure 13).",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1784-1786",
+       "sha": "e522720222991786f443e2fa38f8c4c98c39fc4522ad105bbc22b3e6308cdc53"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "Display on/off control stores B, which blinks the character at the cursor when 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1787",
+       "sha": "54b0a74ec46cdaf70f91626db55a958eb181304cc6a87a5ee70ecca19f141ae0"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Blinking switches all blank dots and the displayed characters every 409.6 ms at fcp or fOSC 250 kHz; the cursor and blinking can show together.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1788-1789",
+       "sha": "edfbc6ff0bbf2683b4b413bea4f57cccd529f431020dcbdc91308baaa3e08d19"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The blink frequency changes with fOSC or fcp: 409.6 x 250/270 = 379.2 ms at 270 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1789-1790",
+       "sha": "115c5514f0c675b9601e83a8d56bdeb7f9d8ee706c9417df373bf6f761c7c688"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says it sets the entire display (D) on and off, the cursor (C), and blinking of the cursor position character (B).",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1651-1654",
+       "sha": "2ab5ac07d992ad7814790c0c780ed35170d87b88511ff3364ec91677680106a2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1780",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "692",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "693",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "694",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "689-698",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x10..0x1F",
+   "name": "Cursor or Display Shift",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1656-1661"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1792-1799"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1986-1991"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "677-688"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Cursor or display shift is instruction 0001 S/C R/L, with DB1 and DB0 shown as dashes in Table 6.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1656-1659",
+       "sha": "b6a6dc7eb589ca8ee1293db2b7dc7a4814e672e3663c7148d70780fc6494a0d6"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Cursor or display shift moves the cursor position or the display right or left without writing or reading display data.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1793",
+       "sha": "027a7041f508838389ab56dfe0cc5ed83da51368c6e0facdad3ab3938441e11c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "It is used to correct or search the display.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1794",
+       "sha": "30364d521e688c9e633618c99d8b6380ab1609e17c3d3e186b3db010a354eb64"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In a 2-line display the cursor moves to the second line after the 40th digit of the first, and both lines shift at the same time.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1794-1796",
+       "sha": "96c7d2b51692d7854ec2d183c16d8ea5997560cc359feeca29487aa7d675fe67"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "When the displayed data is shifted repeatedly each line moves only horizontally, and the second line does not shift into the first line position.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1797-1798",
+       "sha": "101048d930e4300399cab4502c332dce36c824b9661e8677a1af7c3e1bf961a9"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The address counter contents do not change if the only action performed is a display shift.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1799",
+       "sha": "ba0a77ea0c985a20b409ec9d36f6449a80a27ad82ea58ab6927a9174a869500e"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "With S/C = 0 the cursor shifts left and the address counter is decremented when R/L = 0, right and incremented when R/L = 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1986-1989",
+       "sha": "e3cb4a6cc27bb41736fcc035e5541dc61a9e44c7662531aad2e921a4ab02b929"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "With S/C = 1 the entire display shifts left when R/L = 0 and right when R/L = 1, and the cursor follows the display shift.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1990-1991",
+       "sha": "28aa13732e41d9c0f86525c6d532e596096c7f5fce495dafbef93986a88503ba"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says it moves the cursor and shifts the display without changing DDRAM contents.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1659-1661",
+       "sha": "f8779ef73cff7dbf6e4b4e4cb6cbbbc295bec9947382466ed58972ef8d63c1ab"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "MAME draws the cursor at the shifted position, as the row says, but moves the visible text left when R/L = 1 and right when R/L = 0, the opposite.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "678",
+       "sha": "b39728701659fe0818d402c0dbfe483eb8ff1339ead61ca740f0067580197185"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "683",
+       "sha": "01e8b696a6f0299c97c7727fe26390936a9fc7453ecebaebf7dc15899aee626e"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "411",
+       "sha": "5bd4a638222c063249f91181b692395b6931ae48a5b9bb1d68885c85e2c24464"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "484",
+       "sha": "2894095e0adca666badf1aee283ebec5bf18964c188df71c9ca757bc694484e5"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "504-508",
+       "sha": "5d3b7145b6269ae8216bc5a9d0937e1e6abb8651ea4559c6d9ba590d8b338771"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1792",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "677-688",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "684-685",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "678",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "677-688",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x20..0x3F",
+   "name": "Function Set",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1663-1667"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1800-1808"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1992-2002"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "653-674"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Function set is instruction 001 DL N F, with DB1 and DB0 shown as dashes in Table 6.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1663-1665",
+       "sha": "8b336cf5661000c0b4bf46349ad329e9203471719c14e407a2d2d27c7dfaea52"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Function set stores DL, the interface data length: 8 bits when DL = 1, 4 bits when DL = 0, and 4-bit data is sent twice.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1801-1803",
+       "sha": "41cfdc55eba55b0015483822e34cfa207e105a7830a541c3f1ccd59549f2cc5d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Function set stores N, the number of display lines.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1804",
+       "sha": "066b9a9a2aee4735dc61ea1200a7a03c071138edf894580e1235d0a1d8bbfc65"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Function set stores F, the character font.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1805",
+       "sha": "a03659d00e8ef5a9060d42d2b7007ca081a0e8e4df734db387bdb17caa011d30"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The function set belongs at the head of the program before any instruction except reading the busy flag; after that it cannot run unless the data length changes.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1806-1808",
+       "sha": "7e55691f81a0f2dd92da277a51c1806512f0c3097f18e1b58edc306240ba88a5"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 8: N = 0 and F = 0 is one 5x8 line at duty 1/8; N = 0 and F = 1 is one 5x10 line at duty 1/11.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1992-2000",
+       "sha": "c7c3fa61e5536d25507682ace3fc56faa8c0fe526cc1ab7b60e11ce7eb5daf72"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "With N = 1 the display is two 5x8 lines, and two lines cannot be had with the 5x10 font.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "2001",
+       "sha": "42c77287ac36eafeb82f87fbf4554e52541d7ad97548886c11811a10fcae3b79"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The asterisk in the N column of Table 8 means don't care.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "2002",
+       "sha": "45b20bb41cfb5b80df8588988b5818d578ba8e5c3fff5cdc05770d748291d776"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says it sets the interface data length (DL), number of display lines (N) and character font (F).",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1665-1667",
+       "sha": "cc1fab4adbed725126f10c6ca6484315ac37cc197c17c5a94d322d56e2b90245"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After the change MAME corrects the address counter to the new line count, mapping it back into the allowed range.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "669",
+       "sha": "970bdf3d2e5a633d57a9e1355ca1a3695d071393cb3d628091ba93fc7d3e2591"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "382-393",
+       "sha": "fe3cc38476ecfea11677048720f81dc00a0051d484b363d4a6c06294408672ad"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 8 gives N = 1 two 5x8 lines at duty 1/16.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "2001",
+       "sha": "42c77287ac36eafeb82f87fbf4554e52541d7ad97548886c11811a10fcae3b79"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1800",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "667",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "668",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "663-666",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "663-668",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "653-674",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x7F",
+   "name": "Set CGRAM Address",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1669-1674"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1809-1811"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "643-652"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Set CGRAM address is instruction 01AAAAAA: DB6 is 1 and DB5 to DB0 carry the six address bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1669-1672",
+       "sha": "9f92d9c32c50d8c39d313b1859244b089b76e463ab50cfff1697d7bb1bbcbd6e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Set CGRAM address stores the CGRAM address AAAAAA into the address counter and selects CGRAM for the data that follows.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1810-1811",
+       "sha": "d2f6d653e9f8701eac84954784d6c8e6e46e25175c0c800b8aa556c5186b768d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says it sets the CGRAM address, and CGRAM data is sent and received after this setting.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1672-1674",
+       "sha": "f930c1df5a5abe86c949840e453e31ca0065da36e9d39d5d03162e72ad4f0abf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1809",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "646-647",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "643-652",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0xFF",
+   "name": "Set DDRAM Address",
+   "regions": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1676-1681"
+    },
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1974-1978"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "632-642"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Set DDRAM address is instruction 1AAAAAAA: DB7 is 1 and DB6 to DB0 carry the seven address bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1676-1679",
+       "sha": "9384fa63b16c17f04eb9429e8ea1382749dc78260a30b72e505cbea0c774eb84"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Set DDRAM address stores the DDRAM address AAAAAAA into the address counter and selects DDRAM for the data that follows.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1975-1976",
+       "sha": "c4d34557eedadeeaf5836b38961f19e72ff47d228e9b21f5b9279e8815662d12"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "With N = 0 the address can be 00H to 4FH; with N = 1, 00H to 27H for the first line and 40H to 67H for the second.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1977-1978",
+       "sha": "055930a268ad254be40cb3897c8fab68ed9ba7954ee2695bb516e44e9deb9576"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6 says it sets the DDRAM address, and DDRAM data is sent and received after this setting.",
+     "quotes": [
+      {
+       "ref": "datasheet:HD44780.raw.txt",
+       "lines": "1679-1681",
+       "sha": "9e82acca9d233843a6933bbf168a5c898b12aef0f910b41c36c691ca19fffe52"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME folds an address outside those ranges back in: past the last address it wraps, and in 2-line mode an address between 0x28 and 0x3F is moved up by 0x18.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "637",
+       "sha": "970bdf3d2e5a633d57a9e1355ca1a3695d071393cb3d628091ba93fc7d3e2591"
+      },
+      {
+       "ref": "mame:src/devices/video/hd44780.cpp",
+       "lines": "382-393",
+       "sha": "fe3cc38476ecfea11677048720f81dc00a0051d484b363d4a6c06294408672ad"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:HD44780.raw.txt",
+     "lines": "1974",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "635-636",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "632-642",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}
