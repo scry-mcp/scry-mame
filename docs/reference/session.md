@@ -357,7 +357,7 @@ Reference: REFERENCE.md, The session.
 
 presence: Draw an edge around the emulator's window while this session is open: dim while idle, bright while a call runs the machine. No capture of this server carries it.
 
-overlay: Layers drawn over the presence edge, each on by default: `pointer` the guest's mouse pointer; `record` a blinking mark while it records video or audio. Ignored with `presence=false`.
+overlay: Layers drawn over the presence edge, on by default: `record` a blinking mark while it records video or audio. `pointer` is always lacking: MAME has no guest pointer. Ignored with `presence=false`.
 
 view: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
 

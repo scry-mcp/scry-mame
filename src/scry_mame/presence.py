@@ -34,6 +34,10 @@ REREAD_S = 0.05
 #: The layers MAME cannot draw and why: its inputs are port fields and it has no pointer.
 LACKING: dict[overlay.Layer, str] = {
     "pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"}
+#: `start`'s `overlay` argument, as MAME answers it: no pointer to draw.
+OVERLAY_ARGUMENT = ("Layers drawn over the presence edge, on by default: `record` a blinking "
+                    "mark while it records video or audio. `pointer` is always lacking: MAME "
+                    "has no guest pointer. Ignored with `presence=false`.")
 #: A console command that touches nothing and repaints a stopped machine once.
 REPAINT = "print 0"
 
