@@ -7,7 +7,7 @@
 2. `input` moves the player one column right and fires again.
 3. `input` raises the next colour and fires a third time.
 
-<!-- moments-ms: 1018,1018,1018 -->
+<!-- moments-ms: 2017,2017,2017 -->
 <!-- demo-motion:end -->
 
 *LineUp* (Eco-Games / GAMART, 1994) ran on an NEC V30 arcade board, and its team ported the
@@ -42,8 +42,7 @@ does not take your keyboard; `--watch` brings it in front, for when you want to 
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png` and
   `loop.webp`, from a run where every step passed. It needs ffmpeg and `img2webp` on your
-  `PATH`, and Pillow and numpy (the `decorate` extra), which draw the border and the pointer
-  over the loop.
+  `PATH`.
 
 Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
 That last one is a missing ROM set, a relative path, a copy without the game's map or a
@@ -171,7 +170,7 @@ Call:
 read_memory(ref="Credits", length=2)
 ```
 
-Reply, 3 of 8 fields:
+Reply, 3 of 9 fields:
 
 ```json
 {
@@ -194,6 +193,9 @@ Reply, 3 of 8 fields:
   "length": 2,
   "hex": "0300",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x914A", "kind": "symbol", "name": "Credits"}
+  ],
   "session": {
     "alive": true,
     "running": false,

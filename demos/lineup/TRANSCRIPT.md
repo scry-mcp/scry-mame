@@ -56,6 +56,13 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "record"],
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "machine": {"cpus": 1, "spaces": 2, "address_map": 7, "regions": 2, "shares": 0, "screens": 1, "rom_files": 3},
   "declarations": {
     "persistent": true,
@@ -69,6 +76,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "recommended_release": "0.289",
   "window": "<volatile>",
   "kept": "1 saved for `promote`; start/lineup: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
+  "names": [
+    {"field": "pc", "number": "0x000ffff0", "kind": "symbol", "name": "Pool_Pal", "delta": 264838}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -218,6 +228,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "armed": true,
   "state": "armed",
   "entry": "3 @ 31457",
+  "names": [
+    {"field": "given.ref", "number": "0x31457", "kind": "symbol", "name": "Check_Money100"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -457,6 +470,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 2,
   "hex": "0000",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x914A", "kind": "symbol", "name": "Credits"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -588,6 +604,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "armed": true,
   "state": "armed",
   "entry": "4 @ 31457",
+  "names": [
+    {"field": "given.ref", "number": "0x31457", "kind": "symbol", "name": "Check_Money100"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -815,6 +834,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 2,
   "hex": "0300",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x914A", "kind": "symbol", "name": "Credits"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1027,6 +1049,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "armed": true,
   "state": "armed",
   "entry": "7 @ 31457",
+  "names": [
+    {"field": "given.ref", "number": "0x31457", "kind": "symbol", "name": "Check_Money100"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1255,6 +1280,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 2,
   "hex": "0200",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x914A", "kind": "symbol", "name": "Credits"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1287,6 +1315,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 2,
   "hex": "0000",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x86A6", "kind": "symbol", "name": "Stage_Act"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1323,6 +1354,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "armed": true,
   "state": "armed",
   "entry": "8 @ 31457",
+  "names": [
+    {"field": "given.ref", "number": "0x31457", "kind": "symbol", "name": "Check_Money100"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1552,6 +1586,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 12,
   "hex": "010003000100000003000000",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x8400", "kind": "symbol", "name": "Player1"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1760,6 +1797,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 12,
   "hex": "010004000100000003000000",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x8400", "kind": "symbol", "name": "Player1"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1968,6 +2008,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 12,
   "hex": "010004000200000003000000",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x8400", "kind": "symbol", "name": "Player1"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -2176,6 +2219,9 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "length": 12,
   "hex": "030004000200040006000200",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x8400", "kind": "symbol", "name": "Player1"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -2465,13 +2511,13 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 </details>
 
-**41. `record`**: OK second shot: recorded 51 frames in ./tmp/demos/lineup/second-shot.avi
+**41. `record`**: OK second shot: recorded 101 frames in ./tmp/demos/lineup/second-shot.avi
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "frames": 51,
+  "frames": 101,
   "dest": "./tmp/demos/lineup/second-shot.avi",
   "seconds": 300
 }
@@ -2492,7 +2538,7 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "thread_errors": 0,
   "console_reruns": 0,
   "path": "./tmp/demos/lineup/second-shot.avi",
-  "frames": 51,
+  "frames": 101,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -2536,13 +2582,13 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "input :P1 'P1 Right': held 4 frames, active True, released at frame 789",
+  "summary": "input :P1 'P1 Right': held 4 frames, active True, released at frame 839",
   "status": "ok",
   "verdict": "ELAPSED",
-  "frame_before": 785,
-  "frame_after": 790,
-  "emulated_before_s": 15.694849,
-  "emulated_after_s": 15.794689,
+  "frame_before": 835,
+  "frame_after": 840,
+  "emulated_before_s": 16.693249,
+  "emulated_after_s": 16.79309,
   "cycles": 798722,
   "polls": 5,
   "lines_ahead": 0,
@@ -2558,30 +2604,30 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "mask": "0x00000020",
   "defvalue": "0x00000020",
   "port_before": "0x000000ff",
-  "frame_set": 785,
+  "frame_set": 835,
   "released": true,
   "port_held": "0x000000df",
-  "frame_released": 789,
+  "frame_released": 839,
   "active": true,
   "cause": "the `gvblank` stop of the last frame asked",
   "stop_seq": 29,
   "pc": "0x000300a9",
   "cpu": ":maincpu",
-  "frame": 790,
+  "frame": 840,
   "regs": {
-    "EAX": "0xffff",
-    "ECX": "0x0000",
-    "EDX": "0x0002",
-    "EBX": "0x490a",
-    "ESP": "0x99d7",
+    "EAX": "0x811f",
+    "ECX": "0x0043",
+    "EDX": "0x000b",
+    "EBX": "0x1680",
+    "ESP": "0x99bd",
     "EBP": "0xbe31",
-    "ESI": "0x8048",
-    "EDI": "0xfaa0",
+    "ESI": "0x2181",
+    "EDI": "0x892d",
     "EIP": "0x000300a9",
-    "EFLAGS": "0xf097",
+    "EFLAGS": "0xf002",
     "CS": "0x3000",
     "SS": "0x0040",
-    "DS": "0x0040",
+    "DS": "0x81a2",
     "ES": "0x1000",
     "FS": "0x00000000",
     "GS": "0x00000000",
@@ -2631,27 +2677,27 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "run_to Gest_Scores: TARGET, control counted 2",
+  "summary": "run_to Gest_Scores: TARGET, control counted 1",
   "status": "ok",
   "verdict": "TARGET",
-  "control_hits": 2,
+  "control_hits": 1,
   "controls": [
-    {"ref": "Check_Money25", "cpu": ":maincpu", "hits_in_run": 2}
+    {"ref": "Check_Money25", "cpu": ":maincpu", "hits_in_run": 1}
   ],
   "cause": "target Gest_Scores",
   "stop_seq": 30,
   "pc": "0x0003092f",
   "cpu": ":maincpu",
-  "frame": 791,
+  "frame": 841,
   "regs": {
     "EAX": "0x0000",
     "ECX": "0x0000",
-    "EDX": "0x0000",
+    "EDX": "0x0002",
     "EBX": "0x1680",
     "ESP": "0x99db",
     "EBP": "0xbe31",
     "ESI": "0x8048",
-    "EDI": "0x96d0",
+    "EDI": "0x64d0",
     "EIP": "0x0003092f",
     "EFLAGS": "0xf006",
     "CS": "0x3000",
@@ -2712,15 +2758,15 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "input :P1 'P1 Up': held 4 frames, active True, released at frame 795",
+  "summary": "input :P1 'P1 Up': held 4 frames, active True, released at frame 845",
   "status": "ok",
   "verdict": "ELAPSED",
-  "frame_before": 791,
-  "frame_after": 796,
-  "emulated_before_s": 15.818442,
-  "emulated_after_s": 15.914498,
-  "cycles": 768448,
-  "polls": 5,
+  "frame_before": 841,
+  "frame_after": 846,
+  "emulated_before_s": 16.813057,
+  "emulated_after_s": 16.912899,
+  "cycles": 798731,
+  "polls": 6,
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
@@ -2734,30 +2780,30 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "mask": "0x00000004",
   "defvalue": "0x00000004",
   "port_before": "0x000000ff",
-  "frame_set": 791,
+  "frame_set": 841,
   "released": true,
   "port_held": "0x000000fb",
-  "frame_released": 795,
+  "frame_released": 845,
   "active": true,
   "cause": "the `gvblank` stop of the last frame asked",
   "stop_seq": 31,
   "pc": "0x000300a9",
   "cpu": ":maincpu",
-  "frame": 796,
+  "frame": 846,
   "regs": {
-    "EAX": "0xffff",
-    "ECX": "0x0000",
-    "EDX": "0x0002",
-    "EBX": "0x490a",
-    "ESP": "0x99d7",
+    "EAX": "0x811f",
+    "ECX": "0x0048",
+    "EDX": "0x0013",
+    "EBX": "0x1680",
+    "ESP": "0x99bd",
     "EBP": "0xbe31",
-    "ESI": "0x8048",
-    "EDI": "0xfaa0",
+    "ESI": "0x1e7c",
+    "EDI": "0x7f28",
     "EIP": "0x000300a9",
-    "EFLAGS": "0xf097",
+    "EFLAGS": "0xf002",
     "CS": "0x3000",
     "SS": "0x0040",
-    "DS": "0x0040",
+    "DS": "0x81a2",
     "ES": "0x1000",
     "FS": "0x00000000",
     "GS": "0x00000000",
@@ -2793,13 +2839,13 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 </details>
 
-**45. `record`**: OK third shot: recorded 51 frames in ./tmp/demos/lineup/third-shot.avi
+**45. `record`**: OK third shot: recorded 101 frames in ./tmp/demos/lineup/third-shot.avi
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "frames": 51,
+  "frames": 101,
   "dest": "./tmp/demos/lineup/third-shot.avi",
   "seconds": 300
 }
@@ -2820,7 +2866,7 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "thread_errors": 0,
   "console_reruns": 0,
   "path": "./tmp/demos/lineup/third-shot.avi",
-  "frames": 51,
+  "frames": 101,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -2864,14 +2910,14 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "input :P1 'P1 Button 2': held 4 frames, active True, released at frame 854",
+  "summary": "input :P1 'P1 Button 2': held 4 frames, active True, released at frame 954",
   "status": "ok",
   "verdict": "ELAPSED",
-  "frame_before": 850,
-  "frame_after": 855,
-  "emulated_before_s": 16.992769,
-  "emulated_after_s": 17.092609,
-  "cycles": 798723,
+  "frame_before": 950,
+  "frame_after": 955,
+  "emulated_before_s": 18.989569,
+  "emulated_after_s": 19.08941,
+  "cycles": 798728,
   "polls": 5,
   "lines_ahead": 0,
   "thread_errors": 0,
@@ -2886,25 +2932,25 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "mask": "0x00000080",
   "defvalue": "0x00000080",
   "port_before": "0x000000ff",
-  "frame_set": 850,
+  "frame_set": 950,
   "released": true,
   "port_held": "0x0000007f",
-  "frame_released": 854,
+  "frame_released": 954,
   "active": true,
   "cause": "the `gvblank` stop of the last frame asked",
   "stop_seq": 33,
   "pc": "0x000300a9",
   "cpu": ":maincpu",
-  "frame": 855,
+  "frame": 955,
   "regs": {
     "EAX": "0x8183",
-    "ECX": "0x0029",
+    "ECX": "0x0021",
     "EDX": "0x000d",
     "EBX": "0x1680",
     "ESP": "0x99cb",
     "EBP": "0xbe31",
     "ESI": "0x1684",
-    "EDI": "0x86c7",
+    "EDI": "0x86cf",
     "EIP": "0x000300a9",
     "EFLAGS": "0xf002",
     "CS": "0x3000",
@@ -2970,7 +3016,7 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "stop_seq": 34,
   "pc": "0x0003092f",
   "cpu": ":maincpu",
-  "frame": 855,
+  "frame": 955,
   "regs": {
     "EAX": "0x0000",
     "ECX": "0x0000",
@@ -3040,14 +3086,14 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "input :P1 'P1 Up': held 4 frames, active True, released at frame 859",
+  "summary": "input :P1 'P1 Up': held 4 frames, active True, released at frame 959",
   "status": "ok",
   "verdict": "ELAPSED",
-  "frame_before": 855,
-  "frame_after": 860,
-  "emulated_before_s": 17.097253,
-  "emulated_after_s": 17.19245,
-  "cycles": 761579,
+  "frame_before": 955,
+  "frame_after": 960,
+  "emulated_before_s": 19.094042,
+  "emulated_after_s": 19.18925,
+  "cycles": 761658,
   "polls": 5,
   "lines_ahead": 0,
   "thread_errors": 0,
@@ -3062,18 +3108,18 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "mask": "0x00000004",
   "defvalue": "0x00000004",
   "port_before": "0x000000ff",
-  "frame_set": 855,
+  "frame_set": 955,
   "released": true,
   "port_held": "0x000000fb",
-  "frame_released": 859,
+  "frame_released": 959,
   "active": true,
   "cause": "the `gvblank` stop of the last frame asked",
   "stop_seq": 35,
   "pc": "0x000300a9",
   "cpu": ":maincpu",
-  "frame": 860,
+  "frame": 960,
   "regs": {
-    "EAX": "0xffff",
+    "EAX": "0x03be",
     "ECX": "0x0000",
     "EDX": "0x0002",
     "EBX": "0x490a",
@@ -3121,13 +3167,13 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 </details>
 
-**49. `record`**: OK fourth shot: recorded 51 frames in ./tmp/demos/lineup/fourth-shot.avi
+**49. `record`**: OK fourth shot: recorded 101 frames in ./tmp/demos/lineup/fourth-shot.avi
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "frames": 51,
+  "frames": 101,
   "dest": "./tmp/demos/lineup/fourth-shot.avi",
   "seconds": 300
 }
@@ -3148,7 +3194,7 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "thread_errors": 0,
   "console_reruns": 0,
   "path": "./tmp/demos/lineup/fourth-shot.avi",
-  "frames": 51,
+  "frames": 101,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -3191,13 +3237,13 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "screen_view render :screen frame 914 from indices; 1280x800 PNG x4, not inlined",
+  "summary": "screen_view render :screen frame 1064 from indices; 1280x800 PNG x4, not inlined",
   "status": "ok",
   "mode": "render",
   "screen": ":screen",
   "width": 320,
   "height": 200,
-  "frame_screen": 914,
+  "frame_screen": 1064,
   "palette": ":palette",
   "entries": 256,
   "screen_indexed": true,
@@ -3223,21 +3269,21 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   "stop_seq": 37,
   "pc": "0x000300aa",
   "cpu": ":maincpu",
-  "frame": 914,
+  "frame": 1064,
   "regs": {
-    "EAX": "0x0c00",
-    "ECX": "0x0003",
-    "EDX": "0x0002",
-    "EBX": "0x490a",
-    "ESP": "0x99cf",
+    "EAX": "0x811b",
+    "ECX": "0x0022",
+    "EDX": "0x000c",
+    "EBX": "0x1680",
+    "ESP": "0x99bb",
     "EBP": "0xbe31",
-    "ESI": "0x4128",
-    "EDI": "0xf6d8",
+    "ESI": "0x2142",
+    "EDI": "0x880e",
     "EIP": "0x000300aa",
-    "EFLAGS": "0xf086",
+    "EFLAGS": "0xf006",
     "CS": "0x3000",
     "SS": "0x0040",
-    "DS": "0x7802",
+    "DS": "0x81a2",
     "ES": "0x1000",
     "FS": "0x00000000",
     "GS": "0x00000000",
