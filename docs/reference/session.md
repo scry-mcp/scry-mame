@@ -148,7 +148,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `cfg` (string, default `""`): A `.cfg` file the server installs as the system's own before it boots. Left empty, MAME runs on its defaults.
 - `binary` (string, default `""`): The MAME to run: an executable, or a `.app` bundle holding one. Left empty, `MAME_BINARY`, else the `mame` on the PATH.
 - `presence` (boolean, default `true`): Draws a border around the emulator's window while the session is open, brighter while a call runs the machine. `false` leaves it off.
-- `overlay` (any, default `{"pointer": true, "record": true}`): Marks over the border, on by default: `calls` names each call, `keys` the fields held, `pause` a stopped machine, `record` a recording. `place` is `top`, `bottom` or `auto`.
+- `overlay` (any, default `{"pointer": true, "record": true}`): Layers over the border, on by default: `record` a recording. `pointer` is always lacking: MAME draws no guest pointer.
 - `view` (string, default `""`): What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.
 - `names` (boolean, default `true`): `false` leaves a reply's numbers bare, with no `names` field, no name in its summary and no note on a disassembled line.
 - `profile` (string, default `""`): A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.
@@ -291,7 +291,7 @@ A watched window is the largest whole multiple of the machine's first screen tha
 - `frame_symbol` is the name the frame counter answers to; a board with no screen has none ([Run](run.md)).
 - `flags`, `env`, `view`, `background`, `binary_origin`, `errorlog_path` and `stdout_path` say what the launch used, so a start can be told from another by its own reply.
 - `presence` is `true` while the border is drawn. A failure drawing it never changes another reply: `presence`, here and in `status`, turns `available: false` with a `why`.
-- `overlay` is there with the border on: the `layers` drawn, the `place` in effect, and in `lacking` why one is not. MAME has no pointer, so that layer is lacking.
+- `overlay` is there with the border on: the `layers` drawn and, in `lacking`, why one is not. MAME has no pointer, so that layer is lacking.
 
 </details>
 
@@ -307,7 +307,7 @@ A watched window is the largest whole multiple of the machine's first screen tha
 <details><summary>The contract your client receives</summary>
 
 ```text
-Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
+Start MAME with its gdbstub, stopped at its debugger, checked against the reference image.
 
 Paths are absolute or `~`-led: `rompath` and `inipath` `;`-separated directories, `state_dir`
 a directory, the rest files. `binary` names a MAME executable or a `.app` bundle carrying
@@ -357,7 +357,7 @@ Reference: REFERENCE.md, The session.
 
 presence: Draw an edge around the emulator's window while this session is open: dim while idle, bright while a call runs the machine. No capture of this server carries it.
 
-overlay: Layers drawn over the presence edge, each on by default: `pointer` the guest's mouse pointer; `record` a blinking mark while it records video or audio. Ignored with `presence=false`.
+overlay: Layers drawn over the presence edge, on by default: `record` a blinking mark while it records video or audio. `pointer` is always lacking: MAME has no guest pointer. Ignored with `presence=false`.
 
 view: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
 
@@ -390,7 +390,7 @@ Call:
 status()
 ```
 
-Reply, 6 of 25 fields:
+Reply, 6 of 24 fields:
 
 ```json
 {
@@ -449,7 +449,6 @@ Gridlee is up and stopped at `0x0000f000`. `in_debugger` is empty because no bre
   "console_pending": 0,
   "tallies_pending_removal": [],
   "frame_symbol": "frame",
-  "knowledge": {"served": 1005, "held_back": 3},
   "names": [
     {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
   ]
@@ -510,10 +509,10 @@ Takes no argument.
 - `console_pending` counts Lua lines sent and not yet run. `throttles_pending` lists speed switches asked and not yet applied (`tag`, `on`).
 - `tallies_pending_removal` lists write counts waiting to be removed (`tally_id`, `call`); a row that leaves is a removal done.
 - `presence` is `true` when the border is drawn, `false` when it was asked off, or the reason it is not drawn.
-- `overlay` is there with the border on, as `start` gave it: the `layers` drawn, the `place` in effect and, in `lacking`, why a layer is not.
+- `overlay` is there with the border on, as `start` gave it: the `layers` drawn and, in `lacking`, why a layer is not.
 - `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.
 - `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.
-- `knowledge` counts the entries of the base the names come from (`served`) and those not served yet (`held_back`), whose numbers stay numbers.
+- `knowledge` counts the entries the base serves (`served`) and those it holds without serving (`held_back`); an entry it holds stays a number.
 
 </details>
 
@@ -539,7 +538,7 @@ session, unavailable once a session has ended; with no session also a
 (`breakpoints`, `watches`, `regpoints`: each `ref`, `cpu`), `console_pending`,
 `throttles_pending`, `tallies_pending_removal`, and `broken` when the session can no longer
 be trusted: `close`, then `start`. Always `knowledge` (`served`, `held_back`): the entries of
-the base the replies name from, and those not served yet.
+the base the replies name from, and those held back as not confirmed.
 
 Reference: REFERENCE.md, The session.
 ```

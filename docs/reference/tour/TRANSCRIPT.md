@@ -149,7 +149,7 @@ Every call of the run with its reply, in order: 77 calls. `<volatile>` stands fo
   "console_pending": 0,
   "tallies_pending_removal": [],
   "frame_symbol": "frame",
-  "knowledge": {"served": 1005, "held_back": 3},
+  "knowledge": {"served": 75, "held_back": 647},
   "names": [
     {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
   ],
@@ -563,131 +563,57 @@ Every call of the run with its reply, in order: 77 calls. `<volatile>` stands fo
 
 </details>
 
-**9. `knowledge_find`**: OK base: the base answers the AY-3-8910's channel amplitude whole, in 6 rows
+**9. `knowledge_find`**: OK base: the base names the Z80's vector NMI, read at datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "kind": "register",
-  "key": "0x08",
-  "scope": "ay8910"
+  "kind": "vector",
+  "key": "0x66",
+  "scope": "z80"
 }
 ```
 
 ```json
 {
-  "summary": "kind register key 0x08: channel amplitude",
+  "summary": "kind vector key 0x66: NMI",
   "status": "ok",
-  "query": {"kind": "register", "key": "0x08"},
-  "scope": ["ay8910"],
+  "query": {"kind": "vector", "key": "0x66"},
+  "scope": ["z80"],
   "entries_total": 1,
   "entries": [
     {
-      "id": "ay8910:register:0x08..0x0A",
-      "kind": "register",
-      "key": "0x08..0x0A",
-      "name": "channel amplitude",
-      "scope": "ay8910",
-      "rows": [
-        {
-          "n": "1",
-          "on": "is",
-          "of": "doc",
-          "text": "R10, R11 and R12 are the amplitude registers of channels A, B and C; the lower 5 bits, B4 to B0, determine the amplitude.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "721-724"
-            },
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "725-729"
-            }
-          ]
-        },
-        {
-          "n": "2",
-          "on": "write",
-          "of": "doc",
-          "text": "A write to an amplitude register sets, in bits L3 to L0, the fixed amplitude level, which counts only when M is 0.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "736-743"
-            }
-          ],
-          "verdicts": {"mame": "differs"}
-        },
-        {
-          "n": "3",
-          "on": "write",
-          "of": "doc",
-          "text": "A write to an amplitude register sets the mode bit M: 0 selects a fixed level amplitude and 1 the envelope generator's output.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "734-735"
-            },
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "744-750"
-            }
-          ],
-          "verdicts": {"mame": "differs"}
-        },
-        {
-          "n": "5",
-          "on": "is",
-          "of": "doc",
-          "text": "A fixed level amplitude is one of the 16 levels, set by the decimal value of bits L3 to L0.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "780-784"
-            }
-          ]
-        },
-        {
-          "n": "6",
-          "on": "write",
-          "of": "mame",
-          "vs": "differs",
-          "row": "2",
-          "text": "In expanded mode MAME keeps a 5-bit fixed level, where the document gives L3 to L0, 4 bits.",
-          "cites": [
-            {"file": "src/devices/sound/ay8910.h", "lines": "277"}
-          ]
-        },
-        {
-          "n": "7",
-          "on": "write",
-          "of": "mame",
-          "vs": "differs",
-          "row": "3",
-          "text": "In expanded mode MAME takes the envelope mode from bit 5; a chip with extended envelope keeps a 2-bit mode, not the 1-bit M.",
-          "cites": [
-            {"file": "src/devices/sound/ay8910.h", "lines": "278"}
-          ]
-        }
-      ],
-      "aliases": ["volume"],
+      "id": "z80:vector:0x66",
+      "kind": "vector",
+      "key": "0x66",
+      "name": "NMI",
+      "scope": "z80",
+      "aliases": ["non-maskable interrupt"],
+      "description": "Target of a non-maskable interrupt.",
+      "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter and jumps here. RETN copies the second flip-flop back into the first.",
+      "address": "0x000066",
+      "length": 1,
+      "checked": true,
       "sources": [
         {
-          "where": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-          "url": "https://archive.org/download/GI_AY-3-8910_Feb-1979/GI_AY-3-8910_Feb-1979_text.pdf"
+          "role": "documentation",
+          "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
+          "cites": "restart at location 0066h."
         },
         {
-          "where": "src/devices/sound/ay8910.h",
-          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/sound/ay8910.h"
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
+          "cites": "\tPC = 0x0066;",
+          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
         }
       ]
     }
   ],
   "truncated": false,
-  "examined": 7,
-  "served": 1005,
-  "held_back": 3,
+  "examined": 9,
+  "served": 75,
+  "held_back": 647,
   "session": {
     "alive": true,
     "running": false,
@@ -2453,7 +2379,7 @@ Also attached: image/png.
   },
   "report": {
     "path": "./tmp/demos/tour/gridlee-gfx-draft-report.json",
-    "sha256": "eb9d7b9ff8cd11d6e7c31e83974c6b5ce346c04d8ff359542ceb6ea89dfc380e"
+    "sha256": "65b69eb2078b4578cfc071c2d3f6fc75014b6d825e9a28910ebfe958ca5d2cf0"
   },
   "formats": {"tiles_8x16x4": "human"},
   "asset_names": [],
@@ -3748,7 +3674,7 @@ Also attached: image/png.
 
 </details>
 
-**56. `screen_map_write`**: OK map: the level card mapped by its title, signed 5733a1938b03c102
+**56. `screen_map_write`**: OK map: the level card mapped by its title, fingerprinted 5733a1938b03c102
 
 <details><summary>call and reply</summary>
 
@@ -4665,7 +4591,7 @@ Also attached: image/png.
       "kind": "perform",
       "name": "two-coins",
       "file": ".scry/perform/two-coins.json",
-      "bytes": 3041,
+      "bytes": 3040,
       "change": "new"
     },
     {
@@ -4673,13 +4599,13 @@ Also attached: image/png.
       "kind": "start",
       "name": "gridlee",
       "file": ".scry/start/gridlee.json",
-      "bytes": 362,
+      "bytes": 361,
       "change": "new"
     }
   ],
   "unchanged": [],
-  "total_bytes": 3843,
-  "store_bytes": 5518,
+  "total_bytes": 3841,
+  "store_bytes": 5516,
   "would_create": [".scry/", ".scry/about.json", ".scry/README.md"],
   "session": {
     "alive": true,

@@ -29,7 +29,6 @@ from demos.free_set import (  # noqa: E402
 )
 
 SYSTEM = "starfire"
-#: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
 #: The first program ROM's CRC: the cpu sees it at 0x0, which is what `start` checks against.
 REFERENCE_CRC = 0x9990AF64
 #: The scratch RAM's first kilobyte. The driver mirrors it through its handler across
@@ -50,7 +49,7 @@ START = {"port": ":SYSTEM", "field": "1 Player Start", "frames": 4, "seconds": R
 #: burns it, so it is what says START was taken.
 FUEL, FUEL_WAITING = "0x82ab", 1500
 #: The frames each moment of the loop records: a second and a half, and a second.
-COUNTED_FRAMES, BACK_FRAMES = 90, 60
+COUNTED_FRAMES, BACK_FRAMES = 90, 150
 #: The frames recorded once START is pressed, and the three seconds of them the loop shows (179
 #: frames: 180 at the board's rate run past three): the mission as its first enemy closes in.
 MISSION_FRAMES, MISSION_SKIP, MISSION_SHOWN = 420, 228, 179

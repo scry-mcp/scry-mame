@@ -70,7 +70,7 @@
     "cfg": "A `.cfg` file the server installs as the system's own before it boots. Left empty, MAME runs on its defaults.",
     "binary": "The MAME to run: an executable, or a `.app` bundle holding one. Left empty, `MAME_BINARY`, else the `mame` on the PATH.",
     "presence": "Draws a border around the emulator's window while the session is open, brighter while a call runs the machine. `false` leaves it off.",
-    "overlay": "Marks over the border, on by default: `calls` names each call, `keys` the fields held, `pause` a stopped machine, `record` a recording. `place` is `top`, `bottom` or `auto`.",
+    "overlay": "Layers over the border, on by default: `record` a recording. `pointer` is always lacking: MAME draws no guest pointer.",
     "view": "What `snapshot` and `record` draw. Left empty, the emulated screen at its own size; else one of MAME's layout views, named by how its name begins.",
     "profile": "A start profile: a saved set of `start` arguments, by its name under `.scry/start/` or by a path. It fills only the arguments the call leaves out.",
     "names": "`false` leaves a reply's numbers bare, with no `names` field, no name in its summary and no note on a disassembled line."
@@ -115,7 +115,7 @@
     "**Symbols and files.**",
     "- A symbol file belongs to one cpu, because each cpu runs its own program. With `{cpu: path}`, `bases` and `types` are per cpu too, and the single shape is refused.\n- `symbols_total`, `symbols_typed`, `symbols_format` and `symbols_by_class` describe the first cpu's file; `symbols_by_cpu` counts each.\n- `boot_lua` runs after the server's own boot script, so `boot_lua_path` is the combined script. One that calls `manager.machine:exit()` ends the machine under the session.\n- With `state_dir` empty, saved states, `cfg/` and `nvram/` live in the temporary folder `scratch_dir` names. Nothing is written into your project either way.\n- `cfg` is copied to where MAME reads it; your file is never touched. MAME reports a rejected `.cfg` on stderr only, so the server reads that and refuses the start.\n- A `type:` line under a YAML symbol, or a `types` line, says what the symbol is, so a watch needs no `fmt`. A pointer's type names what it points at.",
     "**What else the reply says.**",
-    "- `version` is the build's own `-version` line and `recommended_release` the MAME version this server is tested on. Another version starts with a `note`, never a refusal.\n- `debugger.note`: the machine runs under the debugger, so a capture at a stop can land one frame from a reference capture an autoboot script took at the same frame count.\n- `machine` holds counts only; `machine_map` has the rows. If MAME's `-listxml` fails, the start still works and the `note` says what is left empty.\n- `frame_symbol` is the name the frame counter answers to; a board with no screen has none ([Run](run.md)).\n- `flags`, `env`, `view`, `background`, `binary_origin`, `errorlog_path` and `stdout_path` say what the launch used, so a start can be told from another by its own reply.\n- `presence` is `true` while the border is drawn. A failure drawing it never changes another reply: `presence`, here and in `status`, turns `available: false` with a `why`.\n- `overlay` is there with the border on: the `layers` drawn, the `place` in effect, and in `lacking` why one is not. MAME has no pointer, so that layer is lacking."
+    "- `version` is the build's own `-version` line and `recommended_release` the MAME version this server is tested on. Another version starts with a `note`, never a refusal.\n- `debugger.note`: the machine runs under the debugger, so a capture at a stop can land one frame from a reference capture an autoboot script took at the same frame count.\n- `machine` holds counts only; `machine_map` has the rows. If MAME's `-listxml` fails, the start still works and the `note` says what is left empty.\n- `frame_symbol` is the name the frame counter answers to; a board with no screen has none ([Run](run.md)).\n- `flags`, `env`, `view`, `background`, `binary_origin`, `errorlog_path` and `stdout_path` say what the launch used, so a start can be told from another by its own reply.\n- `presence` is `true` while the border is drawn. A failure drawing it never changes another reply: `presence`, here and in `status`, turns `available: false` with a `why`.\n- `overlay` is there with the border on: the `layers` drawn and, in `lacking`, why one is not. MAME has no pointer, so that layer is lacking."
    ],
    "related": [
     "status",
@@ -154,7 +154,7 @@
     "`status` answers in every state: with no session, while the machine runs and once the session is broken. It is where you learn why another tool does not answer."
    ],
    "why_more": [
-    "- With no session the reply is `last_stop` and, when there is one to give, a `note`. After MAME exited under the session it is `exit_code` and a `note`.\n- `debugger.note` says a capture at a stop can land one frame from an autoboot reference capture; `start` says why.\n- `threads` is empty on a MAME without the gdbstub thread patch, which gives each cpu a debugger thread. `cpu_tags` only names the cpus; what each is doing is `cpu_info`'s.\n- `console_pending` counts Lua lines sent and not yet run. `throttles_pending` lists speed switches asked and not yet applied (`tag`, `on`).\n- `tallies_pending_removal` lists write counts waiting to be removed (`tally_id`, `call`); a row that leaves is a removal done.\n- `presence` is `true` when the border is drawn, `false` when it was asked off, or the reason it is not drawn.\n- `overlay` is there with the border on, as `start` gave it: the `layers` drawn, the `place` in effect and, in `lacking`, why a layer is not.\n- `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.\n- `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.\n- `knowledge` counts the entries of the base the names come from (`served`) and those not served yet (`held_back`), whose numbers stay numbers."
+    "- With no session the reply is `last_stop` and, when there is one to give, a `note`. After MAME exited under the session it is `exit_code` and a `note`.\n- `debugger.note` says a capture at a stop can land one frame from an autoboot reference capture; `start` says why.\n- `threads` is empty on a MAME without the gdbstub thread patch, which gives each cpu a debugger thread. `cpu_tags` only names the cpus; what each is doing is `cpu_info`'s.\n- `console_pending` counts Lua lines sent and not yet run. `throttles_pending` lists speed switches asked and not yet applied (`tag`, `on`).\n- `tallies_pending_removal` lists write counts waiting to be removed (`tally_id`, `call`); a row that leaves is a removal done.\n- `presence` is `true` when the border is drawn, `false` when it was asked off, or the reason it is not drawn.\n- `overlay` is there with the border on, as `start` gave it: the `layers` drawn and, in `lacking`, why a layer is not.\n- `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.\n- `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.\n- `knowledge` counts the entries the base serves (`served`) and those it holds without serving (`held_back`); an entry it holds stays a number."
    ],
    "related": [
     "start",
@@ -2383,7 +2383,7 @@
     "assets",
     "status_counts"
    ],
-   "reads": "One format and one asset, and all nine entries of the file are `proved`. The asset `sprites` reads the region `gfx1` in the format `sprite`, with the palette device `palette`.",
+   "reads": "One format and one asset, and all 16 entries of the file are `proved`. The asset `sprites` reads the region `gfx1` in the format `sprite`, with the palette device `palette`.",
    "arguments": {
     "path": "The absolute path of the `gfx.yaml`. A load replaces the one before."
    },
@@ -3874,7 +3874,7 @@
     "cut",
     "kept"
    ],
-   "reads": "Nine calls replay, three of them as checks, and 14 calls were left out. `cut` is unavailable because nothing ended the script early; `kept` says the script is now a candidate for `promote`.",
+   "reads": "Nine calls replay, three of them as checks, and 15 calls were left out. `cut` is unavailable because nothing ended the script early; `kept` says the script is now a candidate for `promote`.",
    "arguments": {
     "dest": "The `.json` file to write, required: absolute, or starting with `~`. Refused when it exists, unless `overwrite`.",
     "overwrite": "`true` replaces a `dest` that is already there. Left out, an existing file is refused."
@@ -3973,45 +3973,45 @@
    ]
   },
   "knowledge_find": {
-   "what": "Ask what a number is called on this machine and what its documentation says it does: a vector, a chip register, an input, a device.",
-   "on": "Needs no session and no program: the base answers from its own copy, for any chip it holds.",
-   "ask": "What do registers 8 to 10 of the AY-3-8910 do, and does MAME follow the manual?",
+   "what": "Ask what a number is called on this machine and what the server knows about it: a vector, a chip register, an input, a device.",
+   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The base needs no session for what it holds, so it answers about a Z80 too.",
+   "ask": "What does the Z80 do at 0x66?",
    "call": {
-    "kind": "register",
-    "key": "0x08",
-    "scope": "ay8910"
+    "kind": "vector",
+    "key": "0x66",
+    "scope": "z80"
    },
    "shows": [
     "summary",
     "entries_total",
     "examined"
    ],
-   "reads": "One entry matches, so it comes whole: the manual's rows first, with MAME's verdict where it gave one, then MAME's own notes. Each row cites its lines, and `sources` links each document once.",
+   "reads": "One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 does when it is taken, and its source lines. `examined` counts the entries the search read: nine.",
    "arguments": {
-    "id": "An entry's id, as another reply cites it, such as `ay8910:register:0x07`: that entry whole. `<id>#<n>`, such as `ay8910:register:0x07#1`, answers its row `n`, with a link to each line.",
+    "id": "An entry's id, as another reply cites it, such as `z80:vector:0x66`. Answers that entry whole.",
     "kind": "What the number is: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`, `device`, `register` or `command`. Left empty, every kind.",
     "key": "The number as a reply prints it, or a range such as `0x3C0..0x3CF`; for an `input`, `:IN1/Coin 1`.",
-    "text": "Words looked for in names, aliases and the rows' text. A word ending in `*` matches by prefix.",
+    "text": "Words looked for in names, aliases, descriptions and behaviour. A word ending in `*` matches by prefix.",
     "device": "A chip's key, or a tag of the running machine such as `:ymsnd`: everything that belongs to it.",
-    "scope": "A chip or a cpu: `ay8910`, `pic8259`. Left empty, the session's cpus and chips; with no session, all.",
+    "scope": "A cpu or a chip: `z80`, `mc6845`. Left empty, the session's cpus and chips; with no session, all.",
     "limit": "How many entries are listed: 1 to 50. Left out, 10."
    },
    "returns": {
-    "entries": "Rows with `id`, `kind`, `key`, `name`, and `live: true` on the machine's own. One match or an `id` answers whole: `rows`, the document's first with `verdicts`, then MAME's notes.",
+    "entries": "Rows with `id`, `kind`, `key`, `name`; one match, or an `id`, answers whole with `description`, `behaviour` and `sources`. A machine's own row has `live: true`.",
     "entries_total": "How many entries matched.",
     "truncated": "`true` when more matched than `entries` lists.",
     "examined": "How many entries were searched, so a zero says what it is a zero of.",
     "nearest": "When nothing matched: the entries next to the number or the words.",
-    "note": "When nothing matched: that the number stays a number."
+    "note": "When nothing matched, or an entry is held back: that the number stays a number."
    },
    "refuses": [
     "None of `id`, `kind`, `key`, `text`, `device` (`bad_argument`).",
     "A `key` that is no number or range of that `kind`, or a `scope` the server does not hold (`bad_argument`).",
-    "An `id`, a row `<id>#<n>` or a `device` the base does not hold (`unknown_ref`).",
+    "An `id` or a `device` the base does not hold (`unknown_ref`); one whose entry is held back is no refusal: it answers `unconfirmed`.",
     "A kind read from the machine with no session (`no_session`)."
    ],
    "why": [
-    "An entry says what the chip's or the cpu's documentation says, and MAME's code where it differs, with the lines each row was read from. The base is the server's own copy: it answers while the program runs.",
+    "Each entry was checked against its source, and an answer says where it was read. A key the base has not confirmed answers `unconfirmed` and stays a number. The base is the server's own copy: it answers while the program runs.",
     "What the machine says about itself (inputs, devices, the memory map) was read at `start` and is never asked of MAME again, so it cannot slow a call."
    ],
    "related": [

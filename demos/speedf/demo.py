@@ -18,7 +18,6 @@ from demos import free_set  # noqa: E402
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "speedf"
-#: The layers that exist for this demo (MAME has no pointer): its calls: it presses nothing.
 #: What the game's copy holds once built: the start profile, the linker's image and the
 #: romset staged with its map. The profile names the last two as well; the precheck reads them
 #: here so a copy that is not built is refused with its own words before `start` is paid for.

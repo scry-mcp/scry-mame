@@ -85,14 +85,13 @@ package. The run then checks the pinned package while looking like a run on the 
 
 A tool's reply model is its contract:
 
-- A number whose natural notation is hex (an address, an offset, a port) is answered as `0x`
-  text, and taken as `0x` text or an integer.
 - A field every `ok` reply carries is `Required[...]` in the model.
 - A field that comes only sometimes is `Annotated[T, When("words")]`, and the tool's `Reply:`
   sentence says those words beside it.
 - A value that could not be read is `unavailable(why)`, never absent.
 
-The tests refuse an `ok` reply that lacks a required field. `tests/test_reply_models.py` refuses
+The reply's rule for numbers, hex or decimal, is [REFERENCE.md](REFERENCE.md)'s, under *Names
+for addresses*. The tests refuse an `ok` reply that lacks a required field. `tests/test_reply_models.py` refuses
 a promised field whose condition the sentence does not say.
 
 A change to a tool's arguments, reply model or description changes its reference page.
@@ -265,9 +264,7 @@ page from a run where every step passed: the two generated blocks of its README,
   two demos on free ROMs.
 - `loop.webp` shows the demo's moments, each cut from a `record` step of the run. ffmpeg
   decodes the recordings and `img2webp` assembles the file; without either on the `PATH` the
-  update is refused by name. The loop is drawn over with the call captions and the keys the
-  demo presses, from the timeline the run wrote beside its transcript: each demo declares its
-  `LAYERS`, and Pillow and numpy (the `decorate` extra, part of the dev group) do the drawing.
+  update is refused by name. The loop is the run's own frames: nothing is drawn over them.
 - The LineUp demo also writes what the README opens with: its clip, a caption and one step of
   the run as an exchange, all named in its `Lead`.
 - A second run gives the same page. `loop.webp` alone may differ in its bytes.

@@ -33,8 +33,8 @@ Reply, 5 of 8 fields:
 {
   "store": "./tmp/demos/tour/.scry",
   "unchanged": [],
-  "total_bytes": 3843,
-  "store_bytes": 5518,
+  "total_bytes": 3841,
+  "store_bytes": 5516,
   "would_create": [".scry/", ".scry/about.json", ".scry/README.md"]
 }
 ```
@@ -62,7 +62,7 @@ A review writes nothing: `total_bytes` is the size of its candidates, and `store
       "kind": "perform",
       "name": "two-coins",
       "file": ".scry/perform/two-coins.json",
-      "bytes": 3041,
+      "bytes": 3040,
       "change": "new"
     },
     {
@@ -70,13 +70,13 @@ A review writes nothing: `total_bytes` is the size of its candidates, and `store
       "kind": "start",
       "name": "gridlee",
       "file": ".scry/start/gridlee.json",
-      "bytes": 362,
+      "bytes": 361,
       "change": "new"
     }
   ],
   "unchanged": [],
-  "total_bytes": 3843,
-  "store_bytes": 5518,
+  "total_bytes": 3841,
+  "store_bytes": 5516,
   "would_create": [".scry/", ".scry/about.json", ".scry/README.md"]
 }
 ```

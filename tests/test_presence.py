@@ -314,30 +314,24 @@ def test_overlay_is_in_the_reply_only_with_a_presence_that_is_on() -> None:
         "notes": mpresence.STOPPED_LIMITS}}
 
 
-def test_the_session_holds_the_machine_stopped_only_while_alive_whole_and_not_running() -> None:
-    class Ses:
-        running = False
-        broken: str | None = None
-
-    class Proc:
-        def __init__(self, code: int | None) -> None:
-            self.code = code
-
-        def poll(self) -> int | None:
-            return self.code
-
+def test_overlay_is_not_described_when_the_drawer_stopped(tmp_path: Path) -> None:
+    """`presence` and `overlay` in one reply cannot say both that nothing is drawn and what is."""
     state = mstate.State()
-    ses = Ses()
-    assert state.holds_stopped() is False
-    state.ses, state.proc = ses, Proc(None)  # type: ignore[assignment]
-    assert state.holds_stopped() is True
-    ses.running = True
-    assert state.holds_stopped() is False
-    ses.running, ses.broken = False, "lost its place"
-    assert state.holds_stopped() is False
-    ses.broken = None
-    state.proc = Proc(0)  # type: ignore[assignment]
-    assert state.holds_stopped() is False
+    state.scratch = tmp_path
+    state.overlay = overlay.Overlay()
+    state.presence = presence.Shown(held=_Drawn())  # type: ignore[arg-type]
+    assert state.overlay_field() != {}
+    (tmp_path / mpresence.BROKEN_FILE).write_text("attempt to index a nil value")
+    said = state.presence_shown()
+    assert isinstance(said, dict) and said["available"] is False
+    assert state.overlay_field() == {}
+
+
+def test_start_s_overlay_description_says_what_mame_draws() -> None:
+    """A client reads the schema's sentence: a pointer MAME always lacks cannot be offered."""
+    tool = next(t for t in asyncio.run(s.mcp.list_tools()) if t.name == "start")
+    said = tool.input_schema["properties"]["overlay"]["description"]
+    assert "always lacking" in said and "mouse pointer" not in said, said
 
 
 def test_start_takes_the_overlay_as_one_object_and_a_profile_may_fill_it() -> None:

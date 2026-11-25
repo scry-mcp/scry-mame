@@ -155,7 +155,7 @@ Reference: REFERENCE.md, Names for addresses.
 <!-- scry-reference:begin knowledge_find -->
 ## `knowledge_find`
 
-Ask what a number is called on this machine and what its documentation says it does: a vector, a chip register, an input, a device.
+Ask what a number is called on this machine and what the server knows about it: a vector, a chip register, an input, a device.
 
 ```text
 knowledge_find(id="", kind="", key="", text="", device="", scope="", limit=10)
@@ -163,145 +163,69 @@ knowledge_find(id="", kind="", key="", text="", device="", scope="", limit=10)
 
 ### Try it
 
-Needs no session and no program: the base answers from its own copy, for any chip it holds.
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The base needs no session for what it holds, so it answers about a Z80 too.
 
 Ask:
 
-> What do registers 8 to 10 of the AY-3-8910 do, and does MAME follow the manual?
+> What does the Z80 do at 0x66?
 
 Call:
 
 ```text
-knowledge_find(kind="register", key="0x08", scope="ay8910")
+knowledge_find(kind="vector", key="0x66", scope="z80")
 ```
 
-Reply, 3 of 10 fields:
+Reply, 3 of 8 fields:
 
 ```json
 {
-  "summary": "kind register key 0x08: channel amplitude",
+  "summary": "kind vector key 0x66: NMI",
   "entries_total": 1,
-  "examined": 7
+  "examined": 9
 }
 ```
 
-One entry matches, so it comes whole: the manual's rows first, with MAME's verdict where it gave one, then MAME's own notes. Each row cites its lines, and `sources` links each document once.
+One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 does when it is taken, and its source lines. `examined` counts the entries the search read: nine.
 
 <details><summary>The whole reply</summary>
 
 ```json
 {
-  "summary": "kind register key 0x08: channel amplitude",
+  "summary": "kind vector key 0x66: NMI",
   "status": "ok",
-  "query": {"kind": "register", "key": "0x08"},
-  "scope": ["ay8910"],
+  "query": {"kind": "vector", "key": "0x66"},
+  "scope": ["z80"],
   "entries_total": 1,
   "entries": [
     {
-      "id": "ay8910:register:0x08..0x0A",
-      "kind": "register",
-      "key": "0x08..0x0A",
-      "name": "channel amplitude",
-      "scope": "ay8910",
-      "rows": [
-        {
-          "n": "1",
-          "on": "is",
-          "of": "doc",
-          "text": "R10, R11 and R12 are the amplitude registers of channels A, B and C; the lower 5 bits, B4 to B0, determine the amplitude.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "721-724"
-            },
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "725-729"
-            }
-          ]
-        },
-        {
-          "n": "2",
-          "on": "write",
-          "of": "doc",
-          "text": "A write to an amplitude register sets, in bits L3 to L0, the fixed amplitude level, which counts only when M is 0.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "736-743"
-            }
-          ],
-          "verdicts": {"mame": "differs"}
-        },
-        {
-          "n": "3",
-          "on": "write",
-          "of": "doc",
-          "text": "A write to an amplitude register sets the mode bit M: 0 selects a fixed level amplitude and 1 the envelope generator's output.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "734-735"
-            },
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "744-750"
-            }
-          ],
-          "verdicts": {"mame": "differs"}
-        },
-        {
-          "n": "5",
-          "on": "is",
-          "of": "doc",
-          "text": "A fixed level amplitude is one of the 16 levels, set by the decimal value of bits L3 to L0.",
-          "cites": [
-            {
-              "document": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-              "lines": "780-784"
-            }
-          ]
-        },
-        {
-          "n": "6",
-          "on": "write",
-          "of": "mame",
-          "vs": "differs",
-          "row": "2",
-          "text": "In expanded mode MAME keeps a 5-bit fixed level, where the document gives L3 to L0, 4 bits.",
-          "cites": [
-            {"file": "src/devices/sound/ay8910.h", "lines": "277"}
-          ]
-        },
-        {
-          "n": "7",
-          "on": "write",
-          "of": "mame",
-          "vs": "differs",
-          "row": "3",
-          "text": "In expanded mode MAME takes the envelope mode from bit 5; a chip with extended envelope keeps a 2-bit mode, not the 1-bit M.",
-          "cites": [
-            {"file": "src/devices/sound/ay8910.h", "lines": "278"}
-          ]
-        }
-      ],
-      "aliases": ["volume"],
+      "id": "z80:vector:0x66",
+      "kind": "vector",
+      "key": "0x66",
+      "name": "NMI",
+      "scope": "z80",
+      "aliases": ["non-maskable interrupt"],
+      "description": "Target of a non-maskable interrupt.",
+      "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter a ... (308 characters)",
+      "address": "0x000066",
+      "length": 1,
+      "checked": true,
       "sources": [
         {
-          "where": "General Instrument AY-3-8910/8912 programmable sound generator data manual",
-          "url": "https://archive.org/download/GI_AY-3-8910_Feb-1979/GI_AY-3-8910_Feb-1979_text.pdf"
+          "role": "documentation",
+          "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
+          "cites": "restart at location 0066h."
         },
         {
-          "where": "src/devices/sound/ay8910.h",
-          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/sound/ay8910.h"
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
+          "cites": "\tPC = 0x0066;",
+          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
         }
       ]
     }
   ],
   "truncated": false,
-  "examined": 7,
-  "served": 1008,
-  "held_back": 0
+  "examined": 9
 }
 ```
 
@@ -309,22 +233,22 @@ One entry matches, so it comes whole: the manual's rows first, with MAME's verdi
 
 ### Arguments
 
-- `id` (string, default `""`): An entry's id, as another reply cites it, such as `ay8910:register:0x07`: that entry whole. `<id>#<n>`, such as `ay8910:register:0x07#1`, answers its row `n`, with a link to each line.
+- `id` (string, default `""`): An entry's id, as another reply cites it, such as `z80:vector:0x66`. Answers that entry whole.
 - `kind` (one of `""`, `"vector"`, `"call"`, `"error"`, `"port"`, `"irq"`, `"memory"`, `"input"`, `"device"`, `"register"`, `"command"`, default `""`): What the number is: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`, `device`, `register` or `command`. Left empty, every kind.
 - `key` (string, default `""`): The number as a reply prints it, or a range such as `0x3C0..0x3CF`; for an `input`, `:IN1/Coin 1`.
-- `text` (string, default `""`): Words looked for in names, aliases and the rows' text. A word ending in `*` matches by prefix.
+- `text` (string, default `""`): Words looked for in names, aliases, descriptions and behaviour. A word ending in `*` matches by prefix.
 - `device` (string, default `""`): A chip's key, or a tag of the running machine such as `:ymsnd`: everything that belongs to it.
-- `scope` (string, default `""`): A chip or a cpu: `ay8910`, `pic8259`. Left empty, the session's cpus and chips; with no session, all.
+- `scope` (string, default `""`): A cpu or a chip: `z80`, `mc6845`. Left empty, the session's cpus and chips; with no session, all.
 - `limit` (integer, default `10`): How many entries are listed: 1 to 50. Left out, 10.
 
 ### What comes back
 
-- `entries`: Rows with `id`, `kind`, `key`, `name`, and `live: true` on the machine's own. One match or an `id` answers whole: `rows`, the document's first with `verdicts`, then MAME's notes.
+- `entries`: Rows with `id`, `kind`, `key`, `name`; one match, or an `id`, answers whole with `description`, `behaviour` and `sources`. A machine's own row has `live: true`.
 - `entries_total`: How many entries matched.
 - `truncated`: `true` when more matched than `entries` lists.
 - `examined`: How many entries were searched, so a zero says what it is a zero of.
 - `nearest`: When nothing matched: the entries next to the number or the words.
-- `note`: When nothing matched: that the number stays a number.
+- `note`: When nothing matched, or an entry is held back: that the number stays a number.
 
 <details><summary>All 10 reply fields</summary>
 
@@ -345,12 +269,12 @@ One entry matches, so it comes whole: the manual's rows first, with MAME's verdi
 
 - None of `id`, `kind`, `key`, `text`, `device` (`bad_argument`).
 - A `key` that is no number or range of that `kind`, or a `scope` the server does not hold (`bad_argument`).
-- An `id`, a row `<id>#<n>` or a `device` the base does not hold (`unknown_ref`).
+- An `id` or a `device` the base does not hold (`unknown_ref`); one whose entry is held back is no refusal: it answers `unconfirmed`.
 - A kind read from the machine with no session (`no_session`).
 
 ### Why it works this way
 
-An entry says what the chip's or the cpu's documentation says, and MAME's code where it differs, with the lines each row was read from. The base is the server's own copy: it answers while the program runs.
+Each entry was checked against its source, and an answer says where it was read. A key the base has not confirmed answers `unconfirmed` and stays a number. The base is the server's own copy: it answers while the program runs.
 
 What the machine says about itself (inputs, devices, the memory map) was read at `start` and is never asked of MAME again, so it cannot slow a call.
 
@@ -364,20 +288,19 @@ What the machine says about itself (inputs, devices, the memory map) was read at
 <details><summary>The contract your client receives</summary>
 
 ```text
-What a number is called on the machine and what the base knows of it: a port, vector,
-DOS or BIOS call, IRQ, memory address, input, device, register or command. One match, or an
-`id`, answers the entry: its `rows`, the document's first with each emulator's `verdicts`,
-then the emulators' notes (`vs`); `id=<id>#<n>`: a row, with URLs. More: a list. No session
-is needed except for a device by tag, inputs and memory.
+What a number is called on this machine, and what the base knows of it: a port, interrupt
+vector, DOS or BIOS call, IRQ, memory address, input, device, its registers and commands. One
+match, or an `id`, answers the whole entry (`description`, `behaviour`, `sources`); more,
+rows. No session is needed except for a device by tag, inputs and memory.
 
 `id`: an entry's id. `kind`: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`,
 `device`, `register` or `command`; empty searches all. `key`: the number as a reply prints it,
-or a range. `text`: words in names, aliases, rows; `*` ends a prefix. `device`: all of
+or a range. `text`: words in names, aliases, descriptions; `*` ends a prefix. `device`: all of
 that device. `scope`: the system, cpu or device; empty, the live session's. `limit` 1..50.
 
-Examples: `key=0x3C8`; `kind=vector key=0xFFF8 scope=<scope>`; `kind=call key=0x21/0x4C`,
-a variant `kind=call key=0x10/0x12/BL=0x36`;
-a live device by tag `kind=device key=:maincpu`; its registers
+Examples: `key=0x3C8`; `kind=port key=0x3C0..0x3CF`; `kind=vector key=0xFFF8 scope=<scope>`;
+`kind=call key=0x21/0x4C`, its variant by a register `kind=call key=0x10/0x12/BL=0x36`;
+a running machine's device by tag `kind=device key=:maincpu`; its registers
 `kind=register device=<device>`; `text=palette*`.
 
 Refused (INVALID): nothing to look up, a bad `key`, or a `scope` it lacks
@@ -389,7 +312,7 @@ Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`, `s
 `held_back`; nothing matched: no entry, `nearest` and a `note`: it stays a number.
 `unconfirmed` lists ids held back.
 
-Scopes: acia6850, aica, am9517a, ay8910, c140, c219, c352, c6280, chip, es5505, es5506, hd44780, i8251, i8255, ins8250, k007232, k054539, m68000, m6809, mc146818, mc6845, mc68681, msm5205, nes_apu, okim6295, pia6821, pic8259, pit8253, pokey, ppu2c0x, qsound, rf5c68, saa1099, scsp, sega315_5124, sega315_5313, sn76496, tms9928a, upd1990a, upd7759, v30, v9938, x1010, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, ymf278b, z80, z80scc, z80sio.
+Scopes: am9517a, chip, ins8250, mc146818, mc6845, pic8259, saa1099, sn76496, ym3812, ymf262, z80.
 
 Reference: REFERENCE.md, Knowledge base.
 ```

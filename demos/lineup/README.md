@@ -7,7 +7,7 @@
 2. `input` moves the player one column right and fires again.
 3. `input` raises the next colour and fires a third time.
 
-<!-- moments-ms: 1018,1018,1018 -->
+<!-- moments-ms: 2017,2017,2017 -->
 <!-- demo-motion:end -->
 
 *LineUp* (Eco-Games / GAMART, 1994) ran on an NEC V30 arcade board, and its team ported the
@@ -42,8 +42,7 @@ does not take your keyboard; `--watch` brings it in front, for when you want to 
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png` and
   `loop.webp`, from a run where every step passed. It needs ffmpeg and `img2webp` on your
-  `PATH`, and Pillow and numpy (the `decorate` extra), which draw the call captions and the keys
-  over the loop.
+  `PATH`.
 
 Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
 That last one is a missing ROM set, a relative path, a copy without the game's map or a
@@ -171,7 +170,7 @@ Call:
 read_memory(ref="Credits", length=2)
 ```
 
-Reply, 3 of 8 fields:
+Reply, 3 of 9 fields:
 
 ```json
 {
@@ -194,6 +193,9 @@ Reply, 3 of 8 fields:
   "length": 2,
   "hex": "0300",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x914A", "kind": "symbol", "name": "Credits"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -279,7 +281,7 @@ Reply, 2 of 12 fields:
    reading `Player1`.
 10. Record two seconds of sound, measure it and compare it with `music.wav`.
 11. Shoot three more times: where the player stands, one column to the right, and with the
-    next colour. Record a second of video after each shot.
+    next colour. Record two seconds of video after each shot.
 12. Take a picture of the screen and close.
 
 </details>
@@ -305,6 +307,7 @@ Each group is a page of the reference. Three of the names need a word:
 
 ## The transcript
 
-[TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The two seconds of
-music it records must equal [`music.wav`](music.wav) sample for sample (`win32/music.wav` on
-Windows, where MAME mixes the sound differently).
+[TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The paths of your
+copy read `<host>` there, because they are your computer's. The two seconds of music it records
+must equal [`music.wav`](music.wav) sample for sample (`win32/music.wav` on Windows, where MAME
+mixes the sound differently).

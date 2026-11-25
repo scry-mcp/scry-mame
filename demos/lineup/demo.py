@@ -22,7 +22,6 @@ from demos import free_set  # noqa: E402
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "lineup"
-#: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
 #: The game's own `.scry/` folder declares its screen map; `--cwd` is that copy.
 SCREEN_MAP = Path(".scry/maps/lineup-screen-map.json")
 

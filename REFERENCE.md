@@ -4,7 +4,7 @@ This page is for a rule that several tools share. It holds the list of tools, th
 
 Each tool has its own entry, with arguments, reply and example, on its family's page under `docs/reference/`; a family is a group of tools. To install, see the [README](README.md).
 
-Each example is a call of the example session: one session on Gridlee, a free ROM from mamedev.org, kept whole in [`docs/reference/tour/TRANSCRIPT.md`](docs/reference/tour/TRANSCRIPT.md).
+Each example is a call of the example session, one session on Gridlee (a free ROM from mamedev.org), kept whole in [`docs/reference/tour/TRANSCRIPT.md`](docs/reference/tour/TRANSCRIPT.md). The three tools Gridlee cannot exercise (`cpu_focus`, `palette_log`, `gfx_blit_source`) show a test program's reply instead.
 
 A path in an example that starts with `./` stands for the folder of your clone, and `$TMPDIR` for your temporary folder. Write the whole path in your own call: a relative one is refused.
 
@@ -107,7 +107,7 @@ What each one is for:
 
 ### The `session` block
 
-`session` closes every reply and is read after the tool's work. It says `alive` (MAME is up), `running` (the program runs, not stopped at the debugger) and `altered`.
+`session` closes every reply and is read after the tool's work. It says `alive` (MAME is up), `running` (the program runs, not stopped at the debugger) and `altered`. The examples on the tool pages leave it out: it is the same block every time.
 
 **`altered` says something wrote to the machine.** A write is allowed: `write`, `set_register`, a `lua` script, a `debug` line that changes the machine. Every later reply then says `altered: true`, because a measurement on a forced value does not describe the game's own run.
 
@@ -188,7 +188,7 @@ The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakp
 
 ## Knowledge base
 
-A reply calls a number by its name where the server knows one, so you do not look it up: `NMI (0x66)`, with the number and its name in the reply's `names` field.
+A reply names a number where the server knows one: `NMI (0x66)`, with the name in the reply's `names` field.
 
 - **Where a name comes from.** A symbol you typed as a `ref` keeps its name. An address is named by the nearest symbol, else the memory region or share the map names.
 - **What the base holds.** The devices, registers and commands of chips. A number it has no entry for stays a number.

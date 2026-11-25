@@ -626,7 +626,7 @@ Reply, 6 of 10 fields:
 }
 ```
 
-Nine calls replay, three of them as checks, and 14 calls were left out. `cut` is unavailable because nothing ended the script early; `kept` says the script is now a candidate for `promote`.
+Nine calls replay, three of them as checks, and 15 calls were left out. `cut` is unavailable because nothing ended the script early; `kept` says the script is now a candidate for `promote`.
 
 <details><summary>The whole reply</summary>
 

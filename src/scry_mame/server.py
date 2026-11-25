@@ -118,6 +118,7 @@ from scry_mame import map as mmap  # noqa: E402
 from scry_mame import maps as mmaps  # noqa: E402
 from scry_mame import naming as mnaming  # noqa: E402
 from scry_mame import palette as mpalette  # noqa: E402
+from scry_mame import presence as mpresence  # noqa: E402
 from scry_mame import promote as mpromote  # noqa: E402
 from scry_mame import ramdac as mramdac  # noqa: E402
 from scry_mame import recording as mrec
@@ -169,13 +170,13 @@ def start(
     binary: str = "",
     presence: Annotated[bool, Field(description=scry_presence.ARGUMENT)] = True,
     overlay: Annotated[scry_overlay.Overlay,
-                       Field(description=scry_overlay.ARGUMENT)] = scry_overlay.OVERLAY,
+                       Field(description=mpresence.OVERLAY_ARGUMENT)] = scry_overlay.OVERLAY,
     view: Annotated[str, Field(description=launch.VIEW_ARGUMENT)] = "",
     names: scry_naming.Switch = True,
     profile: str = "",
     ctx: Context[Any, Any] | None = None,
 ) -> dict[str, Any]:
-    """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
+    """Start MAME with its gdbstub, stopped at its debugger, checked against the reference image.
 
     Paths are absolute or `~`-led: `rompath` and `inipath` `;`-separated directories, `state_dir`
     a directory, the rest files. `binary` names a MAME executable or a `.app` bundle carrying

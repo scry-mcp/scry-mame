@@ -7,7 +7,7 @@
 2. `state_write` loads the state saved at four coins, and FUEL is back at 1500.
 3. `input` presses START: the mission begins and its first enemy closes in.
 
-<!-- moments-ms: 1504,1003,2992 -->
+<!-- moments-ms: 1504,2507,2992 -->
 <!-- demo-motion:end -->
 
 Exidy's *Star Fire* (1979) is a space shooter on a Z80. This demo drops coins into it and finds
@@ -41,8 +41,7 @@ does not take your keyboard; `--watch` brings it in front, for when you want to 
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png`,
   `loop.webp` and the README's example calls, from a run where every step passed. It needs
-  ffmpeg and `img2webp` on your `PATH`, and
-  Pillow and numpy (the `decorate` extra), which draw the call captions and the keys over the loop.
+  ffmpeg and `img2webp` on your `PATH`.
 
 Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
 That last one is a missing ROM, a relative path or a server that did not start.

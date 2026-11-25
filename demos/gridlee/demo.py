@@ -27,7 +27,6 @@ from demos.free_set import (  # noqa: E402
 )
 
 SYSTEM = "gridlee"
-#: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
 #: The first program ROM's CRC: the cpu sees it at 0xA000, which is what `start` checks against.
 REFERENCE_CRC = 0x1C43539E
 #: The first 2 KB of the cpu's space (the `:spriteram` share), where the scan finds the credits.
@@ -52,7 +51,7 @@ SETTLE = {"milliseconds": 500, "seconds": RUN_S}
 COIN_MS = 2000
 #: The frames one moment records, and the eight seconds the game plays after START. A moment is
 #: 2.53 s at this board's rate, inside `motion.CUT_SECONDS`, and five of them fit
-#: `motion.LOOP_SECONDS`; the caption a call leaves behind is held for longer than that.
+#: `motion.LOOP_SECONDS`.
 MOMENT_FRAMES, PLAY_FRAMES = 150, 480
 
 
@@ -247,7 +246,7 @@ STEPS = [
 ]
 
 #: One moment per call, each ending at a `record` step right after it: the cut begins where the
-#: call left the machine, so its caption is still on screen.
+#: call left the machine.
 MOMENTS = (
     Moment("writer", "routine",
            "`disassemble` reads the coin routine at `0xb583`: the binary add, then the BCD.",
@@ -268,7 +267,5 @@ MOMENTS = (
 DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
                      "Gridlee starting a game, then counting a coin after a saved state is loaded")
 
-#: The share of the picture the live drawer's text takes, so the clip's text matches the window:
-#: MAME's UI font is a fixed size against this window's picture, and the clip's own picture is
 if __name__ == "__main__":
     sys.exit(core.main(DEMO))
