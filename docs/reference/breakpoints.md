@@ -47,7 +47,7 @@ Call:
 breakpoint_at(ref="take_credit")
 ```
 
-Reply, 6 of 12 fields:
+Reply, 6 of 13 fields:
 
 ```json
 {
@@ -99,7 +99,10 @@ The first call's:
   "addr": "0x0000d676",
   "armed": true,
   "state": "armed",
-  "entry": "3 @ D676"
+  "entry": "3 @ D676",
+  "names": [
+    {"field": "given.ref", "number": "0xD676", "kind": "symbol", "name": "take_credit"}
+  ]
 }
 ```
 
@@ -328,7 +331,7 @@ Call:
 run_for(frames=1, seconds=300)
 ```
 
-Reply, 5 of 22 fields:
+Reply, 5 of 23 fields:
 
 ```json
 {
@@ -413,7 +416,16 @@ The second call's:
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "names": [
+    {
+      "field": "regpoint_hit.pc",
+      "number": "0x0000d67b",
+      "kind": "symbol",
+      "name": "take_credit",
+      "delta": 5
+    }
+  ]
 }
 ```
 
@@ -534,7 +546,7 @@ Call:
 watch_add(ref="credits_bcd", mode="change")
 ```
 
-Reply, 6 of 19 fields:
+Reply, 6 of 20 fields:
 
 ```json
 {
@@ -555,7 +567,7 @@ Call:
 run_for(frames=1, seconds=300)
 ```
 
-Reply, 5 of 22 fields:
+Reply, 5 of 23 fields:
 
 ```json
 {
@@ -593,7 +605,10 @@ The first call's:
   "entry": "1 @ 042C-042C write",
   "write_maps_to": "memory@0",
   "read_maps_to": "memory@0",
-  "values_from": "memory"
+  "values_from": "memory",
+  "names": [
+    {"field": "given.ref", "number": "0x042C", "kind": "symbol", "name": "credits_bcd"}
+  ]
 }
 ```
 
@@ -655,7 +670,16 @@ The second call's:
     "before": 2,
     "after": 3,
     "lines": ["Stopped at watchpoint 1 writing 03 to 042C (PC=B58C)"]
-  }
+  },
+  "names": [
+    {
+      "field": "watch_hit.writer_pc",
+      "number": "0x0000b58c",
+      "kind": "symbol",
+      "name": "count_coin",
+      "delta": 9
+    }
+  ]
 }
 ```
 

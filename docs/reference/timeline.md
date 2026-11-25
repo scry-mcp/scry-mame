@@ -33,13 +33,13 @@ Reply, 5 of 13 fields:
 
 ```json
 {
-  "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 ... (125 characters)",
+  "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 ... (127 characters)",
   "draft": false,
   "formats": {"sprite": "proved"},
   "assets": {
     "sprites": {"format": "sprite", "tag": "gfx1", "palette": "palette"}
   },
-  "status_counts": {"proved": 9, "declared": 0, "human": 0}
+  "status_counts": {"proved": 16, "declared": 0, "human": 0}
 }
 ```
 
@@ -49,12 +49,12 @@ One format and one asset, and all nine entries of the file are `proved`. The ass
 
 ```json
 {
-  "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 asset, 1 command, 0 palette ports; 9 proved, 0 declared, 0 human",
+  "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 asset, 2 commands, 0 palette ports; 16 proved, 0 declared, 0 human",
   "status": "ok",
   "loaded": true,
   "replaced_path": {"available": false, "why": "no manifest was loaded in this session before this one"},
   "path": "./docs/reference/tour/gridlee-gfx.yaml",
-  "sha256": "b79a770ebbbc34d15656c24e1aa3ec68ed95065ab8dc3606d69c43845846e753",
+  "sha256": "4f19460d57d18c6d2a23b84017798676eeaff818bdecae8bae3e845c88fab2e1",
   "draft": false,
   "systems": ["gridlee"],
   "formats": {"sprite": "proved"},
@@ -71,10 +71,20 @@ One format and one asset, and all nine entries of the file are `proved`. The ass
       "roles": ["dest_x", "dest_y", "height", "source_tile", "width"],
       "flags": [],
       "planes": []
+    },
+    "player_in_play": {
+      "block": "0x00000020",
+      "length": 4,
+      "trigger_addr": "0x00000024",
+      "fires_with": "any write",
+      "asset": "sprites",
+      "roles": ["dest_x", "dest_y", "height", "source_tile", "width"],
+      "flags": [],
+      "planes": []
     }
   },
   "palette_ports": {},
-  "status_counts": {"proved": 9, "declared": 0, "human": 0}
+  "status_counts": {"proved": 16, "declared": 0, "human": 0}
 }
 ```
 

@@ -175,7 +175,7 @@ Call:
 knowledge_find(kind="vector", key="0x66", scope="z80")
 ```
 
-Reply, 3 of 11 fields:
+Reply, 3 of 10 fields:
 
 ```json
 {
@@ -205,7 +205,7 @@ One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 d
       "scope": "z80",
       "aliases": ["non-maskable interrupt"],
       "description": "Target of a non-maskable interrupt.",
-      "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter and jumps here. RETN copies the second flip-flop back into the first.",
+      "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter a ... (308 characters)",
       "address": "0x000066",
       "length": 1,
       "checked": true,
@@ -227,14 +227,7 @@ One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 d
   "truncated": false,
   "examined": 9,
   "served": 75,
-  "held_back": 647,
-  "session": {
-    "alive": false,
-    "running": false,
-    "altered": false,
-    "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
-  }
+  "held_back": 647
 }
 ```
 

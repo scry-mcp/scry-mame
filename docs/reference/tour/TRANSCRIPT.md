@@ -1,4 +1,4 @@
-Every call of the run with its reply, in order: 76 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
+Every call of the run with its reply, in order: 77 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
 
 **1. `start`**: OK start: gridlee on MAME 0.289 (unknown), rom_check OK, pc 0x0000f000, 7 symbols
 
@@ -56,6 +56,13 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "record"],
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "machine": {
     "cpus": 1,
     "spaces": 1,
@@ -77,6 +84,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
   "recommended_release": "0.289",
   "window": "<volatile>",
   "kept": "1 saved for `promote`; start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
+  "names": [
+    {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -99,7 +109,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "status: gridlee alive at pc 0x0000f000",
+  "summary": "status: gridlee alive at pc 0x0000f000 (take_credit+0x198A)",
   "status": "ok",
   "system": "gridlee",
   "pid": "<volatile>",
@@ -112,6 +122,13 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture with a live golden"
   },
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "record"],
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "fingerprint": "9ddedcc4d2bcbc14",
   "fingerprints": {":maincpu": "9ddedcc4d2bcbc14"},
   "errorlog_path": "<volatile>",
@@ -132,6 +149,10 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
   "console_pending": 0,
   "tallies_pending_removal": [],
   "frame_symbol": "frame",
+  "knowledge": {"served": 75, "held_back": 647},
+  "names": [
+    {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -213,7 +234,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
       "index": 1,
       "start": "0x00000000",
       "end": "0x000007ff",
-      "share": ":spriteram"
+      "share": ":spriteram",
+      "read": "ram",
+      "write": "ram"
     },
     {
       "cpu": ":maincpu",
@@ -221,25 +244,109 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
       "index": 2,
       "start": "0x00000800",
       "end": "0x00007fff",
-      "share": ":videoram"
+      "share": ":videoram",
+      "read": "ram",
+      "write": "delegate/gridlee_state::gridlee_videoram_w"
     },
-    {"cpu": ":maincpu", "space": "program", "index": 3, "start": "0x00009000", "end": "0x00009000"},
-    {"cpu": ":maincpu", "space": "program", "index": 4, "start": "0x00009200", "end": "0x00009200"},
-    {"cpu": ":maincpu", "space": "program", "index": 5, "start": "0x00009380", "end": "0x00009380"},
-    {"cpu": ":maincpu", "space": "program", "index": 6, "start": "0x00009500", "end": "0x00009501"},
-    {"cpu": ":maincpu", "space": "program", "index": 7, "start": "0x00009502", "end": "0x00009502"},
-    {"cpu": ":maincpu", "space": "program", "index": 8, "start": "0x00009503", "end": "0x00009503"},
-    {"cpu": ":maincpu", "space": "program", "index": 9, "start": "0x00009600", "end": "0x00009600"},
-    {"cpu": ":maincpu", "space": "program", "index": 10, "start": "0x00009700", "end": "0x00009700"},
-    {"cpu": ":maincpu", "space": "program", "index": 11, "start": "0x00009820", "end": "0x00009820"},
-    {"cpu": ":maincpu", "space": "program", "index": 12, "start": "0x00009828", "end": "0x0000993f"},
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 3,
+      "start": "0x00009000",
+      "end": "0x00009000",
+      "read": "none",
+      "write": "delegate/[this] (offs_t offset, u8 data) { m_latch->write_d0(offset >> 4, data); }"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 4,
+      "start": "0x00009200",
+      "end": "0x00009200",
+      "read": "none",
+      "write": "delegate/gridlee_state::gridlee_palette_select_w"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 5,
+      "start": "0x00009380",
+      "end": "0x00009380",
+      "read": "none",
+      "write": "delegate/watchdog_timer_device::reset_w"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 6,
+      "start": "0x00009500",
+      "end": "0x00009501",
+      "read": "delegate/gridlee_state::analog_port_r",
+      "write": "none"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 7,
+      "start": "0x00009502",
+      "end": "0x00009502",
+      "read": "port",
+      "write": "none"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 8,
+      "start": "0x00009503",
+      "end": "0x00009503",
+      "read": "port",
+      "write": "none"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 9,
+      "start": "0x00009600",
+      "end": "0x00009600",
+      "read": "port",
+      "write": "none"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 10,
+      "start": "0x00009700",
+      "end": "0x00009700",
+      "read": "port",
+      "write": "nop"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 11,
+      "start": "0x00009820",
+      "end": "0x00009820",
+      "read": "delegate/gridlee_state::random_num_r",
+      "write": "none"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 12,
+      "start": "0x00009828",
+      "end": "0x0000993f",
+      "read": "none",
+      "write": "delegate/gridlee_sound_device::gridlee_sound_w"
+    },
     {
       "cpu": ":maincpu",
       "space": "program",
       "index": 13,
       "start": "0x00009c00",
       "end": "0x00009cff",
-      "share": ":nvram"
+      "share": ":nvram",
+      "read": "ram",
+      "write": "ram"
     },
     {
       "cpu": ":maincpu",
@@ -248,7 +355,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
       "start": "0x0000a000",
       "end": "0x0000ffff",
       "region": ":maincpu",
-      "region_offset": "0x0000a000"
+      "region_offset": "0x0000a000",
+      "read": "rom",
+      "write": "none"
     }
   ],
   "regions": [
@@ -331,6 +440,15 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
     }
   ],
   "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"},
+  "names": [
+    {
+      "field": "cpus[].pc.value",
+      "number": "0x0000f000",
+      "kind": "symbol",
+      "name": "take_credit",
+      "delta": 6538
+    }
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -422,13 +540,17 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "read_memory 0xfff8: 2 bytes at 0x0000fff8: fd80",
+  "summary": "read_memory 0xfff8 (irq+0x278): 2 bytes at 0x0000fff8 (irq+0x278): fd80",
   "status": "ok",
   "ref": "0xfff8",
   "addr": "0x0000fff8",
   "length": 2,
   "hex": "fd80",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0xfff8", "kind": "symbol", "name": "irq", "delta": 632},
+    {"field": "addr", "number": "0x0000fff8", "kind": "symbol", "name": "irq", "delta": 632}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -441,7 +563,70 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**9. `disassemble`**: OK coin routine: the coin routine: INC $042B, then ADDA $042C, DAA, STA $042C
+**9. `knowledge_find`**: OK base: the base names the Z80's vector NMI, read at datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "kind": "vector",
+  "key": "0x66",
+  "scope": "z80"
+}
+```
+
+```json
+{
+  "summary": "kind vector key 0x66: NMI",
+  "status": "ok",
+  "query": {"kind": "vector", "key": "0x66"},
+  "scope": ["z80"],
+  "entries_total": 1,
+  "entries": [
+    {
+      "id": "z80:vector:0x66",
+      "kind": "vector",
+      "key": "0x66",
+      "name": "NMI",
+      "scope": "z80",
+      "aliases": ["non-maskable interrupt"],
+      "description": "Target of a non-maskable interrupt.",
+      "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter and jumps here. RETN copies the second flip-flop back into the first.",
+      "address": "0x000066",
+      "length": 1,
+      "checked": true,
+      "sources": [
+        {
+          "role": "documentation",
+          "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
+          "cites": "restart at location 0066h."
+        },
+        {
+          "role": "emulator",
+          "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
+          "cites": "\tPC = 0x0066;",
+          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
+        }
+      ]
+    }
+  ],
+  "truncated": false,
+  "examined": 9,
+  "served": 75,
+  "held_back": 647,
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**10. `disassemble`**: OK coin routine: the coin routine: INC $042B, then ADDA $042C, DAA, STA $042C
 
 <details><summary>call and reply</summary>
 
@@ -464,6 +649,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
   "flow": ["unknown", "unknown", "unknown", "unknown", "unknown"],
   "flow_source": "none",
   "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified",
+  "names": [
+    {"field": "given.ref", "number": "0xB583", "kind": "symbol", "name": "count_coin"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -476,7 +664,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**10. `find`**: OK find: one INC $042B in the ROMs, at 0x0000b583
+**11. `find`**: OK find: one INC $042B in the ROMs, at 0x0000b583
 
 <details><summary>call and reply</summary>
 
@@ -490,7 +678,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "find 7c042b in 0x6000 bytes at 0xa000: 1 hit",
+  "summary": "find 7c042b in 0x6000 bytes at 0xa000 (credits_bcd+0x9BD4): 1 hit",
   "status": "ok",
   "ref": "0xa000",
   "addr": "0x0000a000",
@@ -500,6 +688,10 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
   "hits_total": 1,
   "truncated": false,
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0xa000", "kind": "symbol", "name": "credits_bcd", "delta": 39892},
+    {"field": "hits[]", "number": "0x0000b583", "kind": "symbol", "name": "count_coin"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -512,7 +704,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**11. `comment_write`**: OK comment: a comment on count_coin: a coin: INC credits, then the BCD copy
+**12. `comment_write`**: OK comment: a comment on count_coin: a coin: INC credits, then the BCD copy
 
 <details><summary>call and reply</summary>
 
@@ -555,7 +747,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**12. `comment_list`**: OK comments: one comment, on count_coin
+**13. `comment_list`**: OK comments: one comment, on count_coin
 
 <details><summary>call and reply</summary>
 
@@ -597,7 +789,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**13. `throttle`**: OK throttle: the throttle goes off at the next run, tagged MAME_MCP_THROTTLE#1
+**14. `throttle`**: OK throttle: the throttle goes off at the next run, tagged MAME_MCP_THROTTLE#1
 
 <details><summary>call and reply</summary>
 
@@ -628,7 +820,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**14. `run_for`**: OK attract: attract mode ran to frame 295, 6250000 cycles
+**15. `run_for`**: OK attract: attract mode ran to frame 295, 6250000 cycles
 
 <details><summary>call and reply</summary>
 
@@ -682,7 +874,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**15. `log_wait`**: OK throttle applied: the log holds the tag: [luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=0
+**16. `log_wait`**: OK throttle applied: the log holds the tag: [luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=0
 
 <details><summary>call and reply</summary>
 
@@ -719,7 +911,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**16. `screen_signature`**: OK signature: the attract screen signs as 0b0a637e5b000571
+**17. `screen_signature`**: OK signature: the attract screen signs as 0b0a637e5b000571
 
 <details><summary>call and reply</summary>
 
@@ -776,7 +968,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**17. `scan`**: OK scan: 2048 candidate bytes in 0x0+0x800
+**18. `scan`**: OK scan: 2048 candidate bytes in 0x0+0x800
 
 <details><summary>call and reply</summary>
 
@@ -790,7 +982,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "scan start: 0x0, 2048 1-byte candidates on :maincpu",
+  "summary": "scan start: 0x0 (spriteram), 2048 1-byte candidates on :maincpu",
   "status": "ok",
   "ref": "0x0",
   "addr": "0x00000000",
@@ -799,6 +991,10 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
   "hits_total": 2048,
   "cpu": ":maincpu",
   "space": "program",
+  "names": [
+    {"field": "given.ref", "number": "0x0", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x00000000", "kind": "memory", "name": "spriteram"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -811,7 +1007,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**18. `drive`**: OK coin 1: a coin, and the log said: [:] coin counter on
+**19. `drive`**: OK coin 1: a coin, and the log said: [:] coin counter on
 
 <details><summary>call and reply</summary>
 
@@ -889,7 +1085,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
             "omitted": ["altering_writes", "console"],
             "how": "call `status`"
           }
-        }
+        },
+        "frame_before": 295,
+        "frame_after": 300
       },
       {
         "op": "run_for",
@@ -931,7 +1129,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
             "omitted": ["altering_writes", "console"],
             "how": "call `status`"
           }
-        }
+        },
+        "frame_before": 300,
+        "frame_after": 419
       }
     ],
     "steps_completed": 2,
@@ -971,7 +1171,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**19. `log`**: OK log: 3 lines name the coin counter
+**20. `log`**: OK log: 3 lines name the coin counter
 
 <details><summary>call and reply</summary>
 
@@ -1003,7 +1203,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**20. `gfx_film`**: OK film: a film of the frames that write credits: 90 to judge, at most 2 pictures to keep
+**21. `gfx_film`**: OK film: a film of the frames that write credits: 90 to judge, at most 2 pictures to keep
 
 <details><summary>call and reply</summary>
 
@@ -1083,7 +1283,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**21. `perform`**: OK coin 2: 11 bytes still hold 2
+**22. `perform`**: OK coin 2: 11 bytes still hold 2
 
 <details><summary>call and reply</summary>
 
@@ -1161,7 +1361,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 419,
+      "frame_after": 424
     },
     {
       "op": "run_for",
@@ -1209,7 +1411,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 424,
+      "frame_after": 543
     },
     {
       "op": "scan",
@@ -1238,6 +1442,19 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
         "truncated": false,
         "cpu": ":maincpu",
         "space": "program",
+        "names": [
+          {"field": "hits[].addr", "number": "0x00000084", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000da", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000ed", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000ef", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000001b6", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x00000299", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000029a", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000003ee", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x00000425", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x0000042b", "kind": "symbol", "name": "credits"},
+          {"field": "hits[].addr", "number": "0x0000042c", "kind": "symbol", "name": "credits_bcd"}
+        ],
         "session": {
           "alive": true,
           "running": false,
@@ -1245,7 +1462,9 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 543,
+      "frame_after": 543
     }
   ],
   "steps_completed": 3,
@@ -1263,7 +1482,7 @@ Every call of the run with its reply, in order: 76 calls. `<volatile>` stands fo
 
 </details>
 
-**22. `gfx_film`**: OK frames filmed: of 90 frames one wrote credits, 425, from count_coin
+**23. `gfx_film`**: OK frames filmed: of 90 frames one wrote credits, 425, from count_coin
 
 <details><summary>call and reply</summary>
 
@@ -1358,7 +1577,7 @@ Also attached: image/png.
 
 </details>
 
-**23. `read_memory`**: OK credits: credits 2 in binary, 02 in BCD
+**24. `read_memory`**: OK credits: credits 2 in binary, 02 in BCD
 
 <details><summary>call and reply</summary>
 
@@ -1378,6 +1597,9 @@ Also attached: image/png.
   "length": 2,
   "hex": "0202",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x042B", "kind": "symbol", "name": "credits"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1390,7 +1612,7 @@ Also attached: image/png.
 
 </details>
 
-**24. `perform_export`**: OK export: 9 steps exported whole: the vector, the signature and the credits are their checks
+**25. `perform_export`**: OK export: 9 steps exported whole: the vector, the signature and the credits are their checks
 
 <details><summary>call and reply</summary>
 
@@ -1402,7 +1624,7 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "perform_export: 9 steps, 3 checks, 14 dropped to ./tmp/demos/tour/two-coins.json",
+  "summary": "perform_export: 9 steps, 3 checks, 15 dropped to ./tmp/demos/tour/two-coins.json",
   "status": "ok",
   "path": "./tmp/demos/tour/two-coins.json",
   "steps": 9,
@@ -1412,18 +1634,19 @@ Also attached: image/png.
     {"call": 2, "op": "machine_map", "why": "it changes nothing in the emulated machine"},
     {"call": 3, "op": "cpu_info", "why": "a read the export does not check"},
     {"call": 4, "op": "symbols_find", "why": "a read the export does not check"},
-    {"call": 6, "op": "disassemble", "why": "a read the export does not check"},
-    {"call": 7, "op": "find", "why": "a read the export does not check"},
-    {"call": 8, "op": "comment_write", "why": "it changes nothing in the emulated machine"},
-    {"call": 9, "op": "comment_list", "why": "a read the export does not check"},
-    {"call": 10, "op": "throttle", "why": "it changes nothing in the emulated machine"},
-    {"call": 12, "op": "log_wait", "why": "a read the export does not check"},
-    {"call": 14, "op": "scan", "why": "it changes nothing in the emulated machine"},
-    {"call": 17, "op": "log", "why": "a read the export does not check"},
-    {"call": 21, "op": "scan", "why": "it changes nothing in the emulated machine"},
-    {"call": 22, "op": "gfx_film", "why": "it changes nothing in the emulated machine"}
+    {"call": 6, "op": "knowledge_find", "why": "a read the export does not check"},
+    {"call": 7, "op": "disassemble", "why": "a read the export does not check"},
+    {"call": 8, "op": "find", "why": "a read the export does not check"},
+    {"call": 9, "op": "comment_write", "why": "it changes nothing in the emulated machine"},
+    {"call": 10, "op": "comment_list", "why": "a read the export does not check"},
+    {"call": 11, "op": "throttle", "why": "it changes nothing in the emulated machine"},
+    {"call": 13, "op": "log_wait", "why": "a read the export does not check"},
+    {"call": 15, "op": "scan", "why": "it changes nothing in the emulated machine"},
+    {"call": 18, "op": "log", "why": "a read the export does not check"},
+    {"call": 22, "op": "scan", "why": "it changes nothing in the emulated machine"},
+    {"call": 23, "op": "gfx_film", "why": "it changes nothing in the emulated machine"}
   ],
-  "dropped_total": 14,
+  "dropped_total": 15,
   "cut": {"available": false, "why": "the recording kept every call a replay takes"},
   "replay": "uv run python -m scry_core.replay ./tmp/demos/tour/two-coins.json",
   "kept": "2 saved for `promote`; perform/two-coins, start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
@@ -1439,7 +1662,7 @@ Also attached: image/png.
 
 </details>
 
-**25. `state_write`**: OK save: state two-credits saved at frame 543
+**26. `state_write`**: OK save: state two-credits saved at frame 543
 
 <details><summary>call and reply</summary>
 
@@ -1472,7 +1695,7 @@ Also attached: image/png.
 
 </details>
 
-**26. `state_list`**: OK states: one state, two-credits, saved at frame 543
+**27. `state_list`**: OK states: one state, two-credits, saved at frame 543
 
 <details><summary>call and reply</summary>
 
@@ -1506,7 +1729,7 @@ Also attached: image/png.
 
 </details>
 
-**27. `perform`**: OK capture: a capture of the player's entry on each write of the next one, and frame 545 reached
+**28. `perform`**: OK capture: a capture of the player's entry on each write of the next one, and frame 545 reached
 
 <details><summary>call and reply</summary>
 
@@ -1528,7 +1751,7 @@ Also attached: image/png.
       "op": "watch_add",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "watch_add 0xc: capture watch pending at 0x0000000c, 4 bytes",
+        "summary": "watch_add 0xc (spriteram): capture watch pending at 0x0000000c (spriteram), 4 bytes",
         "status": "ok",
         "ref": "0xc",
         "by": "address",
@@ -1552,6 +1775,10 @@ Also attached: image/png.
         "lines_ahead": 0,
         "call": "MAME_MCP_LUA_END#7",
         "note": "the tap is installed when the console next reads a line (a step, the next frame emulated, or a debugger command on a stub that refreshes after one) and counts from there; the survey of the stop after that reads it back",
+        "names": [
+          {"field": "given.ref", "number": "0xc", "kind": "memory", "name": "spriteram"},
+          {"field": "addr", "number": "0x0000000c", "kind": "memory", "name": "spriteram"}
+        ],
         "session": {
           "alive": true,
           "running": false,
@@ -1559,7 +1786,9 @@ Also attached: image/png.
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 543,
+      "frame_after": 543
     },
     {
       "op": "run_for",
@@ -1616,7 +1845,9 @@ Also attached: image/png.
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 543,
+      "frame_after": 545
     }
   ],
   "steps_completed": 2,
@@ -1634,7 +1865,7 @@ Also attached: image/png.
 
 </details>
 
-**28. `read_block`**: OK sprite entry: the entry 5b009394: tile 91, drawn at (148, 164)
+**29. `read_block`**: OK sprite entry: the entry 5b009394: tile 91, drawn at (148, 164)
 
 <details><summary>call and reply</summary>
 
@@ -1711,7 +1942,7 @@ Also attached: image/png.
 
 </details>
 
-**29. `screen_view`**: OK pixel: pixel (151, 172) is pen 838, #449933
+**30. `screen_view`**: OK pixel: pixel (151, 172) is pen 838, #449933
 
 <details><summary>call and reply</summary>
 
@@ -1811,7 +2042,7 @@ Also attached: image/png.
 
 </details>
 
-**30. `palette`**: OK palette: 32 pens from 832 of 2048
+**31. `palette`**: OK palette: 32 pens from 832 of 2048
 
 <details><summary>call and reply</summary>
 
@@ -1901,7 +2132,7 @@ Also attached: image/png.
 
 </details>
 
-**31. `gfx_sweep`**: OK sweep: 3 candidates drawn, s1c1 is 4bpp 8x16 packed, rows
+**32. `gfx_sweep`**: OK sweep: 3 candidates drawn, s1c1 is 4bpp 8x16 packed, rows
 
 <details><summary>call and reply</summary>
 
@@ -2005,7 +2236,7 @@ Also attached: image/png.
 
 </details>
 
-**32. `gfx_locate`**: OK locate: tile 91 of gfx1 is on the screen at (148, 164), where the entry draws it
+**33. `gfx_locate`**: OK locate: tile 91 of gfx1 is on the screen at (148, 164), where the entry draws it
 
 <details><summary>call and reply</summary>
 
@@ -2127,7 +2358,7 @@ Also attached: image/png.
 
 </details>
 
-**33. `gfx_draft`**: OK draft: a draft with the format chosen, tiles_8x16x4
+**34. `gfx_draft`**: OK draft: a draft with the format chosen, tiles_8x16x4
 
 <details><summary>call and reply</summary>
 
@@ -2148,7 +2379,7 @@ Also attached: image/png.
   },
   "report": {
     "path": "./tmp/demos/tour/gridlee-gfx-draft-report.json",
-    "sha256": "251286b45bd5632f5e776e4346eae0e9bb22403970fc20f99da27d415469142d"
+    "sha256": "65b69eb2078b4578cfc071c2d3f6fc75014b6d825e9a28910ebfe958ca5d2cf0"
   },
   "formats": {"tiles_8x16x4": "human"},
   "asset_names": [],
@@ -2169,7 +2400,7 @@ Also attached: image/png.
 
 </details>
 
-**34. `gfx_load`**: OK manifest: formats ['sprite'], commands ['player']
+**35. `gfx_load`**: OK manifest: formats ['sprite'], commands ['player', 'player_in_play']
 
 <details><summary>call and reply</summary>
 
@@ -2181,12 +2412,12 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 asset, 1 command, 0 palette ports; 9 proved, 0 declared, 0 human",
+  "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 asset, 2 commands, 0 palette ports; 16 proved, 0 declared, 0 human",
   "status": "ok",
   "loaded": true,
   "replaced_path": {"available": false, "why": "no manifest was loaded in this session before this one"},
   "path": "./docs/reference/tour/gridlee-gfx.yaml",
-  "sha256": "b79a770ebbbc34d15656c24e1aa3ec68ed95065ab8dc3606d69c43845846e753",
+  "sha256": "4f19460d57d18c6d2a23b84017798676eeaff818bdecae8bae3e845c88fab2e1",
   "draft": false,
   "systems": ["gridlee"],
   "formats": {"sprite": "proved"},
@@ -2203,10 +2434,20 @@ Also attached: image/png.
       "roles": ["dest_x", "dest_y", "height", "source_tile", "width"],
       "flags": [],
       "planes": []
+    },
+    "player_in_play": {
+      "block": "0x00000020",
+      "length": 4,
+      "trigger_addr": "0x00000024",
+      "fires_with": "any write",
+      "asset": "sprites",
+      "roles": ["dest_x", "dest_y", "height", "source_tile", "width"],
+      "flags": [],
+      "planes": []
     }
   },
   "palette_ports": {},
-  "status_counts": {"proved": 9, "declared": 0, "human": 0},
+  "status_counts": {"proved": 16, "declared": 0, "human": 0},
   "session": {
     "alive": true,
     "running": false,
@@ -2219,7 +2460,7 @@ Also attached: image/png.
 
 </details>
 
-**35. `gfx_view`**: OK tiles: tiles 88 to 95 in the palette's colours
+**36. `gfx_view`**: OK tiles: tiles 88 to 95 in the palette's colours
 
 <details><summary>call and reply</summary>
 
@@ -2328,7 +2569,7 @@ Also attached: image/png.
 
 </details>
 
-**36. `gfx_blits`**: OK blits: frame 545: the box of tile 91, written from write_sprites+0x29, is where gfx_locate found it
+**37. `gfx_blits`**: OK blits: frame 545: the box of tile 91, written from write_sprites+0x29, is where gfx_locate found it
 
 <details><summary>call and reply</summary>
 
@@ -2467,7 +2708,7 @@ Also attached: image/png.
 
 </details>
 
-**37. `declaration_clear`**: OK clear capture: 1 watch cleared
+**38. `declaration_clear`**: OK clear capture: 1 watch cleared
 
 <details><summary>call and reply</summary>
 
@@ -2500,7 +2741,7 @@ Also attached: image/png.
 
 </details>
 
-**38. `input`**: OK coin 3: a coin, held four frames and released
+**39. `input`**: OK coin 3: a coin, held four frames and released
 
 <details><summary>call and reply</summary>
 
@@ -2575,7 +2816,7 @@ Also attached: image/png.
 
 </details>
 
-**39. `run_to`**: OK to the coin: reached count_coin, the control counted 1
+**40. `run_to`**: OK to the coin: reached count_coin, the control counted 1
 
 <details><summary>call and reply</summary>
 
@@ -2635,7 +2876,7 @@ Also attached: image/png.
 
 </details>
 
-**40. `step`**: OK step: one instruction, INC $042B, and pc 0x0000b586
+**41. `step`**: OK step: one instruction, INC $042B, and pc 0x0000b586
 
 <details><summary>call and reply</summary>
 
@@ -2683,7 +2924,7 @@ Also attached: image/png.
 
 </details>
 
-**41. `watch_add`**: OK watch: a change watch on credits_bcd, 0x0000042c
+**42. `watch_add`**: OK watch: a change watch on credits_bcd, 0x0000042c
 
 <details><summary>call and reply</summary>
 
@@ -2715,6 +2956,9 @@ Also attached: image/png.
   "write_maps_to": "memory@0",
   "read_maps_to": "memory@0",
   "values_from": "memory",
+  "names": [
+    {"field": "given.ref", "number": "0x042C", "kind": "symbol", "name": "credits_bcd"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -2727,7 +2971,7 @@ Also attached: image/png.
 
 </details>
 
-**42. `run_for`**: OK bcd written: the BCD credits: Stopped at watchpoint 1 writing 03 to 042C (PC=B58C)
+**43. `run_for`**: OK bcd written: the BCD credits: Stopped at watchpoint 1 writing 03 to 042C (PC=B58C)
 
 <details><summary>call and reply</summary>
 
@@ -2795,6 +3039,15 @@ Also attached: image/png.
     "after": 3,
     "lines": ["Stopped at watchpoint 1 writing 03 to 042C (PC=B58C)"]
   },
+  "names": [
+    {
+      "field": "watch_hit.writer_pc",
+      "number": "0x0000b58c",
+      "kind": "symbol",
+      "name": "count_coin",
+      "delta": 9
+    }
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -2807,7 +3060,7 @@ Also attached: image/png.
 
 </details>
 
-**43. `history`**: OK trail: the trail: INC $042B, LDA #$01, ADDA $042C, DAA, STA $042C
+**44. `history`**: OK trail: the trail: INC $042B, LDA #$01, ADDA $042C, DAA, STA $042C
 
 <details><summary>call and reply</summary>
 
@@ -2836,7 +3089,7 @@ Also attached: image/png.
 
 </details>
 
-**44. `registers`**: OK registers: PC 0xb58f, A 0x03: the BCD credits just written
+**45. `registers`**: OK registers: PC 0xb58f, A 0x03: the BCD credits just written
 
 <details><summary>call and reply</summary>
 
@@ -2874,7 +3127,7 @@ Also attached: image/png.
 
 </details>
 
-**45. `breakpoint_at`**: OK breakpoint: a breakpoint on take_credit, 0x0000d676
+**46. `breakpoint_at`**: OK breakpoint: a breakpoint on take_credit, 0x0000d676
 
 <details><summary>call and reply</summary>
 
@@ -2898,6 +3151,9 @@ Also attached: image/png.
   "armed": true,
   "state": "armed",
   "entry": "3 @ D676",
+  "names": [
+    {"field": "given.ref", "number": "0xD676", "kind": "symbol", "name": "take_credit"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -2910,7 +3166,7 @@ Also attached: image/png.
 
 </details>
 
-**46. `input`**: OK press start: START stopped at the breakpoint, 0x0000d676, still held
+**47. `input`**: OK press start: START stopped at the breakpoint, 0x0000d676, still held
 
 <details><summary>call and reply</summary>
 
@@ -3001,7 +3257,7 @@ Also attached: image/png.
 
 </details>
 
-**47. `regpoint_add`**: OK regpoint: a registerpoint on a==99
+**48. `regpoint_add`**: OK regpoint: a registerpoint on a==99
 
 <details><summary>call and reply</summary>
 
@@ -3037,7 +3293,7 @@ Also attached: image/png.
 
 </details>
 
-**48. `run_for`**: OK a is 99: A became 0x99 at 0x0000d67b, after LDA #$99
+**49. `run_for`**: OK a is 99: A became 0x99 at 0x0000d67b, after LDA #$99
 
 <details><summary>call and reply</summary>
 
@@ -3097,6 +3353,15 @@ Also attached: image/png.
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "names": [
+    {
+      "field": "regpoint_hit.pc",
+      "number": "0x0000d67b",
+      "kind": "symbol",
+      "name": "take_credit",
+      "delta": 5
+    }
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -3109,7 +3374,7 @@ Also attached: image/png.
 
 </details>
 
-**49. `declaration_list`**: OK declarations: two breakpoints, a registerpoint and a watch are declared
+**50. `declaration_list`**: OK declarations: two breakpoints, a registerpoint and a watch are declared
 
 <details><summary>call and reply</summary>
 
@@ -3196,7 +3461,7 @@ Also attached: image/png.
 
 </details>
 
-**50. `declaration_clear`**: OK clear breakpoints: 2 breakpoints cleared
+**51. `declaration_clear`**: OK clear breakpoints: 2 breakpoints cleared
 
 <details><summary>call and reply</summary>
 
@@ -3226,7 +3491,7 @@ Also attached: image/png.
 
 </details>
 
-**51. `declaration_clear`**: OK clear regpoint: 1 registerpoint cleared
+**52. `declaration_clear`**: OK clear regpoint: 1 registerpoint cleared
 
 <details><summary>call and reply</summary>
 
@@ -3256,7 +3521,7 @@ Also attached: image/png.
 
 </details>
 
-**52. `declaration_clear`**: OK clear watch: 1 watch cleared
+**53. `declaration_clear`**: OK clear watch: 1 watch cleared
 
 <details><summary>call and reply</summary>
 
@@ -3286,7 +3551,7 @@ Also attached: image/png.
 
 </details>
 
-**53. `series_capture`**: OK series: 4 frames, 557 to 581, and their manifest
+**54. `series_capture`**: OK series: 4 frames, 557 to 581, and their manifest
 
 <details><summary>call and reply</summary>
 
@@ -3355,7 +3620,7 @@ Also attached: image/png.
 
 </details>
 
-**54. `run_for`**: OK to the card: the level card ran to frame 702, 2500004 cycles
+**55. `run_for`**: OK to the card: the level card ran to frame 702, 2500004 cycles
 
 <details><summary>call and reply</summary>
 
@@ -3409,7 +3674,7 @@ Also attached: image/png.
 
 </details>
 
-**55. `screen_map_write`**: OK map: the level card mapped by its title, signed 5733a1938b03c102
+**56. `screen_map_write`**: OK map: the level card mapped by its title, signed 5733a1938b03c102
 
 <details><summary>call and reply</summary>
 
@@ -3479,7 +3744,7 @@ Also attached: image/png.
 
 </details>
 
-**56. `screen_map_find`**: OK which screen: the screen is level_card, with its control level
+**57. `screen_map_find`**: OK which screen: the screen is level_card, with its control level
 
 <details><summary>call and reply</summary>
 
@@ -3537,7 +3802,7 @@ Also attached: image/png.
 
 </details>
 
-**57. `state_write`**: OK load: state two-credits loaded and verified, frame 543
+**58. `state_write`**: OK load: state two-credits loaded and verified, frame 543
 
 <details><summary>call and reply</summary>
 
@@ -3601,7 +3866,7 @@ Also attached: image/png.
 
 </details>
 
-**58. `input`**: OK start again: START, held four frames and released
+**59. `input`**: OK start again: START, held four frames and released
 
 <details><summary>call and reply</summary>
 
@@ -3676,7 +3941,7 @@ Also attached: image/png.
 
 </details>
 
-**59. `screen_wait`**: OK card: the level card is whole at frame 561, 13 frames on
+**60. `screen_wait`**: OK card: the level card is whole at frame 561, 13 frames on
 
 <details><summary>call and reply</summary>
 
@@ -3737,7 +4002,7 @@ Also attached: image/png.
 
 </details>
 
-**60. `record`**: OK record: recorded 30 frames in ./tmp/demos/tour/card.avi
+**61. `record`**: OK record: recorded 30 frames in ./tmp/demos/tour/card.avi
 
 <details><summary>call and reply</summary>
 
@@ -3806,7 +4071,7 @@ Also attached: image/png.
 
 </details>
 
-**61. `audio_record`**: OK sound: 24000 samples at 48000 Hz, from 0 to 0
+**62. `audio_record`**: OK sound: 24000 samples at 48000 Hz, from 0 to 0
 
 <details><summary>call and reply</summary>
 
@@ -3879,7 +4144,7 @@ Also attached: image/png.
 
 </details>
 
-**62. `snapshot`**: OK snapshot: a picture of 256 x 240, saved through the native view
+**63. `snapshot`**: OK snapshot: a picture of 256 x 240, saved through the native view
 
 <details><summary>call and reply</summary>
 
@@ -3910,7 +4175,7 @@ Also attached: image/png.
 
 </details>
 
-**63. `trace`**: OK trace: 9398 instructions at 192 addresses, in ['count_coin', 'irq', 'wait_frame', 'write_sprites']
+**64. `trace`**: OK trace: 9398 instructions at 192 addresses, in ['count_coin', 'irq', 'wait_frame', 'write_sprites']
 
 <details><summary>call and reply</summary>
 
@@ -4009,7 +4274,7 @@ Also attached: image/png.
 
 </details>
 
-**64. `captures`**: OK captures: 15 files, of kinds ['avi', 'image', 'png', 'trace', 'wav']
+**65. `captures`**: OK captures: 15 files, of kinds ['avi', 'image', 'png', 'trace', 'wav']
 
 <details><summary>call and reply</summary>
 
@@ -4095,7 +4360,7 @@ Also attached: image/png.
 
 </details>
 
-**65. `memdump`**: OK dump: 4096 bytes from 0xa000, the reference image's
+**66. `memdump`**: OK dump: 4096 bytes from 0xa000, the reference image's
 
 <details><summary>call and reply</summary>
 
@@ -4109,7 +4374,7 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "memdump 0xa000: 4096 bytes to ./tmp/demos/tour/rom.bin",
+  "summary": "memdump 0xa000 (credits_bcd+0x9BD4): 4096 bytes to ./tmp/demos/tour/rom.bin",
   "status": "ok",
   "ref": "0xa000",
   "addr": "0x0000a000",
@@ -4117,6 +4382,10 @@ Also attached: image/png.
   "path": "./tmp/demos/tour/rom.bin",
   "bytes": 4096,
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0xa000", "kind": "symbol", "name": "credits_bcd", "delta": 39892},
+    {"field": "addr", "number": "0x0000a000", "kind": "symbol", "name": "credits_bcd", "delta": 39892}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -4130,7 +4399,7 @@ Also attached: image/png.
 
 </details>
 
-**66. `lua`**: OK lua: the machine describes itself as Gridlee
+**67. `lua`**: OK lua: the machine describes itself as Gridlee
 
 <details><summary>call and reply</summary>
 
@@ -4188,7 +4457,7 @@ Also attached: image/png.
 
 </details>
 
-**67. `debug`**: OK console: 0x9380 is written through watchdog_timer_device::reset_w
+**68. `debug`**: OK console: 0x9380 is written through watchdog_timer_device::reset_w
 
 <details><summary>call and reply</summary>
 
@@ -4220,7 +4489,7 @@ Also attached: image/png.
 
 </details>
 
-**68. `write`**: OK write: both credit bytes written 9 and read back
+**69. `write`**: OK write: both credit bytes written 9 and read back
 
 <details><summary>call and reply</summary>
 
@@ -4241,6 +4510,9 @@ Also attached: image/png.
   "readback": "0909",
   "verified": true,
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x042B", "kind": "symbol", "name": "credits"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -4255,7 +4527,7 @@ Also attached: image/png.
 
 </details>
 
-**69. `set_register`**: OK force: A forced to 0x42
+**70. `set_register`**: OK force: A forced to 0x42
 
 <details><summary>call and reply</summary>
 
@@ -4289,7 +4561,7 @@ Also attached: image/png.
 
 </details>
 
-**70. `promote`**: OK promote: a review, nothing written: maps/gridlee, perform/two-coins, start/gridlee
+**71. `promote`**: OK promote: a review, nothing written: maps/gridlee, perform/two-coins, start/gridlee
 
 <details><summary>call and reply</summary>
 
@@ -4319,7 +4591,7 @@ Also attached: image/png.
       "kind": "perform",
       "name": "two-coins",
       "file": ".scry/perform/two-coins.json",
-      "bytes": 2977,
+      "bytes": 3040,
       "change": "new"
     },
     {
@@ -4327,13 +4599,13 @@ Also attached: image/png.
       "kind": "start",
       "name": "gridlee",
       "file": ".scry/start/gridlee.json",
-      "bytes": 385,
+      "bytes": 361,
       "change": "new"
     }
   ],
   "unchanged": [],
-  "total_bytes": 3802,
-  "store_bytes": 5477,
+  "total_bytes": 3841,
+  "store_bytes": 5516,
   "would_create": [".scry/", ".scry/about.json", ".scry/README.md"],
   "session": {
     "alive": true,
@@ -4349,7 +4621,7 @@ Also attached: image/png.
 
 </details>
 
-**71. `reset`**: OK reset: a soft reset, back at 0x0000f000
+**72. `reset`**: OK reset: a soft reset, back at 0x0000f000
 
 <details><summary>call and reply</summary>
 
@@ -4359,7 +4631,7 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "reset: softreset applied at frame 630, pc 0x0000f000 verified True",
+  "summary": "reset: softreset applied at frame 630, pc 0x0000f000 (take_credit+0x198A) verified True",
   "status": "ok",
   "kind": "softreset",
   "pc": "0x0000f000",
@@ -4388,6 +4660,9 @@ Also attached: image/png.
   "instruction": {"address": "F000", "bytes": "1A50", "text": "ORCC   #$50", "symbol": "take_credit", "delta": 6538},
   "following": ["F002: 4F          CLRA", "F003: 1F 8B       TFR    A,DP", "F005: 10 CE 08 00 LDS    #$0800", "F009: BD D1 21    JSR    $D121", "F00C: B6 95 02    LDA    $9502", "F00F: 97 BC       STA    <$BC", "F011: 97 B8       STA    <$B8", "F013: 97 B7       STA    <$B7", "F015: B7 02 64    STA    $0264", "F018: B6 95 03    LDA    $9503", "F01B: B7 02 63    STA    $0263", "F01E: B6 97 00    LDA    $9700"],
   "errorlog": "<volatile>",
+  "names": [
+    {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -4402,7 +4677,7 @@ Also attached: image/png.
 
 </details>
 
-**72. `resume`**: OK resume: the machine runs
+**73. `resume`**: OK resume: the machine runs
 
 <details><summary>call and reply</summary>
 
@@ -4428,7 +4703,7 @@ Also attached: image/png.
 
 </details>
 
-**73. `stop`**: OK stop: stopped where it was
+**74. `stop`**: OK stop: stopped where it was
 
 <details><summary>call and reply</summary>
 
@@ -4465,7 +4740,7 @@ Also attached: image/png.
 
 </details>
 
-**74. `close`**: OK close: closed: MAME quit on its own
+**75. `close`**: OK close: closed: MAME quit on its own
 
 <details><summary>call and reply</summary>
 
@@ -4493,7 +4768,7 @@ Also attached: image/png.
 
 </details>
 
-**75. `image_compare`**: OK compare: 8975 pixels differ between the two frames
+**76. `image_compare`**: OK compare: 8975 pixels differ between the two frames
 
 <details><summary>call and reply</summary>
 
@@ -4531,7 +4806,7 @@ Also attached: image/png.
 
 </details>
 
-**76. `audio_compare`**: OK measure: one channel at 48000 Hz, silent True
+**77. `audio_compare`**: OK measure: one channel at 48000 Hz, silent True
 
 <details><summary>call and reply</summary>
 

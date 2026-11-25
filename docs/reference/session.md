@@ -35,7 +35,7 @@ start(shared=true, background=true, display="<host>", system="gridlee",
     inipath="./tmp/demos/tour/gridlee-ini", state_dir="./tmp/demos/tour/gridlee-states", … 3 more)
 ```
 
-Reply, 7 of 35 fields:
+Reply, 7 of 37 fields:
 
 ```json
 {
@@ -88,6 +88,13 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "record"],
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "machine": {
     "cpus": 1,
     "spaces": 1,
@@ -108,7 +115,10 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
   },
   "recommended_release": "0.289",
   "window": "<volatile>",
-  "kept": "1 saved for `promote`; start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
+  "kept": "1 saved for `promote`; start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
+  "names": [
+    {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
+  ]
 }
 ```
 
@@ -380,11 +390,11 @@ Call:
 status()
 ```
 
-Reply, 6 of 22 fields:
+Reply, 6 of 25 fields:
 
 ```json
 {
-  "summary": "status: gridlee alive at pc 0x0000f000",
+  "summary": "status: gridlee alive at pc 0x0000f000 (take_credit+0x198A)",
   "status": "ok",
   "system": "gridlee",
   "pc": "0x0000f000",
@@ -399,7 +409,7 @@ Gridlee is up and stopped at `0x0000f000`. `in_debugger` is empty because no bre
 
 ```json
 {
-  "summary": "status: gridlee alive at pc 0x0000f000",
+  "summary": "status: gridlee alive at pc 0x0000f000 (take_credit+0x198A)",
   "status": "ok",
   "system": "gridlee",
   "pid": "<volatile>",
@@ -412,6 +422,13 @@ Gridlee is up and stopped at `0x0000f000`. `in_debugger` is empty because no bre
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
   },
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "record"],
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "fingerprint": "9ddedcc4d2bcbc14",
   "fingerprints": {":maincpu": "9ddedcc4d2bcbc14"},
   "errorlog_path": "<volatile>",
@@ -431,7 +448,11 @@ Gridlee is up and stopped at `0x0000f000`. `in_debugger` is empty because no bre
   "cpu_tags": [":maincpu"],
   "console_pending": 0,
   "tallies_pending_removal": [],
-  "frame_symbol": "frame"
+  "frame_symbol": "frame",
+  "knowledge": {"served": 75, "held_back": 647},
+  "names": [
+    {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
+  ]
 }
 ```
 

@@ -1,6 +1,6 @@
 {
  "audio_compare": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 76",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 77",
   "call": {
    "method": "measure",
    "path": "./tmp/demos/tour/card.wav"
@@ -47,7 +47,7 @@
   }
  },
  "audio_record": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 61",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 62",
   "call": {
    "frames": 30,
    "dest": "./tmp/demos/tour/card.wav",
@@ -117,7 +117,7 @@
   }
  },
  "breakpoint_at": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 45",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 46",
   "call": {
    "ref": "take_credit"
   },
@@ -133,7 +133,15 @@
    "addr": "0x0000d676",
    "armed": true,
    "state": "armed",
-   "entry": "3 @ D676"
+   "entry": "3 @ D676",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0xD676",
+     "kind": "symbol",
+     "name": "take_credit"
+    }
+   ]
   },
   "then": {
    "tool": "input",
@@ -237,7 +245,7 @@
   }
  },
  "captures": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 64",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 65",
   "call": {},
   "reply": {
    "summary": "captures: 15 files, 1 avi, 1 png, 11 image, 1 wav, 1 trace",
@@ -284,7 +292,7 @@
   }
  },
  "close": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 74",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 75",
   "call": {},
   "reply": {
    "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
@@ -312,7 +320,7 @@
   }
  },
  "comment_list": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 12",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 13",
   "call": {},
   "reply": {
    "summary": "comment_list: 1 comment",
@@ -344,7 +352,7 @@
   }
  },
  "comment_write": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 11",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 12",
   "call": {
    "method": "add",
    "ref": "count_coin",
@@ -418,11 +426,20 @@
    "cpu": {
     "available": false,
     "why": "no cpu was named, so the rows are every cpu's"
-   }
+   },
+   "names": [
+    {
+     "field": "cpus[].pc.value",
+     "number": "0x0000f000",
+     "kind": "symbol",
+     "name": "take_credit",
+     "delta": 6538
+    }
+   ]
   }
  },
  "debug": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 67",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 68",
   "call": {
    "command": "map 9380"
   },
@@ -436,7 +453,7 @@
   }
  },
  "declaration_clear": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 50",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 51",
   "call": {
    "kind": "breakpoint",
    "all": true
@@ -453,7 +470,7 @@
   }
  },
  "declaration_list": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 49",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 50",
   "call": {},
   "reply": {
    "summary": "declaration_list: 2 breakpoints (2 armed), 1 regpoint (1 armed), 1 watch (1 armed)",
@@ -527,7 +544,7 @@
   }
  },
  "disassemble": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 9",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 10",
   "call": {
    "ref": "count_coin",
    "length": 12
@@ -554,11 +571,19 @@
     "unknown"
    ],
    "flow_source": "none",
-   "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified"
+   "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0xB583",
+     "kind": "symbol",
+     "name": "count_coin"
+    }
+   ]
   }
  },
  "drive": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 18",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 19",
   "call": {
    "act": [
     {
@@ -656,7 +681,9 @@
         ],
         "how": "call `status`"
        }
-      }
+      },
+      "frame_before": 295,
+      "frame_after": 300
      },
      {
       "op": "run_for",
@@ -715,7 +742,9 @@
         ],
         "how": "call `status`"
        }
-      }
+      },
+      "frame_before": 300,
+      "frame_after": 419
      }
     ],
     "steps_completed": 2,
@@ -757,14 +786,14 @@
   }
  },
  "find": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 10",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 11",
   "call": {
    "data_hex": "7c042b",
    "ref": "0xa000",
    "length": 24576
   },
   "reply": {
-   "summary": "find 7c042b in 0x6000 bytes at 0xa000: 1 hit",
+   "summary": "find 7c042b in 0x6000 bytes at 0xa000 (credits_bcd+0x9BD4): 1 hit",
    "status": "ok",
    "ref": "0xa000",
    "addr": "0x0000a000",
@@ -779,7 +808,22 @@
    ],
    "hits_total": 1,
    "truncated": false,
-   "cpu": ":maincpu"
+   "cpu": ":maincpu",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0xa000",
+     "kind": "symbol",
+     "name": "credits_bcd",
+     "delta": 39892
+    },
+    {
+     "field": "hits[]",
+     "number": "0x0000b583",
+     "kind": "symbol",
+     "name": "count_coin"
+    }
+   ]
   }
  },
  "gfx_blit_source": {
@@ -933,7 +977,7 @@
   }
  },
  "gfx_blits": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 36",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 37",
   "call": {
    "draw_command": "player",
    "frame": 545,
@@ -1135,7 +1179,7 @@
   }
  },
  "gfx_draft": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 33",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 34",
   "call": {
    "dest": "./tmp/demos/tour/gridlee-gfx-draft.yaml",
    "choose": {
@@ -1152,7 +1196,7 @@
    },
    "report": {
     "path": "./tmp/demos/tour/gridlee-gfx-draft-report.json",
-    "sha256": "251286b45bd5632f5e776e4346eae0e9bb22403970fc20f99da27d415469142d"
+    "sha256": "65b69eb2078b4578cfc071c2d3f6fc75014b6d825e9a28910ebfe958ca5d2cf0"
    },
    "formats": {
     "tiles_8x16x4": "human"
@@ -1177,7 +1221,7 @@
   }
  },
  "gfx_film": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 20",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 21",
   "call": {
    "trigger": "credits",
    "frames": 90,
@@ -1372,12 +1416,12 @@
   }
  },
  "gfx_load": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 34",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 35",
   "call": {
    "path": "./docs/reference/tour/gridlee-gfx.yaml"
   },
   "reply": {
-   "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 asset, 1 command, 0 palette ports; 9 proved, 0 declared, 0 human",
+   "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 asset, 2 commands, 0 palette ports; 16 proved, 0 declared, 0 human",
    "status": "ok",
    "loaded": true,
    "replaced_path": {
@@ -1385,7 +1429,7 @@
     "why": "no manifest was loaded in this session before this one"
    },
    "path": "./docs/reference/tour/gridlee-gfx.yaml",
-   "sha256": "b79a770ebbbc34d15656c24e1aa3ec68ed95065ab8dc3606d69c43845846e753",
+   "sha256": "4f19460d57d18c6d2a23b84017798676eeaff818bdecae8bae3e845c88fab2e1",
    "draft": false,
    "systems": [
     "gridlee"
@@ -1416,18 +1460,34 @@
      ],
      "flags": [],
      "planes": []
+    },
+    "player_in_play": {
+     "block": "0x00000020",
+     "length": 4,
+     "trigger_addr": "0x00000024",
+     "fires_with": "any write",
+     "asset": "sprites",
+     "roles": [
+      "dest_x",
+      "dest_y",
+      "height",
+      "source_tile",
+      "width"
+     ],
+     "flags": [],
+     "planes": []
     }
    },
    "palette_ports": {},
    "status_counts": {
-    "proved": 9,
+    "proved": 16,
     "declared": 0,
     "human": 0
    }
   }
  },
  "gfx_locate": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 32",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 33",
   "call": {
    "layouts": [
     "s1c1"
@@ -1611,7 +1671,7 @@
   }
  },
  "gfx_sweep": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 31",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 32",
   "call": {
    "tag": "gfx1",
    "planes": [
@@ -1742,7 +1802,7 @@
   }
  },
  "gfx_view": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 35",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 36",
   "call": {
    "layout": "sprite",
    "tag": "gfx1",
@@ -1879,7 +1939,7 @@
   }
  },
  "history": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 43",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 44",
   "call": {
    "limit": 8
   },
@@ -1900,7 +1960,7 @@
   }
  },
  "image_compare": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 75",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 76",
   "call": {
    "method": "image",
    "a": "./tmp/demos/tour/series/f000557.png",
@@ -1945,7 +2005,7 @@
   }
  },
  "input": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 21, step 1 of its `perform`",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 22, step 1 of its `perform`",
   "call": {
    "port": ":IN1",
    "field": "Coin 1",
@@ -2017,7 +2077,7 @@
   }
  },
  "knowledge_find": {
-  "from": "docs/reference/tour/tour.py: step `base`, run in process because it needs no machine; the tour's next run replaces it",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 9",
   "call": {
    "kind": "vector",
    "key": "0x66",
@@ -2045,7 +2105,7 @@
       "non-maskable interrupt"
      ],
      "description": "Target of a non-maskable interrupt.",
-     "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter and jumps here. RETN copies the second flip-flop back into the first.",
+     "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter a ... (308 characters)",
      "address": "0x000066",
      "length": 1,
      "checked": true,
@@ -2067,21 +2127,11 @@
    "truncated": false,
    "examined": 9,
    "served": 75,
-   "held_back": 647,
-   "session": {
-    "alive": false,
-    "running": false,
-    "altered": false,
-    "omitted": [
-     "altering_writes",
-     "console"
-    ],
-    "how": "call `status`"
-   }
+   "held_back": 647
   }
  },
  "log": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 19",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 20",
   "call": {
    "pattern": "coin counter",
    "channel": "emulator"
@@ -2101,7 +2151,7 @@
   }
  },
  "log_wait": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 15",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 16",
   "call": {
    "pattern": "MAME_MCP_THROTTLE#1",
    "channel": "emulator"
@@ -2122,7 +2172,7 @@
   }
  },
  "lua": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 66",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 67",
   "call": {
    "script": "print(manager.machine.system.description)",
    "read_only": true
@@ -2209,7 +2259,9 @@
      "index": 1,
      "start": "0x00000000",
      "end": "0x000007ff",
-     "share": ":spriteram"
+     "share": ":spriteram",
+     "read": "ram",
+     "write": "ram"
     },
     {
      "cpu": ":maincpu",
@@ -2217,35 +2269,45 @@
      "index": 2,
      "start": "0x00000800",
      "end": "0x00007fff",
-     "share": ":videoram"
+     "share": ":videoram",
+     "read": "ram",
+     "write": "delegate/gridlee_state::gridlee_videoram_w"
     },
     {
      "cpu": ":maincpu",
      "space": "program",
      "index": 3,
      "start": "0x00009000",
-     "end": "0x00009000"
+     "end": "0x00009000",
+     "read": "none",
+     "write": "delegate/[this] (offs_t offset, u8 data) { m_latch->write_d0(offset >> 4, data); }"
     },
     {
      "cpu": ":maincpu",
      "space": "program",
      "index": 4,
      "start": "0x00009200",
-     "end": "0x00009200"
+     "end": "0x00009200",
+     "read": "none",
+     "write": "delegate/gridlee_state::gridlee_palette_select_w"
     },
     {
      "cpu": ":maincpu",
      "space": "program",
      "index": 5,
      "start": "0x00009380",
-     "end": "0x00009380"
+     "end": "0x00009380",
+     "read": "none",
+     "write": "delegate/watchdog_timer_device::reset_w"
     },
     {
      "cpu": ":maincpu",
      "space": "program",
      "index": 6,
      "start": "0x00009500",
-     "end": "0x00009501"
+     "end": "0x00009501",
+     "read": "delegate/gridlee_state::analog_port_r",
+     "write": "none"
     },
     "... 8 more"
    ],
@@ -2348,25 +2410,41 @@
   }
  },
  "memdump": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 65",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 66",
   "call": {
    "ref": "0xa000",
    "length": 4096,
    "dest": "./tmp/demos/tour/rom.bin"
   },
   "reply": {
-   "summary": "memdump 0xa000: 4096 bytes to ./tmp/demos/tour/rom.bin",
+   "summary": "memdump 0xa000 (credits_bcd+0x9BD4): 4096 bytes to ./tmp/demos/tour/rom.bin",
    "status": "ok",
    "ref": "0xa000",
    "addr": "0x0000a000",
    "length": 4096,
    "path": "./tmp/demos/tour/rom.bin",
    "bytes": 4096,
-   "cpu": ":maincpu"
+   "cpu": ":maincpu",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0xa000",
+     "kind": "symbol",
+     "name": "credits_bcd",
+     "delta": 39892
+    },
+    {
+     "field": "addr",
+     "number": "0x0000a000",
+     "kind": "symbol",
+     "name": "credits_bcd",
+     "delta": 39892
+    }
+   ]
   }
  },
  "palette": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 30",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 31",
   "call": {
    "first": 832,
    "count": 32,
@@ -2505,7 +2583,7 @@
   }
  },
  "perform": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 21",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 22",
   "call": {
    "steps": [
     {
@@ -2608,7 +2686,9 @@
        ],
        "how": "call `status`"
       }
-     }
+     },
+     "frame_before": 419,
+     "frame_after": 424
     },
     {
      "op": "run_for",
@@ -2667,7 +2747,9 @@
        ],
        "how": "call `status`"
       }
-     }
+     },
+     "frame_before": 424,
+     "frame_after": 543
     },
     {
      "op": "scan",
@@ -2710,6 +2792,45 @@
       "truncated": false,
       "cpu": ":maincpu",
       "space": "program",
+      "names": [
+       {
+        "field": "hits[].addr",
+        "number": "0x00000084",
+        "kind": "memory",
+        "name": "spriteram"
+       },
+       {
+        "field": "hits[].addr",
+        "number": "0x000000da",
+        "kind": "memory",
+        "name": "spriteram"
+       },
+       {
+        "field": "hits[].addr",
+        "number": "0x000000ed",
+        "kind": "memory",
+        "name": "spriteram"
+       },
+       {
+        "field": "hits[].addr",
+        "number": "0x000000ef",
+        "kind": "memory",
+        "name": "spriteram"
+       },
+       {
+        "field": "hits[].addr",
+        "number": "0x000001b6",
+        "kind": "memory",
+        "name": "spriteram"
+       },
+       {
+        "field": "hits[].addr",
+        "number": "0x00000299",
+        "kind": "memory",
+        "name": "spriteram"
+       },
+       "... 5 more"
+      ],
       "session": {
        "alive": true,
        "running": false,
@@ -2720,7 +2841,9 @@
        ],
        "how": "call `status`"
       }
-     }
+     },
+     "frame_before": 543,
+     "frame_after": 543
     }
    ],
    "steps_completed": 3,
@@ -2732,12 +2855,12 @@
   }
  },
  "perform_export": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 24",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 25",
   "call": {
    "dest": "./tmp/demos/tour/two-coins.json"
   },
   "reply": {
-   "summary": "perform_export: 9 steps, 3 checks, 14 dropped to ./tmp/demos/tour/two-coins.json",
+   "summary": "perform_export: 9 steps, 3 checks, 15 dropped to ./tmp/demos/tour/two-coins.json",
    "status": "ok",
    "path": "./tmp/demos/tour/two-coins.json",
    "steps": 9,
@@ -2765,17 +2888,17 @@
     },
     {
      "call": 6,
-     "op": "disassemble",
+     "op": "knowledge_find",
      "why": "a read the export does not check"
     },
     {
      "call": 7,
-     "op": "find",
+     "op": "disassemble",
      "why": "a read the export does not check"
     },
-    "... 8 more"
+    "... 9 more"
    ],
-   "dropped_total": 14,
+   "dropped_total": 15,
    "cut": {
     "available": false,
     "why": "the recording kept every call a replay takes"
@@ -2785,7 +2908,7 @@
   }
  },
  "promote": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 70",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 71",
   "call": {
    "dry_run": true,
    "root": "./tmp/demos/tour"
@@ -2808,7 +2931,7 @@
      "kind": "perform",
      "name": "two-coins",
      "file": ".scry/perform/two-coins.json",
-     "bytes": 2977,
+     "bytes": 3040,
      "change": "new"
     },
     {
@@ -2816,13 +2939,13 @@
      "kind": "start",
      "name": "gridlee",
      "file": ".scry/start/gridlee.json",
-     "bytes": 385,
+     "bytes": 361,
      "change": "new"
     }
    ],
    "unchanged": [],
-   "total_bytes": 3802,
-   "store_bytes": 5477,
+   "total_bytes": 3841,
+   "store_bytes": 5516,
    "would_create": [
     ".scry/",
     ".scry/about.json",
@@ -2831,7 +2954,7 @@
   }
  },
  "read_block": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 28",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 29",
   "call": {
    "tag": "spriteram",
    "offset": 12,
@@ -2923,17 +3046,33 @@
    "length": 2
   },
   "reply": {
-   "summary": "read_memory 0xfff8: 2 bytes at 0x0000fff8: fd80",
+   "summary": "read_memory 0xfff8 (irq+0x278): 2 bytes at 0x0000fff8 (irq+0x278): fd80",
    "status": "ok",
    "ref": "0xfff8",
    "addr": "0x0000fff8",
    "length": 2,
    "hex": "fd80",
-   "cpu": ":maincpu"
+   "cpu": ":maincpu",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0xfff8",
+     "kind": "symbol",
+     "name": "irq",
+     "delta": 632
+    },
+    {
+     "field": "addr",
+     "number": "0x0000fff8",
+     "kind": "symbol",
+     "name": "irq",
+     "delta": 632
+    }
+   ]
   }
  },
  "record": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 60",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 61",
   "call": {
    "frames": 30,
    "dest": "./tmp/demos/tour/card.avi",
@@ -2999,7 +3138,7 @@
   }
  },
  "registers": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 44",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 45",
   "call": {},
   "reply": {
    "summary": "registers: 10 registers",
@@ -3032,7 +3171,7 @@
   }
  },
  "regpoint_add": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 47",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 48",
   "call": {
    "condition": "a==99"
   },
@@ -3128,15 +3267,24 @@
      "length",
      "mode"
     ],
-    "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
+    "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+    "names": [
+     {
+      "field": "regpoint_hit.pc",
+      "number": "0x0000d67b",
+      "kind": "symbol",
+      "name": "take_credit",
+      "delta": 5
+     }
+    ]
    }
   }
  },
  "reset": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 71",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 72",
   "call": {},
   "reply": {
-   "summary": "reset: softreset applied at frame 630, pc 0x0000f000 verified True",
+   "summary": "reset: softreset applied at frame 630, pc 0x0000f000 (take_credit+0x198A) verified True",
    "status": "ok",
    "kind": "softreset",
    "pc": "0x0000f000",
@@ -3181,11 +3329,20 @@
     "F00F: 97 BC       STA    <$BC",
     "... 6 more"
    ],
-   "errorlog": "<volatile>"
+   "errorlog": "<volatile>",
+   "names": [
+    {
+     "field": "pc",
+     "number": "0x0000f000",
+     "kind": "symbol",
+     "name": "take_credit",
+     "delta": 6538
+    }
+   ]
   }
  },
  "resume": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 72",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 73",
   "call": {},
   "reply": {
    "summary": "resume: running, no wait asked",
@@ -3228,7 +3385,7 @@
   }
  },
  "run_for": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 14",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 15",
   "call": {
    "milliseconds": 5000,
    "seconds": 300
@@ -3280,7 +3437,7 @@
   }
  },
  "run_to": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 39",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 40",
   "call": {
    "ref": "count_coin",
    "control": "wait_frame",
@@ -3389,7 +3546,7 @@
   }
  },
  "screen_map_find": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 56",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 57",
   "call": {},
   "reply": {
    "summary": "screen_map_find: level_card (session), 1 control",
@@ -3460,7 +3617,7 @@
   }
  },
  "screen_map_write": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 55",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 56",
   "call": {
    "method": "add",
    "screen": "level_card",
@@ -3552,7 +3709,7 @@
   }
  },
  "screen_signature": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 16",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 17",
   "call": {},
   "reply": {
    "summary": "screen_signature 256x240 at [0, 0]: 0b0a637e5b000571",
@@ -3612,7 +3769,7 @@
   }
  },
  "screen_view": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 29",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 30",
   "call": {
    "mode": "pixel",
    "point": [
@@ -3730,7 +3887,7 @@
   }
  },
  "screen_wait": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 59",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 60",
   "call": {
    "screen": "level_card",
    "seconds": 300
@@ -3791,7 +3948,7 @@
   }
  },
  "series_capture": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 53",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 54",
   "call": {
    "first": 557,
    "last": 581,
@@ -3863,7 +4020,7 @@
   }
  },
  "set_register": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 69",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 70",
   "call": {
    "name": "A",
    "value": "0x42"
@@ -3879,7 +4036,7 @@
   }
  },
  "snapshot": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 62",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 63",
   "call": {
    "dest": "./tmp/demos/tour/card.png"
   },
@@ -3959,6 +4116,18 @@
    "flags": "<volatile>",
    "boot_lua_path": "<volatile>",
    "presence": true,
+   "overlay": {
+    "layers": [
+     "edge",
+     "record"
+    ],
+    "lacking": {
+     "pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"
+    },
+    "notes": {
+     "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+   },
    "machine": {
     "cpus": 1,
     "spaces": 1,
@@ -3990,11 +4159,20 @@
    },
    "recommended_release": "0.289",
    "window": "<volatile>",
-   "kept": "1 saved for `promote`; start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
+   "kept": "1 saved for `promote`; start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
+   "names": [
+    {
+     "field": "pc",
+     "number": "0x0000f000",
+     "kind": "symbol",
+     "name": "take_credit",
+     "delta": 6538
+    }
+   ]
   }
  },
  "state_list": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 26",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 27",
   "call": {},
   "reply": {
    "summary": "state_list: 1 state in ./tmp/demos/tour/gridlee-states/sta/gridlee",
@@ -4012,7 +4190,7 @@
   }
  },
  "state_write": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 25",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 26",
   "call": {
    "method": "save",
    "name": "two_credits"
@@ -4093,7 +4271,7 @@
   "from": "docs/reference/tour/TRANSCRIPT.md: call 2",
   "call": {},
   "reply": {
-   "summary": "status: gridlee alive at pc 0x0000f000",
+   "summary": "status: gridlee alive at pc 0x0000f000 (take_credit+0x198A)",
    "status": "ok",
    "system": "gridlee",
    "pid": "<volatile>",
@@ -4109,6 +4287,18 @@
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
    },
    "presence": true,
+   "overlay": {
+    "layers": [
+     "edge",
+     "record"
+    ],
+    "lacking": {
+     "pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"
+    },
+    "notes": {
+     "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+   },
    "fingerprint": "9ddedcc4d2bcbc14",
    "fingerprints": {
     ":maincpu": "9ddedcc4d2bcbc14"
@@ -4138,11 +4328,24 @@
    ],
    "console_pending": 0,
    "tallies_pending_removal": [],
-   "frame_symbol": "frame"
+   "frame_symbol": "frame",
+   "knowledge": {
+    "served": 75,
+    "held_back": 647
+   },
+   "names": [
+    {
+     "field": "pc",
+     "number": "0x0000f000",
+     "kind": "symbol",
+     "name": "take_credit",
+     "delta": 6538
+    }
+   ]
   }
  },
  "step": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 40",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 41",
   "call": {
    "count": 1
   },
@@ -4188,7 +4391,7 @@
   }
  },
  "stop": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 73",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 74",
   "call": {},
   "reply": {
    "summary": "<volatile>",
@@ -4233,7 +4436,7 @@
   }
  },
  "throttle": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 13",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 14",
   "call": {
    "on": false
   },
@@ -4269,7 +4472,7 @@
   }
  },
  "trace": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 63",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 64",
   "call": {
    "frames": 2,
    "dest": "./tmp/demos/tour/trace.txt",
@@ -4365,7 +4568,7 @@
   }
  },
  "watch_add": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 41",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 42",
   "call": {
    "ref": "credits_bcd",
    "mode": "change"
@@ -4393,7 +4596,15 @@
    "entry": "1 @ 042C-042C write",
    "write_maps_to": "memory@0",
    "read_maps_to": "memory@0",
-   "values_from": "memory"
+   "values_from": "memory",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0x042C",
+     "kind": "symbol",
+     "name": "credits_bcd"
+    }
+   ]
   },
   "then": {
    "tool": "run_for",
@@ -4487,7 +4698,16 @@
      "lines": [
       "Stopped at watchpoint 1 writing 03 to 042C (PC=B58C)"
      ]
-    }
+    },
+    "names": [
+     {
+      "field": "watch_hit.writer_pc",
+      "number": "0x0000b58c",
+      "kind": "symbol",
+      "name": "count_coin",
+      "delta": 9
+     }
+    ]
    }
   }
  },
@@ -4507,7 +4727,7 @@
   }
  },
  "write": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 68",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 69",
   "call": {
    "ref": "credits",
    "data_hex": "0909"
@@ -4520,7 +4740,15 @@
    "bytes_written": 2,
    "readback": "0909",
    "verified": true,
-   "cpu": ":maincpu"
+   "cpu": ":maincpu",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0x042B",
+     "kind": "symbol",
+     "name": "credits"
+    }
+   ]
   }
  }
 }

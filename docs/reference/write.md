@@ -27,7 +27,7 @@ Call:
 write(ref="credits", data_hex="0909")
 ```
 
-Reply, 5 of 8 fields:
+Reply, 5 of 9 fields:
 
 ```json
 {
@@ -52,7 +52,10 @@ Both bytes from `0x42b` now hold 9. `readback` is what the memory holds after th
   "bytes_written": 2,
   "readback": "0909",
   "verified": true,
-  "cpu": ":maincpu"
+  "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0x042B", "kind": "symbol", "name": "credits"}
+  ]
 }
 ```
 
@@ -282,11 +285,11 @@ Call:
 reset()
 ```
 
-Reply, 6 of 16 fields:
+Reply, 6 of 17 fields:
 
 ```json
 {
-  "summary": "reset: softreset applied at frame 630, pc 0x0000f000 verified True",
+  "summary": "reset: softreset applied at frame 630, pc 0x0000f000 (take_c ... (87 characters)",
   "kind": "softreset",
   "pc": "0x0000f000",
   "boot_pc": "0x0000f000",
@@ -301,7 +304,7 @@ The machine is back at `0xf000`, the address `start` first stopped it at, so `ve
 
 ```json
 {
-  "summary": "reset: softreset applied at frame 630, pc 0x0000f000 verified True",
+  "summary": "reset: softreset applied at frame 630, pc 0x0000f000 (take_credit+0x198A) verified True",
   "status": "ok",
   "kind": "softreset",
   "pc": "0x0000f000",
@@ -329,7 +332,10 @@ The machine is back at `0xf000`, the address `start` first stopped it at, so `ve
   },
   "instruction": {"address": "F000", "bytes": "1A50", "text": "ORCC   #$50", "symbol": "take_credit", "delta": 6538},
   "following": ["F002: 4F          CLRA", "F003: 1F 8B       TFR    A,DP", "F005: 10 CE 08 00 LDS    #$0800", "F009: BD D1 21    JSR    $D121", "F00C: B6 95 02    LDA    $9502", "F00F: 97 BC       STA    <$BC", "... 6 more"],
-  "errorlog": "<volatile>"
+  "errorlog": "<volatile>",
+  "names": [
+    {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
+  ]
 }
 ```
 
