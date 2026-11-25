@@ -60,11 +60,11 @@ Ask:
 Call:
 
 ```text
-start(shared=true, background=true, display="<host>", profile="<host>", inipath="<host>",
+start(shared=true, background=false, display="<host>", profile="<host>", inipath="<host>",
     state_dir="<host>")
 ```
 
-Reply, 3 of 36 fields:
+Reply, 3 of 39 fields:
 
 ```json
 {
@@ -89,6 +89,7 @@ A start profile is a saved set of `start` arguments; the call adds only this run
   "pid": "<volatile>",
   "stub_port": "<volatile>",
   "scratch_dir": "<volatile>",
+  "bundle": "~/.local/state/scry/apps/Scry MAME.app",
   "state_dir": "./tmp/demos/speedf/speedf-states",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
@@ -108,10 +109,17 @@ A start profile is a saved set of `start` arguments; the call adds only this run
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:5)", "Cocktail"],
-  "background": true,
+  "background": false,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "record"],
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "machine": {"cpus": 1, "spaces": 2, "address_map": 16, "regions": 2, "shares": 0, "screens": 1, "rom_files": 3},
   "declarations": {
     "persistent": true,
@@ -130,6 +138,9 @@ A start profile is a saved set of `start` arguments; the call adds only this run
     "file": "<volatile>",
     "supplied": ["bases", "binary", "boot_seconds", "reference_addr", "reference_base", "reference_rom", "rompath", "symbols", "system"]
   },
+  "names": [
+    {"field": "pc", "number": "0x000ffff0", "kind": "symbol", "name": "<volatile>", "delta": 9887}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -243,7 +254,7 @@ Call:
 read_memory(ref="creditos", length=2)
 ```
 
-Reply, 3 of 8 fields:
+Reply, 3 of 9 fields:
 
 ```json
 {
@@ -266,6 +277,9 @@ Reply, 3 of 8 fields:
   "length": 2,
   "hex": "0000",
   "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0xC41C", "kind": "symbol", "name": "<volatile>"}
+  ],
   "session": {
     "alive": true,
     "running": false,
