@@ -52,7 +52,7 @@ SETTLE = {"milliseconds": 500, "seconds": RUN_S}
 COIN_MS = 2000
 #: The frames one moment records, and the eight seconds the game plays after START. A moment is
 #: 2.53 s at this board's rate, inside `motion.CUT_SECONDS`, and five of them fit
-#: `motion.LOOP_SECONDS`; the caption a call leaves behind is held for longer than that.
+#: `motion.LOOP_SECONDS`.
 MOMENT_FRAMES, PLAY_FRAMES = 150, 480
 
 
@@ -247,7 +247,7 @@ STEPS = [
 ]
 
 #: One moment per call, each ending at a `record` step right after it: the cut begins where the
-#: call left the machine, so its caption is still on screen.
+#: call left the machine.
 MOMENTS = (
     Moment("writer", "routine",
            "`disassemble` reads the coin routine at `0xb583`: the binary add, then the BCD.",

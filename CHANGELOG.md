@@ -4,12 +4,10 @@ What a client of the server notices.
 
 ## Unreleased
 
-- A caption wider than the window is cut and marked with `..`, never scrolled: a line that moves
-  cannot be read while the machine runs.
-- Replies and captions call a number by its name where the server knows one. A reply lists
-  each in `names` and in its `summary`; `names=false` on `start` leaves replies bare, and the
-  window's captions keep their names. A symbol you typed names itself; an address is named by a
-  vector, else by the nearest symbol, else by a shared chip, else by the memory the map names.
+- Replies call a number by its name where the server knows one. A reply lists each in `names`
+  and in its `summary`; `names=false` on `start` leaves replies bare. A symbol you typed names
+  itself; an address is named by a vector, else by the nearest symbol, else by a shared chip,
+  else by the memory the map names.
 - Each entry of the knowledge base is checked against the source it cites. The Z80's vectors and
   the chips both servers share are named; any other number stays a number. `status` answers
   `knowledge` with the entries the base serves.
@@ -23,18 +21,15 @@ What a client of the server notices.
   apart by direction, sits in a range or in a second bank. With `names=false` a disassembled line carries no note either.
 - `disassemble` gains `line_notes` for an instruction that states an operand the base names, and
   the stop's `instruction` a `note`. They are apart from `comment_list`'s comments.
-- `start` and `status` answer, beside `overlay`, what a stopped machine draws without: a caption
-  comes and goes without its fade, and the record mark stays lit.
-- The orange edge can carry a caption naming each call and its arguments, a keycap for each
-  input field held and a pause mark while the session holds the machine stopped. `start` takes
-  `overlay` to choose them and where they go, and `start` and `status` answer with an `overlay`
-  that lists what is drawn and why a layer is not: MAME has no pointer. A caption wider than the
-  window is cut and marked with `..`, never scrolled. No capture carries any of it.
-- While `record` or `audio_record` runs, a red dot blinks in the top right corner of the window:
-  with REC for a video, with a note for audio, with both for both. `overlay` can turn it off
-  (`record`). Like the rest of the edge, no capture carries it.
+- `start` and `status` answer, in `overlay`'s `notes`, what a layer is drawn without while the
+  machine is stopped: the record mark stays lit instead of blinking.
+- The orange edge can carry a record mark: while `record` or `audio_record` runs, a red dot
+  blinks in the top right corner of the window, with REC for a video, with a note for audio,
+  with both for both. `start` takes `overlay` to choose it (`record`), and `start` and `status`
+  answer with an `overlay` that lists what is drawn and why a layer is not: MAME has no
+  pointer. Like the rest of the edge, no capture carries it.
 - Every demo is shown moving: a `loop.webp` beside its README replaces `loop.mp4`. It holds
-  one to three moments cut from `record` calls of the demo's own run, scaled up so its pixels
+  up to five moments cut from `record` calls of the demo's own run, scaled up so its pixels
   stay sharp.
 - The Star Fire demo presses START and films a mission, and the LineUp demo fires three more
   shots.

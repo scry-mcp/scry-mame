@@ -202,9 +202,9 @@ A demo is shown moving, never as a still alone.
   between the two steps is cut. `frames` of it are shown from its frame `skip`. Less is more: a
   demo with one strong moment shows one.
 - **Nothing is staged.** The frames are the run's; a moment is cut, never slowed, held or
-  composed. Over them the decorator draws the overlay's own layers from the run's timeline, the
-  call captions and the keys, as the live overlay draws them: that is what the clip is for, and
-  it is read from the run rather than written by hand.
+  composed. Over them the decorator draws the overlay's border and the pointer from the run's
+  timeline, as the live overlay draws them: that is what the clip is for, and it is read from
+  the run rather than written by hand.
 - **Frames**: the machine's own (a capture the emulator doubled is halved back), at most 30 a
   second. Rows and columns at the clip's edges that are one colour, the same in every frame,
   are cut (`scry_core.motion.kept`), and `screen.png` is cut by the same box at its own scale
