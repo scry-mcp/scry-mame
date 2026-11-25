@@ -26,7 +26,7 @@ uv run python demos/speedf/demo.py --cwd /path/to/speedf-mame
 ```
 
 Each line it prints is one call and its check. The window opens behind the others, so the run
-does not take your keyboard.
+does not take your keyboard; `--watch` brings it in front, for when you want to watch it.
 
 - `--cwd PATH` (absolute or `~`-led) is the directory holding the game. Its `.scry/`
   holds the start profile, and its `build/` and `run/` hold what the profile names.
@@ -34,6 +34,7 @@ does not take your keyboard.
   `run/mame_roms`.
 - `--binary PATH` picks the MAME to start. Left out, it is the profile's `MAME_BINARY`.
 - `--display N` opens the window on that display. Left out, it opens on the main one.
+- `--watch` shows the run: the window comes in front and takes your keyboard until the run ends.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png` and
   `loop.webp`, from a run where every step passed. It needs ffmpeg and `img2webp` on your

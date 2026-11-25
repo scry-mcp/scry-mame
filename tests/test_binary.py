@@ -248,7 +248,8 @@ def test_a_bundle_launches_through_open_and_the_session_holds_the_apps_own_pid(
         assert proc is not None and proc.pid == 4242
         assert spawned == [proc], "the guardian watches the app's pid, as it watches a child"
         cmd = seen["cmd"]
-        assert cmd[:4] == ["/usr/bin/open", "-n", "-a", str(bundle)], cmd
+        # The session is launched behind, so `open` must not activate the app.
+        assert cmd[:5] == ["/usr/bin/open", "-n", "-g", "-a", str(bundle)], cmd
         assert cmd[cmd.index("-i") + 1] == str(Path(out["scratch_dir"]) / mame_launch.CONSOLE_FIFO)
         assert cmd[cmd.index("-o") + 1] == out["stdout_path"]
         assert cmd[cmd.index("--stderr") + 1] == out["stdout_path"]
