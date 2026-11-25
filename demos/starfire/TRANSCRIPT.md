@@ -7,7 +7,7 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
 ```json
 {
   "shared": true,
-  "background": true,
+  "background": false,
   "display": "<host>",
   "system": "starfire",
   "reference_rom": "./tmp/demos/starfire/starfire.ref",
@@ -31,6 +31,7 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "pid": "<volatile>",
   "stub_port": "<volatile>",
   "scratch_dir": "<volatile>",
+  "bundle": "~/.local/state/scry/apps/Scry MAME.app",
   "state_dir": "./tmp/demos/starfire/starfire-states",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
@@ -50,10 +51,17 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:7)", "Cocktail"],
-  "background": true,
+  "background": false,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
+  "overlay": {
+    "layers": ["edge", "record"],
+    "lacking": {"pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"},
+    "notes": {
+      "record": "a stopped machine is not repainted to animate, so the mark stays lit and does not blink"
+    }
+  },
   "machine": {"cpus": 2, "spaces": 2, "address_map": 4, "regions": 2, "shares": 2, "screens": 1, "rom_files": 13},
   "declarations": {
     "persistent": false,
@@ -270,7 +278,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 179,
+      "frame_after": 184
     },
     {
       "op": "run_for",
@@ -321,7 +331,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 184,
+      "frame_after": 214
     },
     {
       "op": "scan",
@@ -354,7 +366,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 214,
+      "frame_after": 214
     }
   ],
   "steps_completed": 3,
@@ -461,7 +475,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 214,
+      "frame_after": 219
     },
     {
       "op": "run_for",
@@ -512,7 +528,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 219,
+      "frame_after": 249
     },
     {
       "op": "scan",
@@ -539,7 +557,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 249,
+      "frame_after": 249
     }
   ],
   "steps_completed": 3,
@@ -645,7 +665,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 249,
+      "frame_after": 254
     },
     {
       "op": "run_for",
@@ -696,7 +718,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
           "omitted": ["altering_writes", "console"],
           "how": "<volatile>"
         }
-      }
+      },
+      "frame_before": 254,
+      "frame_after": 284
     }
   ],
   "steps_completed": 2,
@@ -931,7 +955,7 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "disassemble 0x1e40: 9 lines at 0x00001e40",
+  "summary": "disassemble 0x1e40: 9 lines at 0x00001e40 (maincpu)",
   "status": "ok",
   "ref": "0x1e40",
   "addr": "0x00001e40",
@@ -941,6 +965,9 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "flow": ["unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown"],
   "flow_source": "none",
   "note": "no mnemonic table for cpu type 'z80' (tables: m68000, v30), so no line is classified",
+  "names": [
+    {"field": "addr", "number": "0x00001e40", "kind": "memory", "name": "maincpu"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -1441,13 +1468,13 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
 
 </details>
 
-**21. `record`**: OK four again: recorded 60 frames in ./tmp/demos/starfire/four-again.avi
+**21. `record`**: OK four again: recorded 150 frames in ./tmp/demos/starfire/four-again.avi
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "frames": 60,
+  "frames": 150,
   "dest": "./tmp/demos/starfire/four-again.avi",
   "seconds": 300
 }
@@ -1468,7 +1495,7 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "thread_errors": 0,
   "console_reruns": 0,
   "path": "./tmp/demos/starfire/four-again.avi",
-  "frames": 60,
+  "frames": 150,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -1580,14 +1607,14 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "input :SYSTEM '1 Player Start': held 4 frames, active True, released at frame 381",
+  "summary": "input :SYSTEM '1 Player Start': held 4 frames, active True, released at frame 471",
   "status": "ok",
   "verdict": "ELAPSED",
-  "frame_before": 377,
-  "frame_after": 382,
-  "emulated_before_s": 6.318501,
-  "emulated_after_s": 6.402082,
-  "cycles": 208952,
+  "frame_before": 467,
+  "frame_after": 472,
+  "emulated_before_s": 7.822905,
+  "emulated_after_s": 7.906488,
+  "cycles": 208957,
   "polls": 5,
   "lines_ahead": 0,
   "thread_errors": 0,
@@ -1602,20 +1629,20 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "mask": "0x00000002",
   "defvalue": "0x00000000",
   "port_before": "0x000000f8",
-  "frame_set": 377,
+  "frame_set": 467,
   "released": true,
   "port_held": "0x000000fa",
-  "frame_released": 381,
+  "frame_released": 471,
   "active": true,
   "cause": "the `gvblank` stop of the last frame asked",
   "stop_seq": 15,
   "pc": "0x00000066",
   "cpu": ":maincpu",
-  "frame": 382,
+  "frame": 472,
   "regs": {
-    "AF": "0x0080",
-    "BC": "0x5e08",
-    "DE": "0xd882",
+    "AF": "0x0020",
+    "BC": "0x6d08",
+    "DE": "0xd873",
     "HL": "0x8296",
     "AF'": "0x0000",
     "BC'": "0x0000",
@@ -1625,7 +1652,7 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
     "IY": "0x82af",
     "SP": "0x8089",
     "PC": "0x0066",
-    "IR": "0x0070"
+    "IR": "0x0069"
   },
   "instruction": {
     "address": "0066",
@@ -1754,13 +1781,13 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "screen_view render :screen frame 805 from colours; 512x448 PNG x2, inline",
+  "summary": "screen_view render :screen frame 895 from colours; 512x448 PNG x2, inline",
   "status": "ok",
   "mode": "render",
   "screen": ":screen",
   "width": 256,
   "height": 224,
-  "frame_screen": 805,
+  "frame_screen": 895,
   "palette": {"available": false, "why": "the screen is direct colour: no palette device draws it"},
   "entries": 0,
   "screen_indexed": false,
@@ -1785,21 +1812,21 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "stop_seq": 17,
   "pc": "0x00000069",
   "cpu": ":maincpu",
-  "frame": 805,
+  "frame": 895,
   "regs": {
-    "AF": "0x0800",
-    "BC": "0xee2c",
-    "DE": "0x0deb",
-    "HL": "0xae2c",
+    "AF": "0x1842",
+    "BC": "0xf331",
+    "DE": "0x0dee",
+    "HL": "0xb331",
     "AF'": "0x0000",
     "BC'": "0x0000",
     "DE'": "0x0000",
     "HL'": "0x0000",
-    "IX": "0x815f",
+    "IX": "0x8237",
     "IY": "0x825b",
-    "SP": "0x8083",
+    "SP": "0x8085",
     "PC": "0x0069",
-    "IR": "0x0055"
+    "IR": "0x007c"
   },
   "instruction": {
     "address": "0069",
@@ -1835,13 +1862,16 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
+  "summary": "close: quit, reap failed, no exit code",
   "status": "ok",
   "closed": true,
-  "omitted": ["stdout_tail", "errorlog_tail"],
-  "how": "<volatile>",
+  "stdout_tail": "<volatile>",
+  "errorlog_tail": "e] MAME_MCP_INPUT#1 release frame=183 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#2 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=214\n\n[luaengine] MAME_MCP_INPUT#2 release frame=218 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#3 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=249\n\n[luaengine] MAME_MCP_INPUT#3 release frame=253 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#4 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=284\n\n[luaengine] MAME_MCP_INPUT#4 release frame=288 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#5 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=314\n\n[luaengine] MAME_MCP_INPUT#5 release frame=318 port_held=000000f9\n\n[luaengine] MAME_MCP_RECORD#6 armed frame=319 vblank=true\n\n[luaengine] MAME_MCP_RECORD#6 begin frame=320 recording=true\n\n[luaengine] MAME_MCP_RECORD#6 end frame=409\n\n[luaengine] MAME_MCP_RECORD#7 armed frame=314 vblank=false\n\n[luaengine] MAME_MCP_RECORD#7 begin frame=314 recording=true\n\n[luaengine] MAME_MCP_RECORD#7 end frame=463\n\n[luaengine] MAME_MCP_INPUT#8 set name=\"1 Player Start\" player=0 mask=00000002 defvalue=00000000 port_before=000000f8 frame=467\n\n[luaengine] MAME_MCP_INPUT#8 release frame=471 port_held=000000fa\n\n[luaengine] MAME_MCP_RECORD#9 armed frame=472 vblank=true\n\n[luaengine] MAME_MCP_RECORD#9 begin frame=473 recording=true\n\n[luaengine] MAME_MCP_RECORD#9 end frame=892\n\n",
   "ended_by": "quit",
-  "exit_code": 0,
+  "exit_code": {
+    "available": false,
+    "why": "the emulator was launched as an app, so this server is not its parent and nothing here reaps it: its exit status is not known"
+  },
   "cfg_written": true,
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,
