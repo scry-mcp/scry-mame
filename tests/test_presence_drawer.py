@@ -6,8 +6,10 @@ from __future__ import annotations
 import shutil
 import subprocess
 from pathlib import Path
+from typing import cast
 
 import pytest
+from scry_core import overlay as ov
 from scry_core import presence
 
 from scry_mame import presence as mpresence
@@ -29,12 +31,11 @@ def _lua() -> str:
     pytest.fail("no Lua 5.4 interpreter is installed: the drawer is not run without one")
 
 
-def state(layers: str = "edge", *, held: str = "held", rec: str = "") -> str:
-    """A state file as `mpresence.encode` writes it, by hand so the test names each line."""
-    body = [held, f"layers={layers}"]
-    if rec:
-        body.append(f"rec={rec}")
-    return "\n".join(body) + "\n"
+def state(layers: str = "edge", *, rec: str = "") -> str:
+    """A state file as `mpresence.encode` writes it, so the writer and the drawer cannot drift."""
+    asked = tuple(cast(ov.Layer, name) for name in layers.split(","))
+    return mpresence.encode("held", presence.Payload(
+        layers=asked, recording=cast(presence.Recording, rec or "none")))
 
 
 def run(tmp_path: Path, scenario: str, look: presence.Look = presence.LOOK) -> list[Frame]:
@@ -85,6 +86,43 @@ def test_a_drawer_loaded_twice_draws_once(tmp_path: Path) -> None:
 def test_a_state_with_only_the_edge_draws_the_edge_and_nothing_over_it(tmp_path: Path) -> None:
     frames = run(tmp_path, f"put_state({lit(state())})\nshot(1.0)\n")
     assert boxes(frames[0]) == presence.LOOK.steps * 4 and texts(frames[0]) == []
+
+
+def acted() -> str:
+    """A state file with the machine acting, as `mpresence.encode` writes it."""
+    return mpresence.encode("acting", presence.Payload(layers=("edge",)))
+
+
+def _edge_alpha(frame: Frame) -> int:
+    """The alpha of the edge's first band, out of the primitive's colour."""
+    top = next(p for p in frame if p[0] == "box")
+    return int(top[6]) >> 24
+
+
+def test_the_edge_is_drawn_in_the_band_the_look_names(tmp_path: Path) -> None:
+    """The first band's rectangle and colour, from the target's size and the look's edge."""
+    look = presence.LOOK
+    held, = run(tmp_path, f"put_state({lit(state())})\nshot(0.0)\nshot(3.0)\n")[1:]
+    top = next(p for p in held if p[0] == "box")
+    assert [float(v) for v in top[1:5]] == pytest.approx(
+        [0.0, 0.0, 1.0, look.edge / look.steps])
+    assert int(top[6]) == (int(255 * look.held_alpha + 0.5) << 24) | look.rgb
+
+
+def test_the_edge_fades_from_acting_to_held_while_the_machine_runs(tmp_path: Path) -> None:
+    look = presence.LOOK
+
+    def level(alpha: float) -> int:
+        return int(255 * alpha + 0.5)
+    frames = run(tmp_path, f"put_state({lit(state())})\nshot(0.0)\nshot(3.0)\n"
+                f"put_state({lit(acted())})\nhalt(false)\nshot(4.0)\n"
+                f"put_state({lit(state())})\nshot(5.0)\nshot(6.0)\nshot(8.0)\n")
+    got = [_edge_alpha(frame) for frame in frames]
+    assert got[1] == level(look.held_alpha), "the first fade has ended"
+    assert got[2] == level(look.acting_alpha), "a call, at its brightest"
+    assert got[3] == level(look.acting_alpha), "the change is where the fade starts"
+    assert level(look.held_alpha) < got[4] < got[3], "one second into the fade"
+    assert got[5] == level(look.held_alpha), "the fade has ended"
 
 
 RED = presence.LOOK.record_rgb
