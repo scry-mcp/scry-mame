@@ -2077,7 +2077,7 @@
   }
  },
  "knowledge_find": {
-  "from": "docs/reference/tour/TRANSCRIPT.md: call 9",
+  "from": "tests/knowledge_example.py: the pilot's dictionaries of rows, read unsealed: knowledge_find",
   "call": {
    "kind": "vector",
    "key": "0x66",
@@ -2101,24 +2101,115 @@
      "key": "0x66",
      "name": "NMI",
      "scope": "z80",
+     "rows": [
+      {
+       "n": "1",
+       "on": "is",
+       "of": "doc",
+       "text": "NMI is the Nonmaskable Interrupt input.",
+       "cites": [
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "694"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "on": "when",
+       "of": "doc",
+       "text": "The NMI input is negative edge-triggered.",
+       "cites": [
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "694"
+        }
+       ],
+       "verdicts": {
+        "mame": "differs"
+       }
+      },
+      {
+       "n": "3",
+       "on": "when",
+       "of": "doc",
+       "text": "NMI has a higher priority than INT.",
+       "cites": [
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "694-695"
+        }
+       ],
+       "verdicts": {
+        "mame": "as documented"
+       }
+      },
+      {
+       "n": "4",
+       "on": "when",
+       "of": "doc",
+       "text": "NMI is accepted regardless of the status of the interrupt enable flip-flop.",
+       "cites": [
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "695-696"
+        },
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "1080"
+        }
+       ],
+       "verdicts": {
+        "mame": "as documented"
+       }
+      },
+      {
+       "n": "5",
+       "on": "does",
+       "of": "doc",
+       "text": "An accepted NMI makes the CPU restart at address 0066h.",
+       "cites": [
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "696-697"
+        },
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "1081-1082"
+        }
+       ],
+       "verdicts": {
+        "mame": "as documented"
+       }
+      },
+      {
+       "n": "6",
+       "on": "is",
+       "of": "doc",
+       "text": "The NMI restart is like a restart instruction to a location outside the eight software restart locations; a restart is a call to an address in Page 0.",
+       "cites": [
+        {
+         "document": "Zilog Z80 CPU user manual",
+         "lines": "1082-1084"
+        }
+       ]
+      },
+      "... 7 more"
+     ],
      "aliases": [
       "non-maskable interrupt"
      ],
-     "description": "Target of a non-maskable interrupt.",
-     "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter a ... (308 characters)",
-     "address": "0x000066",
-     "length": 1,
-     "checked": true,
      "sources": [
       {
-       "role": "documentation",
-       "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
-       "cites": "restart at location 0066h."
+       "where": "Zilog Z80 CPU user manual",
+       "url": "http://www.z80.info/zip/z80cpu_um.pdf"
       },
       {
-       "role": "emulator",
-       "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
-       "cites": "\tPC = 0x0066;",
+       "where": "src/devices/cpu/z80/z80.cpp",
+       "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.cpp"
+      },
+      {
+       "where": "src/devices/cpu/z80/z80.lst",
        "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
       }
      ]
@@ -3498,7 +3589,7 @@
    "length": 2048
   },
   "reply": {
-   "summary": "scan start: 0x0, 2048 1-byte candidates on :maincpu",
+   "summary": "scan start: 0x0 (spriteram), 2048 1-byte candidates on :maincpu",
    "status": "ok",
    "ref": "0x0",
    "addr": "0x00000000",
@@ -3506,7 +3597,21 @@
    "cell_bytes": 1,
    "hits_total": 2048,
    "cpu": ":maincpu",
-   "space": "program"
+   "space": "program",
+   "names": [
+    {
+     "field": "given.ref",
+     "number": "0x0",
+     "kind": "memory",
+     "name": "spriteram"
+    },
+    {
+     "field": "addr",
+     "number": "0x00000000",
+     "kind": "memory",
+     "name": "spriteram"
+    }
+   ]
   },
   "then": {
    "tool": "scan",
@@ -3539,7 +3644,27 @@
     "hits_total": 3,
     "truncated": false,
     "cpu": ":maincpu",
-    "space": "program"
+    "space": "program",
+    "names": [
+     {
+      "field": "hits[].addr",
+      "number": "0x000003ee",
+      "kind": "memory",
+      "name": "spriteram"
+     },
+     {
+      "field": "hits[].addr",
+      "number": "0x0000042b",
+      "kind": "memory",
+      "name": "spriteram"
+     },
+     {
+      "field": "hits[].addr",
+      "number": "0x0000042c",
+      "kind": "memory",
+      "name": "spriteram"
+     }
+    ]
    }
   }
  },

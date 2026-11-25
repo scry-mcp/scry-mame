@@ -203,22 +203,78 @@ One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 d
       "key": "0x66",
       "name": "NMI",
       "scope": "z80",
-      "aliases": ["non-maskable interrupt"],
-      "description": "Target of a non-maskable interrupt.",
-      "behaviour": "A falling edge on the NMI pin is always accepted at the end of the current instruction, whatever the interrupt enable flip-flop holds. The CPU clears the first flip-flop, leaves the second holding its old state, pushes the program counter a ... (308 characters)",
-      "address": "0x000066",
-      "length": 1,
-      "checked": true,
-      "sources": [
+      "rows": [
         {
-          "role": "documentation",
-          "ref": "datasheet:Zilog Z80 CPU User Manual UM008011-0816, http://www.z80.info/zip/z80cpu_um.pdf, NMI pin",
-          "cites": "restart at location 0066h."
+          "n": "1",
+          "on": "is",
+          "of": "doc",
+          "text": "NMI is the Nonmaskable Interrupt input.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "694"}
+          ]
         },
         {
-          "role": "emulator",
-          "ref": "mame:src/devices/cpu/z80/z80.lst NMI",
-          "cites": "\tPC = 0x0066;",
+          "n": "2",
+          "on": "when",
+          "of": "doc",
+          "text": "The NMI input is negative edge-triggered.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "694"}
+          ],
+          "verdicts": {"mame": "differs"}
+        },
+        {
+          "n": "3",
+          "on": "when",
+          "of": "doc",
+          "text": "NMI has a higher priority than INT.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "694-695"}
+          ],
+          "verdicts": {"mame": "as documented"}
+        },
+        {
+          "n": "4",
+          "on": "when",
+          "of": "doc",
+          "text": "NMI is accepted regardless of the status of the interrupt enable flip-flop.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "695-696"},
+            {"document": "Zilog Z80 CPU user manual", "lines": "1080"}
+          ],
+          "verdicts": {"mame": "as documented"}
+        },
+        {
+          "n": "5",
+          "on": "does",
+          "of": "doc",
+          "text": "An accepted NMI makes the CPU restart at address 0066h.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "696-697"},
+            {"document": "Zilog Z80 CPU user manual", "lines": "1081-1082"}
+          ],
+          "verdicts": {"mame": "as documented"}
+        },
+        {
+          "n": "6",
+          "on": "is",
+          "of": "doc",
+          "text": "The NMI restart is like a restart instruction to a location outside the eight software restart locations; a restart is a call to an address in Page 0.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "1082-1084"}
+          ]
+        },
+        "... 7 more"
+      ],
+      "aliases": ["non-maskable interrupt"],
+      "sources": [
+        {"where": "Zilog Z80 CPU user manual", "url": "http://www.z80.info/zip/z80cpu_um.pdf"},
+        {
+          "where": "src/devices/cpu/z80/z80.cpp",
+          "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.cpp"
+        },
+        {
+          "where": "src/devices/cpu/z80/z80.lst",
           "url": "https://github.com/mamedev/mame/blob/mame0289/src/devices/cpu/z80/z80.lst"
         }
       ]
@@ -288,19 +344,20 @@ What the machine says about itself (inputs, devices, the memory map) was read at
 <details><summary>The contract your client receives</summary>
 
 ```text
-What a number is called on this machine, and what the base knows of it: a port, interrupt
-vector, DOS or BIOS call, IRQ, memory address, input, device, its registers and commands. One
-match, or an `id`, answers the whole entry (`description`, `behaviour`, `sources`); more,
-rows. No session is needed except for a device by tag, inputs and memory.
+What a number is called on the machine and what the base knows of it: a port, vector,
+DOS or BIOS call, IRQ, memory address, input, device, register or command. One match, or an
+`id`, answers the entry: its `rows`, the document's first with each emulator's `verdicts`,
+then the emulators' notes (`vs`); `id=<id>#<n>`: a row, with URLs. More: a list. No session
+is needed except for a device by tag, inputs and memory.
 
 `id`: an entry's id. `kind`: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`,
 `device`, `register` or `command`; empty searches all. `key`: the number as a reply prints it,
-or a range. `text`: words in names, aliases, descriptions; `*` ends a prefix. `device`: all of
+or a range. `text`: words in names, aliases, rows; `*` ends a prefix. `device`: all of
 that device. `scope`: the system, cpu or device; empty, the live session's. `limit` 1..50.
 
-Examples: `key=0x3C8`; `kind=port key=0x3C0..0x3CF`; `kind=vector key=0xFFF8 scope=<scope>`;
-`kind=call key=0x21/0x4C`, its variant by a register `kind=call key=0x10/0x12/BL=0x36`;
-a running machine's device by tag `kind=device key=:maincpu`; its registers
+Examples: `key=0x3C8`; `kind=vector key=0xFFF8 scope=<scope>`; `kind=call key=0x21/0x4C`,
+a variant `kind=call key=0x10/0x12/BL=0x36`;
+a live device by tag `kind=device key=:maincpu`; its registers
 `kind=register device=<device>`; `text=palette*`.
 
 Refused (INVALID): nothing to look up, a bad `key`, or a `scope` it lacks
@@ -312,7 +369,7 @@ Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`, `s
 `held_back`; nothing matched: no entry, `nearest` and a `note`: it stays a number.
 `unconfirmed` lists ids held back.
 
-Scopes: am9517a, chip, ins8250, mc146818, mc6845, pic8259, saa1099, sn76496, ym3812, ymf262, z80.
+Scopes: acia6850, aica, am9517a, ay8910, c140, c219, c352, c6280, chip, es5505, es5506, hd44780, i8251, i8255, ins8250, k007232, k054539, m68000, m6809, mc146818, mc6845, mc68681, msm5205, nes_apu, okim6295, pia6821, pic8259, pit8253, pokey, ppu2c0x, qsound, rf5c68, saa1099, scsp, sega315_5124, sega315_5313, sn76496, tms9928a, upd1990a, upd7759, v30, v9938, x1010, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, ymf278b, z80, z80scc, z80sio.
 
 Reference: REFERENCE.md, Knowledge base.
 ```
