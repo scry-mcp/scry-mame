@@ -4215,7 +4215,7 @@
           "n": "103",
           "on": "write",
           "of": "mame",
-          "vs": "extra",
+          "vs": "differs",
           "text": "When ACR[6] changes to 1 the timer starts from the preload (at least 1); when it changes to 0 it stops, with a TODO asking if that is right.",
           "quotes": [
             {
@@ -4233,13 +4233,14 @@
               "lines": "159",
               "sha": "91c5d549a09fc11fa5253468b467af4f6ded386eabd22f521f4248a80b485e27"
             }
-          ]
+          ],
+          "row": "6"
         },
         {
           "n": "104",
           "on": "write",
           "of": "mame",
-          "vs": "extra",
+          "vs": "differs",
           "text": "Writing ACR sets ISR[7] at once when an IPCR change bit is already set and its ACR enable bit is now 1.",
           "quotes": [
             {
@@ -4247,7 +4248,8 @@
               "lines": "984-986",
               "sha": "d9cb88b07aa881d48cecc58c89b5a17bb0d1f1cbab2642964f86ad1b82e6aafe"
             }
-          ]
+          ],
+          "row": "8"
         },
         {
           "n": "105",

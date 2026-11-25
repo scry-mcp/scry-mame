@@ -9560,6 +9560,70 @@
     "rows": {}
    }
   },
+  "mc68681:register:0x00:write": {
+   "doc": {
+    "seal": "2d94a03b1f9ccebdbe44458f01a2c0ef452eee4bf5ad94f6eedf47370cb9c844",
+    "by": "the parked-entries reader",
+    "writer": "slice mame-sup1 writer",
+    "rows": {
+     "1": {
+      "digest": "e1e666c224d8ff74e6e5b021da1ab6f64c708e0255b26aef10d97061bb790d34",
+      "by": "the parked-entries reader"
+     },
+     "2": {
+      "digest": "fe2875c738e6a08a8fd7f6d6ae18ff9da2f6a3a038ccce69c5813eb094df56ef",
+      "by": "P0 unsealed reader"
+     },
+     "3": {
+      "digest": "9c2b7f20522ca60cd7782a9ebde529706a5b6c805ef69b32dac2fc612b83c10a",
+      "by": "P0 unsealed reader"
+     },
+     "4": {
+      "digest": "57ee88ebc0a817bb84b00fbc121842d4f9805036646836c020fcc2730af52b13",
+      "by": "P0 unsealed reader"
+     },
+     "5": {
+      "digest": "62334cdfe1eec98a2a8e2a4277d9c3a5b87516fe3f30da91c89d88c496d64976",
+      "by": "the parked-entries reader"
+     },
+     "6": {
+      "digest": "6c0fa82ad7b2dc46b7b3a56098cecbefbb0d2c418bb2265c1af5fbe43c4b114d",
+      "by": "P0 unsealed reader"
+     },
+     "7": {
+      "digest": "8060145ec146285f3a0c60ece19490d97fa06474a8dbe7901adf6f13cd57e0d4",
+      "by": "P0 unsealed reader"
+     },
+     "8": {
+      "digest": "1e2db175e582990e841999bf0175191ef1bf8b5639faae62ef5cd59dc4313b3e",
+      "by": "P0 unsealed reader"
+     },
+     "9": {
+      "digest": "217769e69673505866f934b69f7674a9d5f8aa519061f3e587be90c30ebbd4a0",
+      "by": "P0 unsealed reader"
+     }
+    }
+   },
+   "mame": {
+    "seal": "35ccda51b2babff666d6b437d68dca483d6a3adb947f708d15ada0c6bd9ec712",
+    "by": "the parked-entries reader",
+    "writer": "slice mame-sup1 writer",
+    "rows": {
+     "101": {
+      "digest": "d3b8f69bc8387b203fe15160ed4bdc839fbc547426d69eac2004c69892336685",
+      "by": "P0 unsealed reader"
+     },
+     "102": {
+      "digest": "8b2c6f2885c6d3d1de182eed084b2ca9a29e4dcdd589d27f24e2f1683a0ba1ac",
+      "by": "P0 unsealed reader"
+     },
+     "103": {
+      "digest": "4e5133c23915f99ae62ec3db1643070d889bdb96cd1c452776e48651a1272a3f",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
   "mc68681:register:0x01:read": {
    "doc": {
     "seal": "fa9a2908facb713fc8f03fe593861fa7190d6d7ebd64134c98ec768ea2b5ddf0",
@@ -10024,6 +10088,82 @@
      "102": {
       "digest": "b7aedc3a89db4af0b7fb1aadffcd901ac7d98bb818718b05e2487aca1f8d9a6a",
       "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  "mc68681:register:0x04:write": {
+   "doc": {
+    "seal": "b2afbc01af6bfe13671efa8a6dc26650bb6f2d4260ec8d7fc38ebf11d370fe2a",
+    "by": "the parked-entries reader",
+    "writer": "slice mame-sup1 writer",
+    "rows": {
+     "1": {
+      "digest": "b7c9220373d3df85369f9a90f58c8f8333a62b8e4680ce9b18a0f93552d37c37",
+      "by": "P0 unsealed reader"
+     },
+     "2": {
+      "digest": "c3edae3beee91eb56fd9c079fa6e920689e5ea6e294e3fe5de889c271a578850",
+      "by": "P0 unsealed reader"
+     },
+     "3": {
+      "digest": "9f597c3561a40d2dbb182630b16a4a7945f72a4ca7871bab2601b45e0897cb97",
+      "by": "P0 unsealed reader"
+     },
+     "4": {
+      "digest": "63ff58ec60a43f6bd973ddbb8bc6d0f66e15d309dd11d46c5317d05f25b40640",
+      "by": "P0 unsealed reader"
+     },
+     "5": {
+      "digest": "301eae58e2e706f18348aff43971e6e4c14af3e36863858c0322f9de971c21de",
+      "by": "P0 unsealed reader"
+     },
+     "6": {
+      "digest": "5dd7d9439748d493cd126dfa38b2c688935dabff4e47508a3bdef3e9fdd6dd16",
+      "by": "P0 unsealed reader"
+     },
+     "7": {
+      "digest": "241a3cf8f44b02329df790f600dab9f6837cb25d53b337ed646ab130296d0539",
+      "by": "the parked-entries reader"
+     },
+     "8": {
+      "digest": "7dfdc5b72e4f1548d981fcef1ff221cf0f9885b138ed6f5123e88ec267acab85",
+      "by": "P0 unsealed reader"
+     }
+    }
+   },
+   "mame": {
+    "seal": "c4d6d28d9ff0243b347995c3b4f5f887cec42cd487d85637d9b2a6479cff2007",
+    "by": "the parked-entries reader",
+    "writer": "slice mame-sup1 writer",
+    "rows": {
+     "101": {
+      "digest": "53221bea035708521c6dde8488a6caca231a6a0dc2b89424d6a69f7e33ea6f7e",
+      "by": "P0 unsealed reader"
+     },
+     "102": {
+      "digest": "2557b0bea6dd9a290786178a289a90f48586fbc5e4fa50e85b42a22f8f6775e8",
+      "by": "P0 unsealed reader"
+     },
+     "103": {
+      "digest": "819c2ad36c8f28a28d17fa5d664bc6aecedf3c9e6cba495450af935497f84a8b",
+      "by": "the parked-entries reader"
+     },
+     "104": {
+      "digest": "043762cc54f288e372f1e8d51f9a9ba336e4ee6b7d3c02d6d96594b269c9da70",
+      "by": "the parked-entries reader"
+     },
+     "105": {
+      "digest": "40f763077410ec695270a847b6a1c301e58e772bf085e343ee5077e175c58fe3",
+      "by": "the parked-entries reader"
+     },
+     "106": {
+      "digest": "7a640663d223f35373cecedb8338d93421da219e650900e2456603f7d5abce0a",
+      "by": "the parked-entries reader"
+     },
+     "107": {
+      "digest": "156b5586038defaeaef0ccf49e19fb967df5f7e4cc633f009342c8f4d1b169ae",
+      "by": "the parked-entries reader"
      }
     }
    }
@@ -20868,6 +21008,37 @@
      "2": {
       "digest": "cca2325f1d99cbace59ae0749a90c839af147d0c6956656eb82f729e3acfac40",
       "by": "slice mame-e2-sound-02 reader"
+     }
+    }
+   }
+  },
+  "x1010:register:0x08..0x7F": {
+   "doc": {
+    "seal": "0f2933fcb627547a866be87e70993903c793096f503d05f1ed22db40cdb45dec",
+    "by": "the parked-entries reader",
+    "writer": "lane mame-e2-sound writer",
+    "rows": {}
+   },
+   "mame": {
+    "seal": "a8744eab87ab151709e91448b160bbde61b8a78b29e06886444f6c136f83c401",
+    "by": "the parked-entries reader",
+    "writer": "lane mame-e2-sound writer",
+    "rows": {
+     "1": {
+      "digest": "989452d0ee9464d7bd2c298ece943df1ff4e1c75592e26b109ed83d13852a973",
+      "by": "the parked-entries reader"
+     },
+     "2": {
+      "digest": "828a889b8a9f74d544bf44ef4ed25706d07b59c3bbd34fcd4e7889133bf77244",
+      "by": "the parked-entries reader"
+     },
+     "3": {
+      "digest": "eff7437ffc1b3e5a576b8d94b88a844dd4d410d803baaa3277ad814dbabfd0ce",
+      "by": "the parked-entries reader"
+     },
+     "4": {
+      "digest": "3f30602fd8f006ba442463a57117be25f25072d692682f5975e9306df49a8abe",
+      "by": "the parked-entries reader"
      }
     }
    }
