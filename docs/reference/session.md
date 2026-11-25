@@ -307,7 +307,7 @@ A watched window is the largest whole multiple of the machine's first screen tha
 <details><summary>The contract your client receives</summary>
 
 ```text
-Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
+Start MAME with its gdbstub, stopped at its debugger, checked against the reference image.
 
 Paths are absolute or `~`-led: `rompath` and `inipath` `;`-separated directories, `state_dir`
 a directory, the rest files. `binary` names a MAME executable or a `.app` bundle carrying
@@ -390,7 +390,7 @@ Call:
 status()
 ```
 
-Reply, 6 of 25 fields:
+Reply, 6 of 24 fields:
 
 ```json
 {
@@ -449,7 +449,6 @@ Gridlee is up and stopped at `0x0000f000`. `in_debugger` is empty because no bre
   "console_pending": 0,
   "tallies_pending_removal": [],
   "frame_symbol": "frame",
-  "knowledge": {"served": 75, "held_back": 647},
   "names": [
     {"field": "pc", "number": "0x0000f000", "kind": "symbol", "name": "take_credit", "delta": 6538}
   ]
@@ -513,7 +512,7 @@ Takes no argument.
 - `overlay` is there with the border on, as `start` gave it: the `layers` drawn and, in `lacking`, why a layer is not.
 - `last_stop` also carries `stop_seq`, `frame` and `wall_at`. `frame_symbol` is the frame counter's name, as `start` found it.
 - `cfg`, `stdout_path`, `errorlog_path`, `scratch_dir` and `state_dir` are the session's files, as `start` named them.
-- `knowledge` counts the entries of the base the names come from (`served`) and those held back because no second check confirmed them (`held_back`); a held-back entry stays a number.
+- `knowledge` counts the entries the base serves (`served`) and those it holds without serving (`held_back`); an entry it holds stays a number.
 
 </details>
 

@@ -2125,9 +2125,7 @@
     }
    ],
    "truncated": false,
-   "examined": 9,
-   "served": 75,
-   "held_back": 647
+   "examined": 9
   }
  },
  "log": {
@@ -4329,10 +4327,6 @@
    "console_pending": 0,
    "tallies_pending_removal": [],
    "frame_symbol": "frame",
-   "knowledge": {
-    "served": 75,
-    "held_back": 647
-   },
    "names": [
     {
      "field": "pc",

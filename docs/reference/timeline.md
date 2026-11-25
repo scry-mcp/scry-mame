@@ -43,7 +43,7 @@ Reply, 5 of 13 fields:
 }
 ```
 
-One format and one asset, and all nine entries of the file are `proved`. The asset `sprites` reads the region `gfx1` in the format `sprite`, with the palette device `palette`.
+One format and one asset, and all 16 entries of the file are `proved`. The asset `sprites` reads the region `gfx1` in the format `sprite`, with the palette device `palette`.
 
 <details><summary>The whole reply</summary>
 

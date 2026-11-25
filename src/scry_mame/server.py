@@ -176,7 +176,7 @@ def start(
     profile: str = "",
     ctx: Context[Any, Any] | None = None,
 ) -> dict[str, Any]:
-    """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
+    """Start MAME with its gdbstub, stopped at its debugger, checked against the reference image.
 
     Paths are absolute or `~`-led: `rompath` and `inipath` `;`-separated directories, `state_dir`
     a directory, the rest files. `binary` names a MAME executable or a `.app` bundle carrying

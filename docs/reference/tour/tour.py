@@ -386,7 +386,7 @@ def declared(reply: Reply, run: Run) -> str:
 def card_mapped(reply: Reply, run: Run) -> str:
     expect(reply["screen"] == "level_card" and reply["match"][0]["crop"] == CARD_TITLE,
            f"screen {reply['screen']}, match {reply['match']}")
-    return f"the level card mapped by its title, signed {reply['match'][0]['signature']}"
+    return f"the level card mapped by its title, fingerprinted {reply['match'][0]['signature']}"
 
 
 def card_found(reply: Reply, run: Run) -> str:

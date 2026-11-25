@@ -175,7 +175,7 @@ Call:
 knowledge_find(kind="vector", key="0x66", scope="z80")
 ```
 
-Reply, 3 of 10 fields:
+Reply, 3 of 8 fields:
 
 ```json
 {
@@ -185,7 +185,7 @@ Reply, 3 of 10 fields:
 }
 ```
 
-One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 does when it is taken, and its source lines. `served` and `held_back` count what the base serves and holds back.
+One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 does when it is taken, and its source lines. `examined` counts the entries the search read: nine.
 
 <details><summary>The whole reply</summary>
 
@@ -225,9 +225,7 @@ One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 d
     }
   ],
   "truncated": false,
-  "examined": 9,
-  "served": 75,
-  "held_back": 647
+  "examined": 9
 }
 ```
 

@@ -3674,7 +3674,7 @@ Also attached: image/png.
 
 </details>
 
-**56. `screen_map_write`**: OK map: the level card mapped by its title, signed 5733a1938b03c102
+**56. `screen_map_write`**: OK map: the level card mapped by its title, fingerprinted 5733a1938b03c102
 
 <details><summary>call and reply</summary>
 
