@@ -27,7 +27,8 @@ What a client of the server notices.
   blinks in the top right corner of the window, with REC for a video, with a note for audio,
   with both for both. `start` takes `overlay` to choose it (`record`), and `start` and `status`
   answer with an `overlay` that lists what is drawn and why a layer is not: MAME has no
-  pointer. Like the rest of the edge, no capture carries it.
+  pointer. Like the rest of the edge, no capture carries it. `overlay` is left out when the
+  presence is not drawn: a drawer that stopped, or a delivery that failed, shows in `presence`.
 - Every demo is shown moving: a `loop.webp` beside its README replaces `loop.mp4`. It holds
   up to five moments cut from `record` calls of the demo's own run, scaled up so its pixels
   stay sharp.

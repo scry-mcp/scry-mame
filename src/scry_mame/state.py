@@ -277,15 +277,10 @@ class State:
         return unavailable(f"the drawer stopped: {why}") if why else self.presence.held.reply()
 
     def overlay_field(self) -> dict[str, Any]:
-        """The reply's `overlay`, present only with a session whose presence is on."""
-        if self.presence.held is None or self.overlay is None:
+        """The reply's `overlay`, present only with a session whose presence is drawn."""
+        if self.overlay is None or self.presence_shown() is not True:
             return {}
         return {"overlay": mpresence.overlay_reply(self.overlay)}
-
-    def holds_stopped(self) -> bool:
-        """Whether a live machine is held stopped by the session."""
-        return (self.ses is not None and not self.ses.running and not self.ses.broken
-                and self.proc is not None and self.proc.poll() is None)
 
     def live(self) -> tuple[gs.Session, Path]:
         ses = self.alive()
