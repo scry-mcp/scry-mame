@@ -55,7 +55,7 @@ reader goes to for it. Words are counted in prose, outside code blocks and gener
 | reference | a tool shows at most 3 paragraphs of why; more sits in a closed `<details>` |
 | reference | where an example can be tried is at most 2 sentences and 40 words; an argument's, a returned field's and a refusal's line at most 2 sentences and 30 words each |
 | demo guide | at most 120 words above "Run it"; its first paragraph at most 60 |
-| demo guide | at most 3 moments, each one sentence of at most 25 words |
+| demo guide | each moment one sentence of at most 25 words |
 | demo guide | 2 to 4 steps under "Try it yourself"; the whole prompt as numbered steps of at most 30 words each, in a closed `<details>` |
 
 ## The front door: its sections and their order
@@ -194,7 +194,7 @@ The same shape in the front door, the reference and the demo guides:
 A demo is shown moving, never as a still alone.
 
 - **One file per demo**: `demos/<name>/loop.webp`, an animated WebP that loops for ever.
-- **Up to 5 moments, 16 seconds in all**, each between 1.5 and 4 seconds. A moment is a stretch
+- **The moments and the length the motion rule allows** (`motion.CUTS_MAX` of them, `motion.LOOP_SECONDS` in all, each between `motion.CUT_SECONDS`' bounds). A moment is a stretch
   where the screen changes because of a call the demo made, declared in the demo as
   `Moment(after, until, caption, skip=0, frames=0)`: what the screen did from the end of step
   `after` to the end of step `until`. `until` is a `record` step right after `after`, whose

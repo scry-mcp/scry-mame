@@ -281,7 +281,7 @@ Reply, 2 of 12 fields:
    reading `Player1`.
 10. Record two seconds of sound, measure it and compare it with `music.wav`.
 11. Shoot three more times: where the player stands, one column to the right, and with the
-    next colour. Record a second of video after each shot.
+    next colour. Record two seconds of video after each shot.
 12. Take a picture of the screen and close.
 
 </details>
@@ -307,6 +307,7 @@ Each group is a page of the reference. Three of the names need a word:
 
 ## The transcript
 
-[TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The two seconds of
-music it records must equal [`music.wav`](music.wav) sample for sample (`win32/music.wav` on
-Windows, where MAME mixes the sound differently).
+[TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The paths of your
+copy read `<host>` there, because they are your computer's. The two seconds of music it records
+must equal [`music.wav`](music.wav) sample for sample (`win32/music.wav` on Windows, where MAME
+mixes the sound differently).
