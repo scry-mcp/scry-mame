@@ -36,7 +36,6 @@ from live_harness import (
     zips_missing,
 )
 from presence_leak import leaking_drawer
-from scry_core import overlay_timeline as scry_timeline
 from scry_core import presence as scry_presence
 from scry_core import window_capture
 
@@ -65,8 +64,8 @@ Z_CELLS = [
     "a repaint taken away draws none",
     "circus: start and status report the overlay: the layers MAME can draw, and the one it "
     "cannot with its reason",
-    "circus: a caption and a held key are each drawn over the window, the same edge twice is "
-    "the same window, and snapshot, screen_view and screen_signature carry neither",
+    "circus: a recording mark is drawn over the window, the same edge twice is the same "
+    "window, and snapshot, screen_view and screen_signature carry neither",
 ]
 #: Long enough for the session's writer to land a pending state.
 QUIET_S = 0.3
@@ -212,7 +211,7 @@ def _z_circus(t: list[str]) -> None:
          and at_start is not None and at_start["held"] >= 1,
          f"start {started.get('presence')!r}, status {status.get('presence')!r}, "
          f"repaints before any other call {at_start}")
-    drawn = ["edge", "keys", "calls", "pause", "record"]
+    drawn = ["edge", "record"]
     cell(t[9], all(r.get("overlay", {}).get("layers") == drawn
                    and set(r["overlay"].get("lacking", {})) == {"pointer"}
                    and r["overlay"]["lacking"]["pointer"].strip() != ""
@@ -276,14 +275,12 @@ def _z_circus(t: list[str]) -> None:
 
 
 def _z_layers(label: str) -> None:
-    """A caption and a key held, each written as the session writes them, change the window
-    beyond the edge alone and leave every still as it was with the edge off; the edge alone twice
-    is the same window, so what differs is the layer."""
-    caption = scry_timeline.Caption("registers cpu=:maincpu", "read", 0xFFFFFF, 1)
+    """A recording mark, written as the session writes it, changes the window beyond the edge
+    alone and leaves every still as it was with the edge off; the edge alone twice is the same
+    window, so what differs is the layer."""
     payloads = {"edge": scry_presence.Payload(layers=("edge",)),
                 "again": scry_presence.Payload(layers=("edge",)),
-                "calls": scry_presence.Payload(layers=("edge", "calls"), caption=caption),
-                "keys": scry_presence.Payload(layers=("edge", "keys"), keys=("Coin 1",))}
+                "record": scry_presence.Payload(layers=("edge", "record"), recording="video")}
     windows: dict[str, window_capture.Image | str] = {}
     with _by_hand():
         _put(_state_file(), "off")
@@ -305,7 +302,7 @@ def _z_layers(label: str) -> None:
         blocked(label, f"the window changed between its captures: {e}")
         return
     cell(label, all(off_stills.values()) and all(held == off_stills for held in layered_stills)
-         and changed["again"] == 0 and changed["calls"] > 0 and changed["keys"] > 0,
+         and changed["again"] == 0 and changed["record"] > 0,
          f"off {off_stills}; window pixels differing from the edge alone: {changed}")
 
 

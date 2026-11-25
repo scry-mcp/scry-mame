@@ -1021,12 +1021,9 @@ def test_the_boundary_tells_the_session_s_presence_of_each_call(
 
         def ended(self, call: boundary.Call, outcome: boundary.Outcome) -> None:
             heard.append(("ended", f"{call.tool} {outcome}"))
-
-        def paused(self, stopped: bool) -> None:
-            heard.append(("paused", stopped))
     monkeypatch.setattr(mstate.STATE, "presence", presence_mod.Shown(held=Heard()))  # type: ignore[arg-type]
     assert s.status()["status"] == "ok"
-    assert heard == [("began", "status"), ("ended", "status ok"), ("paused", False)]
+    assert heard == [("began", "status"), ("ended", "status ok")]
 
 
 def test_boot_names_a_process_that_died_without_waiting_out_the_bound(

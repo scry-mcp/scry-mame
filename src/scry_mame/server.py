@@ -1647,11 +1647,6 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
     args.check("input", port=port, field=field, frames=frames, seconds=seconds)
     reply = mlua.input_field(*stopped("an input"), port, field, value, frames, seconds,
                              bridge(ctx))
-    # Reported once the set mark proved the field pressed, so a refused or pending call shows no
-    # key; the keycap's minimum time shows a press that was already released.
-    if "frame_set" in reply:
-        STATE.presence.key(field, True)
-        STATE.presence.key(field, False)
     return reply
 
 

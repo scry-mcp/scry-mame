@@ -9,14 +9,13 @@ history shows behind the second. The README tells the story.
 from __future__ import annotations
 
 import sys
-from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
-from scry_core import presence
+from scry_core import demo as core
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
-from demos import decorated, free_set  # noqa: E402
+from demos import free_set  # noqa: E402
 from demos.free_set import (  # noqa: E402
     RUN_S,
     Moment,
@@ -29,7 +28,6 @@ from demos.free_set import (  # noqa: E402
 
 SYSTEM = "gridlee"
 #: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
-LAYERS = decorated.CALLS_AND_KEYS
 #: The first program ROM's CRC: the cpu sees it at 0xA000, which is what `start` checks against.
 REFERENCE_CRC = 0x1C43539E
 #: The first 2 KB of the cpu's space (the `:spriteram` share), where the scan finds the credits.
@@ -272,15 +270,5 @@ DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
 
 #: The share of the picture the live drawer's text takes, so the clip's text matches the window:
 #: MAME's UI font is a fixed size against this window's picture, and the clip's own picture is
-#: shorter, so the default share would draw text twice as tall as the window does.
-FONT_SHARE = 17 / 720
-
-
-#: What the clip calls each input field: the arcade names are machinery to a person watching.
-KEY_NAMES = {"Coin 1": "coin", "1 Player Start": "start"}
-
-
 if __name__ == "__main__":
-    sys.exit(decorated.main(DEMO, LAYERS,
-                            look=replace(presence.LOOK, font_share=FONT_SHARE),
-                            key_names=KEY_NAMES))
+    sys.exit(core.main(DEMO))
