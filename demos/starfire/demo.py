@@ -29,7 +29,6 @@ from demos.free_set import (  # noqa: E402
 )
 
 SYSTEM = "starfire"
-#: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
 #: The first program ROM's CRC: the cpu sees it at 0x0, which is what `start` checks against.
 REFERENCE_CRC = 0x9990AF64
 #: The scratch RAM's first kilobyte. The driver mirrors it through its handler across

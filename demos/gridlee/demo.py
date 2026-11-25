@@ -27,7 +27,6 @@ from demos.free_set import (  # noqa: E402
 )
 
 SYSTEM = "gridlee"
-#: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
 #: The first program ROM's CRC: the cpu sees it at 0xA000, which is what `start` checks against.
 REFERENCE_CRC = 0x1C43539E
 #: The first 2 KB of the cpu's space (the `:spriteram` share), where the scan finds the credits.
@@ -268,7 +267,5 @@ MOMENTS = (
 DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
                      "Gridlee starting a game, then counting a coin after a saved state is loaded")
 
-#: The share of the picture the live drawer's text takes, so the clip's text matches the window:
-#: MAME's UI font is a fixed size against this window's picture, and the clip's own picture is
 if __name__ == "__main__":
     sys.exit(core.main(DEMO))

@@ -17,8 +17,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Pillow and numpy, through scry-core's own `decorate` extra: only `demos/decorated.py` needs them,
-# to draw the presence layers into a demo's loop. The server and its users never load them.
+# Pillow and numpy, through scry-core's own `decorate` extra: `scry_core.decorate` needs them to
+# draw over a clip, and no demo here declares a decorator today. The server never loads them.
 decorate = ["scry-core[decorate] @ git+https://github.com/scry-mcp/scry-core@v0.121.0"]
 
 [dependency-groups]
