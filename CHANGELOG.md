@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Pins scry-core 0.122.0: `start` and `status` answer `overlay` with the two layers this drawer
+  draws, the edge and the recording mark, and a demo's timeline is version 3.
 - Replies call a number by its name where the server knows one. A reply lists each in `names`
   and in its `summary`; `names=false` on `start` leaves replies bare. A symbol you typed names
   itself; an address is named by a vector, else by the nearest symbol, else by a shared chip,
