@@ -12,8 +12,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from scry_core import demo as core
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
-from demos import decorated, free_set  # noqa: E402
+from demos import free_set  # noqa: E402
 from demos.free_set import (  # noqa: E402
     RUN_S,
     Moment,
@@ -26,7 +28,6 @@ from demos.free_set import (  # noqa: E402
 
 SYSTEM = "gridlee"
 #: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
-LAYERS = decorated.CALLS_AND_KEYS
 #: The first program ROM's CRC: the cpu sees it at 0xA000, which is what `start` checks against.
 REFERENCE_CRC = 0x1C43539E
 #: The first 2 KB of the cpu's space (the `:spriteram` share), where the scan finds the credits.
@@ -49,9 +50,10 @@ SETTLE = {"milliseconds": 500, "seconds": RUN_S}
 #: After each coin of the scan: the game had not yet counted the third coin half a second after it
 #: dropped, and had two seconds after.
 COIN_MS = 2000
-#: The frames recorded after the last coin, for the loop to show it counted, and the eight seconds
-#: the game plays after START.
-COIN_FRAMES, PLAY_FRAMES = 120, 480
+#: The frames one moment records, and the eight seconds the game plays after START. A moment is
+#: 2.53 s at this board's rate, inside `motion.CUT_SECONDS`, and five of them fit
+#: `motion.LOOP_SECONDS`; the caption a call leaves behind is held for longer than that.
+MOMENT_FRAMES, PLAY_FRAMES = 150, 480
 
 
 def at(addr: str) -> str:
@@ -99,10 +101,15 @@ def watching(reply: Reply, run: Run) -> str:
     return f"change watches armed on {CREDITS_BIN} and {CREDITS_BCD}"
 
 
-def dropped(reply: Reply, run: Run) -> str:
-    expect(reply["verdict"] == "ELAPSED" and reply["released"] is True,
-           f"verdict {reply['verdict']}, released {reply['released']}")
-    return "a coin, held four frames and released"
+def released(what: str) -> Any:
+    def check(reply: Reply, run: Run) -> str:
+        expect(reply["verdict"] == "ELAPSED" and reply["released"] is True,
+               f"verdict {reply['verdict']}, released {reply['released']}")
+        return f"{what}, held four frames and released"
+    return check
+
+
+dropped = released("a coin")
 
 
 def wrote(addr: str, pc: str, stop: str, value: int, what: str) -> Any:
@@ -205,8 +212,10 @@ STEPS = [
          shown=("summary", "lines"),
          reads=("The coin routine increments `$042B`, then adds one to `$042C` in BCD (`ADDA`, "
                 "`DAA`, `STA`). The game keeps its credits twice, in binary and in BCD.")),
+    recording("routine", MOMENT_FRAMES),
     Step("settle", "run_for", SETTLE, settled),
     Step("both", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04)),
+    recording("credits", MOMENT_FRAMES),
     Step("save", "state_write", {"method": "save", "name": "four_credits"}, free_set.saved,
          volatile=free_set.SAVE_VOLATILE),
     Step("press start", "input", START,
@@ -225,24 +234,41 @@ STEPS = [
     Step("after start", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(3, 0x03)),
     Step("screen", "screen_view", lambda run: {"mode": "render", "dest": run.dir / "screen.png",
                                                "scale": 2}, free_set.pictured("the game in play")),
+    recording("view", MOMENT_FRAMES),
     Step("load", "state_write", {"method": "load", "name": "four_credits"}, free_set.loaded),
     Step("back", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04)),
     Step("coin 5", "input", COIN, dropped),
-    recording("fifth credit", COIN_FRAMES),
+    recording("fifth credit", MOMENT_FRAMES),
     Step("five", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(5, 0x05)),
+    Step("start again", "input", START, released("START")),
+    recording("playing", MOMENT_FRAMES),
+    Step("started", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04)),
     Step("close", "close", {}, free_set.closed),
 ]
 
+#: One moment per call, each ending at a `record` step right after it: the cut begins where the
+#: call left the machine, so its caption is still on screen.
 MOMENTS = (
-    Moment("unwatch", "play", "`input` pressed START and a credit is spent: the game is on.",
-           skip=352, frames=128),
-    Moment("coin 5", "fifth credit", "`state_write` loads the saved state and `input` drops a "
-                                     "coin: CREDITS goes from 4 to 5.", frames=90),
+    Moment("writer", "routine",
+           "`disassemble` reads the coin routine at `0xb583`: the binary add, then the BCD.",
+           frames=MOMENT_FRAMES),
+    Moment("both", "credits",
+           "`read_memory` reads the two credit bytes back: 4 in binary and 04 in BCD.",
+           frames=MOMENT_FRAMES),
+    Moment("screen", "view",
+           "`screen_view` captures the game in play, at twice its pixels.", frames=MOMENT_FRAMES),
+    Moment("coin 5", "fifth credit",
+           "`state_write` loads the saved state and `input` drops a coin: CREDITS goes from 4 "
+           "to 5.", frames=MOMENT_FRAMES),
+    Moment("start again", "playing",
+           "`input` presses START on the five credits: the game starts with four left.",
+           frames=MOMENT_FRAMES),
 )
 
 DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
                      "Gridlee starting a game, then counting a coin after a saved state is loaded")
 
-
+#: The share of the picture the live drawer's text takes, so the clip's text matches the window:
+#: MAME's UI font is a fixed size against this window's picture, and the clip's own picture is
 if __name__ == "__main__":
-    sys.exit(decorated.main(DEMO, LAYERS))
+    sys.exit(core.main(DEMO))

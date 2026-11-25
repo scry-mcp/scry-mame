@@ -1427,7 +1427,7 @@ wheels = [
 [[package]]
 name = "scry-core"
 version = "0.121.0"
-source = { git = "https://github.com/scry-mcp/scry-core?rev=484fd29dbcd4247a03923089d9f554df89b0b7d9#484fd29dbcd4247a03923089d9f554df89b0b7d9" }
+source = { git = "https://github.com/scry-mcp/scry-core?rev=da3acf3ede48e645d344f077eb50620c9e419a35#da3acf3ede48e645d344f077eb50620c9e419a35" }
 dependencies = [
     { name = "mcp" },
     { name = "pydantic" },
@@ -1468,8 +1468,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "mcp", specifier = ">=2.1.0,<3" },
-    { name = "scry-core", git = "https://github.com/scry-mcp/scry-core?rev=484fd29dbcd4247a03923089d9f554df89b0b7d9" },
-    { name = "scry-core", extras = ["decorate"], marker = "extra == 'decorate'", git = "https://github.com/scry-mcp/scry-core?rev=484fd29dbcd4247a03923089d9f554df89b0b7d9" },
+    { name = "scry-core", git = "https://github.com/scry-mcp/scry-core?rev=da3acf3ede48e645d344f077eb50620c9e419a35" },
+    { name = "scry-core", extras = ["decorate"], marker = "extra == 'decorate'", git = "https://github.com/scry-mcp/scry-core?rev=da3acf3ede48e645d344f077eb50620c9e419a35" },
 ]
 provides-extras = ["decorate"]
 

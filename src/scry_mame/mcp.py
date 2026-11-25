@@ -13,6 +13,7 @@ from scry_core import (
     envelope,
     frame_window,
     media_tools,
+    presence,
     recording,
     roster,
 )
@@ -23,7 +24,6 @@ from scry_mame import declarations as dec
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import naming as mnaming
-from scry_mame import presence as mpresence
 from scry_mame import state as st
 from scry_mame.state import STATE
 
@@ -203,7 +203,7 @@ BOUNDARY = boundary.Boundary(
     refusal_line=summaries.refusal, session_block=menvelope.session_block,
     take_cancelled=STATE.take_cancelled, keep_cancelled=_keep_cancelled, doc=docs.filled,
     give_back=_keep_accounts, recorder=RECORDER,
-    listener=mpresence.Listener(lambda: STATE.presence.held, STATE.holds_stopped),
+    listener=presence.Slot(lambda: STATE.presence.held),
     namer=mnaming.GUARD, names_on=lambda: STATE.names)
 
 

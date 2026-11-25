@@ -40,9 +40,6 @@ class RecordingTold:
     def ended(self, call: object, outcome: object) -> None:
         pass
 
-    def paused(self, stopped: bool) -> None:
-        pass
-
 FIXTURES = Path(__file__).parent / "fixtures"
 CONSOLE = (FIXTURES / "console.stdout").read_bytes()
 #: The same session on MAME 0.288, whose console printed a raised chunk's sentinel twice.

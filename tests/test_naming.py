@@ -397,8 +397,8 @@ def test_disassemble_answers_line_notes_only_for_the_lines_the_base_names(
 def test_a_stopped_machine_says_what_its_layers_lose() -> None:
     from scry_core import overlay
     reply = presence.overlay_reply(overlay.Overlay())
-    assert set(reply["notes"]) == {"calls", "record"} and "pointer" in reply["lacking"]
-    assert "notes" not in presence.overlay_reply(overlay.Overlay(calls=False, record=False))
+    assert set(reply["notes"]) == {"record"} and "pointer" in reply["lacking"]
+    assert "notes" not in presence.overlay_reply(overlay.Overlay(record=False))
 
 
 def test_the_names_switch_is_a_start_argument_a_profile_key_and_on_by_default() -> None:

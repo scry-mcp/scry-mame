@@ -32,12 +32,13 @@ uv run python demos/lineup/demo.py --rompath /path/to/romset --cwd /path/to/game
 ```
 
 Each line it prints is one call and its check. The window opens behind the others, so the run
-does not take your keyboard.
+does not take your keyboard; `--watch` brings it in front, for when you want to watch it.
 
 - `--binary PATH` picks the MAME to start. Left out, it is `MAME_BINARY`, else the `mame` on
   your `PATH`.
 - `--cwd PATH` (absolute or `~`-led) is the directory holding the game.
 - `--display N` opens the window on that display. Left out, it opens on the main one.
+- `--watch` shows the run: the window comes in front and takes your keyboard until the run ends.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png` and
   `loop.webp`, from a run where every step passed. It needs ffmpeg and `img2webp` on your

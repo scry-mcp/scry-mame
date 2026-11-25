@@ -14,8 +14,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from scry_core import demo as core
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
-from demos import decorated, free_set  # noqa: E402
+from demos import free_set  # noqa: E402
 from demos.free_set import (  # noqa: E402
     RUN_S,
     Moment,
@@ -28,7 +30,6 @@ from demos.free_set import (  # noqa: E402
 
 SYSTEM = "starfire"
 #: The layers that exist for this demo (MAME has no pointer): its calls and what it presses.
-LAYERS = decorated.CALLS_AND_KEYS
 #: The first program ROM's CRC: the cpu sees it at 0x0, which is what `start` checks against.
 REFERENCE_CRC = 0x9990AF64
 #: The scratch RAM's first kilobyte. The driver mirrors it through its handler across
@@ -229,4 +230,4 @@ DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
                      "mission")
 
 if __name__ == "__main__":
-    sys.exit(decorated.main(DEMO, LAYERS))
+    sys.exit(core.main(DEMO))

@@ -27,7 +27,7 @@ Call:
 cpu_info()
 ```
 
-Reply, 1 of 4 fields:
+Reply, 1 of 5 fields:
 
 ```json
 {
@@ -62,7 +62,16 @@ Gridlee has one cpu, `:maincpu`. It is the `visible` one, which a call that name
       "declarations": {"breakpoints": 0, "watches": 0, "regpoints": 0}
     }
   ],
-  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
+  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"},
+  "names": [
+    {
+      "field": "cpus[].pc.value",
+      "number": "0x0000f000",
+      "kind": "symbol",
+      "name": "take_credit",
+      "delta": 6538
+    }
+  ]
 }
 ```
 
@@ -207,7 +216,9 @@ Reply, 2 of 17 fields:
       "index": 1,
       "start": "0x00000000",
       "end": "0x000007ff",
-      "share": ":spriteram"
+      "share": ":spriteram",
+      "read": "ram",
+      "write": "ram"
     },
     {
       "cpu": ":maincpu",
@@ -215,12 +226,46 @@ Reply, 2 of 17 fields:
       "index": 2,
       "start": "0x00000800",
       "end": "0x00007fff",
-      "share": ":videoram"
+      "share": ":videoram",
+      "read": "ram",
+      "write": "delegate/gridlee_state::gridlee_videoram_w"
     },
-    {"cpu": ":maincpu", "space": "program", "index": 3, "start": "0x00009000", "end": "0x00009000"},
-    {"cpu": ":maincpu", "space": "program", "index": 4, "start": "0x00009200", "end": "0x00009200"},
-    {"cpu": ":maincpu", "space": "program", "index": 5, "start": "0x00009380", "end": "0x00009380"},
-    {"cpu": ":maincpu", "space": "program", "index": 6, "start": "0x00009500", "end": "0x00009501"},
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 3,
+      "start": "0x00009000",
+      "end": "0x00009000",
+      "read": "none",
+      "write": "delegate/[this] (offs_t offset, u8 data) { m_latch->write_d0(offset >> 4, data); }"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 4,
+      "start": "0x00009200",
+      "end": "0x00009200",
+      "read": "none",
+      "write": "delegate/gridlee_state::gridlee_palette_select_w"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 5,
+      "start": "0x00009380",
+      "end": "0x00009380",
+      "read": "none",
+      "write": "delegate/watchdog_timer_device::reset_w"
+    },
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 6,
+      "start": "0x00009500",
+      "end": "0x00009501",
+      "read": "delegate/gridlee_state::analog_port_r",
+      "write": "none"
+    },
     "... 8 more"
   ],
   "regions": [

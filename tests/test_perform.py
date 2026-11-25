@@ -118,6 +118,19 @@ def test_summaries_cut_every_step_but_the_last_to_its_summary_line(
     refused("true or false", s.perform(steps=steps, summaries="yes"))
 
 
+def test_each_row_carries_the_frames_it_ran_for_and_a_summary_keeps_them(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """A timeline places each step it shows by the frames that step ran for: every row carries
+    them, and the compact `summaries` row keeps them."""
+    _running(monkeypatch, tmp_path)
+    monkeypatch.setattr(mstate.STATE, "frame_symbol", "frame", raising=False)
+    full = s.perform(steps=[{"op": "status"}])
+    assert [(r["frame_before"], r["frame_after"]) for r in full["ran"]] == [(100, 100)]
+    out = s.perform(steps=[{"op": "status"}], summaries=True)
+    assert [(r["frame_before"], r["frame_after"]) for r in out["ran"]] == [(100, 100)]
+
+
 def test_perform_says_on_its_line_how_many_steps_ran_and_where_the_list_ended(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:

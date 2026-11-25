@@ -9,12 +9,11 @@ from __future__ import annotations
 import shutil
 import sys
 import zipfile
-from collections.abc import Callable, Mapping, Sequence
-from dataclasses import replace
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 
-from scry_core import live_host, timeline
+from scry_core import live_host
 from scry_core.demo import (
     DISPLAY,
     Demo,
@@ -32,8 +31,7 @@ from scry_core.reply_contract import Invalid
 from scry_mame import binary as mame_binary  # isort: skip -- the repository root, which each demo puts on the path
 
 __all__ = ["DISPLAY", "RUN_S", "Demo", "Moment", "Reply", "Run", "Step", "absolute_only", "demo",
-           "expect", "fired", "fresh_dirs", "host_ready", "main", "pressed", "recording",
-           "window_args"]
+           "expect", "fresh_dirs", "host_ready", "main", "recording", "window_args"]
 
 #: Wall-clock bound on one timed run: a board can emulate well below real speed under the debugger.
 RUN_S = 300
@@ -55,9 +53,6 @@ VOLATILE = {
 #: size it comes to differs between hosts.
 SAVE_VOLATILE = {"bytes": "the compressed state's size, which the host's compressor decides",
                  "summary": "it carries the compressed state's size"}
-
-#: The tools whose reply can say a field was held: `perform` runs `input` among its steps.
-PRESSING_TOOLS = frozenset({"input", "perform"})
 
 HOST_ARGS = {"rompath": "the directory the host keeps its ROM sets in"}
 START_VOLATILE = {"summary": "names where the host installed MAME"}
@@ -195,32 +190,6 @@ def closed(reply: Reply, run: Run) -> str:
     return "closed: MAME quit on its own"
 
 
-def pressed(args: Mapping[str, Any], reply: Mapping[str, Any]) -> list[timeline.Event]:
-    """The fields a step's reply says were held: each `input` the call made, its own or one
-    `perform` ran. A field is down at the frame it was set and up at the frame it was released;
-    one the call ended still holding is let go where it was set, as the live overlay does, which
-    shows a press for its minimum time whatever the frames it lasted."""
-    if reply.get("status") != "ok":
-        return []
-    own = [reply] if "frame_set" in reply else [
-        ran["reply"] for ran in reply.get("ran", ()) if ran.get("op") == "input"
-        and "frame_set" in ran["reply"]]
-    fired: list[timeline.Event] = []
-    for held in own:
-        down = int(held["frame_set"])
-        up = held.get("frame_released")
-        fired += [timeline.key(str(held["field"]), True, down),
-                  timeline.key(str(held["field"]), False, up if type(up) is int else down)]
-    return fired
-
-
-def fired(steps: Sequence[Step]) -> list[Step]:
-    """`steps` with `pressed` named for each that presses a field and names no events of its
-    own, so a demo's timeline carries what it pressed."""
-    return [replace(step, events=pressed) if step.events is None
-            and step.tool in PRESSING_TOOLS else step for step in steps]
-
-
 def demo(system: str, demo_file: str, steps: Sequence[Step], moments: Sequence[Moment],
          alt: str) -> Demo:
     """The demo of `system` whose `demo.py` is `demo_file`; `moments` are what its loop shows and
@@ -228,7 +197,7 @@ def demo(system: str, demo_file: str, steps: Sequence[Step], moments: Sequence[M
     here = Path(demo_file).resolve().parent
     root = here.parents[1]
     return Demo(name=system, root=root, server=[sys.executable, "-m", "scry_mame.server"],
-                readme=here / "README.md", front=root / "README.md", steps=fired(steps),
+                readme=here / "README.md", front=root / "README.md", steps=steps,
                 capture=lambda run: run.dir / "screen.png", moments=moments, alt=alt,
                 offers=frozenset({"rompath", "display"}),
                 precheck=precheck(system),

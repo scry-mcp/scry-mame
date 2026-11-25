@@ -542,6 +542,16 @@ class _Mame(sequence.SequenceMachine):
                       tail: bool = False) -> sequence.Waited:
         return _wait_for_stop(self.ses, self.scratch, seconds, progress, record=not tail)
 
+    def frame_now(self) -> int | None:
+        """The frame counter, read while the machine stands stopped; a running one, or a board
+        with no counter, has no frame to give."""
+        if self.ses.running:
+            return None
+        try:
+            return read.frame_or_none(self.ses)
+        except gs.ExpressionRefused:
+            return None
+
     def can_be_stopped(self) -> bool:
         return _something_can_stop_it()
 

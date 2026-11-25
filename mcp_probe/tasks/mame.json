@@ -3732,7 +3732,7 @@
   },
   {
    "id": "m221",
-   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. I will watch it: keep the orange edge, but leave out the caption of each call and put the keycaps at the top of the picture.",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. I will watch it: keep the orange edge, but leave out the mark that shows it is recording.",
    "tool": "start",
    "args": {
     "binary": "{anchor}opt/fury/mamed",
@@ -3740,8 +3740,8 @@
     "rompath": "{anchor}opt/fury/roms",
     "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "overlay": {"any_of": [
-     {"calls": false, "place": "top"},
-     {"calls": false, "keys": true, "pointer": true, "pause": true, "place": "top"}
+     {"record": false},
+     {"pointer": true, "record": false}
     ]}
    },
    "allow": [

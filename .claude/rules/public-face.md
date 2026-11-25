@@ -194,7 +194,7 @@ The same shape in the front door, the reference and the demo guides:
 A demo is shown moving, never as a still alone.
 
 - **One file per demo**: `demos/<name>/loop.webp`, an animated WebP that loops for ever.
-- **Up to 3 moments, 6 seconds in all**, each between 1 and 3 seconds. A moment is a stretch
+- **Up to 5 moments, 16 seconds in all**, each between 1.5 and 4 seconds. A moment is a stretch
   where the screen changes because of a call the demo made, declared in the demo as
   `Moment(after, until, caption, skip=0, frames=0)`: what the screen did from the end of step
   `after` to the end of step `until`. `until` is a `record` step right after `after`, whose
@@ -202,7 +202,9 @@ A demo is shown moving, never as a still alone.
   between the two steps is cut. `frames` of it are shown from its frame `skip`. Less is more: a
   demo with one strong moment shows one.
 - **Nothing is staged.** The frames are the run's; a moment is cut, never slowed, held or
-  composed, and no caption is drawn over the picture.
+  composed. Over them the decorator draws the overlay's own layers from the run's timeline, the
+  call captions and the keys, as the live overlay draws them: that is what the clip is for, and
+  it is read from the run rather than written by hand.
 - **Frames**: the machine's own (a capture the emulator doubled is halved back), at most 30 a
   second. Rows and columns at the clip's edges that are one colour, the same in every frame,
   are cut (`scry_core.motion.kept`), and `screen.png` is cut by the same box at its own scale

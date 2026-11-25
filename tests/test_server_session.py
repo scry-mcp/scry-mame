@@ -909,7 +909,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},
         "stdout_log": open(tmp_log, "wb"),  # noqa: SIM115 (kill closes it)
         "presence": presence_mod.Shown(held=_ClosedPresence()),  # type: ignore[arg-type]
-        "overlay": overlay_mod.Overlay(calls=False),
+        "overlay": overlay_mod.Overlay(record=False),
     }
     fresh = mstate.State()
     # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,

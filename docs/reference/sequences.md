@@ -105,7 +105,9 @@ All three steps ran and none failed, so `failed_at` only says why it holds no nu
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 419,
+      "frame_after": 424
     },
     {
       "op": "run_for",
@@ -153,7 +155,9 @@ All three steps ran and none failed, so `failed_at` only says why it holds no nu
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 424,
+      "frame_after": 543
     },
     {
       "op": "scan",
@@ -178,6 +182,15 @@ All three steps ran and none failed, so `failed_at` only says why it holds no nu
         "truncated": false,
         "cpu": ":maincpu",
         "space": "program",
+        "names": [
+          {"field": "hits[].addr", "number": "0x00000084", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000da", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000ed", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000000ef", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x000001b6", "kind": "memory", "name": "spriteram"},
+          {"field": "hits[].addr", "number": "0x00000299", "kind": "memory", "name": "spriteram"},
+          "... 5 more"
+        ],
         "session": {
           "alive": true,
           "running": false,
@@ -185,7 +198,9 @@ All three steps ran and none failed, so `failed_at` only says why it holds no nu
           "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
-      }
+      },
+      "frame_before": 543,
+      "frame_after": 543
     }
   ],
   "steps_completed": 3,
@@ -413,7 +428,9 @@ The summary says a new log line matched `expect` after the coin went in. The lin
             "omitted": ["altering_writes", "console"],
             "how": "call `status`"
           }
-        }
+        },
+        "frame_before": 295,
+        "frame_after": 300
       },
       {
         "op": "run_for",
@@ -455,7 +472,9 @@ The summary says a new log line matched `expect` after the coin went in. The lin
             "omitted": ["altering_writes", "console"],
             "how": "call `status`"
           }
-        }
+        },
+        "frame_before": 300,
+        "frame_after": 419
       }
     ],
     "steps_completed": 2,
@@ -601,7 +620,7 @@ Reply, 6 of 10 fields:
   "path": "./tmp/demos/tour/two-coins.json",
   "steps": 9,
   "checks": 3,
-  "dropped_total": 14,
+  "dropped_total": 15,
   "cut": {"available": false, "why": "the recording kept every call a replay takes"},
   "kept": "2 saved for `promote`; perform/two-coins, start/gridlee: not ... (185 characters)"
 }
@@ -613,7 +632,7 @@ Nine calls replay, three of them as checks, and 14 calls were left out. `cut` is
 
 ```json
 {
-  "summary": "perform_export: 9 steps, 3 checks, 14 dropped to ./tmp/demos/tour/two-coins.json",
+  "summary": "perform_export: 9 steps, 3 checks, 15 dropped to ./tmp/demos/tour/two-coins.json",
   "status": "ok",
   "path": "./tmp/demos/tour/two-coins.json",
   "steps": 9,
@@ -623,11 +642,11 @@ Nine calls replay, three of them as checks, and 14 calls were left out. `cut` is
     {"call": 2, "op": "machine_map", "why": "it changes nothing in the emulated machine"},
     {"call": 3, "op": "cpu_info", "why": "a read the export does not check"},
     {"call": 4, "op": "symbols_find", "why": "a read the export does not check"},
-    {"call": 6, "op": "disassemble", "why": "a read the export does not check"},
-    {"call": 7, "op": "find", "why": "a read the export does not check"},
-    "... 8 more"
+    {"call": 6, "op": "knowledge_find", "why": "a read the export does not check"},
+    {"call": 7, "op": "disassemble", "why": "a read the export does not check"},
+    "... 9 more"
   ],
-  "dropped_total": 14,
+  "dropped_total": 15,
   "cut": {"available": false, "why": "the recording kept every call a replay takes"},
   "replay": "uv run python -m scry_core.replay ./tmp/demos/tour/two-coins.json",
   "kept": "2 saved for `promote`; perform/two-coins, start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"

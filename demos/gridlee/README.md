@@ -3,10 +3,13 @@
 <!-- demo-motion:begin -->
 <p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Gridlee starting a game, then counting a coin after a saved state is loaded"></picture></p>
 
-1. `input` pressed START and a credit is spent: the game is on.
-2. `state_write` loads the saved state and `input` drops a coin: CREDITS goes from 4 to 5.
+1. `disassemble` reads the coin routine at `0xb583`: the binary add, then the BCD.
+2. `read_memory` reads the two credit bytes back: 4 in binary and 04 in BCD.
+3. `screen_view` captures the game in play, at twice its pixels.
+4. `state_write` loads the saved state and `input` drops a coin: CREDITS goes from 4 to 5.
+5. `input` presses START on the five credits: the game starts with four left.
 
-<!-- moments-ms: 2163,1521 -->
+<!-- moments-ms: 2534,2534,2534,2534,2534 -->
 <!-- demo-motion:end -->
 
 Videa's *Gridlee* (1983) runs on a 6809. This demo drops three coins into it and looks for the
@@ -31,11 +34,12 @@ uv run python demos/gridlee/demo.py --rompath ~/roms
 ```
 
 Each line it prints is one call and its check. The window opens behind the others, so the run
-does not take your keyboard.
+does not take your keyboard; `--watch` brings it in front, for when you want to watch it.
 
 - `--binary PATH` picks the MAME to start. Left out, it is `MAME_BINARY`, else the `mame` on
   your `PATH`.
 - `--display N` opens the window on that display. Left out, it opens on the main one.
+- `--watch` shows the run: the window comes in front and takes your keyboard until the run ends.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png`,
   `loop.webp` and the README's example calls, from a run where every step passed. It needs
@@ -63,7 +67,7 @@ Call:
 scan(method="filter", operator="=", value=3)
 ```
 
-Reply, 3 of 12 fields:
+Reply, 3 of 13 fields:
 
 ```json
 {
@@ -98,6 +102,11 @@ Three bytes hold 3, and a scan cannot say which is the credits. "3 left" counts 
   "truncated": false,
   "cpu": ":maincpu",
   "space": "program",
+  "names": [
+    {"field": "hits[].addr", "number": "0x000003ee", "kind": "memory", "name": "spriteram"},
+    {"field": "hits[].addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"},
+    {"field": "hits[].addr", "number": "0x0000042c", "kind": "memory", "name": "spriteram"}
+  ],
   "session": {
     "alive": true,
     "running": false,
@@ -229,11 +238,11 @@ Call:
 disassemble(ref="0xb583", length=12)
 ```
 
-Reply, 2 of 11 fields:
+Reply, 2 of 12 fields:
 
 ```json
 {
-  "summary": "disassemble 0xb583: 5 lines at 0x0000b583",
+  "summary": "disassemble 0xb583 (maincpu): 5 lines at 0x0000b583 (maincpu)",
   "lines": [
     "B583: 7C 04 2B INC    $042B",
     "B586: 86 01    LDA    #$01",
@@ -250,7 +259,7 @@ The coin routine increments `$042B`, then adds one to `$042C` in BCD (`ADDA`, `D
 
 ```json
 {
-  "summary": "disassemble 0xb583: 5 lines at 0x0000b583",
+  "summary": "disassemble 0xb583 (maincpu): 5 lines at 0x0000b583 (maincpu)",
   "status": "ok",
   "ref": "0xb583",
   "addr": "0x0000b583",
@@ -260,6 +269,10 @@ The coin routine increments `$042B`, then adds one to `$042C` in BCD (`ADDA`, `D
   "flow": ["unknown", "unknown", "unknown", "unknown", "unknown"],
   "flow_source": "none",
   "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified",
+  "names": [
+    {"field": "given.ref", "number": "0xb583", "kind": "memory", "name": "maincpu"},
+    {"field": "addr", "number": "0x0000b583", "kind": "memory", "name": "maincpu"}
+  ],
   "session": {
     "alive": true,
     "running": false,

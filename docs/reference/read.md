@@ -33,11 +33,11 @@ Call:
 read_memory(ref="0xfff8", length=2)
 ```
 
-Reply, 4 of 7 fields:
+Reply, 4 of 8 fields:
 
 ```json
 {
-  "summary": "read_memory 0xfff8: 2 bytes at 0x0000fff8: fd80",
+  "summary": "read_memory 0xfff8 (irq+0x278): 2 bytes at 0x0000fff8 (irq+0x278): fd80",
   "addr": "0x0000fff8",
   "length": 2,
   "hex": "fd80"
@@ -50,13 +50,17 @@ The two bytes at `0xfff8` are `fd80`. They are the cpu's IRQ vector, so the inte
 
 ```json
 {
-  "summary": "read_memory 0xfff8: 2 bytes at 0x0000fff8: fd80",
+  "summary": "read_memory 0xfff8 (irq+0x278): 2 bytes at 0x0000fff8 (irq+0x278): fd80",
   "status": "ok",
   "ref": "0xfff8",
   "addr": "0x0000fff8",
   "length": 2,
   "hex": "fd80",
-  "cpu": ":maincpu"
+  "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0xfff8", "kind": "symbol", "name": "irq", "delta": 632},
+    {"field": "addr", "number": "0x0000fff8", "kind": "symbol", "name": "irq", "delta": 632}
+  ]
 }
 ```
 
@@ -463,7 +467,7 @@ Call:
 disassemble(ref="count_coin", length=12)
 ```
 
-Reply, 4 of 10 fields:
+Reply, 4 of 11 fields:
 
 ```json
 {
@@ -495,7 +499,10 @@ Five instructions from `0xb583`: the routine adds one to `$042B`, then to the de
   "cpu": ":maincpu",
   "flow": ["unknown", "unknown", "unknown", "unknown", "unknown"],
   "flow_source": "none",
-  "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified"
+  "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified",
+  "names": [
+    {"field": "given.ref", "number": "0xB583", "kind": "symbol", "name": "count_coin"}
+  ]
 }
 ```
 
@@ -591,11 +598,11 @@ Call:
 find(data_hex="7c042b", ref="0xa000", length=24576)
 ```
 
-Reply, 5 of 10 fields:
+Reply, 5 of 11 fields:
 
 ```json
 {
-  "summary": "find 7c042b in 0x6000 bytes at 0xa000: 1 hit",
+  "summary": "find 7c042b in 0x6000 bytes at 0xa000 (credits_bcd+0x9BD4): 1 hit",
   "span": {"from": "0x0000a000", "length": 24576, "source": "ref+length"},
   "hits": ["0x0000b583"],
   "hits_total": 1,
@@ -609,7 +616,7 @@ One address holds those bytes, `0xb583`. `span` says which bytes were searched: 
 
 ```json
 {
-  "summary": "find 7c042b in 0x6000 bytes at 0xa000: 1 hit",
+  "summary": "find 7c042b in 0x6000 bytes at 0xa000 (credits_bcd+0x9BD4): 1 hit",
   "status": "ok",
   "ref": "0xa000",
   "addr": "0x0000a000",
@@ -618,7 +625,11 @@ One address holds those bytes, `0xb583`. `span` says which bytes were searched: 
   "hits": ["0x0000b583"],
   "hits_total": 1,
   "truncated": false,
-  "cpu": ":maincpu"
+  "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0xa000", "kind": "symbol", "name": "credits_bcd", "delta": 39892},
+    {"field": "hits[]", "number": "0x0000b583", "kind": "symbol", "name": "count_coin"}
+  ]
 }
 ```
 
@@ -827,11 +838,11 @@ Call:
 memdump(ref="0xa000", length=4096, dest="./tmp/demos/tour/rom.bin")
 ```
 
-Reply, 5 of 8 fields:
+Reply, 5 of 9 fields:
 
 ```json
 {
-  "summary": "memdump 0xa000: 4096 bytes to ./tmp/demos/tour/rom.bin",
+  "summary": "memdump 0xa000 (credits_bcd+0x9BD4): 4096 bytes to ./tmp/demos/tour/rom.bin",
   "addr": "0x0000a000",
   "length": 4096,
   "path": "./tmp/demos/tour/rom.bin",
@@ -845,14 +856,18 @@ The file holds 4096 bytes, as asked: `bytes` equals `length`. `path` is where it
 
 ```json
 {
-  "summary": "memdump 0xa000: 4096 bytes to ./tmp/demos/tour/rom.bin",
+  "summary": "memdump 0xa000 (credits_bcd+0x9BD4): 4096 bytes to ./tmp/demos/tour/rom.bin",
   "status": "ok",
   "ref": "0xa000",
   "addr": "0x0000a000",
   "length": 4096,
   "path": "./tmp/demos/tour/rom.bin",
   "bytes": 4096,
-  "cpu": ":maincpu"
+  "cpu": ":maincpu",
+  "names": [
+    {"field": "given.ref", "number": "0xa000", "kind": "symbol", "name": "credits_bcd", "delta": 39892},
+    {"field": "addr", "number": "0x0000a000", "kind": "symbol", "name": "credits_bcd", "delta": 39892}
+  ]
 }
 ```
 

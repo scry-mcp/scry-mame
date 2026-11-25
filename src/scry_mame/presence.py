@@ -7,7 +7,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Protocol
 
-from scry_core import boundary, overlay, placement, presence
+from scry_core import boundary, overlay, presence
 
 STATE_FILE = "presence.state"
 
@@ -31,10 +31,6 @@ STILL_TOOLS = frozenset({
 
 #: Seconds between state-file reads while running.
 REREAD_S = 0.05
-#: Seconds a caption fades in and out: the emulator's animation, so not in `Look`.
-CAPTION_FADE_S = 0.25
-#: Seconds a scrolling caption rests at its head before it moves.
-SCROLL_DWELL_S = 1.0
 #: The layers MAME cannot draw and why: its inputs are port fields and it has no pointer.
 LACKING: dict[overlay.Layer, str] = {
     "pointer": "MAME has no pointer to draw: its inputs are port fields, not a mouse"}
@@ -53,24 +49,8 @@ def drawer(scratch: Path, look: presence.Look = presence.LOOK) -> str:
                              rgb=lua_source.Code(f"0x{look.rgb:06X}"), edge=look.edge,
                              steps=look.steps, acting=look.acting_alpha, held=look.held_alpha,
                              fade=look.fade_s, reread=REREAD_S,
-                             text_rgb=lua_source.Code(f"0x{look.caption_text_rgb:06X}"),
-                             cap_alpha=look.caption_alpha,
-                             key_rgb=lua_source.Code(f"0x{look.keycap_rgb:06X}"),
-                             key_text_rgb=lua_source.Code(f"0x{look.keycap_text_rgb:06X}"),
-                             key_alpha=look.keycap_alpha, cps=look.scroll_cps,
-                             cap_fade=CAPTION_FADE_S, dwell=SCROLL_DWELL_S,
                              rec_rgb=lua_source.Code(f"0x{look.record_rgb:06X}"),
-                             blink=look.record_blink_s,
-                             placement=lua_source.Code(placement_lua()))
-
-
-def placement_lua() -> str:
-    """The placement rule as Lua, from `scry_core.placement`'s constants."""
-    from scry_mame import lua_source
-    return lua_source.render("presence-placement", divisor=placement.BAND_DIVISOR,
-                             columns=placement.COLUMNS, rows=placement.ROWS,
-                             margin=placement.MARGIN, consecutive=placement.CONSECUTIVE,
-                             start=placement.START, sample_s=placement.SAMPLE_S)
+                             blink=look.record_blink_s)
 
 
 def broken(scratch: Path) -> str:
@@ -81,65 +61,29 @@ def broken(scratch: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace").strip() or "no reason given"
 
 
-def _ascii(text: str) -> str:
-    """One printable ASCII line: the file is lines, and the drawer's font is not asked for more."""
-    return "".join(c if " " <= c <= "~" else "?" for c in text)
-
-
 def encode(state: presence.State, payload: presence.Payload) -> str:
-    """The state file's text: `state`, then one `name=value` line each (`layers` as MAME can
-    draw them, `rec` while something is recorded, the caption as `serial`, `rgb`, `caption`)
-    and one `key` per key down."""
+    """The state file's text: `state`, then one `name=value` line each: `layers` as MAME can
+    draw them, and `rec` while something is recorded."""
     drawn = [layer for layer in payload.layers if layer not in LACKING]
-    lines = [state, f"paused={int(payload.paused)}", f"place={payload.place}",
-             f"layers={','.join(drawn)}"]
+    lines = [state, f"layers={','.join(drawn)}"]
     if payload.recording != "none":
         lines.append(f"rec={payload.recording}")
-    if payload.caption is not None:
-        lines += [f"serial={payload.caption.serial}", f"rgb={payload.caption.rgb:06X}",
-                  f"caption={_ascii(payload.caption.text)}"]
-    lines += [f"key={_ascii(name)}" for name in payload.keys]
     return "\n".join(lines) + "\n"
 
 
 #: What a layer is drawn without while the machine is stopped: the console command that repaints
 #: it is the only animation clock there, and the server sends none.
 STOPPED_LIMITS: dict[overlay.Layer, str] = {
-    "calls": "a stopped machine is not repainted to animate, so a caption wider than the window "
-             "is cut with `..` and not scrolled",
     "record": "a stopped machine is not repainted to animate, so the mark stays lit and does "
               "not blink"}
 
 
 def overlay_reply(asked: overlay.Overlay) -> overlay.OverlayReply:
-    """`start`'s and `status`'s `overlay`; `auto` stays `auto`, the drawer samples itself."""
+    """`start`'s and `status`'s `overlay`."""
     wanted = asked.asked()
     return overlay.reply(asked, {layer: why for layer, why in LACKING.items() if layer in wanted},
-                         asked.place,
                          {layer: why for layer, why in STOPPED_LIMITS.items()
                           if layer in wanted and layer not in LACKING})
-
-
-class Listener(presence.Slot):
-    """The boundary's listener, which also says whether the session holds the machine stopped:
-    not while a driving call runs, and as it stands once any call has ended."""
-
-    def __init__(self, current: Callable[[], presence.Presence | None],
-                 stopped: Callable[[], bool]) -> None:
-        super().__init__(current)
-        self._current_presence = current
-        self._stopped = stopped
-
-    def began(self, call: boundary.Call) -> None:
-        super().began(call)
-        if not call.nested and call.tool in DRIVING_TOOLS and (
-                p := self._current_presence()) is not None:
-            p.paused(False)
-
-    def ended(self, call: boundary.Call, outcome: boundary.Outcome) -> None:
-        super().ended(call, outcome)
-        if not call.nested and (p := self._current_presence()) is not None:
-            p.paused(self._stopped())
 
 
 #: The console of the adapter's session, or None when it is gone, broken, running or exited.

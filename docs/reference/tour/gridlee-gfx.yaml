@@ -35,3 +35,16 @@ commands:
       dest_x: {parts: [{word: 3, mask: 0xff}], status: proved, source: 'tour.py, gfx_locate matches at that column'}
       width: {const: 8, status: proved, source: 'tour.py, the layout gfx_locate matches under'}
       height: {const: 16, status: proved, source: 'tour.py, the layout gfx_locate matches under'}
+  # The same game object in a game in play is another entry in another block: write_sprites fills
+  # the table in draw order, so the player's body sits at 0x20 there and the attract's ship at 0x0c
+  # above, where the tour reads it.
+  player_in_play:
+    block: {address: 0x0020, words: 4, word_bytes: 1, status: proved, source: 'a game in play (a saved state loaded, START): a count watch names write_sprites as the writer of 0x18, 0x1c and 0x20, and read_block at 0x20 reads the body'}
+    fire: {address: 0x0024, status: proved, source: 'a capture on the write of the next entry holds this one whole, as the 0x10 trigger does at 0x0c'}
+    asset: sprites
+    fields:
+      source_tile: {parts: [{word: 0, mask: 0xff}], status: proved, source: 'gfx_locate finds tile 84 once in the region, on the box this entry names'}
+      dest_y: {parts: [{word: 2, mask: 0xff}], add: 17, status: proved, source: 'gfx_locate matches at that line'}
+      dest_x: {parts: [{word: 3, mask: 0xff}], status: proved, source: 'gfx_locate matches at that column'}
+      width: {const: 8, status: proved, source: 'the layout gfx_locate matches under'}
+      height: {const: 16, status: proved, source: 'the layout gfx_locate matches under'}
