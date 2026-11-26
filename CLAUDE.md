@@ -35,3 +35,5 @@ The commit hook is scry-core's (`git config core.hooksPath .githooks` once per c
 ## Rules
 
 Path-scoped rules live in `.claude/rules/` and load when a file they govern is opened.
+
+- The harness, mandates, reports and source material the knowledge base was written from live in the private repository `scry-mcp/scry-kb`.
