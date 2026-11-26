@@ -5318,9 +5318,7 @@
   {
    "key": "0x102",
    "name": "ADPCM-A test",
-   "aliases": [
-    "TEST"
-   ],
+   "aliases": [],
    "regions": [
     {
      "ref": "datasheet:YM2610.raw.txt",

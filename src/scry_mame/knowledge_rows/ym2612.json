@@ -1199,9 +1199,7 @@
   {
    "key": "0x2C",
    "name": "DAC low bit",
-   "aliases": [
-    "test"
-   ],
+   "aliases": [],
    "regions": [
     {
      "ref": "datasheet:YM3438.raw.txt",

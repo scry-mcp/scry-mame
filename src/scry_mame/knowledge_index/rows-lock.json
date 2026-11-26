@@ -25276,9 +25276,9 @@
   },
   "ym2610:register:0x102": {
    "doc": {
-    "seal": "24fa1b7cc0a73d6b320c9b60ceb5b54167349c277c3f0f82fd54288c768a4787",
-    "by": "slice mame-snd3-05 reader",
-    "writer": "slice mame-snd3-05 writer",
+    "seal": "f25e76d9963b3945fc146ba3c012a340ce2d3d89588307c17cfb4c941ac81255",
+    "by": "k2-reader",
+    "writer": "K2 alias corrector",
     "rows": {
      "1": {
       "digest": "407217c2c36a61eebd4d20c4e269c97047bdd18e0f69916a25f50d58d0464c4e",
@@ -27119,9 +27119,9 @@
   },
   "ym2612:register:0x2C": {
    "doc": {
-    "seal": "bc407dfc56976aa0ec55a624f186be640d40af006eec8d8716d228f4d32f79e8",
-    "by": "slice mame-snd3-06 reader",
-    "writer": "slice mame-snd3-06 writer",
+    "seal": "aeeca64d9b52f21ee4d1971f1f3d9a8b28d8fbac50c83697e7cc9061f1aedc83",
+    "by": "k2-reader",
+    "writer": "K2 alias corrector",
     "rows": {
      "1": {
       "digest": "c7079eaaf91017a429535584b4436c31467331cdcfe311b51d834ce96323376b",
@@ -32387,6 +32387,58 @@
      "8": {
       "digest": "7dfdc5b72e4f1548d981fcef1ff221cf0f9885b138ed6f5123e88ec267acab85",
       "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2612:register:0x2C",
+   "part": "doc",
+   "rows": [],
+   "by": "K2 alias corrector",
+   "why": "its alias 'test' is the name of ym2612:register:0x21, and one name belongs to one entry",
+   "was": {
+    "seal": "bc407dfc56976aa0ec55a624f186be640d40af006eec8d8716d228f4d32f79e8",
+    "by": "slice mame-snd3-06 reader",
+    "writer": "slice mame-snd3-06 writer",
+    "rows": {
+     "1": {
+      "digest": "c7079eaaf91017a429535584b4436c31467331cdcfe311b51d834ce96323376b",
+      "by": "slice mame-snd3-06 reader"
+     },
+     "2": {
+      "digest": "2f86be309e0dd4f3f29ef4067f85254fbb17897b9cbe76cd2dd4cbba2810fb6f",
+      "by": "slice mame-snd3-06 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2610:register:0x102",
+   "part": "doc",
+   "rows": [],
+   "by": "K2 alias corrector",
+   "why": "its alias 'TEST' is the name of ym2610:register:0x21, and one name belongs to one entry",
+   "was": {
+    "seal": "24fa1b7cc0a73d6b320c9b60ceb5b54167349c277c3f0f82fd54288c768a4787",
+    "by": "slice mame-snd3-05 reader",
+    "writer": "slice mame-snd3-05 writer",
+    "rows": {
+     "1": {
+      "digest": "407217c2c36a61eebd4d20c4e269c97047bdd18e0f69916a25f50d58d0464c4e",
+      "by": "slice mame-snd3-05 reader"
+     },
+     "2": {
+      "digest": "fb66a811a7ec3e2a606d0b846bfa40a0f0fc0eccd06df08dde13780b12421045",
+      "by": "slice mame-snd3-05 reader"
+     },
+     "3": {
+      "digest": "2fb57733cdc48a3a04a583f8e25cd9a30573e67a6296ab5bd3e6ce8fa7d1940b",
+      "by": "slice mame-snd3-05 reader"
+     },
+     "4": {
+      "digest": "3429c963fbf7e959a63bc41e569b58e708bd937e8bdec0b2efb3758479f9b171",
+      "by": "slice mame-snd3-05 reader"
      }
     }
    }
