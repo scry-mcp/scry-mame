@@ -100,7 +100,7 @@
   "mame:internal_md_w": "open",
   "mame:device_reset": "open",
   "mame:src/devices/sound/upd7759.cpp device_reset": "shared:upd7759:device:upd7759",
-  "mame:src/devices/machine/z80sio.cpp device_reset": "shared:z80sio:device:z80sio",
+  "mame:src/devices/machine/z80sio.cpp device_reset": "shared:chip:device:z80sio",
   "mame:device_start": "open:upd775x_device::device_start",
   "mame:LOG_STATE": "none:log",
   "mame:from_hz": "engine",
