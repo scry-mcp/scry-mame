@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from importlib import resources
 
-from scry_core.knowledge import Chip, Scope, Support, sealed, shared
+from scry_core.knowledge import Chip, Scope, Support, quote, sealed, shared
 from scry_core.knowledge.base import Base
 
 #: The first tier of MAME's chips. A chip's key is MAME's short name of the family's base type;
@@ -76,6 +76,17 @@ def own_lock() -> sealed.Lock:
 def rows_lock() -> sealed.Lock:
     """The seals of the shared dictionaries and of this server's own."""
     return merged(shared.rows_lock(), own_lock())
+
+
+def own_index() -> quote.Quotes:
+    name = quote.QUOTES_NAME
+    return quote.parse_quotes((resources.files("scry_mame") / "knowledge_index" / name).read_text(
+        encoding="utf-8"), name)
+
+
+def rows_index() -> quote.Quotes:
+    """The index of the shared dictionaries and of this server's own."""
+    return quote.merge(shared.rows_index(), own_index())
 
 
 def load(fts5: bool | None = None) -> Base:

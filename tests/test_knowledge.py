@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 from scry_core import conformance
-from scry_core.knowledge import Support, sealed
+from scry_core.knowledge import Support, quote, sealed
 from scry_core.knowledge import base as rows_base
 
 from scry_mame.knowledge import support
@@ -31,6 +31,9 @@ class MameKnowledge:
 
     def rows_lock(self) -> sealed.Lock:
         return support.rows_lock()
+
+    def rows_index(self) -> quote.Quotes:
+        return support.rows_index()
 
 
 class TestMameKnowledge(conformance.KnowledgeContract):
