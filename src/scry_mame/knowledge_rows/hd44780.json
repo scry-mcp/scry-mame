@@ -976,7 +976,7 @@
      "n": "8",
      "on": "is",
      "of": "doc",
-     "text": "The asterisk in the N column of Table 8 means don't care.",
+     "text": "The asterisk in the F column of Table 8 means don't care.",
      "quotes": [
       {
        "ref": "datasheet:HD44780.raw.txt",
