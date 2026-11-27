@@ -5911,10 +5911,57 @@
    }
   },
   "hd44780:command:0x20..0x3F": {
+   "doc": {
+    "seal": "53e368277245171c308415a15d751251173bbe57f27c286030b214d2c61938c2",
+    "by": "L1 mame2 reader",
+    "writer": "L1 mame2 writer",
+    "rows": {
+     "1": {
+      "digest": "d61567032d3c6f83f6f5c93c09b759c07da0fc03bf7862649d3c799f3bb73150",
+      "by": "L1 mame2 reader"
+     },
+     "10": {
+      "digest": "1631c783a436d9807b0386a674a3833bf6e14f3529d2b5b0740e048333c34364",
+      "by": "L1 mame2 reader"
+     },
+     "2": {
+      "digest": "179eae79b77689534602e6ec0ddb940b052cc1985e32f208c0162f057bf6865a",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "3": {
+      "digest": "24b20192aaacd31f437279f46ca508c267a5bd8a89c89fd1c3e9717a0987cfc7",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "4": {
+      "digest": "f59d397e67afdcecfc36dfef890d0f304be004d43c202fbf896b1343fac7e64a",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "5": {
+      "digest": "c4e5f693f3dbb45188a0ddc6379f0ad30127258d5020bd9e130346db2e984bef",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "6": {
+      "digest": "c66168d4cd37e3b50fd56b3623d935b0e092574672661c11efdbb117d6b69f6d",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "7": {
+      "digest": "13674686d33b6ac282d7d292a34eb3e1752959b7f3413cee53b706535c8bf62a",
+      "by": "L1 mame2 reader"
+     },
+     "8": {
+      "digest": "87a0a7071c1ae2905d32e330e3e4e3073ab5004cf2e6c3f798c83b9915855985",
+      "by": "L1 mame2 reader"
+     },
+     "9": {
+      "digest": "bd787036bc8f2e64cf0bb9a50f8ebeee3c26ac2645aa40e3c626d38dda06af06",
+      "by": "slice mame-e2-video-01 reader"
+     }
+    }
+   },
    "mame": {
-    "seal": "a85c15b303f6d99af8b4fb71fb78590055f3b4b94ea57005fadfd9a8d30e672e",
-    "by": "slice mame-e2-video-01 reader",
-    "writer": "slice mame-e2-video-01 writer",
+    "seal": "fc0701f620c2677fec4f55b67c2aec1a3628d8390c955d9d34bb17a0535cc97e",
+    "by": "L1 mame2 reader",
+    "writer": "L1 mame2 writer",
     "rows": {
      "101": {
       "digest": "abd56b813f39f41344e72e0fddaabc81187209bc698ac9682a3f706333e75240",
@@ -35188,6 +35235,24 @@
      "16": {
       "digest": "a03fd97fa14b297963941d5e9d3d4732e49ddceaded75afe841c2870312066b4",
       "by": "slice mame-sup2-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "hd44780:command:0x20..0x3F",
+   "part": "mame",
+   "rows": [],
+   "by": "L1 mame2 writer",
+   "why": "the agrees closure on row 2 cites no line; 615-625 shows the two-line mode it agrees on",
+   "was": {
+    "seal": "a85c15b303f6d99af8b4fb71fb78590055f3b4b94ea57005fadfd9a8d30e672e",
+    "by": "slice mame-e2-video-01 reader",
+    "writer": "slice mame-e2-video-01 writer",
+    "rows": {
+     "101": {
+      "digest": "abd56b813f39f41344e72e0fddaabc81187209bc698ac9682a3f706333e75240",
+      "by": "slice mame-e2-video-01 reader"
      }
     }
    }

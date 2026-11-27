@@ -878,6 +878,14 @@
     {
      "ref": "mame:src/devices/video/hd44780.cpp",
      "lines": "653-674"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "615-625"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "419-429"
     }
    ],
    "rows": [
@@ -885,7 +893,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Function set is instruction 001 DL N F, with DB1 and DB0 shown as dashes in Table 6.",
+     "text": "Table 6 gives function set the code 0 0 0 0 1 DL N F followed by two dashes.",
      "quotes": [
       {
        "ref": "datasheet:HD44780.raw.txt",
@@ -967,8 +975,8 @@
      "quotes": [
       {
        "ref": "datasheet:HD44780.raw.txt",
-       "lines": "2001",
-       "sha": "42c77287ac36eafeb82f87fbf4554e52541d7ad97548886c11811a10fcae3b79"
+       "lines": "1992-2001",
+       "sha": "6455ee20eae65b81b996136ec06c127424b4d8adb2ef05a04c1c59c5647fcb98"
       }
      ]
     },
@@ -1040,6 +1048,18 @@
     {
      "ref": "mame:src/devices/video/hd44780.cpp",
      "lines": "667",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "615-625",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/hd44780.cpp",
+     "lines": "419-429",
      "as": "agrees",
      "row": "2"
     },
