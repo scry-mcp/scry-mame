@@ -1,0 +1,424 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "sega315_5313-device",
+ "title": "Sega 315-5313 VDP as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "The Mega Drive VDP as a MAME device: what it is derived from, its reset state, and the scanline and frame events that raise its interrupts",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The comments of 315_5313.cpp list the ports and register bits in Charles MacDonald's style and cite no document; its TODO says timing needs checking on hardware."
+  },
+  {
+   "where": "maker",
+   "gave": "Genesis Software Manual, https://archive.org/details/sega-genesis-software-manual: a scan with no text layer; OCR garbles register grids and hex addresses, so it cannot be captured line for line, a person can read it."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "No Sega Genesis VDP register manual turned up in a web search for one on bitsavers."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Holds the Genesis Software Manual scan named under maker; nothing else official was found there."
+  },
+  {
+   "where": "index",
+   "gave": "Web searches gave Sega Retro and Sonic Retro wiki pages, Charles MacDonald's genvdp.txt and an unverified Scribd Technical Overview, none an official document that can be captured."
+  }
+ ],
+ "engine": [
+  "add_route",
+  "SEGAPSG",
+  "replace",
+  "set_entries",
+  "device_add_mconfig",
+  "device_reset",
+  "adjust",
+  "m_sndirqline_callback",
+  "m_32x_interrupt_func",
+  "configure",
+  "from_ticks",
+  "from_usec"
+ ],
+ "entries": [
+  {
+   "key": "sega315_5313",
+   "name": "Sega 315-5313 MD VDP",
+   "regions": [
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::device_add_mconfig"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::device_reset_old"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_handle_scanline_callback"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5313.cpp",
+     "function": "sega315_5313_device::vdp_handle_eof"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME declares the device sega315_5313, 'Sega 315-5313 Megadrive VDP', derived from the mode 4 VDP class of 315_5124.cpp.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "175",
+       "sha": "4364f59fe93930d624b1fedceee7b22c03692cac4de27b641979d8eaf0cc9c76"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "177-179",
+       "sha": "db16605276828f9f3d53561753a96ce0f82cf950b5cbdf7e9be6329f0a443475"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It replaces the mode 4 base's sound chip with a SEGAPSG at one fifteenth of the clock and adds three palettes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "246-252",
+       "sha": "62c68dfbc07afde0a0894f98fb286c0bf51c6fae5e16728a00293556a36b3b97"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On reset the command-pending flag, both command words, the code, the address and the fill state are cleared.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "387-393",
+       "sha": "e08080a867f604dd6065a7429a8e8b0bc38d6e1bc50c9eb5a60868a15ab49105"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On reset the horizontal interrupt counter is -1; odd-frame, collision, interrupt-pending, interlace and vblank flags are cleared; total scanlines is 262.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "394-402",
+       "sha": "5cc25fc65ecf88474e9f330ce52515b92a6b2d5f207a802fe5b9d6be16187f66"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reset then calls the mode 4 base class's own reset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "404",
+       "sha": "0c406e578540c74149aa8041cc05651ea45e06cec8b3589c4c22f910c25c4e5b"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "device_reset_old sets 262 total scanlines, 224 visible lines, the vertical interrupt at line 224 and the Z80 interrupt at line 226.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "407",
+       "sha": "52b572bd7aca81fc8b3fd9cf0ec9b313d38d2978b7ea98cb9dc88d13598055c3"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "409-414",
+       "sha": "ce93c7a450f3151855831f485fed6d1049d9eaeca24ea1294d4700f5ff8232ae"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the scanline counter reaches m_irq6_scanline, the vertical interrupt timer is armed for 32 ticks of a quarter clock, and pending and vblank are set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2265-2271",
+       "sha": "b5de780fb27e63a650ebdc121beb75f13d1bf3aca1a501200085f4f7711d2898"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On lines up to 224 the horizontal interrupt counter is decremented and, at -1, reloaded from register 0x0A (doubled when m_imode is 3) and marked pending.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2277-2286",
+       "sha": "394c0dca08b3bf5fdb80e3d57de3d6cd4bd0b9e3a0cd6c8918ae399f99032316"
+      }
+     ]
+    },
+    {
+     "n": "109",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Then the horizontal interrupt timer is armed for 32 ticks if bit 4 of register 0x00 is set, and cancelled otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2288-2294",
+       "sha": "da504362c9a92ff199208a6d5c0be24a34753f946e763041bad52e16cc52b02d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "55",
+       "sha": "9c3bda8261f2433be89f2c6eeed03961eb7c0a03dcd95ac63776a768d615f739"
+      }
+     ]
+    },
+    {
+     "n": "110",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On lines past 224 the counter is reloaded from register 0x0A, doubled when m_imode is 3.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2297-2301",
+       "sha": "5459a15149d5c673b4533ac7fa1842b2b79dfb421b7eaeac5ad8dc684bff375f"
+      }
+     ]
+    },
+    {
+     "n": "111",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The Z80 interrupt line is raised at m_z80irq_scanline and lowered one line later.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2305-2312",
+       "sha": "26edd8d89b93aaf6fc00a13ffe9a6c1b55bc7201b3b980a8596f0fee4ec0b487"
+      }
+     ]
+    },
+    {
+     "n": "112",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The 32X interrupt delegate, when set, is called with the scanline counter and the vertical interrupt line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2319-2321",
+       "sha": "485085c4df237836a4075b3afae986ab7daf3a9c2b3ac3613da8a4aa156c910b"
+      }
+     ]
+    },
+    {
+     "n": "113",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At the last scanline the counter is held at the total minus 1 unless m_use_alt_timing is set, and the interrupt work of the other branch is skipped.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2258",
+       "sha": "dd4c055b4dce61291e29480abf35b706434b57feeff8c48224f28724e91aa585"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2314-2317",
+       "sha": "569ef5909b7f7e6bbb5679f9b9c962169a4937ef39008f519dc5312b90263372"
+      }
+     ]
+    },
+    {
+     "n": "114",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Otherwise the scanline counter is incremented unless m_use_alt_timing is set, and the render timer is armed for 1 microsecond.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2258-2260",
+       "sha": "30efcabdd1e8f73c08c1b089af405ea98266867a14da953dc9c42590b34f359d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2263",
+       "sha": "199533fab32093c91a7903786b7874aa17d6b1203150f872397d4a51afb003f2"
+      }
+     ]
+    },
+    {
+     "n": "115",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At the end of a frame vblank and collision are cleared, interlace mode is read from register 0x0C bits 2 and 1, and odd-frame toggles.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2331",
+       "sha": "607c7651f5e4cf1f3198558d5619dcceaae3bfc8a50909a685d193d482ec3934"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2337-2339",
+       "sha": "5cfc87dcd2921b07706fe636c182db5b81be70dcf3e75893f7ff96d475fbfa57"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "120",
+       "sha": "8089f83b1116ee97b5b4c6ee8e24885622b69cae86205733de3a512833240b42"
+      }
+     ]
+    },
+    {
+     "n": "116",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At the end of a frame the scanline counter is set to -1, unless alternate timing is in use.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2336",
+       "sha": "c0a96e8c567522470547aa9986fe2ab68bce4d6bfe62b11fd41e227de36e3cbb"
+      }
+     ]
+    },
+    {
+     "n": "117",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With register 0x01 bit 3 set, visible lines and both interrupt lines are 240, otherwise 224; total scanlines is the base total.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2342-2349",
+       "sha": "f14fc9e521c0eafb86c341bca58dff249ac4651a118a7e5d3f4f24238f32f703"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2350-2356",
+       "sha": "8c0f36c628d021ea7a687150a6d78f3ee7bfb92c2a87d8dcc5ac12e71dbf3b85"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "81",
+       "sha": "4c527a16ca5ecbecc17374abe0603fc56e9210235e367f9f95ab0a968437dc79"
+      }
+     ]
+    },
+    {
+     "n": "118",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In interlace mode 3 the total, visible and interrupt line numbers are doubled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2358-2364",
+       "sha": "ee9ff00926a9eaab9cd1907ae05d01ebfda32a292d059f6a0da593275ca0906a"
+      }
+     ]
+    },
+    {
+     "n": "119",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The screen is then reconfigured to the width chosen by register 0x0C bits 7 and 0, scaled when m_lcm_scaling is set, and to the visible lines.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "2367-2373",
+       "sha": "a93ab064a78bdf46c817d0274f251348a2b9f000ff7526cb4aeed53ffb70b8bb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "165-166",
+       "sha": "c9c90df3b9f8222eb490b689b2b8601d0838f2f6ae59e0fa7366908d581febc4"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "168",
+       "sha": "719bcbd7df9f8602e22226e0d873335dcb44b9efb0e81647ca081d3a4d3f4758"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "115-121",
+       "sha": "049841f6a42fdb22fe93e64a775681297d056f11e30538aaa416f2394830a41b"
+      }
+     ]
+    },
+    {
+     "n": "120",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A sprite pixel drawn where the sprite line already holds a pixel sets the collision flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1536-1537",
+       "sha": "d78ad88e4968f1393b76a087c08e766d1028fb37e5fd40a0cbcb3ac7f17e8992"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5313.cpp",
+       "lines": "1546-1547",
+       "sha": "a7e7224e9191f612fb24921a15ea49fd181e3948967978ef1ada32e7de4f9de8"
+      }
+     ]
+    }
+   ],
+   "aliases": [
+    "MD VDP",
+    "Genesis VDP"
+   ]
+  }
+ ]
+}

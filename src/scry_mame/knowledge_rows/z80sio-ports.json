@@ -1,0 +1,413 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80sio-ports",
+ "title": "Z80 SIO ports as MAME reaches them",
+ "kind": "register",
+ "scope": "z80sio",
+ "covers": "the four-port windows MAME gives the Z80 SIO: channel and control/data selected by two address bits, in either order, read and write",
+ "source": "official",
+ "documents": [
+  {
+   "name": "UM0081.raw.txt",
+   "variant": "Z80 SIO"
+  }
+ ],
+ "official": {
+  "UM0081.raw.txt": [
+   "7817-7826",
+   "7837-7840",
+   "7844-7846",
+   "10532-10536",
+   "10540-10545"
+  ]
+ },
+ "closed": [],
+ "engine": [
+  "data_read",
+  "data_write"
+ ],
+ "entries": [
+  {
+   "key": "0x100..0x103",
+   "access": "read",
+   "name": "cd_ba port read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7817-7822"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10532-10536"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::cd_ba_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "B/A, Channel A or B Select, High selects Channel B and defines which channel the CPU transfer reaches; address bit A0 is often used for it.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7817-7820",
+       "sha": "f614a52d17685c4d1345075a6a03c3b06c1b6017a7ba7f79559e2a934a28bc95"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "C/D, Control or Data Select, High selects Control, and defines the type of information transfer performed.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7821-7822",
+       "sha": "1511dc923f3d81f2df49479be31426bf7d6e379c8f9463d8047c0943fbd857cc"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "B/A and C/D are the command structure addressing controls, normally controlled by the CPU address bus, as Table 11 shows.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10532-10534",
+       "sha": "71d6e9c19b131fa558cf26e2219a840e0f34c94f3d14e07b3be4a4a46248db92"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Figures 114 through 117 show the timing for programming the write registers and transferring data and status.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10534-10536",
+       "sha": "3de2f874ad45f498c46185e2e594ea80209660b922581bfaa0c1795b1aaff4ea"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "In cd_ba_r, offset bit 0 is B/A and offset bit 1 is C/D, and the call goes to the selected channel's control or data read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "898",
+       "sha": "8584cea2848aab9cf34fcd4b200596a838cc42f39dbebff4d03226b4c5c7a5d4"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "899",
+       "sha": "bd1a3f42a98cd859df66e1fb27287b9083592469d8c9005ae67f1f666322141f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "900",
+       "sha": "27a0dc22e454fc0016b7e5a1c76ed9ab2f4789d6ab842164422cb3f7c5accd9f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "902",
+       "sha": "f5edbddbfeb9d11b93390c40c90d3eef2421386290ecd99a624a33fb05829ded"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "902",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x100..0x103",
+   "access": "write",
+   "name": "cd_ba port write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7823-7826"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7844-7846"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::cd_ba_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "A High at C/D during a CPU write makes the data bus information a command for the channel selected by B/A; a Low at C/D indicates data.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7823-7826",
+       "sha": "f89e30f1d15033d41c032c3638bbda0ac13403ad9d46a92561f12889d5640177"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Address bit A1 is often used for the C/D function.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7826",
+       "sha": "2e8944e9d2fc83f0647977ae5770a240182273dc8a30e6dc6b539b8245edd8ef"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "When CE and IORQ are active but RD is inactive, the channel selected by B/A is written with data or control information as C/D specifies.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7844-7846",
+       "sha": "ed1156d5ac48737fb6e991f238217cde6175aa782b5b55f24fb5aa57c938fb39"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "In cd_ba_w, offset bit 0 is B/A and offset bit 1 is C/D, and the byte goes to the selected channel's control or data write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "911",
+       "sha": "8584cea2848aab9cf34fcd4b200596a838cc42f39dbebff4d03226b4c5c7a5d4"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "912",
+       "sha": "bd1a3f42a98cd859df66e1fb27287b9083592469d8c9005ae67f1f666322141f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "913",
+       "sha": "27a0dc22e454fc0016b7e5a1c76ed9ab2f4789d6ab842164422cb3f7c5accd9f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "915",
+       "sha": "d40e6d1a4f444b1ca87c1463166975b2b5f939c211582b56e00a02b8ced71393"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "916",
+       "sha": "2047ba380ae9888bb12b87a017030728519c070506b02dd030f0039090f663be"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "918",
+       "sha": "4329bfd44296a8201bacf977ef2a83b57b79b945773d993ae5811b067db3f57f"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "915-918",
+     "as": "unfollowed",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "915-918",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x110..0x113",
+   "access": "read",
+   "name": "ba_cd port read",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7837-7840"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::ba_cd_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "IORQ is used in conjunction with B/A, C/D, CE and RD to transfer commands and data between the CPU and the Z80SIO.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7837-7839",
+       "sha": "11a5f56befec9b06f668a7e7820ed11e47cba72aa37b814824c8a484cbde2fe6"
+      }
+     ]
+    },
+    {
+     "n": "1",
+     "on": "read",
+     "of": "doc",
+     "text": "When CE, RD and IORQ are all active, the channel selected by B/A transfers data to the CPU, a read operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7838-7840",
+       "sha": "e63c1a8da61ae4f2bfc91de22813093727c2e639c81f4f4cdc302fb89370c2c6"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "text": "In ba_cd_r, offset bit 1 is B/A and offset bit 0 is C/D, the reverse of cd_ba_r, and the call goes to the selected channel's control or data read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "898-899",
+       "sha": "56d91e526928f1a713263c388af580f88b8e89ec898e4f7d0cfe467809e0cc1e"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "927",
+       "sha": "7389256ae6c116203d6bf80a189b7c84779fc30dfbbf0f8f1c87cb8aca6e434e"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "928",
+       "sha": "48db075d3cb1daf0197057e9cca42a1289786f1e7b036ce07ad4feee47f2da9c"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "929",
+       "sha": "27a0dc22e454fc0016b7e5a1c76ed9ab2f4789d6ab842164422cb3f7c5accd9f"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "931",
+       "sha": "f5edbddbfeb9d11b93390c40c90d3eef2421386290ecd99a624a33fb05829ded"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "931",
+     "as": "unfollowed",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x110..0x113",
+   "access": "write",
+   "name": "ba_cd port write",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10540-10545"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::ba_cd_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 11, Channel Select Functions, lists each C/D and B/A combination with its function.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10540-10541",
+       "sha": "b31929d593abd9659b172fd38fa86544fb40974566bc2ca392d5d475437c31ac"
+      }
+     ]
+    },
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Table 11: C/D 0 B/A 0 is Channel A Data, 0 1 is Channel B Data, 1 0 is Channel A Commands/Status, 1 1 is Channel B Commands/Status.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10542-10545",
+       "sha": "dbf33929b383e9adec6f691fd401264c02a709280cd4b926496247866c038d3b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "text": "In ba_cd_w, offset bit 1 is B/A and offset bit 0 is C/D, the reverse of cd_ba_w, and the byte goes to the selected channel's control or data write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "911-912",
+       "sha": "56d91e526928f1a713263c388af580f88b8e89ec898e4f7d0cfe467809e0cc1e"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "940-947",
+       "sha": "e2ed21dc89a9e7f78f2f00b988628d412ba534b71eee309183927783831f118d"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "944-947",
+     "as": "unfollowed",
+     "row": "1"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,501 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "okim6295-device",
+ "title": "The MSM6295 as a device: voices, rate, reset",
+ "kind": "device",
+ "scope": "okim6295",
+ "covers": "the MSM6295 as a device: its four ADPCM voices, the sample rate its clock and pin 7 give, its reset, and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "OKI-VoiceSynthesis-1994.raw.txt",
+   "variant": "msm6295"
+  }
+ ],
+ "official": {
+  "OKI-VoiceSynthesis-1994.raw.txt": [
+   "1899-1940",
+   "2094-2114",
+   "2265-2290"
+  ]
+ },
+ "engine": [
+  "update",
+  "set_sample_rate",
+  "stream_alloc",
+  "add_int",
+  "read_byte"
+ ],
+ "entries": [
+  {
+   "key": "okim6295",
+   "name": "OKI MSM6295 ADPCM",
+   "aliases": [
+    "MSM6295",
+    "M6295",
+    "OKI 6295"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1899-1940"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2094-2114"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2265-2290"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "function": "okim6295_device::device_start"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "function": "okim6295_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "function": "okim6295_device::device_clock_changed"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "function": "okim6295_device::set_pin7"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "function": "okim6295_device::okim_voice::generate_adpcm"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The MSM6295 is a 4-channel mixing ADPCM voice synthesis LSI that can access an external ROM holding speech or sound effects data.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1902-1907",
+       "sha": "34075d5ed67284ed3e592f4aede4ba62d747fbd20dbbdf9eea5c4a5ac9bd2e96"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The external ROM is addressed by 18 lines, holds 2 Mbit, and the data sheet gives 256K bytes as its maximum size.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1908",
+       "sha": "c6cdcf5d8d2282b78e4e2f340cfadc0200ef8493cbe225d551a59082f0afa3c3"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1912",
+       "sha": "9f913ce535b1812d3230d3d42e5cdb573816230cb378b1b71baa96012c09f188"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1914",
+       "sha": "96bc96f75c1f20c076794a8ea28c0742590eabc6f40c610fa586bbcefaad0986"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1922",
+       "sha": "c5aa1db676ac061cd8e7e7c80a4fa52cc67fa98ad791728be5f1a013f062838f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The 4-channel synthesis stage allows the simultaneous playback of four different channels, for instance a voice with background music.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1923-1927",
+       "sha": "ab8946f0a97b82703b32b98ca2dbfeff831ee56d0fe7018a9889a266ea161cc9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The chip uses the Oki straight ADPCM algorithm with 4 bits per sample.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1910-1911",
+       "sha": "6ca0453250e8f434c5aa347e411204e373b977dfea956bc2b9d4d1d069e8ae93"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The chip has an 8-bit control bus for mode setting and interfaces with common CPUs and MPUs.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1913",
+       "sha": "ac577de8ac5342e8025bf12df06fa555526a06400a741c0b722d49e5fae02251"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1915",
+       "sha": "b2ee7207c19dd61ee1a7d25216227afde6c080a9bbc1c30817189e13490f945c"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The clock frequency ranges from 1 MHz to 5 MHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1916",
+       "sha": "6addf91e471ac1db6243f04beda954cb8601880c757ae57068178432cb816576"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The number of words is 127 at most, and the vocalization time is 60 seconds at most at 8 kHz, straight.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1928-1930",
+       "sha": "660e5c84958bc4d4a503bf8fd01a576aad60bd00e557cbdaf33f2ef407f2bc17"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The built-in DA converter is 12-bit, and each channel's voice level attenuation goes from 0 dB to -24 dB in 9 steps of -3 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1931-1935",
+       "sha": "4082ae5a4529345c6cd5335247375a46492889f6dfb5f0b4cf678e1ca1b7145f"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "With SS high the sampling frequency is 8 kHz at an oscillation frequency of 1.056 MHz and 32 kHz at 4.224 MHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1917-1921",
+       "sha": "f582942eb930eda462b1f205e18478b79f4bf15abc1b8f287da629f99b59313b"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2103-2108",
+       "sha": "fdf943fece747767ed8bb50d3736828403d9bfddea4283166aee3f75479bef5d"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "With SS low the sampling frequency is 6.5 kHz at an oscillation frequency of 1.056 MHz and 25.6 kHz at 4.224 MHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1917-1921",
+       "sha": "f582942eb930eda462b1f205e18478b79f4bf15abc1b8f287da629f99b59313b"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2103-2108",
+       "sha": "fdf943fece747767ed8bb50d3736828403d9bfddea4283166aee3f75479bef5d"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "reset",
+     "of": "doc",
+     "text": "A low level on the RESET input gives the reset condition, and all functions are suspended during reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2094-2096",
+       "sha": "3099bca81b2f0bb8f94e32b65d5f7da7130a5fda4249ea445011377955fd38a6"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The voice synthesized analog signal is output from the DAO pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2109-2110",
+       "sha": "8fecf8974d2415e64cb6e7ba8bbe3e4ae2f46aaa608f65a04c7b2da908ec403c"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "ADPCM speech data is made of 4-bit samples, so one byte stores 2 samples.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2266-2267",
+       "sha": "04eb6d7e54e56a2cf4c70b83c4e91e2ce31fed076ebe03372445795d5caa1a8d"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "The data arrangement in a byte proceeds from the higher rank bits (D4-D7) to the lower rank bits (D0-D3).",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2268-2269",
+       "sha": "4aa3cd3e45f648f882b1c72894dbc8bc8b474e2cfe9c4609c29ef2ba9c41da9c"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "Speech data should always end with the lower rank bit, so an even number of samples is always stored.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2270",
+       "sha": "9ab33f3ea0ab2caf0699fe80a452a3cccc91f034638074cce05716cd13389688"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2275-2276",
+       "sha": "21cf8548d68b87032a9316ad9fb106081a5ab9c8583b5392951f6fbe2fc7a9cc"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "Speech data is produced by the Speech Development Tool AR76-202.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2277-2278",
+       "sha": "707b9cd05096197072ac32b6958c41b31265f584a6358b31f506bd9ac8ff3799"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "10",
+     "text": "With pin 7 low MAME divides the clock by 165, so 1.056 MHz gives 6.4 kHz where the document says 6.5 kHz, and 4.224 MHz gives the documented 25.6 kHz.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "120-121",
+       "sha": "4db945f270bcb860defd7463c18c5bf454004a861e8aa81c577fbd64026c24c1"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "168-169",
+       "sha": "57255db0a82c36292b183d4e9b6b13d247f6e7448b3adedda598a5b6e11724f8"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.h",
+       "lines": "33-34",
+       "sha": "0a4d24843e054b8292a936b6a8fa9b4211ed16a3b4f6c70455044a35983c174f"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "11",
+     "text": "MAME's device reset brings the stream up to date and stops each voice of its four-voice array; its body does nothing else, so m_command keeps its value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "143-148",
+       "sha": "87699a5aedcbd30d0bb916d0b744071e1ffd2bb0c860e7b112ed3f93b8c912df"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.h",
+       "lines": "87",
+       "sha": "14f4c76df2b03b48576d5973ece99b7cbe7e68c84f49c008fa462304ad0c5d3a"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.h",
+       "lines": "90",
+       "sha": "3666cd0ac0088d892baafa6b90c2f26719c81bd1e3f41497296ab6207e25cfed"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At start, a pin 7 state that is neither low nor high is set to low.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "116-117",
+       "sha": "b02577cc3c0818555be810cee0bc763ec2b62331a3647b0badc8112394687b62"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.h",
+       "lines": "33-34",
+       "sha": "0a4d24843e054b8292a936b6a8fa9b4211ed16a3b4f6c70455044a35983c174f"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME sets pin 7 at configuration with config_pin7 and at run time with set_pin7, which stores the level and calls device_clock_changed.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.h",
+       "lines": "46",
+       "sha": "c4d40785eb940964c67c0dffb809ea64a32e52a295e4e00b5393f724cf44fad9"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.h",
+       "lines": "49",
+       "sha": "c7421423e3f3e51cbbd224dc7e841028c99b75342be4174152038e5d87985400"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "204-206",
+       "sha": "8eb0119087e571c0b4385b3a4043540fc10c99af508d5be30369b1cd39747656"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A voice stops playing by itself once it has produced its sample count.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "355-358",
+       "sha": "405a1718f54fbf452022240ddf9cd91168b8997016c566bba1956ddd4d00400f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1899-1901",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1909",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1936-1940",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2097-2102",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2111-2114",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2265",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2271-2274",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2279-2290",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "120-121",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "168-169",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "126",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "341-342",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "345",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "205",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  }
+ ]
+}

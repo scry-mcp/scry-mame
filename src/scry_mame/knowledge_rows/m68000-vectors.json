@@ -1,0 +1,5609 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "m68000-vectors",
+ "title": "MC68000 exception vectors",
+ "kind": "vector",
+ "scope": "m68000",
+ "covers": "The MC68000's exception vectors: reset, bus and address error, the instruction traps, trace, the line A and line F emulators, the autovectors and the TRAP vectors",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC68000UM.raw.txt",
+   "variant": "MC68000"
+  }
+ ],
+ "official": {
+  "MC68000UM.raw.txt": [
+   "1185",
+   "3788-3799",
+   "3807-3815",
+   "3824-3825",
+   "3828",
+   "3982",
+   "3987-3988",
+   "3991-3995",
+   "4023-4024",
+   "4059-4064",
+   "4066-4070",
+   "4075-4076",
+   "4078-4085",
+   "4101-4105",
+   "4108-4110",
+   "4116-4117",
+   "4119-4123",
+   "4128-4130",
+   "4133-4134",
+   "4142-4143",
+   "4160-4164",
+   "4166-4167",
+   "4177-4178",
+   "4180-4181",
+   "4186-4190",
+   "4197-4198",
+   "4302-4303",
+   "4305-4307",
+   "3831-3832",
+   "4211-4214",
+   "4216-4217",
+   "4220-4221"
+  ]
+ },
+ "closed": [],
+ "entries": [
+  {
+   "key": "0",
+   "name": "reset",
+   "aliases": [
+    "RESET",
+    "initial SSP"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3788-3789"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3824-3825"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3982"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3987-3988"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3991-3995"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "20-21"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "24"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "27"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "29"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "32-36"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "53-57"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "74"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "78"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "80-81"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "100-104"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "121-124"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "169"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "399-401"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.h",
+     "lines": "75-78"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2358"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "33"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "36"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "51"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "54"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.h",
+     "lines": "172"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "122"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "145"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3831-3832"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Vector 0, at address 0x000, is Reset: Initial SSP, in supervisor program space.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3788",
+       "sha": "5cfa75557f149152327afb03ce56d1d1b669b599cbe750fa3281a1578125c05c"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3831-3832",
+       "sha": "469a4d79efdcc8a29bf34ea7480a0f7bbc736da49f040f46dc332b5a4a6f46ea"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Vector 1, at address 0x004, is Reset: Initial PC, in supervisor program space.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3789",
+       "sha": "17d2d5ec1debef38a6b2c3d64ef535a48321f2f38532049c54be6a05f02296da"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3831-3832",
+       "sha": "469a4d79efdcc8a29bf34ea7480a0f7bbc736da49f040f46dc332b5a4a6f46ea"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "The reset vector requires four words, unlike the other vectors, and is located in the supervisor program space.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3824-3825",
+       "sha": "14c671e53a1a45afd11c715ef87887609e77833e81ed05eb029fecf507465ccb"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The processor is forced into the supervisor state, and the trace state is forced off.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3982",
+       "sha": "6a7cee85609466641b113182f7e8a7a1d44faa7d9a88e547360316054f446720"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "The interrupt priority mask is set at level 7.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3982",
+       "sha": "6a7cee85609466641b113182f7e8a7a1d44faa7d9a88e547360316054f446720"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3987",
+       "sha": "59dc3501246dff63c636e4a67a26ca2be2b81806b6fa97f3320b71d7e8224c0a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "The vector number is internally generated to reference the reset exception vector at location 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3988",
+       "sha": "bf70e4426c87693252a0dec9575dd8fa72b44b40109ab372745a07743333e540"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "The address in the first two words of the reset exception vector is fetched as the initial SSP.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3991-3992",
+       "sha": "bbb7d84458453b98d3f37519cfb09b46abd6f95e16dac48978df6f61e2a4d4ac"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "does",
+     "of": "doc",
+     "text": "The address in the last two words of the reset exception vector is fetched as the initial program counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3992-3993",
+       "sha": "2a18754286983ec8d27c6417558bac25d5b034a7f3176a21af98a30c92e3b9b4"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "does",
+     "of": "doc",
+     "text": "Instruction execution is started at the address in the program counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3993-3994",
+       "sha": "7b53284ecf600158ff79bc9c3df27e8e1807539c8e3e19dc42b30d3a393aff4e"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The initial program counter should point to the power-up/restart code.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3994-3995",
+       "sha": "02e9f36bd7ad1afca8c8bbe28a9f75c36399e45988b00032106d5817e02dd33f"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The first vector read step stores the previous m_dbin into the high half of m_da[16], the SSP slot; the next step stores the word read into it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "33",
+       "sha": "c16367de3a34bd513bd015efc3353a82d65033c79a5fe76fc62b6a52b7436331"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "36",
+       "sha": "52673bd401ea406db46ad15d8860d223e4a8b9aff6474d1a2649c53a85a918b9"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "51",
+       "sha": "33bac70116c31466350d7a1daec02aa36abab008c0a3765938fee1e30313943e"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "54",
+       "sha": "c16367de3a34bd513bd015efc3353a82d65033c79a5fe76fc62b6a52b7436331"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.h",
+       "lines": "172",
+       "sha": "c35db2347bc1bbbb5f5967360592a6414dfe3a2db84ed55b4552b157ea74135e"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "device_reset starts the core in the S_RESET state, the first of the special states, which the generator lists as reset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "399-401",
+       "sha": "81e28f338712bc58331304acf8d49a7786c17b3273abaf207f7be23d352e49ab"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.h",
+       "lines": "75-78",
+       "sha": "e0ab95642ed65b0e0d1d344d8c8c80e5b8984d4412c7dff7e0674029c8ecda85"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2358",
+       "sha": "ee500c8d4fb2dc042713bc6aeae5b83e0a515336f887cc8e65ac898f8f0c4264"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "does",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The register m_pc is stored from m_au, which holds the address fetched from the vector plus 2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "122",
+       "sha": "e797497c5d681f202b0f91ac0a52caed41c0c665a0f8ee0113056be79a0a2ee9"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "145",
+       "sha": "8e5f6fcd21dfc6b702e634f48127c91f77e1eefc9c1841f45fe3ae60d24bf31d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "35-36",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "56-57",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "80-81",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "103-104",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "24",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "24",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "27",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "20",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "21",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "29",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "29",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "32-36",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "53-57",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "78",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "74",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "81",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "100-104",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "121",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "121-124",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "169",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.h",
+     "lines": "172",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "122",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "145",
+     "as": "agrees",
+     "row": "8"
+    }
+   ]
+  },
+  {
+   "key": "2",
+   "name": "bus error",
+   "aliases": [
+    "BERR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3790"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4177-4178"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4180-4181"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4186-4190"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4197-4198"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "178-180"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "184"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "189-190"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "199"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "201"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "219"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "222"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "224"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "244"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "246"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "266-267"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "270"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "272"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "292"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "294"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "312"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "314"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "317"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "319"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "337"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "342"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "362"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "380-383"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "400"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "403"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "424"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.h",
+     "lines": "108-113"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2359"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 2 reads 2 2 8 008 SD Bus Error.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3790",
+       "sha": "fcf3e8d3279486ad42407a3712f7951f3299c8791dfee1c922836b916d4c8601"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "The status register is copied, the supervisor mode is entered, and tracing is turned off.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4177-4178",
+       "sha": "2d1265c2996794e1de741b0765f9a8a92eb96ef64da29bc414f328ad4e7f0b9e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "The vector number is generated to refer to the bus error vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4178",
+       "sha": "e61382b0846ceaa6c4b581f751fa1ca015efed03ba0b353aeb8de6f505a2ce80"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "Additional information is saved on the supervisor stack; the program counter and the copy of the status register are saved.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4180-4181",
+       "sha": "beffdd8e0fec921fa2a61d2c85a73dc84ee756002242e162348187814216988b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "The processor saves its internal copy of the first word of the instruction being processed.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4186-4187",
+       "sha": "87fbf8c6e8bfce85731b82f87eab64afeabbfdfb14b4db0c27feaeec2305d2e1"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "The processor saves the address being accessed by the aborted bus cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4187-4188",
+       "sha": "8f43defb74e225ded557c9c41b67f7fe0119abc6d39ceaa9c71f043d57c2f8c1"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "Specific information about the access is also saved: type of access (read or write), processor activity and function code outputs.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4188-4190",
+       "sha": "70569d645ee3de7a7ac36df8262d7db382860f4c01478f471d0e4f05825cfdc0"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "does",
+     "of": "doc",
+     "text": "The processor commences instruction processing at the address in the vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4197-4198",
+       "sha": "20e77d9c378ca1e9ec6f649aaa7bfe8ab4554696779b66422dde63200d1a727b"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator lists a bus_error state whose code passes vector number 2 to the exception hook and sets a vector offset of 0x0008.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2359",
+       "sha": "152668f36378236cfe91e9a686e74c46fab38ad6b4cba7a5ca543a66790f19da"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "312",
+       "sha": "def0274b68468ad5325368229890ec27936d52fd108cceb5be88472aeb6ac911"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "314",
+       "sha": "4a40cc5d683dd521ed890e2d688444a42028d0fd67eb18831607a8587edf42f6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "180",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "184",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "312",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "314",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "189-190",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "201",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "199",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "224",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "222",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "246",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "219",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "244",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "272",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "179",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "270",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "294",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "317",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "342",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "178",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.h",
+     "lines": "108-113",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "267",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "292",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "319",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "337",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "362",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "380-383",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "400",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "403",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "424",
+     "as": "agrees",
+     "row": "8"
+    }
+   ]
+  },
+  {
+   "key": "3",
+   "name": "address error",
+   "aliases": [
+    "ADERR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3791"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4302-4303"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4305-4307"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "457-458"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "468-469"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "478"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "480"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "498"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "501"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "503"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "523"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "525"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "545-546"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "549"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "551"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "571"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "573"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "591"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "593"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "596"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "598"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "621"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1276"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1286-1290"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89210"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89220-89224"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89869"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89879-89883"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.h",
+     "lines": "108-113"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2360"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4211-4214"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4216-4217"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4220-4221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 3 reads 3 3 12 00C SD Address Error.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3791",
+       "sha": "4f617e500e1fa548a48bb618e576b22a913f69526467f23e8cf1d2e4c62efed7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "An address error exception occurs when the processor attempts to access a word or long-word operand at an odd address.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4302-4303",
+       "sha": "fd2a0318607340373f3b366878b287b42568848a2a4eac003aadc20959eed522"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "An address error exception occurs when the processor attempts to access an instruction at an odd address.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4302-4303",
+       "sha": "fd2a0318607340373f3b366878b287b42568848a2a4eac003aadc20959eed522"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The vector number refers to the address error vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4306-4307",
+       "sha": "034b2dad5a1e4deafa931374039375b5e3142a697ba63860e758d21882d5adca"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The exception processing sequence is the same as that for a bus error, including the information to be stacked.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4305-4306",
+       "sha": "02c05c0d88a0ea82582c1479a6fdabe84bd0b80b7753f62d06b55f820fd9517a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "The supervisor stack order for a bus or address error exception includes the status register and the program counter.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4214",
+       "sha": "8700f0469bf1711550c8fc84d18851ada27ff24aef4c1f32773ab17e98791327"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4217",
+       "sha": "9404cce68a8a2aa65caec4e34ded0b0edf1222e9502056a354c5c336b4f06285"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4221",
+       "sha": "f290043727d1a3726b1e92ed20fe46d4caa3aed56e9032787ef6c87b931ea86c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "The supervisor stack order for a bus or address error exception includes the instruction register.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4213",
+       "sha": "7d33fade63b14fafd0271b0e40a512615a50338ac49a1865e4a3f9dec31b0e9c"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4221",
+       "sha": "f290043727d1a3726b1e92ed20fe46d4caa3aed56e9032787ef6c87b931ea86c"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "does",
+     "of": "doc",
+     "text": "The supervisor stack order for a bus or address error exception includes the access address.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4212",
+       "sha": "2b8b649df417ec100243c76adc5582dea648f3818cba89c12579ff0f51369ff7"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4221",
+       "sha": "f290043727d1a3726b1e92ed20fe46d4caa3aed56e9032787ef6c87b931ea86c"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "does",
+     "of": "doc",
+     "text": "The supervisor stack order for a bus or address error exception includes the R/W bit, the function code and the I/N bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4211",
+       "sha": "9d37e3a81094e41236babd818919222bc6997cacac6b8a1ce7ecfd89dd932a74"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4216",
+       "sha": "abf923844fb53d1883f237d8d346bbe626e8eafb553058bbcdb3acfa20859b2c"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4220",
+       "sha": "4256d5670d8d00f1541e66608c16a5c45003beaca6ed1c3952eefd39c25b62d4"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4221",
+       "sha": "f290043727d1a3726b1e92ed20fe46d4caa3aed56e9032787ef6c87b931ea86c"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator lists an address_error state whose code passes vector number 3 to the exception hook and sets a vector offset of 0x000C.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2360",
+       "sha": "38780a35152413c1f791b57f13a67e6d02c886ffbd72de5b9c54684b04b007a5"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "591",
+       "sha": "57e825b105277e3b6bebbdfafde63c597ca76630f15fbf9d829234e7334b5ed9"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "593",
+       "sha": "db15d1788e9b88bdc65d2d4b3219ecbacd6b6850c0fdb5e311d2cad7f527f72c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89210",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89220-89224",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89869",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "89879-89883",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1276",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1286-1290",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "591",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "593",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "468-469",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "480",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "478",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "503",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "501",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "525",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "498",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "523",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "551",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "458",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "545",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "549",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "573",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "596",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "621",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "457",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.h",
+     "lines": "108-113",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "546",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "571",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "598",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "4",
+   "name": "illegal instruction",
+   "aliases": [
+    "ILLEGAL"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3792"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4078-4085"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4108-4110"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1155-1156"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1165"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1167"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1185"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1187"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1190"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1192"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1210"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1215"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1235"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1253-1256"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94773"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "479"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "734"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2364"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2474-2475"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 4 reads 4 4 16 010 SD Illegal Instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3792",
+       "sha": "7fb121500be23c30e594e15fc1c5075b05d53a920d62802e5fc26913c4620031"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "An instruction word that matches no legal instruction pattern, once fetched, causes an illegal instruction exception.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4078-4080",
+       "sha": "57a0228f7e42ded61bbcea1eef3b0a5b6be5d51d4199a4ade02d760859221ee4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "The bit pattern $4AFC, the ILLEGAL instruction, forces an illegal instruction exception.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4081-4085",
+       "sha": "07f7818a1a22fa8bab8ec474ab71f6efaf61889be476e33e15ac0ec36b94a876"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The exception stack frame for group 2 is pushed on the supervisor stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4108-4109",
+       "sha": "008441c95abca9109fd0a10f25d723cbdd9efb5a2260e9639cd40140f9a2a61c"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "The illegal instruction vector is fetched.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4109-4110",
+       "sha": "8b05c4fc08e75b90bdebb412e47c5a47a1bcae22c9a07e00e1505d76566a2074"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator lists an illegal state whose code passes vector number 4 to the exception hook and sets a vector offset of 0x0010; decoding starts every opcode as S_ILLEGAL.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2364",
+       "sha": "47ee3073b451365a9a9c5c63ae02ff9e0358d9411d6d177096834942b10e9b1c"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1185",
+       "sha": "1a5459366477b4c8bb6f4cf60334a07d6abf4f9805fd7a9604b8c9b670e8b69c"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1187",
+       "sha": "735ac979f06eb5965c2fd83fc4df9865f2a67dad41d8a0a7a590c58f7434e5ad"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "479",
+       "sha": "a6b0d49dc7d6fccb3d4df5225a59332fbf72483b247a46b4ccb662bfae57f5af"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "479",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94773",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "734",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2474-2475",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "479",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1155-1156",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1167",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1165",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1192",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1190",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1215",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1185",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1187",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1210",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1235",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1253-1256",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "5",
+   "name": "divide by zero",
+   "aliases": [
+    "ZERODIV"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3793"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4075-4076"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127021-127025"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127030-127031"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127086"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127088"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134352-134356"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134365-134366"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134425"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134427"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127011"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "1039-1049"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134342"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "1073-1083"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127391"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134855"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 5 reads 5 5 20 014 SD Zero Divide.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3793",
+       "sha": "e878c617703735997414622cecded60a62af3e301d21287d47e7f89e5c924b06"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "An unsigned divide (DIVU) instruction forces an exception if a division operation is attempted with a divisor of zero.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4075-4076",
+       "sha": "1efcbfd932970d0c0a936998e54168ca3a0d91281cfdf7d94cd58a0cd85aa36b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "A signed divide (DIVS) instruction forces an exception if a division operation is attempted with a divisor of zero.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4075-4076",
+       "sha": "1efcbfd932970d0c0a936998e54168ca3a0d91281cfdf7d94cd58a0cd85aa36b"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "Eleven divu.w forms are listed, differing in the first operand; divu_w_ds_dd_df, for a data register source, takes the trap sequence with vector number 5 and vector offset 0x0014.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "127011",
+       "sha": "528c63b2fc5ad911362386c1843dce5a4feaa00119d442318848e43d8b5fa0fb"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "1039-1049",
+       "sha": "cbfc8b375b818ffbd45c3c2fef31edc41d4d4806e6e38d7381ea9214744d1ef7"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "127086",
+       "sha": "b0ffa671ebaba93fb6e5e8742764a24886890322cd74884d6957e00a9becf941"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "127088",
+       "sha": "a6278d3ece4e3772d4ef09474613e0652fc2762d9e828a18e117e21d68791cb3"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "127391",
+       "sha": "e8f1d00e0acb06992ba7e83d8d6eac523e5421a8d5561fd72b23d0cd6fc34aea"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "Eleven divs.w forms are listed, differing in the first operand; divs_w_ds_dd_df, for a data register source, takes the trap sequence with vector number 5 and vector offset 0x0014.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "134342",
+       "sha": "4aaa3bcbd1c13a9b216696515053491b0e71bdde908d7eabd0f9416493866558"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "1073-1083",
+       "sha": "adaff4295dace3ac0315a7068fd2c79b7f5b18a902bcc931cc9407e5128d527c"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "134425",
+       "sha": "b0ffa671ebaba93fb6e5e8742764a24886890322cd74884d6957e00a9becf941"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "134427",
+       "sha": "a6278d3ece4e3772d4ef09474613e0652fc2762d9e828a18e117e21d68791cb3"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "134855",
+       "sha": "4d49c4ee7c57c941358d0d25c5b22c00493a70672bcd97a1dcd747274aa239b1"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127021-127025",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127030-127031",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127086",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127088",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134352-134356",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134365-134366",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134425",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134427",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "127011",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "134342",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "6",
+   "name": "CHK",
+   "aliases": [
+    "CHK"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3794"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "71692"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "71694"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "71631"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "560"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "71851"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 6 reads 6 6 24 018 SD CHK Instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3794",
+       "sha": "c572dafbbe92e11a8bd1d5ded0893dbb24500276fd98613b981c6939b5c02385"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The chk_w_ds_dd_df handler (list: chk.w ds dd) takes the trap sequence with vector number 6 and vector offset 0x0018.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "71631",
+       "sha": "33b707ce03592d482c454bdb7ece9c6a840716f1af27f19104e3952bf1b23d77"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "560",
+       "sha": "3909f294ac6e0c9d2ff9c6a7953ab1228ea13ed2fa9f7de1a0a2070e0a76aa19"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "71692",
+       "sha": "69b8f9ec58f28db74ae9057dc26dc33384a4a02814575931943ef4c3b2d7f7e1"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "71694",
+       "sha": "fddc83eb29863f2567b5156dd2074156a287260e66634a6d26d16aac92f0a4a5"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "71851",
+       "sha": "3fe6fe8097eee1ded1fc32e1af9d494f6caee09a8d3989afbb7c4d0aa4aafca1"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "7",
+   "name": "TRAPV",
+   "aliases": [
+    "TRAPV"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "1185"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3795"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4069-4070"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94741"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94744-94745"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94827"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94829"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94736"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "761"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94969"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 7 reads 7 7 28 01C SD TRAPV Instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3795",
+       "sha": "a4ddcbb744b7db070b9fc22cdb86bb52903719765833656035a827dee0ec1b1d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "TRAPV: if the V flag is set, then TRAP.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "1185",
+       "sha": "5b9829689b2af53a6ae7ea5e3cce333ba2a078a2d952bccb29c2267e105bb35e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "The TRAPV instruction forces an exception if the user program detects a run-time error, which may be an arithmetic overflow.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4069-4070",
+       "sha": "2ad1606a71ab76680b486b1f8778ffcd4a1c0723aa2e91da6bf36fbb2b37629c"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The trapv_df handler (list: trapv) takes the trap sequence with vector number 7 and vector offset 0x001C.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "94736",
+       "sha": "4d140ee2976d2eb61e19b687c3e8a8f1cab9d72125ea50836a0b9efa56eb3014"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "761",
+       "sha": "7fd31156f144702472ba59e27a29aa008bff0d1a223727dc6aa93919d2ee4e6e"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "94827",
+       "sha": "9c7990cf768dd4b5a8bc84e5abd9f5e9761bd3d48d09cc946a7abfd99e606c40"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "94829",
+       "sha": "b35e00be85e1760b89771759ee3019d17f8c9ecff3b4d33d332d392e37d018cc"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "94969",
+       "sha": "0924fa6d06515117c52cef370ff0af9acaa8288296e45705ac153800c3b9e96e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94741",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94744-94745",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94827",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94829",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94741",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94744-94745",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94827",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94829",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94736",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94736",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "8",
+   "name": "privilege violation",
+   "aliases": [
+    "PRIV"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3796"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4116-4117"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4119-4123"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4128-4130"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4133-4134"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1330"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1334"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1339-1340"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1349"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1351"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1369"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1371"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1374"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1376"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1394"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1399"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1419"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1437-1440"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1457"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1460"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1481"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "3900-3903"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "11329-11332"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "25571-25574"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "84021-84024"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94289-94292"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94333-94336"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94376-94379"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94476-94479"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94506-94509"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2365"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "84018"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "661"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "3898-3903"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "11327-11332"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "25569-25574"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94286-94292"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94330-94336"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94374-94379"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94474-94479"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94504-94509"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 8 reads 8 8 32 020 SD Privilege Violation.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3796",
+       "sha": "699da4496cdb59f65460f81caa45b151ddc95c42cc96da7ac4c5bccb2c229885"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "An attempt to execute AND immediate to SR, EOR immediate to SR or OR immediate to SR while in the user mode causes an exception.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4116-4117",
+       "sha": "4ba56fef59cbfcbf52aa9d833fe06dc693f1523c87dea696414ff64346802c3a"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4119-4120",
+       "sha": "b629d3f0a322cf640ae70e0a329a236bca35c27b47d2505cb467353844161671"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "An attempt to execute MOVE USP, RESET, RTE or STOP while in the user mode causes an exception.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4116-4117",
+       "sha": "4ba56fef59cbfcbf52aa9d833fe06dc693f1523c87dea696414ff64346802c3a"
+      },
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4119-4123",
+       "sha": "87090bd83051e727df50f745d5b41c94858316b97c5c3af37f6b4b03e716492e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "MOVE to SR is listed among the privileged instructions as 68010 only.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4121",
+       "sha": "f4b493115a96ebb2cd188ebedaaa27a5fd9f57566152cf0055463a05646085af"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "The status register is copied; the supervisor mode is entered; and tracing is turned off.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4128",
+       "sha": "6fe5326a56cbb24a2b6beb76793ef25b09da8aab1867fd8a89dae996430058ca"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "The vector number is generated to reference the privilege violation vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4129",
+       "sha": "f82b5d57c8c979c8a2bdfbacd39c40eddc8e615f2374c2437abb1fc27b7cbdcf"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "The current program counter and the copy of the status register are saved on the supervisor stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4129-4130",
+       "sha": "21e0306edbd641155de0ebc5bffd7f4ddd738bb13b0c29ba50c5dde4e7564b67"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "does",
+     "of": "doc",
+     "text": "Instruction execution commences at the address in the privilege violation exception vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4133-4134",
+       "sha": "3e2e8833e6540185ee820ca122e87feaa6df5dd6433d0c6b95d5184b27de1b80"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "does",
+     "of": "mame",
+     "vs": "differs",
+     "text": "The move_ds_sr_df handler, listed as move with operands ds and sr, tests the supervisor bit and raises the privilege exception in user mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "84018",
+       "sha": "53e3faaffed32230915c1225cc3b266b4a4b0643d124500769a59f4103724a6c"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "661",
+       "sha": "e3ccaadd8495a33c778a51d0326d19626534399f61f70793995ee2a770683724"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "84021-84024",
+       "sha": "a99f353f59d47919c5198afeb493ed72359817c09fb7bd03095f47625b8b4709"
+      }
+     ],
+     "row": "4"
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator lists a state spelled priviledge whose code passes vector number 8 to the exception hook and sets a vector offset of 0x0020.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2365",
+       "sha": "e5ecd1b8509956467bf161f7c85fffe996e439c66094fe2a6dccc23d8abed8b2"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1369",
+       "sha": "2a60171785050797f22441681de031e4ee8d6bb5c477e344abe772d4c78d8b54"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1371",
+       "sha": "febfb35943a7b2ddbb94ac313d89645474d2ee650dea3b85f312614346589503"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "3898-3903",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "11327-11332",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "25569-25574",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94286-94292",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94330-94336",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94374-94379",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94474-94479",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94504-94509",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1330",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1334",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1369",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1371",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1339-1340",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1351",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1349",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1376",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1374",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1399",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1394",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1419",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1437-1440",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1457",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1460",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1481",
+     "as": "agrees",
+     "row": "8"
+    }
+   ]
+  },
+  {
+   "key": "9",
+   "name": "trace",
+   "aliases": [
+    "TRACE"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3797"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4142-4143"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4160-4164"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4166-4167"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "962"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "966"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "971-972"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "981"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "983"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1001"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1003"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1006"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1008"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1026"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1031"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1051"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1069-1072"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1089"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1092"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1113"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94773-94775"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2363"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2294-2300"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 9 reads 9 9 36 024 SD Trace.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3797",
+       "sha": "d24ef6b52dc89602e64965f74fc668e74d7191854bd67595e922e51e742c7069"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "If the T bit is set at the beginning of the execution of an instruction, a trace exception is generated after the instruction is completed.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4142-4143",
+       "sha": "397418260597e39dc6bfbcb9633982da7e5add1a4d315cf80a0b373efc12725b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "A copy is made of the status register; the transition to supervisor mode is made, and the T bit is turned off.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4160-4161",
+       "sha": "2b36e01491902e114c0f4910b95897eb6aee340df74e0fcf2f3e68282297da60"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The vector number is generated to reference the trace exception vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4162-4163",
+       "sha": "b0138b0df0cdf92b980b58ea4348a2f471dd2c4fa595ba0149940da6e436858e"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "The current program counter and the copy of the status register are saved on the supervisor stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4163-4164",
+       "sha": "0cf5fb346fa1026b665e41dddcd4b9dc540aec67334df1fd0c1b850852541bfa"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "Instruction execution commences at the address contained in the trace exception vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4166-4167",
+       "sha": "fc553dc349f7f6973075782b0283e261717aa90c0b7f6b89a5f01a94a02d681d"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator lists a trace state whose code passes vector number 9 to the exception hook and sets a vector offset of 0x0024.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2363",
+       "sha": "f52dee2a416b341873ef9bd97724e9954927f139ce2cd6d0d0c5e486e30ab903"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1001",
+       "sha": "829a69ae73d3489953ecf822baf6747ed6e00fa818fe9c84ed2c07350ca6deaa"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1003",
+       "sha": "1c0be237e2f203ba48c0b818bd0915415c24a619044ea76459e0095f18f37775"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94773-94775",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "962",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "966",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1001",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1003",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "971-972",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "983",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "981",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1008",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1006",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1031",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1026",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1051",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1069-1072",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1089",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1092",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1113",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2294-2300",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "10",
+   "name": "line 1010 emulator",
+   "aliases": [
+    "LINEA"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3798"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4101-4102"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1553"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1555"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2366-2367"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2478-2479"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 10 reads A 10 40 028 SD Line 1010 Emulator.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3798",
+       "sha": "f0a7a6de27a54c144db6b51b1c9fe9ae2f9655330b400243b6a0b60fd6b8928c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "Word patterns with bits 15-12 equaling 1010 or 1111 are distinguished as unimplemented instructions, and separate exception vectors are assigned to them.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4101-4102",
+       "sha": "df9ea846dd6d2951c85bbdd34e36b17493fab53db7d935b2369a70063644e9a6"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator lists a linea state whose code passes vector number 10 to the exception hook and sets a vector offset of 0x0028.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2366",
+       "sha": "9424ff17d5c35bfa8eda2af23f295aa497cb7a0af57a8721b687106313e45426"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1553",
+       "sha": "647c7dc0938ffaaf303c99ac856c9bd65d9192ecf1e6976475db9138342ef3c5"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1555",
+       "sha": "d46e735f24c86709db5d5e9215ba0af84a1e36b95c1436e298563e3a79245aea"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2478-2479",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2366",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2367",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "11",
+   "name": "line 1111 emulator",
+   "aliases": [
+    "LINEF"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3799"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4103-4105"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1737"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "1739"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2367"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+     "lines": "2479"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "479"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "481-494"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "481-487"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "488-494"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 11 reads B 11 44 02C SD Line 1111 Emulator.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3799",
+       "sha": "838a62e97e14db53a5b36bf5e2d11777cfe860db3d96149bdb6dc8beb09295d0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Opcodes beginning with 1111 are coprocessor instructions in the MC68020 and beyond; the separate vectors allow the operating system to emulate unimplemented instructions in software.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4103-4105",
+       "sha": "bd4c8339fc651f1b18af8dbd30f0cf33db4cb774ae433158b4034393166bbff2"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator lists a linef state whose code passes vector number 11 to the exception hook and sets a vector offset of 0x002C.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2367",
+       "sha": "44e9887b14e7afc9505b440b1ed3088fb41efbae85a27dcd37e186a554f685f5"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1737",
+       "sha": "8acf3750e73a7134db0366bc446a8f34155858e5ca2eaa7d6b8bb26d02bf287d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "1739",
+       "sha": "9cdce406c4fd5902dd9251620360d09d2f8d5c5dbf65174e69e3327cd28c9421"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The generator adds the packed decode table entry { 0xf000, 0xf000, S_LINEF }, and init_decode_table stores S_LINEF for each opcode it matches whose slot still holds S_ILLEGAL.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000gen.py",
+       "lines": "2479",
+       "sha": "758178685bdc1e0486791929fe28fc68b0d09b1d0726060a26e64c657305f84e"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "479",
+       "sha": "a6b0d49dc7d6fccb3d4df5225a59332fbf72483b247a46b4ccb662bfae57f5af"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "481-487",
+       "sha": "9c48512efb9b1b2e3e0cb28d47d4804742cda32c69a4f897b338952f747b5d64"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "488-494",
+       "sha": "f920af7b289a0f1a5777e131422e8d601d89b0cef8733720b85fc260b1d8f67b"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "25",
+   "name": "autovector level 1",
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3807"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4023-4024"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "211-217"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "209-210"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "211"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 25 reads 19 25 100 064 SD Level 1 Interrupt Autovector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3807",
+       "sha": "f17962189f267fc991877a9e11cc22fc065c695e671ccc84070351737700f260"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "If external logic requests an automatic vector, the processor internally generates a vector number corresponding to the interrupt level number.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4023-4024",
+       "sha": "7eb613b37e8511a647a5408aa3cc02d3d3edc592caa857d4266c67708cd19d59"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "When the cpu space id is AS_CPU_SPACE with no configured map, default_autovectors_map maps address mask + 0x3 to a read returning autovector(1), which is 0x18 plus the level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "207",
+       "sha": "625aef5c0f91f3a3e7200dabb9c983fad0849aa5c17e5699beab45ca6fd80237"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "209-210",
+       "sha": "415d8be2ab6350fc91c2b8122f334e7a166d118c7f0acf890b84e6adf352e104"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "211",
+       "sha": "1b327e161e7aa7b9d2aba6987af7b4d8ee766c6c3efcc6015187092b24f009bd"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+       "lines": "52",
+       "sha": "76ddc59ad5ebd689d098f5d923b9bf1905d123e3692e1d48b86e0bfa2f84c88f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "211-217",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "26",
+   "name": "autovector level 2",
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3808"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "212"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "209-210"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 26 reads 1A 26 104 068 SD Level 2 Interrupt Autovector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3808",
+       "sha": "6ca6fa153923150fc617fcfa9740cd70dd6d2c6f19d5fd8c2fd687420b7ecd6c"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "When the cpu space id is AS_CPU_SPACE with no configured map, default_autovectors_map maps address mask + 0x5 to a read returning autovector(2), which is 0x18 plus the level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "207",
+       "sha": "625aef5c0f91f3a3e7200dabb9c983fad0849aa5c17e5699beab45ca6fd80237"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "209-210",
+       "sha": "415d8be2ab6350fc91c2b8122f334e7a166d118c7f0acf890b84e6adf352e104"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "212",
+       "sha": "16f455255b97e7fa315ebc0c6eb990f1c9b38254505253ade700c56737e357c6"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+       "lines": "52",
+       "sha": "76ddc59ad5ebd689d098f5d923b9bf1905d123e3692e1d48b86e0bfa2f84c88f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "27",
+   "name": "autovector level 3",
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3809"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "213"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "209-210"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 27 reads 1B 27 108 06C SD Level 3 Interrupt Autovector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3809",
+       "sha": "9a8d908d5fb4f7772375f60dfe2612ef1b9e2721fc8653ba9091cefdde01d2fd"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "When the cpu space id is AS_CPU_SPACE with no configured map, default_autovectors_map maps address mask + 0x7 to a read returning autovector(3), which is 0x18 plus the level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "207",
+       "sha": "625aef5c0f91f3a3e7200dabb9c983fad0849aa5c17e5699beab45ca6fd80237"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "209-210",
+       "sha": "415d8be2ab6350fc91c2b8122f334e7a166d118c7f0acf890b84e6adf352e104"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "213",
+       "sha": "9ebdc2a699d06bc094d725c840638e67b1ff946aa852e5651795e105ee487de4"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+       "lines": "52",
+       "sha": "76ddc59ad5ebd689d098f5d923b9bf1905d123e3692e1d48b86e0bfa2f84c88f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "28",
+   "name": "autovector level 4",
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3810"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "214"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "209-210"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 28 reads 1C 28 112 070 SD Level 4 Interrupt Autovector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3810",
+       "sha": "e0d42a88b4f7cc2154f3bff4c71077f9e8f0c0b375f7d32ac568beda87fceca3"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "When the cpu space id is AS_CPU_SPACE with no configured map, default_autovectors_map maps address mask + 0x9 to a read returning autovector(4), which is 0x18 plus the level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "207",
+       "sha": "625aef5c0f91f3a3e7200dabb9c983fad0849aa5c17e5699beab45ca6fd80237"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "209-210",
+       "sha": "415d8be2ab6350fc91c2b8122f334e7a166d118c7f0acf890b84e6adf352e104"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "214",
+       "sha": "f6b3f37f95c31b3cc0a2f07c6c72c100b285753dd03af4568710f81a06923a46"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+       "lines": "52",
+       "sha": "76ddc59ad5ebd689d098f5d923b9bf1905d123e3692e1d48b86e0bfa2f84c88f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "29",
+   "name": "autovector level 5",
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3811"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "215"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "209-210"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 29 reads 1D 29 116 074 SD Level 5 Interrupt Autovector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3811",
+       "sha": "3a9106be5bb27b9a83926f20c2c790cbfccd5043ad2aefd8c019b5c5d4af0459"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "When the cpu space id is AS_CPU_SPACE with no configured map, default_autovectors_map maps address mask + 0xb to a read returning autovector(5), which is 0x18 plus the level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "207",
+       "sha": "625aef5c0f91f3a3e7200dabb9c983fad0849aa5c17e5699beab45ca6fd80237"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "209-210",
+       "sha": "415d8be2ab6350fc91c2b8122f334e7a166d118c7f0acf890b84e6adf352e104"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "215",
+       "sha": "6004ebd1be4d221c417688804c4b574e723066f52fb9ee2d9b751bb54d1eb827"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+       "lines": "52",
+       "sha": "76ddc59ad5ebd689d098f5d923b9bf1905d123e3692e1d48b86e0bfa2f84c88f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "30",
+   "name": "autovector level 6",
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3812"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "216"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "209-210"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 30 reads 1E 30 120 078 SD Level 6 Interrupt Autovector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3812",
+       "sha": "d7f4b38bdd93bf0d48e1a5729978e4e528c6fbaea958a4fa0c0f12016a412cf7"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "When the cpu space id is AS_CPU_SPACE with no configured map, default_autovectors_map maps address mask + 0xd to a read returning autovector(6), which is 0x18 plus the level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "207",
+       "sha": "625aef5c0f91f3a3e7200dabb9c983fad0849aa5c17e5699beab45ca6fd80237"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "209-210",
+       "sha": "415d8be2ab6350fc91c2b8122f334e7a166d118c7f0acf890b84e6adf352e104"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "216",
+       "sha": "5b185687bb70ec1731bf2fdd241822f582581ad441122e2275b58887e7525f12"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+       "lines": "52",
+       "sha": "76ddc59ad5ebd689d098f5d923b9bf1905d123e3692e1d48b86e0bfa2f84c88f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "31",
+   "name": "autovector level 7",
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3813"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "217"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+     "lines": "52"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "207"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+     "lines": "209-210"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vector 31 reads 1F 31 124 07C SD Level 7 Interrupt Autovector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3813",
+       "sha": "a672e3e84da63aff074fc51a9dc2d9ddce55b3bfd1040c10b881e1de50651570"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "When the cpu space id is AS_CPU_SPACE with no configured map, default_autovectors_map maps address mask + 0xf to a read returning autovector(7), which is 0x18 plus the level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "207",
+       "sha": "625aef5c0f91f3a3e7200dabb9c983fad0849aa5c17e5699beab45ca6fd80237"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "209-210",
+       "sha": "415d8be2ab6350fc91c2b8122f334e7a166d118c7f0acf890b84e6adf352e104"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.cpp",
+       "lines": "217",
+       "sha": "a2b31ff3f0fc0da09d675520e5ac381d4066879f6f29836469d529ca85488447"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68kcommon.h",
+       "lines": "52",
+       "sha": "76ddc59ad5ebd689d098f5d923b9bf1905d123e3692e1d48b86e0bfa2f84c88f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "32",
+   "name": "TRAP #0",
+   "aliases": [
+    "TRAP"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3814-3815"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3828"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4059-4064"
+    },
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "4066-4068"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93925"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93929"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93932-93934"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93941"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93943"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93961"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93966"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93968"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93986"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93991"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94011"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94029-94032"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94049"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94052"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94073"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Table 6-2's row for vectors 32 to 47 reads 20-2F 32-47 128 080 SD TRAP Instruction Vectors.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3814",
+       "sha": "b7cba39a4235ecc7c810d9db0ee931569e84c7306db85b8fc512ba501ac2f996"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "does",
+     "of": "doc",
+     "text": "TRAP #n uses vector number 32+n.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "3828",
+       "sha": "b7ee21a6f034a0f4d8608b4df63972a9df17d13d9f4a7b45950525141fbc6470"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "The status register is copied; the supervisor mode is entered; and tracing is turned off.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4059-4060",
+       "sha": "84cfbcc6860e8cb8564a93297ee2a2f94c2c5ba74b59cca5ba4889bc2a68b622"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The vector number is internally generated; for the TRAP instruction, part of the vector number comes from the instruction itself.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4060-4062",
+       "sha": "cb6a31e5cff845df2f6874974704d3abb15ec1cff43bb32742c0be71ae908fd0"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "The program counter and the copy of the status register are saved on the supervisor stack.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4062-4064",
+       "sha": "ea843e087dbbbcff1ad04084a7eb190e7fe14912ef0fdafc54969784de92a80a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "Instruction execution commences at the address in the exception vector.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4066",
+       "sha": "57b8edbb7d55de3e080e7a26065f9733517272e00af39c07ae83772bdfffd5b1"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "The TRAP instruction forces an exception.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68000UM.raw.txt",
+       "lines": "4067-4068",
+       "sha": "6af7818beae35ce30fa619e0bd975de4f1eb0a401afbeefa5980e2a582a4c6c6"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The handler trap_imm4 is listed under opcode pattern 4e40 with mask fff0, which spans sixteen instruction words, and takes its vector offset from their low four bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC68000UM.raw.txt",
+     "lines": "3815",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93961",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93925",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93929",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93961",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93932-93934",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93943",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93941",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93968",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93966",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93991",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93986",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94011",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94029-94032",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94049",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94052",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "94073",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93925",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93961",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "33",
+   "name": "TRAP #1",
+   "aliases": [
+    "TRAP 1"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu as the vector offset; for low four bits 1 that is 0x84.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E41 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "34",
+   "name": "TRAP #2",
+   "aliases": [
+    "TRAP 2"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu as the vector offset; for low four bits 2 that is 0x88.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E42 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "35",
+   "name": "TRAP #3",
+   "aliases": [
+    "TRAP 3"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu as the vector offset; for low four bits 3 that is 0x8c.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E43 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "36",
+   "name": "TRAP #4",
+   "aliases": [
+    "TRAP 4"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu as the vector offset; for low four bits 4 that is 0x90.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E44 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "37",
+   "name": "TRAP #5",
+   "aliases": [
+    "TRAP 5"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu as the vector offset; for low four bits 5 that is 0x94.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E45 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "38",
+   "name": "TRAP #6",
+   "aliases": [
+    "TRAP 6"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 6 that is 0x98.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E46 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "39",
+   "name": "TRAP #7",
+   "aliases": [
+    "TRAP 7"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 7 that is 0x9C.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E47 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "40",
+   "name": "TRAP #8",
+   "aliases": [
+    "TRAP 8"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 8 that is 0xA0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E48 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "41",
+   "name": "TRAP #9",
+   "aliases": [
+    "TRAP 9"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 9 that is 0xA4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E49 matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "42",
+   "name": "TRAP #10",
+   "aliases": [
+    "TRAP 10"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 10 that is 0xA8.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E4A matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "43",
+   "name": "TRAP #11",
+   "aliases": [
+    "TRAP 11"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 11 that is 0xAC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E4B matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "44",
+   "name": "TRAP #12",
+   "aliases": [
+    "TRAP 12"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 12 that is 0xB0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E4C matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "45",
+   "name": "TRAP #13",
+   "aliases": [
+    "TRAP 13"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 13 that is 0xB4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E4D matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "46",
+   "name": "TRAP #14",
+   "aliases": [
+    "TRAP 14"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 14 that is 0xB8.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E4E matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "47",
+   "name": "TRAP #15",
+   "aliases": [
+    "TRAP 15"
+   ],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "the core's sources cite no manual"
+    },
+    {
+     "where": "maker",
+     "gave": "the user's manual lists TRAP vectors 32 to 47 as one table row, which entry m68000:vector:32 holds"
+    },
+    {
+     "where": "bitsavers",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "archive-org",
+     "gave": "no further per-vector text"
+    },
+    {
+     "where": "index",
+     "gave": "no further per-vector text"
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93963"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+     "lines": "751"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+     "lines": "93922"
+    },
+    {
+     "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+     "lines": "758"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "trap_imm4 (pattern 4e40, mask fff0) stores 0x80 | ((ird & 0xf) << 2) in m_ftu; for low four bits 15 that is 0xBC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000.lst",
+       "lines": "751",
+       "sha": "db1be5e9ddf8710373901f13e52098193bfbaa85ca507811e9985e8e2745e484"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93963",
+       "sha": "a4f6e8b5fec5592eb4de1b96698983dd5ba50c4dcaa585406121685421a1a96e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The decode table has an entry for pattern 0x4e40 under mask 0xfff0, the pattern and mask in the header comment of trap_imm4, so 0x4E4F matches it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-decode.cpp",
+       "lines": "758",
+       "sha": "463298f7f62baf13d56698aab38185a0cdde0ba5917a82309c43fb5fd5bf762d"
+      },
+      {
+       "ref": "mame:src/devices/cpu/m68000/m68000-sdf.cpp",
+       "lines": "93922",
+       "sha": "14fd3b11970ab97153378f11085094ef743de30e53e75ad11b0f19feed26c2ee"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

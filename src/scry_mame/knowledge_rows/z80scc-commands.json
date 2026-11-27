@@ -1,0 +1,1330 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80scc-commands",
+ "title": "Z80 SCC WR0 and WR9 command codes",
+ "kind": "command",
+ "scope": "z80scc",
+ "covers": "the CRC reset code in bits D7 and D6 of WR0 (keys 0x00 to 0xFF, by the two high bits), the command codes 000 to 111 in bits D5 to D3 of WR0 (keys 0x100 to 0x138) and the reset commands in bits D7 and D6 of WR9 (keys 0x200 to 0x2FF)",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SCC-UserManual-1992.raw.txt",
+   "variant": "SCC family"
+  }
+ ],
+ "official": {
+  "SCC-UserManual-1992.raw.txt": [
+   "6266-6292",
+   "6409-6416",
+   "6417-6478",
+   "7188-7209"
+  ]
+ },
+ "engine": [
+  "check_interrupts",
+  "update_extint",
+  "reset"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x3F",
+   "name": "CRC reset null",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6266-6269"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_CRC_RESET_NULL"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 bits D7 and D6 are 00, the Null CRC reset code: it has no effect on the SCC and is used when a write to WR0 serves another purpose.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6266-6269",
+       "sha": "8021294abb81d2900f87b0a0711424ad6e12d22c726c74817851b5707dda2359"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 bits D7 and D6 carry the CRC Reset Codes 1 and 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6266",
+       "sha": "ff4a5435cadc00097bb6ee0366bc65f7dd82321a0f30d122aed5c45d811aad62"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1844-1846",
+     "as": "agrees",
+     "row": "1",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1842",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x7F",
+   "name": "reset Rx CRC checker",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6270-6277"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_CRC_RESET_RX"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 bits D7 and D6 are 01, the Reset Receive CRC Checker command: it initializes the receive CRC circuitry.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6270-6272",
+       "sha": "5f9db598936ca0ff50e21ca63174d5778622de27bc50299a95c11fc87d62e7b8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It is necessary in synchronous modes except SDLC (printed SOLC in the scan), when Enter Hunt Mode is not issued between messages; disabling the receiver initializes the CRC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6272-6276",
+       "sha": "865638c3722797c0a235dd87e0e3782216dcd7bfc2300b3fb5e8affb35e09811"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode (printed SOLC in the scan) the receive CRC checker is reset automatically.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6276-6277",
+       "sha": "1773703e3086e275b860f73101b7fdbb8681af4ba7ca7944cf871dfb2c8fcab5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "row": "1",
+     "text": "MAME logs the command as not implemented and changes no receive CRC state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1847-1849",
+       "sha": "995d65e4f590c191e968cede86dc25b1a88ae4ad345d2f993395a1987a795fc7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1842",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0xBF",
+   "name": "reset Tx CRC generator",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6278-6285"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_CRC_RESET_TX"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 bits D7 and D6 are 10, the Reset Transmit CRC Generator command: it initializes the CRC generator.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6278-6279",
+       "sha": "0e707b9dfd86467fcd133f7448f1a6efcbb83c462f902c234f8dcb15231e968e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It is usually issued in the initialization routine and after the CRC has been transmitted.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6279-6281",
+       "sha": "8b0e65659f8d44b15fb4dfeed9d204b30c214d9a2d0efa3a12ad9d5bcd1a4d9d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "A Channel Reset does not initialize the generator, and the command is not issued until after the transmitter has been enabled in the initialization routine.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6281-6283",
+       "sha": "7b6cf344e0ff30f8785700131f1d6685dff9ec8840c7d97cbc996e1535fa15eb"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "On the ESCC the command is not needed if Auto EOM Reset mode is enabled (WR7' D1 = 1).",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6284-6285",
+       "sha": "a7144adaf094161ffe506145475ee9a51f642261be5c5782e662000dba3226c4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "row": "1",
+     "text": "MAME logs the command as not implemented and initializes no CRC generator.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1850-1852",
+       "sha": "9297e95e8053101973774665296a5358a1f47ee2f568d73147764ea0e8d5af5c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1842",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xC0..0xFF",
+   "name": "reset Tx underrun latch",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6286-6292"
+    },
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6409-6416"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_CRC_RESET_TX_UNDERRUN"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 bits D7 and D6 are 11, the Reset Transmit Underrun/EOM Latch command: it controls the transmission of CRC at the end of a message.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6286-6288",
+       "sha": "28721aa4db6aac51bc1dea35b4f85e53d8cd0215e9332caf1dc0fdd37ab445ea"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "With the latch reset, a transmit underrun makes the SCC automatically append CRC to the message.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6288-6290",
+       "sha": "e10c3356406093735b28241e7159f9df54b69662369a6cc133f9705279c8aeca"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "In SDLC mode (printed lnSOLC in the scan) with Abort on Underrun selected, the SCC sends an abort and a flag on underrun if the latch has been reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6290-6292",
+       "sha": "8c0165513056afd999fd91e26a6f019aa4d648a5b49e4f2468bdd5861107b622"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "At the start of the CRC transmission the latch is set, and the Reset command can be issued at any time during a message.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6409-6411",
+       "sha": "542f269b2a2898430eab2c891dab8a16b65bb554f3d870bb054a264a1f49e367"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "If the transmitter is disabled, the command does not reset the latch.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6411-6412",
+       "sha": "fb8a0eae52f72c9f297536def27f46c6ecc002d361cd23d881a929ea0c38caa3"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "With no pending External/Status interrupt, or with a Reset External Status command while the transmitter is disabled, an interrupt is generated with the bit reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6412-6416",
+       "sha": "6744c42d7bb1f7a0dd79629a67d0df9aaa5b0c9950e0c921c1051490025ef9c3"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "row": "1",
+     "text": "MAME logs the command as not implemented and resets no underrun/EOM latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1853-1855",
+       "sha": "9529b51fa0c01ba262251f127f2664fef2a08611412f0c5069e49fb9d54831d0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1842",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x100",
+   "name": "null command",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6417-6419"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_NULL"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 command code 000 is the Null command: it has no effect on the SCC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6417-6419",
+       "sha": "f8dc1ca16284ca14342ed17317b5d6adfea1a0946089740019c468bb30a99f15"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "WR0 bits D5, D4 and D3 carry a command code for the SCC.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6417",
+       "sha": "3444e1f945a4a1366c1372475b8e1477d3254bb4db6ae9a568a06553d7014716"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1816-1818",
+     "as": "agrees",
+     "row": "1",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x108",
+   "name": "point high",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6420-6427"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_POINT_HIGH"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 command code 001 is the Point High command: it adds eight to the register pointer, allowing WR8 through WR15 to be accessed, and is used in the Z85X30.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6420-6425",
+       "sha": "14d4876ef6ecbd43e10fd9b5f6f61d07ea048c895b526b580c8e51797674df85"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The Point High command and the register pointer bits are written simultaneously; the Z80X30 accesses registers through direct addressing instead.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6423-6427",
+       "sha": "48dd5581d62981b8526f1c9a7cd63ee71515f535957f27bb0bca0e6830de29b8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1755-1759",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1761",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x110",
+   "name": "reset ext/status ints",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6428-6444"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_RESET_EXT_STATUS"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 command code 010 is the Reset External/Status Interrupts command: after an External/Status interrupt it re-enables the latched RR0 status bits so a change can interrupt again.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6428-6434",
+       "sha": "7565fa51f7a217de356035a5a5ee63834378a88b2da56788aa522f7523cb3c8f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Latching the status bits captures short pulses until the CPU has time to read the change.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6433-6434",
+       "sha": "428998598bec66e7a1d90de3a2bdbd4f173cba782cb34b4c0d2c8dc6e4e9adcb"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "If another condition changes while one is pending and persists past the command, it causes another interrupt; two transitions do not.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6435-6444",
+       "sha": "1adca68525332ae2b0369e8005d6adc906dcf2bef4546f228e81200da54787f2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1776",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1780",
+     "as": "unfollowed",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1776-1779",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x118",
+   "name": "send abort",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6445-6448"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_SEND_ABORT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Send Abort is command code 011.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6445",
+       "sha": "3d51afd3b7ec39a81451c1dce3190d97c27ef311aa9bc57a14800a2d064b4063"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Send Abort, in SDLC mode (printed SOLC in the scan), transmits eight to thirteen 1s and empties the transmit buffer, setting the Tx Underrun/EOM bit in RR0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6445-6448",
+       "sha": "1544820cd10adf1f644e6e807a19124d1644340eb7484cb6768fcaa88fbcde5d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "text": "MAME logs the command as not implemented: the case body sends nothing, empties no transmit buffer and touches no Tx Underrun/EOM bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1813-1815",
+       "sha": "0962b45f638e40edb7bc0c2505a66dc93f357749d64607bfdb0493959d3cb934"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x120",
+   "name": "enable int on next Rx",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6449-6455"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_ENABLE_INT_NEXT_RX"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::check_receive_interrupt"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Enable Interrupt on Next Rx Character is command code 100.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6449",
+       "sha": "3eafcebb1300e4d7663f604a347214a2b85f411c8a8007121defdd5b9b91c11e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "If Interrupt on First Received Character mode is selected, the command reactivates it, so the next character, or one already stored, causes a Receive interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6449-6455",
+       "sha": "2af829dc722e8b5c98c04538d7129fc089ac9d2341896dd610138a885fe021ca"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "MAME arms the interrupt for the next character received; a character already in the FIFO raises none, as nothing checks the flag when the command is written.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1819-1822",
+       "sha": "0a20fede2d5b115e4d01511dcbbbd11c51feaa41bab67e157eae22f8dbe8edf8"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "3033-3042",
+       "sha": "56738951daa28ead72c94d2fb88fc44fa46d89cf294effddb9efdeadabda05fd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "3043-3047",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x128",
+   "name": "reset Tx int pending",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6456-6464"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_RESET_TX_INT"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1250"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1265"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Reset Tx Interrupt Pending is command code 101, used when there are no more characters to send, for example at the end of a message.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6456-6458",
+       "sha": "c674f2174768e099d9eec3e961d5e2d105f597a2b7c8c1fa5c0fc3c54477f479"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "It prevents further transmit interrupts until the next character is loaded or CRC has been sent, with transmit interrupt enabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6458-6464",
+       "sha": "3077f5f82ac57cd36b37e5d9cc4a70f950a89b2c7ec3ea3f43b72c1c32fd4713"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME also clears the channel's transmit entry in the interrupt state and its bit in RR3, then re-evaluates the interrupt line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1831-1835",
+       "sha": "98fa8a181eed3cd76462a3be98adf74f1245e3c729d672fd6947b17368ec03e1"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1829",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1250",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1265",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x130",
+   "name": "error reset",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6465-6472"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_ERROR_RESET"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2387-2398"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Error Reset is command code 110.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6465",
+       "sha": "97f0ed2191a2e3a0ec5165a2c7cdbe67e0e47ab35f0376e4f27bf510ad884ced"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command resets the error bits in RR1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6465-6466",
+       "sha": "b5f1e826b08589fa7a7f449a41d8be1ed80628bacd61e022e9faf80711e29783"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With interrupt on first Rx character or on special condition selected, data with a special condition waits until this command, which loses it if issued before the read.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6466-6472",
+       "sha": "0ef21102978ac0458f89ab2e430f79e880a11b651f69060cca9781e2ce8b7436"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME does not reset the RR1 error bits: with a character in the FIFO it steps the read pointer, dropping that character, and otherwise it only logs.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1809-1811",
+       "sha": "22fe4000f253592f1dac736a22edb124f0d621502350007d7fc61934d0816bd1"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1809-1811",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2387-2398",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x138",
+   "name": "reset highest IUS",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "6473-6478"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr0",
+     "case": [
+      "WR0_RESET_HIGHEST_IUS"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture names this command Reset Highest IUS and prints its code as (110); the key of this entry is 111.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6473",
+       "sha": "7e181a2f1946443dd7d16491fb9789c907839f3f452c4b9bf953e2b8f5839657"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command resets the highest priority Interrupt Under Service bit, allowing lower priority conditions to request interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6473-6475",
+       "sha": "be164c563532b3b36afebd4a18f248ea5069f2adf4499ad4e8a84e30ede32baa"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "It allows the internal daisy chain to be used even without an external one, and is the last operation in an interrupt service routine.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "6475-6478",
+       "sha": "2d4912444d5a8e2f8684728c761944678778017b59066b0a56040505f6012d0d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME zeroes the whole interrupt-state entry of that source, dropping its pending request with the in-service bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1795",
+       "sha": "02260f2b4601d2ed562f70efcb0b7570acfecfbae533344992e4e1829c725179"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After clearing the bit MAME re-checks the receive interrupt condition.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "1800-1801",
+       "sha": "ce46e436177d57fd4397d957f6c364df72cfe648d171966b4e136126f3c6b59a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1746",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "1789-1797",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x200..0x23F",
+   "name": "WR9 no reset",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7198-7200"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr9",
+     "case": [
+      "WR9_CMD_NORESET"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The Null command is command code 00, printed OO in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7198",
+       "sha": "560eb8392d1d3c107217803f6d0666d1655862fa33f87926a43698e4923e0347"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Null command has no effect on the SCC; it is used when a write to WR9 is needed for a reason other than a reset command.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7198-7200",
+       "sha": "548a7e3d06af4233a214441086642a8af635908afefb102fb755b2245e89445a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2018",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2020-2022",
+     "as": "agrees",
+     "row": "2",
+     "nothing": true
+    }
+   ]
+  },
+  {
+   "key": "0x240..0x27F",
+   "name": "WR9 reset channel B",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7201-7202"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr9",
+     "case": [
+      "WR9_CMD_CHNB_RESET"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Channel Reset B is command code 01.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7201",
+       "sha": "aa396716b85c7fd841986dce94dfd6b9609e59f60078e45fe8df5d1587d36998"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command causes a channel reset to be performed on Channel B.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7201-7202",
+       "sha": "70fa8b46f832c4656aad4e2169605e46150b73e02e99bb81a44923be67570cd0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2018",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2025",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x280..0x2BF",
+   "name": "WR9 reset channel A",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7203-7204"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr9",
+     "case": [
+      "WR9_CMD_CHNA_RESET"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Channel Reset A is command code 10.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7203",
+       "sha": "ceda63cb55760336fe239fdd5d884a8c00e5a851885c77f03eec426ca94a130f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command causes a channel reset to be performed on Channel A.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7203-7204",
+       "sha": "dda4bcce136579c188c8e4b63239bc8cb82a9b99682b3a11f0b574cf2d613ea2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2018",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2029",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2C0..0x2FF",
+   "name": "WR9 hardware reset",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+     "lines": "7205-7209"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "function": "z80scc_channel::do_sccreg_wr9",
+     "case": [
+      "WR9_CMD_HW_RESET"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Force Hardware Reset is command code 11.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7205",
+       "sha": "ad193c4caf3d69afd8c6de2b0c436fca4aa2f3d1e8d0d84da1bad7479e7207bb"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command has the same effects as a hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7205-7206",
+       "sha": "17773a5ccf29b88a89a516874170612b9baeb95f3612ce433096cb1ad1c73dd2"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Unlike a hardware reset, it leaves the Shift Right/Shift Left bit unchanged and gives the MIE, Status High/Status Low and DLC bits the command's programmed values.",
+     "quotes": [
+      {
+       "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+       "lines": "7206-7209",
+       "sha": "74fe4b00c4118870fede43267e54fc96b60a8976799e4fd200aeea6b07ccfd3b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2018",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2036",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2045",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2039",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2046",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2041-2042",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80scc.cpp",
+     "lines": "2049-2050",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  }
+ ],
+ "closed": [
+  {
+   "ref": "datasheet:SCC-UserManual-1992.raw.txt",
+   "lines": "7188-7197",
+   "as": "elsewhere",
+   "owner": "z80scc:register:0x09:write"
+  }
+ ]
+}

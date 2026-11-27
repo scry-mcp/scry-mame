@@ -1,0 +1,1627 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "v30-vectors",
+ "title": "NEC V30 interrupt vectors",
+ "kind": "vector",
+ "scope": "v30",
+ "covers": "The V30's interrupt vectors: divide error, single-step, NMI, overflow and the array bound check",
+ "source": "official",
+ "documents": [
+  {
+   "name": "V20V30UM.raw.txt",
+   "variant": "uPD70116"
+  }
+ ],
+ "official": {
+  "V20V30UM.raw.txt": [
+   "890-902",
+   "1915",
+   "1940-1954",
+   "2059-2071",
+   "6608-6612",
+   "6711-6715",
+   "6825-6833",
+   "6933-6941",
+   "12195-12215",
+   "12312-12343"
+  ]
+ },
+ "closed": [],
+ "entries": [
+  {
+   "key": "0",
+   "name": "divide error",
+   "aliases": [
+    "DIV",
+    "DIVU"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "1915"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "1940-1954"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "6608-6612"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "6711-6715"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "6825-6833"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "6933-6941"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "16"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "329"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330-331"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "340-343"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "540"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "89"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "750-757"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "761-768"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "784-791"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "795-802"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "175-178"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "181-182"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "190-193"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "196-197"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "205-208"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "211-212"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "220-223"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "226-227"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "does",
+     "of": "doc",
+     "text": "In the example of vector 0, PS takes the word at (003H, 002H) and PC the word at (001H, 000H) (the capture reads 000H as OOOH).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1915",
+       "sha": "4d2a89b8d9b2d5c8a0c19b16411c31cd039a3b101288c08dae324905609f98a4"
+      },
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1940-1941",
+       "sha": "191d5518015b14741ed2c99f10477237b28d74c44fbb4162ec236505c9528a4f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The contents of the vectors are initialized at the beginning of a program; the basic steps of a jump to an interrupt routine follow.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1942-1944",
+       "sha": "80ec949440e078e27da3dc696184d8351d9a2af6e59983e14b629e91f38e05bc"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "The jump stores to the stack: (SP-1, SP-2) gets PSW, (SP-3, SP-4) gets PS, (SP-5, SP-6) gets PC and SP becomes SP-6 (the capture lost the arrows).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1945-1948",
+       "sha": "06b246222db4d7c24a3b45c62fd8c28f803c5f9cb37a3dde87e68e35e0c3afa4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The jump sets IE and BRK to 0 and MD to 1 (the capture reads MD as MO and 0 as O).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1949",
+       "sha": "949f1af4e9a8c88c43711590e91388d9d11367e7ff99db5116a6093fb72868cd"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "PS takes the higher vector word and PC the lower vector word of the interrupt vector table.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1950-1951",
+       "sha": "cda198ad6cbcc8b3003c6982241cd154f4515d3d7ecb0767e374c56cedbadfd2"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "does",
+     "of": "doc",
+     "text": "The interrupt enable (IE) and break (BRK) flags are reset when an interrupt routine is started.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1952-1953",
+       "sha": "834d9ffc1d0a4479cde5eac7edea07f381bee8d24ff1305be3af0cb15bafc026"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Therefore maskable interrupts (INT) and single-step interrupts are disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "1953-1954",
+       "sha": "5c7d1ad2782bd89a4064b331d99f228f42ada0532a61d739964d533eabb35af6"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "doc",
+     "text": "When the quotient exceeds FFH, the capacity of AL, the vector 0 interrupt is generated; this especially occurs when the divisor is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6608-6612",
+       "sha": "d1b559ba97cdfbe493425b18ac678f439b0222d906574db490fb03aa114889ac"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The quotient and remainder then become undefined, and the fractional quotient is rounded off.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6610-6612",
+       "sha": "b08083db266e9c7832ed1aff78a9facea7cec80b17f28289d2c2c3ffe1c29014"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "When the quotient exceeds FFFFH, the capacity of AW, the vector 0 interrupt is generated; this especially occurs when the divisor is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6711-6714",
+       "sha": "a69b3cc362d259fa2d336e3208e5381db4e7fab3626d3b2ba94407cd3ff187d8"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The quotient and remainder then become undefined, and the fractional quotient is rounded off.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6713-6715",
+       "sha": "26e2535677a01bf47a489a0a761974d91db7b19853cee8c6242351df2f5a900a"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "when",
+     "of": "doc",
+     "text": "The maximum positive quotient is +127 (7FH) and the minimum negative is -127 (81H); a quotient beyond either generates the vector 0 interrupt, especially when the divisor is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6825-6831",
+       "sha": "5804069fca7fac617b0b65bbea9dd3e18f9767136e55aa0698e5c4aa17411d3d"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The quotient and remainder become undefined, the fractional quotient is rounded off and the remainder has the sign of the dividend.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6828-6833",
+       "sha": "b722ce597849e98f1ecd190f6de238e43f70071a4686be5a58d95363ee29df5a"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "when",
+     "of": "doc",
+     "text": "The maximum positive quotient is +32,767 (7FFFH) and the minimum negative is -32,767 (8001H); a quotient beyond either generates the vector 0 interrupt, especially when the divisor is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6933-6939",
+       "sha": "74ddd73c4cbe2ed845f865cae5a2620918d553ba24b331cfb70858aae591746e"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "The quotient and remainder become undefined, the fractional quotient is rounded off and the remainder has the sign of the dividend.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "6937-6941",
+       "sha": "9b9aff6cdb1ec6bd9e8f018a3f0cc4e6b0e27062a4653d609fe3786d0eb477ae"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "nec_interrupt is called with NEC_DIVIDE_VECTOR, the enum value 0, in a zero-divisor branch of necinstr.hxx and at four overflow tests in necmacro.h.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+       "lines": "16",
+       "sha": "8308768233afafd51256c5ae231e1e635ba069d8903a8ca3762693809bcf0759"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "750-756",
+       "sha": "388dda3cabbd23e38a2adf7e1cb5b2637d0792c9edb918bd4e1d962f5016e295"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necmacro.h",
+       "lines": "181-182",
+       "sha": "268e302ba02f195891dacee1262bdf8eae01312cb2d1a69ef6823fbde4836789"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necmacro.h",
+       "lines": "196-197",
+       "sha": "268e302ba02f195891dacee1262bdf8eae01312cb2d1a69ef6823fbde4836789"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necmacro.h",
+       "lines": "211-212",
+       "sha": "268e302ba02f195891dacee1262bdf8eae01312cb2d1a69ef6823fbde4836789"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necmacro.h",
+       "lines": "226-227",
+       "sha": "268e302ba02f195891dacee1262bdf8eae01312cb2d1a69ef6823fbde4836789"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "nec_interrupt clears m_TF and m_IF and sets m_MF; CompressFlags places them at bits 8, 9 and 15 of the word it builds.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "324",
+       "sha": "10057fa3a47a6b3d41eea2878e3468da39d27d5c5e91e99f572cdd60f31eebc5"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "330-331",
+       "sha": "fda47e35607cebcacbc47df3bc1a205d80f2e28c261315de54ed2115b577a6c3"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+       "lines": "118-120",
+       "sha": "f16eee6979ae616c0cbede6ebdccbf9de34db3ff15dace805a41918adf12bbe2"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the case whose non-zero branch runs DIVUB, a zero tmp clears m_CarryVal and m_OverVal, then calls nec_interrupt.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "750-756",
+       "sha": "388dda3cabbd23e38a2adf7e1cb5b2637d0792c9edb918bd4e1d962f5016e295"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the case whose non-zero branch runs DIVB, a zero tmp clears m_CarryVal and m_OverVal, then calls nec_interrupt.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "761-767",
+       "sha": "0cf7114511e9ec19015e00fe55163bc6aeeda37e4fad5f1679fa95da367a151e"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the case whose non-zero branch runs DIVUW, a zero tmp clears m_CarryVal and m_OverVal, then calls nec_interrupt.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "784-790",
+       "sha": "38a7d3fd9d0218ca290ee4e935da6b90deffd98b0facc4a02e7b0d541adc3e6d"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the case whose non-zero branch runs DIVW, a zero tmp clears m_CarryVal and m_OverVal, then calls nec_interrupt.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "795-801",
+       "sha": "bf4e9c7dc0a914feafc00cb20d2f711498ec1b68b606daf3e55eb25355345756"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "16",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "329",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "340-341",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "540",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "89",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330-331",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "750-757",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "175-178",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "181-182",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "784-791",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "205-208",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "211-212",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "761-768",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "190-193",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "196-197",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "795-802",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "220-223",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necmacro.h",
+     "lines": "226-227",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "14"
+    }
+   ]
+  },
+  {
+   "key": "1",
+   "name": "single-step trap",
+   "aliases": [
+    "BRK flag",
+    "single step"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "2059-2071"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "541"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "648"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "347-351"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "17"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "119"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The device has a single-step interrupt function for program debugging, controlled by the Break Flag of the PSW (the capture garbles the device name and the bit number).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "2060-2062",
+       "sha": "1d7f8f7e99b3cd9cc9ee38ebdae3a8d9958cdbda40e77587c70317d6941fbc94"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "No instruction directly sets or resets the BRK flag; the PSW is restored from the stack and changed there with OR and AND instructions.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "2062-2067",
+       "sha": "8700bab5133e5019a73797a84f88c79941081f050d9d056470b5ca20094060b8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "When the BRK flag is set, the interrupt routine specified by vector 1 starts after the current instruction has been executed.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "2068-2070",
+       "sha": "1581f0fce6f66662862b962bd6ec58bd414b4197c024b395f9f1233f715ff953"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "The BRK and interrupt enable (IE) flags are also reset at this point.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "2070-2071",
+       "sha": "2b791a43c092ba51d57b381ced8e91a77c06db1a51a2c4e07dce2746e366b476"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "i_popf calls nec_trap when m_TF is set after restoring the flags, and i_iret calls i_popf; nec_trap runs the next instruction, then raises NEC_TRAP_VECTOR (enum value 1).",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "541",
+       "sha": "eafd9cbc1ef2fc1d9b6b04081c6ea7ce15a3a651d98287febda411e13e787ef3"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "648",
+       "sha": "8debb946471aa4ec77c4fdd815a5413605066a7053c994780c93a827d00142a3"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "349-350",
+       "sha": "cf4c55e0c2daf502c028429b4a6f11be04183cf0d0266e229c96d380411d77ee"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+       "lines": "17",
+       "sha": "12d239193032d73eade5d128139e16d05a0b8dea4ab80c35b18ed11d42c8e58c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "nec_interrupt clears m_TF and m_IF, which CompressFlags places at bits 8 and 9 of the word it builds.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "324",
+       "sha": "10057fa3a47a6b3d41eea2878e3468da39d27d5c5e91e99f572cdd60f31eebc5"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "330",
+       "sha": "89b1076f69640e84579f98ca76c9877647b8f7356c01a0684cf25e10bd12dfc1"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+       "lines": "118-119",
+       "sha": "2536b4f31ac3fb2d1e6f9675b51029498d0c8aeaf8a4f1a6a5f68141f339b35c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "2059",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "541",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "648",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "347-351",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "17",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "2",
+   "name": "NMI",
+   "aliases": [
+    "NMI"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "890-902"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "406-416"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "430-431"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "370-374"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "647-650"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "666-669"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "656-657"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "18"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The NMI signal is used for interrupt requests that cannot be masked by software.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "891-892",
+       "sha": "4c53cdce8963de6a06d5ea23d78a0a16a5d5effa744f1817740263abaf129ac1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "doc",
+     "text": "The interrupt is triggered on the rising edge of NMI.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "892-893",
+       "sha": "e2980291eeb8aa5aa563028034a01cd8f2236d430db80ddb5de788826cdb8c84"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "NMI must be held high for at least five clock cycles after its rising edge.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "894-895",
+       "sha": "c00afce66beea031ea14f1a1cf8716d5aa4af1448dc0a2ddf5f75796106d00ba"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "Actual interrupt processing begins after completion of the instruction in progress.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "895-897",
+       "sha": "36b30f0970be2ccf5971e2324cd8ca3dbf02d8bad80131e583176015a559dc6b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "The contents of interrupt vector 2 determine the starting address of the interrupt servicing routine.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "898-899",
+       "sha": "8a223293aea07241dff89611453d187caaaad3e94624e40f426accb62614a5b0"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "A hold request will be accepted even during NMI acknowledge.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "899-900",
+       "sha": "8ebbb6be2aa23fc333a48cc553bdba761535095e4b8993bb7e3c205aa4884bd8"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "This interrupt will cause the microprocessor to exit the standby mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "900-902",
+       "sha": "a537df6cc39e70dc2fd431c1b436b22b9c23a61b8f4ba93a1672175543a65512"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "NMI can be sensed during any clock cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "893-894",
+       "sha": "1a61008f155b79b2bfe5e5ee54c3e7631285800ea030a4430da86a6d3c27dd7c"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "INPUT_LINE_NMI selects set_nmi_line, which sets NMI_IRQ in m_pending_irq; a pending NMI_IRQ makes the dispatch call external_int, whose NMI branch calls nec_interrupt with NEC_NMI_VECTOR (enum value 2).",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "430-431",
+       "sha": "5a65cf12d55e529f44eca0209d60a975480ba1ced856c0467298f34af8e2a2ba"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "406-416",
+       "sha": "035639538144cd3b26291aeebc3ee4859e34ba554762892190ff10e0f656a54e"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "649-650",
+       "sha": "4e3e7347fc3343cf3179470dbd917a3d300bdda454ff5a4083b1fb9ca06facfa"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "368-372",
+       "sha": "03c47e304b421eee50376003f9a123dbf9262f7e50025bea4cc4e55d8a6dfc0f"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+       "lines": "18",
+       "sha": "b17d6ff58403aeb33e00b54506c4a54965611bb14faabb5c49459275b98b1e1c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The interrupt dispatch block is entered when an interrupt is pending and m_no_interrupt is zero; m_no_interrupt is decremented after each dispatch check when it is not zero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "647-648",
+       "sha": "ef93800c5c8f83d95a9872102db1cf22cf9e220a24656fb81cc4f536418eb8b1"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/nec.cpp",
+       "lines": "656-657",
+       "sha": "2d80164d3b4ec41d67cef957aca86ff2db4330d23a618fa5b3cff5e08694f83e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "890",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "406-416",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "647-650",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "666-669",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "370-374",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "18",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "370-374",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "414",
+     "as": "agrees",
+     "row": "7"
+    }
+   ]
+  },
+  {
+   "key": "4",
+   "name": "overflow",
+   "aliases": [
+    "BRKV",
+    "INTO"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "12195-12215"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "647"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "19"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "89"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "329"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "340-343"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "540"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "BRKV, with no operand, is the break-if-overflow instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12195-12196",
+       "sha": "99ff9124c3bd8425f38744b2bcf7b1bb3b515020644d0c0cc545f0a919666316"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "doc",
+     "text": "When V = 1 BRKV starts the interrupt sequence; when the V flag is reset it proceeds to the next instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12199",
+       "sha": "19c710dba627ad6596f1960b2f725cfc100027a4c0599ac1c24b55dcd89b3c20"
+      },
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12211-12212",
+       "sha": "83452e31c6d4f875bc18b4532740f3389d28180f75ee963ecc2474751a1fd6b2"
+      },
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12215",
+       "sha": "7b2c53817ab7790361820c6f3ddeba8c37750471ec45b339828bb65e120eb51f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "BRKV stores to the stack: (SP-1, SP-2) gets PSW, (SP-3, SP-4) gets PS, (SP-5, SP-6) gets PC and SP becomes SP-6 (the capture lost the arrows).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12201-12204",
+       "sha": "62e7d8f578f6cdc9719a53e2044b193993f4e47fb742a598b6cf1c0626dce69f"
+      },
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12211-12212",
+       "sha": "83452e31c6d4f875bc18b4532740f3389d28180f75ee963ecc2474751a1fd6b2"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "BRKV resets the IE and BRK flags to 0 (the capture reads 0 as O).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12205-12206",
+       "sha": "6288d8361f5dc96e78be525c15a6e63c9bdcfeb04366b9fa697fc78a17609a7d"
+      },
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12212",
+       "sha": "6585b382d4cc3b473ebff1c51f1c9bf45ab844f9d46b29636342f8277882bae3"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "BRKV loads the lower two bytes of vector 4 into PC, (011H, 010H), and the upper two bytes into PS, (013H, 012H).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12207-12208",
+       "sha": "db40f850249d2e5b157452a369e4159526ce84bf253b359f5235db84099eb94e"
+      },
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12212-12214",
+       "sha": "6aab0535697f8bb6ecf797276132dbf9ef734ce9f95254198f2ca887b31e2844"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The handler of opcode 0xce, i_into, calls nec_interrupt with NEC_BRKV_VECTOR, the enum value 4, when OF is true.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "647",
+       "sha": "9ec2b4cf4b980226c403645515266434861052723eb17c61de952141281e33f0"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+       "lines": "19",
+       "sha": "677f38933ed0e969323cb37363a02d7f57c97a74ddc7a10e7c30b4beaa004995"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "12197-12198",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "12200",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "12209-12210",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "647",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "329",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "340-341",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "540",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "89",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "647",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "19",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "5",
+   "name": "bound check",
+   "aliases": [
+    "CHKIND",
+    "BOUND"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "12312-12343"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "401"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "403-409"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "411"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "89"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "20"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "329"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "340-343"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "540"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CHKIND reg16,mem32 is the check index instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12312-12313",
+       "sha": "b85b017437271e73fa680a9becc274a2ef935b42cf3bcc7913f048f4ea7047ad"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "doc",
+     "text": "The interrupt is taken when (mem32) is greater than reg16 or (mem32 + 2) is less than reg16.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12327",
+       "sha": "69303884b687ab6179ec607ada5e74a568b6b8865a27648ccab2a7576d0a84f7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "does",
+     "of": "doc",
+     "text": "CHKIND stores to the stack: (SP-1, SP-2) gets PSW, (SP-3, SP-4) gets PS, (SP-5, SP-6) gets PC and SP becomes SP-6 (the capture lost the arrows).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12328-12331",
+       "sha": "c90ede634d9739c3a19e1380b1cc2cdfdf2f5caa07d8876becf96f4117f6037c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "does",
+     "of": "doc",
+     "text": "CHKIND resets the IE and BRK flags to 0 (the capture reads 0 as O).",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12332-12333",
+       "sha": "6288d8361f5dc96e78be525c15a6e63c9bdcfeb04366b9fa697fc78a17609a7d"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "does",
+     "of": "doc",
+     "text": "PS takes the word at locations 23 and 22 and PC the word at 21 and 20, written without an H suffix in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12334-12335",
+       "sha": "ccc1c323b718af654d8bacbdaba55d736276c34a00ef5a2d86779744fb1c927a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "CHKIND is used to check whether the index value in reg16 is within the defined array bounds.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12338-12339",
+       "sha": "9d02ccbc9531a65d853eeb11a88170392ccdc75b76072fb8eaea6b1a4f1e8a7e"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "does",
+     "of": "doc",
+     "text": "CHKIND initiates a BRK 5 when the index does not satisfy the condition.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12339-12340",
+       "sha": "969978d46cbff2cd6f4fec6438b252cb73af5130d075297c721ffba0c6478e62"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The definition region should be set beforehand in two words of memory: the first for the lower limit, the second for the upper limit.",
+     "quotes": [
+      {
+       "ref": "datasheet:V20V30UM.raw.txt",
+       "lines": "12340-12343",
+       "sha": "857a7d445b1fdd47384211727c5f835e96a7c13e2c94b036958f5134f6e01899"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "The handler of opcode 0x62, i_chkind, calls nec_interrupt with NEC_CHKIND_VECTOR, the enum value 5, when tmp is below low or above high.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "401",
+       "sha": "afbddd89aa75e1254c010fbb0f977b3eeb8f0a3c204c180a61949ecb3fd6a786"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+       "lines": "404-408",
+       "sha": "02d957849c7283a42e14cd2905736ef51055e8dd510d8e4e45107a5b50a7b800"
+      },
+      {
+       "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+       "lines": "20",
+       "sha": "82e0ebf85c634a5b41a3ef7261532f891c7e8be7cf4464622259f1a8db0a7cab"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "12314-12326",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:V20V30UM.raw.txt",
+     "lines": "12336-12337",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "411",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "403-409",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "329",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "340-341",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "540",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "89",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "330",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "20",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "407-408",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "337-338",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necpriv.ipp",
+     "lines": "20",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/necinstr.hxx",
+     "lines": "407-408",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/cpu/nec/nec.cpp",
+     "lines": "342-343",
+     "as": "agrees",
+     "row": "7"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2227 @@
+{
+  "format": "scry-knowledge/2",
+  "dictionary": "ym2151",
+  "title": "The YM2151 registers",
+  "kind": "register",
+  "scope": "ym2151",
+  "covers": "the registers of the YM2151 as Yamaha's application manual describes them, and MAME's handling of each",
+  "source": "official",
+  "documents": [
+    {
+      "name": "YM2151.raw.txt",
+      "variant": "ym2151"
+    }
+  ],
+  "official": {
+    "YM2151.raw.txt": [
+      "85-90",
+      "95-153",
+      "166-345",
+      "354-367"
+    ]
+  },
+  "engine": [
+    "compute_noise_volume",
+    "write",
+    "update",
+    "reset",
+    "status",
+    "ymfm_is_busy"
+  ],
+  "entries": [
+    {
+      "key": "0x01",
+      "name": "test",
+      "aliases": [
+        "LFO reset"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "278-286"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "175-176"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "201-204"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "A designated bit of the TEST register, whose position is garbled in the capture, resets the LFO output waveform; the process then restarts from the left edge.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "279-282",
+              "sha": "8707375e7987d9d639629426d817d04b77374b2c8c95522c11c36270dc287121"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "TEST is a test-use signal: entering 1 in a place other than the designated bit makes the device enter test mode.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "283-284",
+              "sha": "d588db58880035b38ff2ce00aa0e05e1b12f2c8c9fd1f1156116684d0c06b18f"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "278",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "285-286",
+          "as": "layout"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "175",
+          "as": "dead"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "176",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "203-204",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "201-202",
+          "as": "structure"
+        }
+      ]
+    },
+    {
+      "key": "0x08",
+      "name": "key on",
+      "aliases": [
+        "KON"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "87-90"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "156-163"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1417-1424"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "844"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "521"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "A key write carries a 3-bit channel number and a 4-bit slot: a 1 in a slot bit turns that sound source on, a 0 turns it off.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "88",
+              "sha": "945bfc2c0315ee209e0143de3a95f5ee89310ad855234d71ea9512a2f8e7a1de"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "The four slot bits correspond to M1, C1, M2 and C2; the capture garbles the labels of their bit positions.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "88",
+              "sha": "945bfc2c0315ee209e0143de3a95f5ee89310ad855234d71ea9512a2f8e7a1de"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "87",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "89-90",
+          "as": "layout"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "159-161",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1423",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "844",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "521",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "156-158",
+          "as": "structure"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "162-163",
+          "as": "structure"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1417-1422",
+          "as": "structure"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1424",
+          "as": "structure"
+        }
+      ]
+    },
+    {
+      "key": "0x0F",
+      "name": "noise",
+      "aliases": [
+        "NE",
+        "NFRQ"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "225-246"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "177-178"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1055-1056"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "is",
+          "of": "doc",
+          "text": "With noise enabled the 32nd slot becomes the noise slot; its envelope is not logarithmic: attack is exponential and decay a straight line.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "226-230",
+              "sha": "f77babc073b06e035a57adf98f012196352be41b5e2a1d0f00264272f34661a0"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "write",
+          "of": "doc",
+          "text": "NE takes effect when its bit, read D7 in the capture (doubtful), is 1, making the 32nd slot the noise slot.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "231-232",
+              "sha": "1d57847ce3f240fdc224cd9cee3eb91241058ab52d39d64cfd7906b90ab86f2b"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "is",
+          "of": "doc",
+          "text": "The noise frequency is set by NFRQ, by a formula garbled in the capture, over about 3.5 kHz to 111.9 kHz.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "236-241",
+              "sha": "7a71de7cdfeb1ff5af5f1c7f653b656f1d3e567ef43a47e7c72d0200a645d629"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "place",
+          "of": "mame",
+          "text": "MAME reads NFRQ as the low 5 bits of 0x0F exclusive-ORed with 0x1F.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+              "lines": "177",
+              "sha": "a446219eacb5dc18087506bba730736ce68653a971938ceb503aadfaf61c7103"
+            }
+          ],
+          "vs": "place"
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "178",
+          "as": "agrees",
+          "row": "2"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1055-1056",
+          "as": "agrees",
+          "row": "2"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "225",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "233-235",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "242-246",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x18",
+      "name": "LFO frequency",
+      "aliases": [
+        "LFRQ"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "247-255"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "188"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "198-199"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "is",
+          "of": "doc",
+          "text": "The LFO oscillates over a wide range, selects one waveform from several, and provides frequency and amplitude modulation whose output levels can be controlled.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "248-251",
+              "sha": "567ae72c5170e24c44ef751af5208f928d6dc7cdaf55513ec88bc37d20555a50"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "write",
+          "of": "doc",
+          "text": "The LFO oscillation frequency is set with 8 bits, tabulated in a figure the capture does not carry.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "252-253",
+              "sha": "0936445a7312f922c84540c173210e68961d0035722e7be049e992893955b431"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "mame",
+          "text": "MAME turns the 8-bit rate into a counter step: the low 4 bits with an implied leading 1, shifted left by the high 4 bits.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+              "lines": "198-199",
+              "sha": "75f7a4a7cce7673fc17906e6e6d2e128b190c8384b04342faf418b758db3aed8"
+            }
+          ],
+          "vs": "extra"
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "188",
+          "as": "agrees",
+          "row": "2"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "247",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "254-255",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x19",
+      "name": "LFO depth",
+      "aliases": [
+        "PMD",
+        "AMD"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "267-277"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "189-190"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "151-152"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "PMD and AMD data are each 7 bits, the first bit distinguishing PMD from AMD.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "267-269",
+              "sha": "19acca174d1cb813903cd35f8c7ccf4a420579ee6ebd248921c40f8c4c0c39da"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "PMD and AMD set the frequency and amplitude modulation output level at 1/128 resolution; PMD is two's complement and AMD is binary.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "269-272",
+              "sha": "dd236bab4e189674f7802877d4d9bc0c868471da0ec351292fdec5302e2f5eb7"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "151-152",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "189-190",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "273-277",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x1A",
+      "name": "PM depth (internal)",
+      "aliases": [],
+      "regions": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "190"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "151-152"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "is",
+          "of": "mame",
+          "text": "A write to 0x19 stores the byte at 0x19 plus its bit 7, so with bit 7 set it lands in 0x1A.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+              "lines": "151-152",
+              "sha": "dfbe45843657c2310a5663cde7720c34b006a96c8f6af51243fed80d7fd8f215"
+            }
+          ],
+          "vs": "extra"
+        },
+        {
+          "n": "2",
+          "on": "read",
+          "of": "mame",
+          "text": "MAME takes the PM depth from the low 7 bits of 0x1A.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+              "lines": "190",
+              "sha": "0160e478ad714ca062e9e7d443f18552a3e35c90e2b721a1b5efc468da904b85"
+            }
+          ],
+          "vs": "extra"
+        }
+      ],
+      "closed": [],
+      "source": "emulator",
+      "searched": [
+        {
+          "where": "mame-header",
+          "gave": "ymfm_opm.h lists no document for this register"
+        },
+        {
+          "where": "maker",
+          "gave": "a web search listed no Yamaha hosted YM2151 manual"
+        },
+        {
+          "where": "bitsavers",
+          "gave": "the YM2151 catalog; its address map text shows 0x19 as PMD/AMD and 0x1A without a name"
+        },
+        {
+          "where": "archive-org",
+          "gave": "the application manual; PMD and AMD share one datum, with no separate register"
+        },
+        {
+          "where": "index",
+          "gave": "not searched: no datasheet index was consulted"
+        }
+      ]
+    },
+    {
+      "key": "0x1B",
+      "name": "CT, LFO waveform",
+      "aliases": [
+        "CT1",
+        "CT2",
+        "W"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "85-86"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "256-266"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "191-192"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "488"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "491"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "function": "ym2151::reset"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "Two bits, garbled as Ds and D> in the capture, correspond to terminals CT1 and CT2.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "86",
+              "sha": "866775cb1825bb4a353f5435e687a5dd111ba7b260f36e3a8baa731a1c8a7bca"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "CT1 and CT2 together make up the external control output port.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "86",
+              "sha": "866775cb1825bb4a353f5435e687a5dd111ba7b260f36e3a8baa731a1c8a7bca"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "reset",
+          "of": "doc",
+          "text": "At initial clear, with the IC terminal at 0, the CT1 and CT2 terminals read level 0.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "86",
+              "sha": "866775cb1825bb4a353f5435e687a5dd111ba7b260f36e3a8baa731a1c8a7bca"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "write",
+          "of": "doc",
+          "text": "Two bits select one of four types of frequency (PM) and amplitude (AM) modulation waveform.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "256-258",
+              "sha": "8b409fbaef6f19557fc55eb9291eba3d0e8b2e233346cf46a0c8890a6c815f9c"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "on": "reset",
+          "of": "mame",
+          "text": "MAME's ym2151 reset only calls the engine's reset and makes no write to the CT1 and CT2 output lines.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+              "lines": "414-417",
+              "sha": "9da3ac6adf8bc51ea9fabc349e26f3cb36df6863e6b1dedac2c778a66b2fd90e"
+            }
+          ],
+          "vs": "absent",
+          "row": "3"
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "491",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "488",
+          "as": "decode"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "192",
+          "as": "agrees",
+          "row": "4"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "191",
+          "as": "dead"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "85",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "259-266",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x10",
+      "name": "timer A high",
+      "aliases": [
+        "CLKA1"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "287-299"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "179"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "is",
+          "of": "doc",
+          "text": "The timer is two timers, a pre-set 10-bit Timer A and a pre-set 8-bit Timer B; both start and stop, and an overflow puts a flag on the data bus.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "288-290",
+              "sha": "749a810a901714af21229a1782ac4a31db98f1134d6cfe90feecd37bd41eb85f"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "Timer A can also key on when it overflows, and the interrupt it raises must be stopped, which has its own control.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "290-292",
+              "sha": "0a0e0e11a368d0a9c8630b14cea9c609e927b89090b557b7c511fc8de6cabbf7"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "doc",
+          "text": "CLKA1 and CLKA2 are composed of two words of 10 bits, as the capture says.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "293-294",
+              "sha": "fff08a8403e19ab93274cee2dbd54d7c3af83ea40515de80c92a37c30a5a0674"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "is",
+          "of": "doc",
+          "text": "With them, Timer A generates an overflow at the indicated period.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "294-295",
+              "sha": "79c162e11c3753450a7fc0179dd4e58223d64cd3a6c2452aa8c9694b29adfd01"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "on": "place",
+          "of": "mame",
+          "text": "MAME builds the Timer A value from the 8 bits of 0x10 as the high part and the low 2 bits of 0x11.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+              "lines": "179",
+              "sha": "62125c654aa2ab7a2e5245219415039bcbcc565c8e7c31ceb04335a2ba1b725c"
+            }
+          ],
+          "vs": "place"
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "179",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "287",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "296-299",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x11",
+      "name": "timer A low",
+      "aliases": [
+        "CLKA2"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "300-308"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1480"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1486"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "112-117"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1184"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "Timer A overflows after 64*(1024-NA) cycles of the clock, written Ta in ms over the clock in kHz, 3579.545 here; the divisor is partly garbled.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "305-308",
+              "sha": "0a6559238c9c70aeec057348f8c2c71075a41f086e2518273d22c0cdffa74acc"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "The Timer A diagram's last label is garbled in the capture to CLKA?.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "301",
+              "sha": "130d512f36e941760e26d718c83ac698e99b3df8881f752761284201c152a697"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1480",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1486",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "112-117",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1184",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "300",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "302-304",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x12",
+      "name": "timer B",
+      "aliases": [
+        "CLKB"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "309-317"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "180"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1480"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1486"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "112-117"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1184"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "CLKB is composed of 8 bits; Timer B overflows after Ts ms = 1024*(256-CLKB) over the clock in kHz, 3579.545 here; the divisor is garbled.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "309-310",
+              "sha": "67cc227171843f9260a780f36e5ea5da1f061a7a9f571aebbfb9dd78d0f0cd94"
+            },
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "314-317",
+              "sha": "2d3ee26c215adcd43aa062f7e25880a24881bc6ae1e4799f2057d55017472918"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "CLKB is an 8-bit datum, shown in a diagram the capture garbles.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "309-310",
+              "sha": "67cc227171843f9260a780f36e5ea5da1f061a7a9f571aebbfb9dd78d0f0cd94"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "180",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1480",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1486",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "112-117",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1184",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "311-313",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x14",
+      "name": "timer control, CSM",
+      "aliases": [
+        "LOAD",
+        "F RESET",
+        "IRQEN",
+        "CSM"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "318-345"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "181-187"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1510-1513"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1516-1522"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1578-1582"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1587-1588"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1477-1494"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "Entering 1 in the two LOAD bits starts timer A and timer B, and entering 0 stops them.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "319-320",
+              "sha": "7203c136661e64038284e87ae46bbedaa4126e783e30ea0e3d7a7c67726cda76"
+            },
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "323-324",
+              "sha": "bc864f5938ad332f9dc025c222e83c5181b8ab94ceb3c71623e88b9aca2d90ab"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "write",
+          "of": "doc",
+          "text": "Entering 1 in the two F RESET bits resets the flag registers that show timer A and timer B have overflowed.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "326-327",
+              "sha": "307948131113e9276dde15095cd65c0dae8af51f33f62e2f72606cff37a2e36f"
+            },
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "331-332",
+              "sha": "536c0607fa5506f686f366252c7dfc1bb49c115ccb409564e7317ed51aa5dd7d"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "doc",
+          "text": "The two IRQEN bits, one per timer, enable you to inhibit the flag register that records a timer overflow.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "334-335",
+              "sha": "fb6d35ccd825abf66b44205ead278b665ebc234be33c3e84d9c32fcc1448a10b"
+            },
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "338",
+              "sha": "2ddfd6880a70a7ba8189e486604d0f22ec4fd46599fa161d26769788ec7fd0fb"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "is",
+          "of": "doc",
+          "text": "The F RESET bits act on the flag register contents that record the overflow of the two timers.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "326-327",
+              "sha": "307948131113e9276dde15095cd65c0dae8af51f33f62e2f72606cff37a2e36f"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "on": "write",
+          "of": "doc",
+          "text": "Entering 1 in the CSM bit keys on all sound source slots when Timer A overflows.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "340-341",
+              "sha": "f7f8873fb4d9205a26570e19e5847a6643a8de8c3855b2b8cad336456e6d5dda"
+            },
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "344-345",
+              "sha": "bd5c7dc074f31e7af50656c1429a04c2730205a0c29c13e941ffcd065a16ea9d"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "186-187",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1587-1588",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1477-1487",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1491-1494",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1488-1490",
+          "as": "structure"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "182-183",
+          "as": "agrees",
+          "row": "2"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1578-1582",
+          "as": "agrees",
+          "row": "2"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "184-185",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1510-1513",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "181",
+          "as": "agrees",
+          "row": "5"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+          "lines": "1516-1522",
+          "as": "agrees",
+          "row": "5"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "318",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "321-322",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "325",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "328-330",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "333",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "336-337",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "339",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "342-343",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x20..0x27",
+      "name": "pan, feedback, algo",
+      "aliases": [
+        "LR",
+        "FL",
+        "CON"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "139-153"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "354-367"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "195-197"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "200-201"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "88-92"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "is",
+          "of": "doc",
+          "text": "The operator reads the sine table with the phase information from the PG and multiplies it by the EG envelope; its FM-modulated signal goes to the ACC.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "140-143",
+              "sha": "385d6617578fb07abbd3e1d3e1a02a6cf09af689263dc69f9b3e294df7bf9d51"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "write",
+          "of": "doc",
+          "text": "CON is one 3-bit datum per note that sets how its operators are connected, as drawn in a figure the capture garbles.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "145-148",
+              "sha": "08b28a70fe06079a907723cf48c5168594163ba3ea80bb91fd206c5e9ae828e1"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "doc",
+          "text": "FL (self feedback level) is one 3-bit datum per note, controlled for all notes as in a figure.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "151-153",
+              "sha": "8ee905ce5f10d73804014a671dad5851da43ea473c86bc4182072d065dfeb943"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "is",
+          "of": "doc",
+          "text": "The ACC takes the L/R control signal from the register, puts the signal into the left sequence, the right or both, and accumulates it.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "355-358",
+              "sha": "067a06e6acfb31faee543edac1fbb45f76db85c1fe9bef6c02061bf1e5d3ae04"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "on": "write",
+          "of": "doc",
+          "text": "The LR control divides the operator signal between the left and right sequences, or feeds both at once; the capture garbles the bit labels.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "361-363",
+              "sha": "d3e4b6005116f90f71e60adc184ae9c929ce3706a4e3e860648823ca6efbc60b"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "on": "reset",
+          "of": "mame",
+          "text": "On reset MAME zeroes every register except 0x20 to 0x27, which get 0xC0, turning both outputs on.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+              "lines": "88-92",
+              "sha": "cf4e780870d9e41e809e63e0afc4d0c9ef80595047cff42a6e4cf4e91ae798d5"
+            }
+          ],
+          "vs": "extra"
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "201",
+          "as": "agrees",
+          "row": "2"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "200",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "195-197",
+          "as": "agrees",
+          "row": "5"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "139",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "144",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "360",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "149-150",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "354",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "359",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "364-367",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x28..0x2F",
+      "name": "block, key code",
+      "aliases": [
+        "KC"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "95-103"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "202"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "A key code is one 7-bit datum per note.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "96-97",
+              "sha": "4945365da49496eec7a87c47d3cd49cef779e6eb79193c4d71999ed135f9ca44"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "The first 3 bits of a key code express the octave and the last 4 the note, related to intervals in a figure.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "97-99",
+              "sha": "f146cb0a9171f5952e0a462178f7e00d36135366a5d08d35bea8cecd253eab83"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "is",
+          "of": "doc",
+          "text": "A clock of 3.579545 MHz and KC of OCT 4, NOTE 10, with KF, DT1, DT2 and PMS 0 and MUL 1, gives a sound of 440.0 Hz.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "99-101",
+              "sha": "fb8581eb051d75f244f88ab3e1da8907ba19e6dbd32aedaa1a92cc422d5b8b76"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "202",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "95",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "102-103",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x30..0x37",
+      "name": "key fraction",
+      "aliases": [
+        "KF"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "104-110"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "202"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "A key fraction is one 6-bit datum per note.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "105-106",
+              "sha": "279be95d5c52b95f66249aae2ca7bebfd22245bf2df7f2c80c510d52789bf62b"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "The 6 bits divide the 100-cent note interval into 1.6-cent segments to fix the phase information.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "106-107",
+              "sha": "38497b2929358a351050ad85abd5a81491f8cf4b6846318d6550d328addb3c7c"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "202",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "104",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "108-110",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x38..0x3F",
+      "name": "LFO sensitivity",
+      "aliases": [
+        "PMS",
+        "AMS"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "130-138"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "216-221"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "203-204"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "PMS is one 3-bit datum per note giving its phase modulation sensitivity to the LFO; the capture garbles the number of levels.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "131-135",
+              "sha": "380a6dbf75f87d4e76ce91e0d34acadc59c8109807df8f54b727a9cda854659d"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "The LFO signals, 8 bits wide, are added to KC and KF to give vibrato and trembling sounds; the sensitivity value holds when the LFO output is maximal.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "132-135",
+              "sha": "f71dc4b2d9c3bada78cfdee3a201e3968502211b44933ae60ebe1390daf99716"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "doc",
+          "text": "AMS is one 2-bit datum per note giving the EG's amplitude modulation sensitivity to the 8-bit LFA data of the LFO.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "216-219",
+              "sha": "cddeca7a282a80cc8e837c3c7d91ba12c7af1cebeff7a2a3b81cf6bc6c842791"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "203",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "204",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "130",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "136-138",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "220-221",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0x40..0x5F",
+      "name": "detune, multiple",
+      "aliases": [
+        "DT1",
+        "MUL"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "111-121"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "207-208"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "MUL is a 4-bit datum, four of which set one note, that multiplies the KC and KF phase information.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "112-113",
+              "sha": "c1baa53d4687f2a9cf08bcbea43dfbb35cca3b4d3e5cc5bcf62e8da0b9c31c2e"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "write",
+          "of": "doc",
+          "text": "DT1 is a 3-bit datum, four of which set one note, that detunes the phase information from the frequency.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "119-121",
+              "sha": "a2461ba303a25254e9b18498233a91a9b44addc84a2e4f19bb5c80324da45256"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "is",
+          "of": "doc",
+          "text": "For both MUL and DT1, four data set one note.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "112",
+              "sha": "99bd86ce80842cd1e247344208cadb0855bdcf829bd6a31c698fd8da2fa4ee8e"
+            },
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "119",
+              "sha": "f1cf16f9e74b755799f36890d8f2fc85b422cbcd6399c76bae4745ecc9ba60f1"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "208",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "207",
+          "as": "agrees",
+          "row": "2"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "111",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "114-117",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "118",
+          "as": "key"
+        }
+      ]
+    },
+    {
+      "key": "0x60..0x7F",
+      "name": "total level",
+      "aliases": [
+        "TL"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "210-215"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "209"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "TL is a 7-bit datum, four of which are used to set a note: the total level, in attenuation, that the EG applies.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "211-213",
+              "sha": "a5ed009a3b11ce3feb5e0fc4185fa1e38d0724c88cfd631e7f8aa1013debd515"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "TL controls timbre and volume, with a minimum resolution of 0.75 dB per bit weighting, shown in a figure the capture garbles.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "213-215",
+              "sha": "6effdbc0f5073a37a66e50bb98e425cfaff80346edb3d36cc46ca6aae26d6d60"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "209",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "210",
+          "as": "key"
+        }
+      ]
+    },
+    {
+      "key": "0x80..0x9F",
+      "name": "key scale, attack",
+      "aliases": [
+        "KS",
+        "AR"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "166-172"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "197-205"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "210-211"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "AR is a 5-bit datum, four of which are used to set a note, that sets the attack time TA, and it is scaled by the key code.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "167-170",
+              "sha": "79430f08673db92dcf62b55404b6ecaa8d54bda7f6abefc5598c8b5b452fe1e3"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "At key on the attenuation volume diminishes and approaches 0 dB after the attack time.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "168-169",
+              "sha": "e131482ad885ddbff4bbb5b2b76324ed17adc9359f2bc7e302ab14c25f9c6067"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "doc",
+          "text": "KS is a 2-bit datum, four of which are used to set a note, that scales AR, D1R, D2R and RR by the key code, at four levels.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "198-200",
+              "sha": "c4ecb433fa9eff294372a6f0585dbac4da8a62aebfac3afe2dfc2cd04b4eb788"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "is",
+          "of": "doc",
+          "text": "The attack, first decay, second decay and release times are set by each rate after it has been scaled.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "204-205",
+              "sha": "be0d484f4b529d0d1534e99fce59020cdf283bada5e235941f688754c8a3c5ee"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "211",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "210",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "166",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "171-172",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "197",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "201-203",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0xA0..0xBF",
+      "name": "AM enable, decay",
+      "aliases": [
+        "AMS-EN",
+        "D1R"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "173-179"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "222-224"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "212-213"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "D1R is a 5-bit datum, four of which are used to set a note, that sets the first decay time TD1, and it is scaled by the key code.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "174-177",
+              "sha": "13f3ec70eb91aad9aa0964802be8b98a60a14534b268581ea9c13bd0ce42d6b7"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "At 0 dB attenuation the EG moves by itself to first decay, reaching the first decay level.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "175-176",
+              "sha": "4dd43b083b10a5292c97cb22ce68629ea33a612d91dd5e07889112a8f093daa9"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "doc",
+          "text": "The AMS-EN switch decides, for a particular slot, whether amplitude modulation applies to it.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "223-224",
+              "sha": "37e889448e585e90bd4f774ad6d7a16b8012d66c433cb4077248bb294ae42994"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "is",
+          "of": "doc",
+          "text": "AMS data is set for every channel.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "224",
+              "sha": "177de017a114528163676dab2a89d1498ddae2faaffd74b28062d3278daafcd4"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "213",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "212",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "173",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "178-179",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "222",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0xC0..0xDF",
+      "name": "detune 2, sustain rate",
+      "aliases": [
+        "DT2",
+        "D2R"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "122-129"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "180-187"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "214-215"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "DT2 is a 2-bit datum, four of which set one note, that gives a gross detuning of the phase information.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "123-125",
+              "sha": "52fa5c95a4d534900322cede8f2ced94026e9afb0a08bc342dc429a0f283ce36"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "DT2 detuning is effective when generating sound effects.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "125-126",
+              "sha": "01e770b5fb05c8b0003fb8abc271ddb817688b9ccd4d2bad55040e9cef9a6c09"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "write",
+          "of": "doc",
+          "text": "D2R is a 5-bit datum, four of which are used to set a note, that sets the second decay time TD2, and it is scaled by the key code.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "181-185",
+              "sha": "0479b84e84c4a3c65cebb7c24b24a4232c341590ca60c254f63e07d4fc1be1ba"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "is",
+          "of": "doc",
+          "text": "Once the first decay level is passed the EG moves by itself to second decay and stays there until key off.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "182-183",
+              "sha": "e370b86ba79fc49cf569426abac65cfe85df7a9aaf89a2fdd711b146f4ab80de"
+            }
+          ]
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "214",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "215",
+          "as": "agrees",
+          "row": "3"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "122",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "127-129",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "180",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "186-187",
+          "as": "layout"
+        }
+      ]
+    },
+    {
+      "key": "0xE0..0xFF",
+      "name": "sustain level, release",
+      "aliases": [
+        "D1L",
+        "RR"
+      ],
+      "regions": [
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "188-196"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "206-209"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "216-217"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "293-296"
+        }
+      ],
+      "rows": [
+        {
+          "n": "1",
+          "on": "write",
+          "of": "doc",
+          "text": "RR is a 4-bit datum, four of which are used to set a note, that sets the release time TR, and it is scaled by the key code.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "189-192",
+              "sha": "b2b977472bcd994890bfb3890bd9640d805e4122651825737754b87d4302204d"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "on": "is",
+          "of": "doc",
+          "text": "Because RR has one bit fewer than D1R or D2R, its resolution is poor.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "192-193",
+              "sha": "b94e9e2550f24051472c3094c14a6babf0516a8038828af2991eb20e382bdda8"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "on": "is",
+          "of": "doc",
+          "text": "At key off the EG starts release and the attenuation advances toward the maximum attenuation of 96 dB.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "190-191",
+              "sha": "ffd919c6b2079662e998c3ac0f51a5207e01b345eb5f2a1d0d9c700aee03e35c"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "on": "write",
+          "of": "doc",
+          "text": "DIL is a 4-bit datum, four of which set a note: the first decay level, in 3 dB steps, at which the EG moves from first to second decay.",
+          "quotes": [
+            {
+              "ref": "datasheet:YM2151.raw.txt",
+              "lines": "207-209",
+              "sha": "4620628611d57c29744575928493d9958ac7a67e57be39d77bdc684bd940b3d2"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "on": "write",
+          "of": "mame",
+          "text": "MAME makes a first decay level of 15 count as 31 steps: it ORs in bit 4 when the level plus one has it, then shifts left by 5.",
+          "quotes": [
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+              "lines": "294-296",
+              "sha": "f0d3337996ec0bd217f7f8dfe3eb165d5803a5cbf15ecc52fc9b3378e81ef4d7"
+            }
+          ],
+          "vs": "extra"
+        }
+      ],
+      "closed": [
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "217",
+          "as": "agrees",
+          "row": "1"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+          "lines": "216",
+          "as": "agrees",
+          "row": "4"
+        },
+        {
+          "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
+          "lines": "293",
+          "as": "structure"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "188",
+          "as": "key"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "194-196",
+          "as": "layout"
+        },
+        {
+          "ref": "datasheet:YM2151.raw.txt",
+          "lines": "206",
+          "as": "key"
+        }
+      ]
+    }
+  ]
+}

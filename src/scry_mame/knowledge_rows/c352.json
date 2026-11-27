@@ -1,0 +1,1296 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "c352",
+ "title": "The Namco C352 voice and control registers",
+ "kind": "register",
+ "scope": "c352",
+ "covers": "the registers of the Namco C352 32-voice PCM chip as MAME's device handles them; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of c352.cpp calls the chip a Namco custom PCM device and cites no document."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search found no Namco page holding a C352 document, only emulator sources and a vgmrips wiki page."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The components listing answered HTTP 403 and a site search for Namco C352 returned only unrelated documents."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search aimed at archive.org found no manual, datasheet or scan of the part."
+  },
+  {
+   "where": "index",
+   "gave": "A search named datasheetarchive.com returned no document list for the part."
+  }
+ ],
+ "engine": [
+  "sound_stream_update",
+  "fetch_sample",
+  "ramp_volume",
+  "log_pcm",
+  "device_start",
+  "device_reset",
+  "rom_bank_pre_change",
+  "device_clock_changed"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "front volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0 of a voice holds the front volume: the high byte is the front-left level and the low byte the front-right level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "79-80",
+       "sha": "99fb9c32f31090083ccfaf05f33ce1c03a27fe2f48dd8344a698ea942507996f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "206",
+       "sha": "acf2daeb2dc6e63f672ef626c12a66ad47ebfa4781d8536688784f977e4bae85"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "143-144",
+       "sha": "96d3ac4692ad7bb24e85e9f7c73e8b8e6d409dbc590776435dadcaf28146d0ab"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "158-159",
+       "sha": "7845dd9d8be58277809d3dc58aba43e08df9e75d16bc4cb6ae12c79aed6fbaca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "162-163",
+       "sha": "cc014bb4f1576aebd86acfc33e0839e73680cee0b2591da448cc51cccfde0403"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 0 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "206",
+       "sha": "acf2daeb2dc6e63f672ef626c12a66ad47ebfa4781d8536688784f977e4bae85"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When bits 15 and 16 of the counter disagree, each front level steps by one toward its stored value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "141-144",
+       "sha": "e55488195201ad95c4f5339773cca60065238a951291d535cd6822d1526ceda5"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "116-118",
+       "sha": "4c59d659dad5b746d095d20562ba074358bbcdc8714180d90ef6991dc0f850f3"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of a voice register returns the stored word, and a write starts from that same word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "190-191",
+       "sha": "21ab4298cbb4380267cded6690f4c87de90370117418d0b18e089396aed23aec"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "218",
+       "sha": "2ced5b6fc53c9fb6515976adf496b6344b9856fceeeb403410030ec7d90570fa"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "rear volume",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 1 of a voice holds the rear volume: the high byte is the rear-left level and the low byte the rear-right level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "79-80",
+       "sha": "99fb9c32f31090083ccfaf05f33ce1c03a27fe2f48dd8344a698ea942507996f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "207",
+       "sha": "133a2680bbe4ecbae492a27a99695a4f9a6b11c7a8d381a76bac363d6bbddd93"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "145-146",
+       "sha": "ec398204b111434dd8e31544290bded9d53e5237d16242d9f4e2c916dc919660"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "158-160",
+       "sha": "bb6fee487a39827fa3c7083499f8a92530fc6c1e423c564798e0affc08866db5"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "162-164",
+       "sha": "176dc450bf7825a67912a1759e3433c54be810b9d2054716a3a51f6f8977c051"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 1 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "207",
+       "sha": "133a2680bbe4ecbae492a27a99695a4f9a6b11c7a8d381a76bac363d6bbddd93"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When bits 15 and 16 of the counter disagree, each rear level steps by one toward its stored value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "141",
+       "sha": "98215398715da3b3205286fbb41774c19f5ee50d7fb8d8bda032393ada0ee1dc"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "145-146",
+       "sha": "ec398204b111434dd8e31544290bded9d53e5237d16242d9f4e2c916dc919660"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "116-118",
+       "sha": "4c59d659dad5b746d095d20562ba074358bbcdc8714180d90ef6991dc0f850f3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "frequency",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 2 is the word added to the voice's counter each output sample; a carry past bit 15 of the sum fetches the next sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "123",
+       "sha": "ab5be03ae8bcdcacea0c208b2fdcb8f448496238b9c8b1bb6c84348f4846dc87"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "134-138",
+       "sha": "ee1a026265a6171d4c1c05cefca5f8c1559ad41fdb6c84d0fc082db2b10c6bfc"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "149",
+       "sha": "2b1ca386afd234fb1bf4b68fbefb946b53c34c100c25da11626001a77a1531d0"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "208",
+       "sha": "2a6ebb4aa6e6b98aabf1cf851e5cad161ee8a6b0f1bb72d9459e176716ed5071"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 2 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "208",
+       "sha": "2a6ebb4aa6e6b98aabf1cf851e5cad161ee8a6b0f1bb72d9459e176716ed5071"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "flags",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 3 is the voice's flag word: bit 15 marks it busy, and bits 14 and 13 request key on and key off at register 0x202.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "52-54",
+       "sha": "70bf642c33fccb14ebfb5a9fc70a9c37b6e80cdd4f86672e393e27992f0bd141"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "209",
+       "sha": "12d3fbee39dc87ca28cb799b548b735c82448a455418df9921eb47205fce18b2"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "132",
+       "sha": "0682b2a559b811a0114cad18e994a324fd2ddf62dfe7f4d8289f1fda5e8507ce"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "234",
+       "sha": "5fce06d505c3e03ba90760ef8247cd11a49b384d149998d9c3c149a0558be5d2"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "251",
+       "sha": "1d0bb1d7846b73d5f81afccf6036b73d4fc514e920c00117680c9e8b7d746302"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "227",
+       "sha": "b8b7fe149781ffd723aff2337310d3c1ee26be98229da9b120ad1fc64675062e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 12, 11 and 10 are named loop trigger, loop history and frequency modulation; the stream raises loop history when it takes a loop.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "55-57",
+       "sha": "391107c45b90f52919753a63052825c4a19adcd96a9b246fede951194624b04f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "90-99",
+       "sha": "c8e8f9cea7439622c6774449d8322d05018256a3242fa09178817166b5d375dd"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "121",
+       "sha": "8a3828759c839cbf60d51b5c320aa5cf2863fc42b8405a6e4dbfe7233dd27f31"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "138",
+       "sha": "e36cbf60424597f542064cce93345fa93cb71f1fb0b00b9fbfbf348a9e40ff44"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 9 to 7 invert the phase of the rear-left, front-left and right outputs.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "58-60",
+       "sha": "1b5153fe5dd45df0b3329aa67a1fa548b18b83d72baacccbfba375f9a58909de"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "159-160",
+       "sha": "067e23e7ea393ff7285052f02e785a0f7430c2352a5143c746d7ac9b4fc8a86c"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "163-164",
+       "sha": "38cf51b43f3f1c987e9804d92bd47df4f06bcb1ad6a5072b1b831c869164dbf9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Bits 6 to 0 name the loop direction, link, noise, mu-law, the filter bypass, loop and reverse; value 3 is also named loop backwards.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "61-68",
+       "sha": "b345b70e5cffbdfcdaf04c07fc631f33b605925a890950603fdc6f5c513caf43"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the noise bit set the voice outputs a word from a shift register instead of a sample byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "63",
+       "sha": "ea505c52ec3f85dbc8a8e5c3d2b9dff4af7e532455a214e413685b8dc67dbc86"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "61-65",
+       "sha": "0af1aa9580a6918916aad9cc746cf56ac78b782fa9cd04d9e7ed83a7a6c89ab6"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the mu-law bit set each sample byte addresses a 256-entry table the device builds at start.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "64",
+       "sha": "7b23328c47035448cc4c19eb776ee34362f82ba300cc37a481916b72d48fd0c4"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "70-73",
+       "sha": "302bd74e62663f6766de52ec8c3548fbdb203b560055bd0e00d7133ec85cd269"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "357-367",
+       "sha": "13b757d729737dc79c25dd386a246ea7165f332f20ee1e1a20056ad7f21c7691"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "379-380",
+       "sha": "1cb7416aa70a60096cd146906132f31ac75cdf74270942464d7638143ede0899"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the filter bit clear the output is interpolated between the last and the current sample by the counter's low bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "65",
+       "sha": "4ad47b665089b71264ecb000ed849be6add7e7797103c602f824d04aa87a9dd4"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "149",
+       "sha": "2b1ca386afd234fb1bf4b68fbefb946b53c34c100c25da11626001a77a1531d0"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "154-155",
+       "sha": "1cd29e22605c9cdd73fd32022771a8f602e293748d183626a83b4e2a0e098200"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At wave_end, with loop and link and the reverse bit clear, a voice takes its new position from registers 5 and 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77",
+       "sha": "14b8bb67853188337066edf4f41c032d97c8f63e0be1689ebd71cc747fac97ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88-94",
+       "sha": "c8ee86e79075faa120daa5e2f4dc74a6408f8f7da756be6b5807fd70096348c9"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "211",
+       "sha": "06b16fd4a8861af9798453c54769fcd54d1d3ea7811eb04d829be828db24f541"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "213",
+       "sha": "f15fee253191919d377326fdba5babb1677bd32bfd29cac139d10aa9c96fb673"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At wave_end, with loop alone and the reverse bit clear, a voice keeps the bank and takes register 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77",
+       "sha": "14b8bb67853188337066edf4f41c032d97c8f63e0be1689ebd71cc747fac97ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88-99",
+       "sha": "b1811ce8c1a803631d0676d361934890420905891667091caa37e966b2c5322d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "236",
+       "sha": "e14ce0e653c39cdb5a2d8a0c4644510e2aef4f3c50bec93a0826f52b3d6c24b1"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "213",
+       "sha": "f15fee253191919d377326fdba5babb1677bd32bfd29cac139d10aa9c96fb673"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At wave_end a voice whose loop bit is clear sets key off, clears busy and zeroes the sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88",
+       "sha": "4e72b274fee8b9f630cfeac277b4bb245c4b93f0b67572c7e9ea880c4613978f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "95-105",
+       "sha": "a0db2ef70640c943ebdb8e1d66e641d4fdbd7bcb2547638a8b42242a92135edb"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With loop and reverse both set the position bounces between wave_loop and wave_end, its direction held in the loop direction bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "66-68",
+       "sha": "6467aff74fde0e84dc31dea205e4dc5f87f5411493a5daddc44ad5519daca069"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77-87",
+       "sha": "6de1b600ac01ed2e15b8f087f3c97429d1fb8df7230699db21c81c9c42d04af8"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With reverse set and loop clear the position steps backwards on each fetch that is not at wave_end.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77",
+       "sha": "14b8bb67853188337066edf4f41c032d97c8f63e0be1689ebd71cc747fac97ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88",
+       "sha": "4e72b274fee8b9f630cfeac277b4bb245c4b93f0b67572c7e9ea880c4613978f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "107-109",
+       "sha": "d409575f19542238fbbe20dbd237dc58fed03b1f5f6391449210559a9a602207"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 3 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "209",
+       "sha": "12d3fbee39dc87ca28cb799b548b735c82448a455418df9921eb47205fce18b2"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "wave bank",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 4 is the voice's wave bank: key on shifts it above register 5 to form the 24-bit sample position.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "20",
+       "sha": "6b75a33c18e55d950c62399f4118b005a41a9bb7e122e89df0e82b84bbae49de"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "210",
+       "sha": "6bc9f7930ed00eda94931b058bf0f83685036a9c6dad5cb25b1027a7709dbf98"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "234",
+       "sha": "5fce06d505c3e03ba90760ef8247cd11a49b384d149998d9c3c149a0558be5d2"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "211",
+       "sha": "06b16fd4a8861af9798453c54769fcd54d1d3ea7811eb04d829be828db24f541"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "236",
+       "sha": "e14ce0e653c39cdb5a2d8a0c4644510e2aef4f3c50bec93a0826f52b3d6c24b1"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At wave_end a loop with the reverse bit clear keeps this bank and takes register 7 for the low bits; with link too, register 5 gives the upper bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77",
+       "sha": "14b8bb67853188337066edf4f41c032d97c8f63e0be1689ebd71cc747fac97ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88-98",
+       "sha": "fe8f3854fcad732fb360f1f8551a0a995b9516b9a5f9ee0a0a2dfda1e78658c5"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "236",
+       "sha": "e14ce0e653c39cdb5a2d8a0c4644510e2aef4f3c50bec93a0826f52b3d6c24b1"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "213",
+       "sha": "f15fee253191919d377326fdba5babb1677bd32bfd29cac139d10aa9c96fb673"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "211",
+       "sha": "06b16fd4a8861af9798453c54769fcd54d1d3ea7811eb04d829be828db24f541"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 4 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "210",
+       "sha": "6bc9f7930ed00eda94931b058bf0f83685036a9c6dad5cb25b1027a7709dbf98"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "wave start",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 5 is the low 16 bits of the position key on starts from, inside the bank of register 4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "234",
+       "sha": "5fce06d505c3e03ba90760ef8247cd11a49b384d149998d9c3c149a0558be5d2"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "236",
+       "sha": "e14ce0e653c39cdb5a2d8a0c4644510e2aef4f3c50bec93a0826f52b3d6c24b1"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "210",
+       "sha": "6bc9f7930ed00eda94931b058bf0f83685036a9c6dad5cb25b1027a7709dbf98"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "211",
+       "sha": "06b16fd4a8861af9798453c54769fcd54d1d3ea7811eb04d829be828db24f541"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In a loop with link set and the reverse bit clear it supplies the upper bits of the position instead.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77",
+       "sha": "14b8bb67853188337066edf4f41c032d97c8f63e0be1689ebd71cc747fac97ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "90-93",
+       "sha": "66dda0e1388a002ddf46ab2273cceba6e6e47f78a475af7a70a4ec72c7885ada"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "236",
+       "sha": "e14ce0e653c39cdb5a2d8a0c4644510e2aef4f3c50bec93a0826f52b3d6c24b1"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 5 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "211",
+       "sha": "06b16fd4a8861af9798453c54769fcd54d1d3ea7811eb04d829be828db24f541"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "wave end",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 6 is compared with the low 16 bits of the position when a sample is fetched.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "75",
+       "sha": "914ff59cc1be220d779fbada9db2fc81c163343a12939ea846d28db94e5d6158"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "83",
+       "sha": "f1e75b2feeed1dfd7190d21eb0c6342a82d67476fa58195f769ee0a1cda411f7"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88",
+       "sha": "4e72b274fee8b9f630cfeac277b4bb245c4b93f0b67572c7e9ea880c4613978f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "212",
+       "sha": "d89480b0418d34c1a8ab3ab9709585c918ce726b50b476fb65136ba40b554299"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At the match a looping voice jumps to its loop, one with loop and reverse turns, and one with no loop sets key off and goes silent.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77-84",
+       "sha": "7cdf15149502266c747f7abe9a91fe88acac8b036e8e72642fa9a18c60531193"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88-99",
+       "sha": "b1811ce8c1a803631d0676d361934890420905891667091caa37e966b2c5322d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "100-105",
+       "sha": "904a2cb526428bf7445baa461fd7081f45541fbf4d19bead753f09f470271be7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 6 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "212",
+       "sha": "d89480b0418d34c1a8ab3ab9709585c918ce726b50b476fb65136ba40b554299"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "wave loop",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "216-221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 7 is the low 16 bits the position takes when the sample reaches wave_end with loop set and the reverse bit clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77",
+       "sha": "14b8bb67853188337066edf4f41c032d97c8f63e0be1689ebd71cc747fac97ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "88",
+       "sha": "4e72b274fee8b9f630cfeac277b4bb245c4b93f0b67572c7e9ea880c4613978f"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "95-99",
+       "sha": "4dc8dfa9ef9a0805f29925d3cc5a1e724b7de2ef06642cd3ac9500df949c0be3"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "213",
+       "sha": "f15fee253191919d377326fdba5babb1677bd32bfd29cac139d10aa9c96fb673"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In a loop with link set and the reverse bit clear it is the low 16 bits of the new position, under register 5.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "77",
+       "sha": "14b8bb67853188337066edf4f41c032d97c8f63e0be1689ebd71cc747fac97ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "90-93",
+       "sha": "66dda0e1388a002ddf46ab2273cceba6e6e47f78a475af7a70a4ec72c7885ada"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "211",
+       "sha": "06b16fd4a8861af9798453c54769fcd54d1d3ea7811eb04d829be828db24f541"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to a voice's register 7 merges the data into the stored word under the memory mask and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "213",
+       "sha": "f15fee253191919d377326fdba5babb1677bd32bfd29cac139d10aa9c96fb673"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "216-221",
+       "sha": "a172603e5d1ad0d8b996966ae14f2726bff692a6c972f678fb90d8cd19163a0a"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x200",
+   "name": "control",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "222-226"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x200 holds a 16-bit control word that the source calls control flags of unknown purpose.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.h",
+       "lines": "107",
+       "sha": "c331cb552b6e073d93eee50c1ff4b12613d7c4512a1ba76cfe58e250fe9d25fd"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "192-193",
+       "sha": "d341db4319813381b29fcde50db79dbabbf99a38fb002c0f5cefccef24acd83c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write merges the data into the control word under the memory mask and logs the write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "200",
+       "sha": "ec8b77f4a5e8808487230857bc3d7e5f4ce5acc5ca8d5bb8acff890030716a80"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "222-226",
+       "sha": "f1889d5aa3241b262c898a1560a155472274c716206122062562f34e40cc78e0"
+      },
+      {
+       "ref": "mame:src/emu/emumem.h",
+       "lines": "2754",
+       "sha": "fa402a395b691fef4e5be5d7f23a703d12b20a0530feb21aecd0cb6245573559"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of 0x200 returns the control word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "192-193",
+       "sha": "d341db4319813381b29fcde50db79dbabbf99a38fb002c0f5cefccef24acd83c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Reset clears the control word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "401-408",
+       "sha": "f5d3be60253fb6fbc415be9c874e3cb541b373b01294e329dd2e9368b2c9e790"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x202",
+   "name": "key on off trigger",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "227-257"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x202 is the execute trigger: a write acts on every voice whose flags request key on or key off.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "227",
+       "sha": "b8b7fe149781ffd723aff2337310d3c1ee26be98229da9b120ad1fc64675062e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "232-234",
+       "sha": "341a7d0d7d2f84a6cfeda6ff2af5008092eb03d61f8d535b0426c9d5ac84a422"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "251",
+       "sha": "1d0bb1d7846b73d5f81afccf6036b73d4fc514e920c00117680c9e8b7d746302"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write whose memory mask is not 0xffff returns at once; the source asks beside it whether the hardware acts on 16-bit writes only.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "229-230",
+       "sha": "4b75905cc373313b1ee77eb2b9b2e2649575a7ce534391831e1183fe6e79be87"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Key on sets the position from wave bank and start, zeroes the sample and last sample, sets the counter to 0xffff, sets busy and clears key on and loop history.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "234",
+       "sha": "5fce06d505c3e03ba90760ef8247cd11a49b384d149998d9c3c149a0558be5d2"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "236-243",
+       "sha": "9029b5af3eaff5627c7e691b73857d4dacefc70eba8c52bde00a793a04414273"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Key on also zeroes the voice's four current volumes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "234",
+       "sha": "5fce06d505c3e03ba90760ef8247cd11a49b384d149998d9c3c149a0558be5d2"
+      },
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "245-246",
+       "sha": "bc4a79f0c2f844bddab1733c5395bc9aeab98bdf50c675aad050707ef67a369e"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Key off clears busy and key off and sets the counter to 0xffff.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "251-255",
+       "sha": "7d8e616165b75e38bfffa1ec1b1e606f9259c6d4dbc4c2b4fb9f7f6c017ec44b"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of 0x202 returns zero, as the read handler answers only the register bank and 0x200.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c352.cpp",
+       "lines": "190-195",
+       "sha": "2e55bcdd4b2f0e9fbebdddac9187b515f10ecb84ff704fe168ca61382aca3be6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "248-249",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "228",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "235",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "250",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "256",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/c352.cpp",
+     "lines": "257",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2953 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "sega315_5124-regs",
+ "title": "Sega 315-5124 VDP register file",
+ "kind": "register",
+ "scope": "sega315_5124",
+ "covers": "The eleven VDP registers R0 to R10 of the Mark III and Master System video chip, their bits and power-on values, and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SegaMk3-SRM.raw.txt",
+   "variant": "mark3"
+  }
+ ],
+ "official": {
+  "SegaMk3-SRM.raw.txt": [
+   "363-364",
+   "416-417",
+   "481-605",
+   "607-617",
+   "946-1000"
+  ]
+ },
+ "engine": [
+  "set_display_settings",
+  "m_n_int_cb"
+ ],
+ "entries": [
+  {
+   "key": "0x100",
+   "name": "R0 mode control 1",
+   "aliases": [
+    "R0"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "481"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "483-500"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "607"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "946-950"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "340"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "342"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "518-522"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::control_write",
+     "case": [
+      "2",
+      "0"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1052"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1078"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1301-1302"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1368-1370"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1781-1790"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "344-347"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "356-357"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "350"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R0 and R1 set the VDP display and interrupt mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "483",
+       "sha": "a3f248b4e393ec127cc109137287eb1e87ea05a13b6c9d1f2efc4e7fb0829a95"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bit 7",
+     "of": "doc",
+     "text": "R0 bit 7, VSI, set to 1 keeps the right 8 character columns fixed; 0 scrolls them along with the background.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "484-486",
+       "sha": "fdcc7531f6432131b3d921368eafea3829e8bc64e16b55fd811212c0de2906b8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 6",
+     "of": "doc",
+     "text": "R0 bit 6, HSI, set to 1 keeps the top 2 character rows fixed; 0 scrolls them along with the background.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "487-489",
+       "sha": "0446affacc940c5b677192fac820d9de005c96c1698168ee53633c38d9530036"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 5",
+     "of": "doc",
+     "text": "R0 bit 5, LCB, set to 1 blanks the left character column in the border color; 0 gives normal display.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "490-492",
+       "sha": "c614efa13a142c600201ca067abd1f744777e47906b0fd9d027e6f0a0ec6e724"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bit 4",
+     "of": "doc",
+     "text": "R0 bit 4, IE1, is the interrupt enable bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "493",
+       "sha": "7e4c5a93181d6ebf00ce6c3b7e6895c54dda1a069df316236e2e004a8d37434b"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bit 3",
+     "of": "doc",
+     "text": "R0 bit 3, SS, set to 1 shifts all sprites 8 pixels to the left; 0 gives normal sprite position.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "494-496",
+       "sha": "0418b230579b5c1deb01c570e1f4ed18b07c6dd67eb6ddbe100ef2457831113f"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "R0 bits 2 and 1 are always set to 1, and bit 0, external sync, is always set to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "497-500",
+       "sha": "88ca488dd147431a5fb83719bccd8276a805e1764e64196865ba7a0b29f5a75a"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram labels R0 bit 1 as M3 and shows bits 2 and 1 as 1 and bit 0 as 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "947-949",
+       "sha": "e71e901a611dc6c459747ff7ddda21004a712274ba3c9a08e3400d1204531a10"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "reset",
+     "of": "doc",
+     "text": "R0 is $36 at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "607",
+       "sha": "54785469900620de4d868274e6976223c469ad1c661a997d8cdc61860a31bbaa"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME decodes R0 bit 2 as M4, which selects mode 4, and bit 1 as M2, which selects mode 2 when M4, M1 and M3 are clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "340",
+       "sha": "9e3610d6da094acfc0e5ecb52f144332054da6e9ae4c7acf49247b473a9868db"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "342",
+       "sha": "9bd1c59134845b1477fa600a60d37d662508658798c3a0797db166d559c9c533"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "344-347",
+       "sha": "0e746199ecbd62193f32281d552db3c878998975905229d936cf0b9ffd0ce59c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "350",
+       "sha": "a94470a569ff61e0700ce03f02db8488db2ab1bdd1f6fef99878d150bbe7b31d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "356-357",
+       "sha": "ee90de6072ebc6dc2057d33ca4a354c8bd61458828cc83e39c0e1ed6978ef6e1"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "bit 5",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME also stops sprite collisions from being flagged in the left 8 pixels while R0 bit 5 is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1368-1370",
+       "sha": "9fdb347fa572f62b75e02b7fc11e4bad12baa47234972310804d358875bd4d32"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "9",
+     "text": "MAME's reset fills every register, R0 included, with 0x00.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2053",
+       "sha": "dea29c38e9df0d35aecaedef135992e42715a82bc0fd270b938f2573ca146283"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "481",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "946",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "950",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "872",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "892",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "894",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1078",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1052",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1781-1790",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "518-522",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1301-1302",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x101",
+   "name": "R1 mode control 2",
+   "aliases": [
+    "R1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "482"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "501-517"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "608"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "951-955"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "339"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "341"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "516-522"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "528-534"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "575"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "907-909"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::control_write",
+     "case": [
+      "2",
+      "1"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1189"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1191"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "354-355"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "358-359"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "350"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R1 bit 7 is always set to 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "501",
+       "sha": "eab38434b53f9cb928141454a9f39f0e384e35aca66e7bb3ce0a8f14d1744492"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bit 6",
+     "of": "doc",
+     "text": "R1 bit 6, DIS, set to 0 blanks the whole screen; set to 1 gives normal video.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "502-504",
+       "sha": "692b9e839f844e043816adef31d9d972b5bb9a79488ffe738caa21ff87be97a4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 5",
+     "of": "doc",
+     "text": "R1 bit 5, IE, is the interrupt enable bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "505",
+       "sha": "cc0808b8388248bdf7813d512a01a2a931f15d12296999fc8ce362b56455d8a1"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "R1 bits 4, 3 and 2 are always set to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "506-508",
+       "sha": "173aff26b8467deb931be9128d90b93a49039ac108da42e986c799e5915b4dc0"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bit 1",
+     "of": "doc",
+     "text": "R1 bit 1, SZ, set to 0 makes all sprites 8 by 8; set to 1 makes all sprites 8 by 16.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "509-511",
+       "sha": "c23d4d15e57d662b63b77d6a24969c638c0ca3de58fc108a6afe8026e2c171ad"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "R1 bit 0 is always set to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "512",
+       "sha": "31385e9615ef42b7bc0c7578d8b89ae5acd78752559b0d93b9f8d205ad475107"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "IE 0 with IE1 1 enables the raster line interrupt; IE 1 with IE1 1 enables VBLANK and the raster line interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "513-517",
+       "sha": "49e9152ee8fcb04985509f86c3cc1c6c6bce7224c248ca262330240b8f1b1f42"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram marks R1 bits 4 and 3 as M1 and M2 and names bit 0 the sprite magnification bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "952-954",
+       "sha": "3d4929f7e7a33f3a001e6cb2a0245bef9128f05b21e288b16b06cb8911fe4de4"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "reset",
+     "of": "doc",
+     "text": "R1 is $A0 at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "608",
+       "sha": "0f6606897aaa568c5f13651867affad113713f370fedcce6cacdc713afce5043"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "MAME decodes R1 bit 4 as M1 and bit 3 as M3; when M4 is clear, M1 alone selects mode 1 and M3 alone selects mode 3.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "339",
+       "sha": "37ecaacabe5784586238801c5d5c4d3634d759beb1d0f5eaa9fd5b5b2f1380b3"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "341",
+       "sha": "581eae44c95681f9105df9b414e02c84a6faa7d865ffabd73e5df37c9e9ca6e9"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "350",
+       "sha": "a94470a569ff61e0700ce03f02db8488db2ab1bdd1f6fef99878d150bbe7b31d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "354-355",
+       "sha": "c04e72c90c9e428834834d36404bc2ac0e0785020fd5d55766e81dfdb6beb24e"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "358-359",
+       "sha": "2ae63950821334d64679f130a7040f0121304c8d5394d54a81ed55e843b35649"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "bit 0",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME stores a sprite zoom scale of 2 when R1 bit 0 is set and 1 otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1191",
+       "sha": "6605896731f6b6bf0c56e168fa075cca557f045b14d8da0538c9d9ac0cbd80e9"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "9",
+     "text": "MAME's reset fills every register, R1 included, with 0x00.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2053",
+       "sha": "dea29c38e9df0d35aecaedef135992e42715a82bc0fd270b938f2573ca146283"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "482",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "951",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "955",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "872",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "892",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "894",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "575",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "909",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "908",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "907",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "530-534",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "516-522",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "528-534",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1189",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x102",
+   "name": "R2 name table base",
+   "aliases": [
+    "R2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "518-532"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "609"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "956-960"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1012-1015"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1059"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1061"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2055"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R2 sets the base address for the screen map, positioning the 2048 byte screen map at one of eight starting addresses on 2048 byte boundaries.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "value $FF",
+     "of": "doc",
+     "text": "An R2 value of $FF puts the screen map base address at $3800.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "523",
+       "sha": "29d9ffd5b4262907aa4e4a28dcc6e5b020bbfa216294eecd1e2349163fa334ab"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "value $FD",
+     "of": "doc",
+     "text": "An R2 value of $FD puts the screen map base address at $3000.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "524",
+       "sha": "a7723ea2abf7654452eae25e52d9841abb556c7754d416c95bb2a62c3f2a5eb9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "value $FB",
+     "of": "doc",
+     "text": "An R2 value of $FB puts the screen map base address at $2800.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "525",
+       "sha": "49264f66d9e60c56a0c72beeeacdfc7dd5ad87a622678aaa2fba0aa56c191814"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "value $F9",
+     "of": "doc",
+     "text": "An R2 value of $F9 puts the screen map base address at $2000.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "526",
+       "sha": "e60b252a0a69d4dfcfa100000ce1e22739ecc3b05ca8ccf5a2df1ab5d148ecff"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "value $F7",
+     "of": "doc",
+     "text": "An R2 value of $F7 puts the screen map base address at $1800.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "527",
+       "sha": "4e18ac8a8d8690d26239c2068c1c873126c9fdf6bc86df3fc9226e05abcd5b8d"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "value $F5",
+     "of": "doc",
+     "text": "An R2 value of $F5 puts the screen map base address at $1000.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "528",
+       "sha": "19e89a7ab2467cda6c65f9b5ed4d421e3c42a447dca95e23da98c0883f5096d8"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "value $F3",
+     "of": "doc",
+     "text": "An R2 value of $F3 puts the screen map base address at $0800.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "529",
+       "sha": "7ae90a3e1bae631f456e9d1539ed3ad79f5f4a5abc8e7aef19347d9e653b52cb"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "value $F1",
+     "of": "doc",
+     "text": "An R2 value of $F1 puts the screen map base address at $0000.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "530",
+       "sha": "ccff61c11315cb908141209fe31b186acc2e79a45e97c3645a370e6d4ae46fea"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The normal setting for R2 is $FF, which positions the base address at $3800, the highest-addressed 2 KByte section of the 16 KByte Video RAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "531-532",
+       "sha": "11c572b9b6cd33e0d55bdebbdab92b5777ec504cae23d5e02116520b3292a384"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "reset",
+     "of": "doc",
+     "text": "R2 is $FF at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "609",
+       "sha": "28c3b2693f128f7ea557dcbe16ca6e0a6c0914a02c87fc068e777559b5c3dff2"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows R2 as four 1 bits, three screen base bits and a 1, $FF with the screen base at $3800.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "957-959",
+       "sha": "b57c367c4b56917726c412ef03501655d1c9bc221b2d7d0ac6e1c07374b53093"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "11",
+     "text": "MAME's reset fills the registers with 0x00 and then sets R2 to 0x0E.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2053",
+       "sha": "dea29c38e9df0d35aecaedef135992e42715a82bc0fd270b938f2573ca146283"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2055",
+       "sha": "6ef1624aac5c6181c9a4489f20e80bc40e786243dd0a37b57116f2443f877944"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "bit 0",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On the 315-5124 MAME ANDs the screen map row offset with a mask whose bit 10 is R2 bit 0, clearing bit 10 when R2 bit 0 is 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1012-1015",
+       "sha": "a0e153d0e732abb3eb08867293a1441f0864ee1d037442102aa4d36a69345903"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME takes the screen map base as (R2 << 10) & 0x3800 for 192 lines, and as ((R2 & 0x0c) << 10) | 0x0700 for other heights.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1059",
+       "sha": "832fb2457c71e3aeb01b190036b952346e3c7e56b7b9136a85ef7ccbf81cd964"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1061",
+       "sha": "2737dcf9425f1bf7b3e917de9d0be5df631f7aec1c5a2f0614a60991f68dbb06"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1066",
+       "sha": "c1faa1c28ac7dd981149c3c134f2ca2b9735a3794390f50f0794f190120c7f27"
+      }
+     ],
+     "row": "1"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "518",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "521-522",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "956",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "960",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1059",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0x103",
+   "name": "R3 color table base",
+   "aliases": [
+    "R3"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "533-534"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "610"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "961-965"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1024-1027"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R3 should always be set to $FF.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "534",
+       "sha": "6b3242c1487acda8e2ddd5578c85100673c086e3cc91ab1cda6b7899c0f25bd5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "R3 is an eight bit register, shown as $FF in the Appendix A diagram.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "963",
+       "sha": "bdd946f057c34f8060f3212386175cad5acc6039ce70227dc13bc3801e2a2d35"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "reset",
+     "of": "doc",
+     "text": "R3 is $FF at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "610",
+       "sha": "843621ee352ee6aa84f265f86d22afbd7ac7029baeaa01059d9bc10ec1fb1780"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "differs",
+     "row": "1",
+     "text": "On the 315-5124 in mode 4 MAME ANDs the tile number with R3 shifted left by one plus 1, so a 0 bit of R3 clears a tile number bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1024-1027",
+       "sha": "a51a5c37d191bb13409909c2b6fee4fcbfe02e43b7e9c986be4c9b1731f06d5c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "MAME's reset fills every register, R3 included, with 0x00.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2053",
+       "sha": "dea29c38e9df0d35aecaedef135992e42715a82bc0fd270b938f2573ca146283"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "533",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "961",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "962",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "964",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "965",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x104",
+   "name": "R4 pattern table base",
+   "aliases": [
+    "R4"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "535-536"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "611"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "966-970"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1036-1039"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "R4 should always be set to $FF.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "536",
+       "sha": "c4f33672cd0114e35694cb91ec6101bb7f8cc163883861ae6627cfa9d5374c78"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "R4 is an eight bit register, shown as $FF in the Appendix A diagram.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "968",
+       "sha": "a9fed88a725fa689da1e8b6d67e0dd65cba589222c4ae356c6ce83a6f8fee087"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "reset",
+     "of": "doc",
+     "text": "R4 is $FF at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "611",
+       "sha": "63bd03dd4562af9448d346034f437d110cbb0295a8314f5d581429f6e1862329"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "differs",
+     "row": "1",
+     "text": "On the 315-5124 in mode 4 MAME ANDs the tile number with R4 bits 0 to 2 shifted left by 6 plus 0x3F, clearing tile bits 6 to 8.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1036-1039",
+       "sha": "80e698d796874978aec809e992b74d0041d9288766c567ae3259048166143228"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "MAME's reset fills every register, R4 included, with 0x00.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2053",
+       "sha": "dea29c38e9df0d35aecaedef135992e42715a82bc0fd270b938f2573ca146283"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "535",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "966",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "967",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "969",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "970",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x105",
+   "name": "R5 sprite table base",
+   "aliases": [
+    "R5"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "537-546"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "612"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "971-975"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1129-1132"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1193"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1199"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1265-1266"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1259"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R5 controls the base address for the Sprite Attribute Table, a 256 byte table that can be positioned at one of 64 starting addresses in Video RAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "538-539",
+       "sha": "0ce9f2bdbd14a1fe5d8b946aa8e33e96e8d8ef017931962439609e8a470b1d1d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 6-1 = A13-A8",
+     "of": "doc",
+     "text": "The base address is formatted in R5 as a 1, the address bits A13 to A8, and a 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "540-543",
+       "sha": "7d525551475f338691be02f8309a0a7ebeda1e4ca7b189ef5f4823893b7fe450"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "value $FF",
+     "of": "doc",
+     "text": "The normal setting for R5 is $FF, which positions the Sprite Attribute Table at $3F00.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "544",
+       "sha": "d5a734af2bde2b1ba671c048d3b93f4e414e30a68b6f4983f1862f5418bbc8e2"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "With R2 and R5 both $FF the unused top 256 bytes of screen map memory are occupied by the 256 byte Sprite Attribute Table.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "544-546",
+       "sha": "2e99145378556d951ca89272caf95aed6bf8b053da34d51780b806884f144fc1"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "R5 is $FF at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "612",
+       "sha": "ab11d775515d8411e12120de64502ad2bcc31cbb7a87a64bb7eb2e1d00ce884f"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows R5 as a 1, six SAT base bits and a 1, $FF with the table at $3F00.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "972-974",
+       "sha": "bb06906c618bf3775377c09aaadd898a026aedad73685db41975e7f127353c45"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bit 0",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On the 315-5124 MAME adds 0x80 to the sprite attribute table base for the extra sprite data when R5 bit 0 is 1, and 0 when it is 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1129-1132",
+       "sha": "f912e4b071aa18c718f40cd55dde892f897d481ea53445a13f1e682395774fe7"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1266",
+       "sha": "a33b3974a751b40f7d427d0aedbfeb6971f3c1ebbe2c1e20aa01f03de789659e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "MAME's reset fills every register, R5 included, with 0x00.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2053",
+       "sha": "dea29c38e9df0d35aecaedef135992e42715a82bc0fd270b938f2573ca146283"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "is",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME's sprite attribute base is (R5 << 7) & 0x3f00 in mode 4, and (R5 & 0x7f) << 7 when the video mode is below 4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1193",
+       "sha": "8a55e9ad443a947fe207315ac85af5202bb6f5f5239fd039fe1a1371e7cc1e54"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1199",
+       "sha": "b23ad421b8ef91b38fcc8cc1e9c7c0b4cba3cd98f4e17adaf8051c529f152dd3"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1259",
+       "sha": "7dd530c4d36da47cd33396718ef1fa1e8c0f7d91ee551d7fdc1c73aa65edb454"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1265",
+       "sha": "239f06a5ee343a4500fca034b8fb40f187e2fbff1b28164b94d8ef4b57766c20"
+      }
+     ],
+     "row": "1"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "537",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "971",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "975",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1265",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1265",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1266",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1193",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x106",
+   "name": "R6 sprite pattern base",
+   "aliases": [
+    "R6"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "547-556"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "613"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "976-980"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1141-1144"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1193"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1248"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1304-1305"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1410"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1259"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R6 sets the base address for the sprite patterns.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "548",
+       "sha": "ed271815129fd089bb7443e2545f432fd872ae75a6e0c07fdfe546647afdef05"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Only two values are valid for R6.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "548",
+       "sha": "ed271815129fd089bb7443e2545f432fd872ae75a6e0c07fdfe546647afdef05"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "value $FB",
+     "of": "doc",
+     "text": "An R6 value of $FB puts the sprite patterns in the first 8K of Video RAM, the normal value.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "551",
+       "sha": "c4eb576a068d7fbfde47125d0c54575b603f02d94b8732058daac1ddbe3e3c01"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "value $FF",
+     "of": "doc",
+     "text": "An R6 value of $FF puts the sprite patterns in the second 8K of Video RAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "552",
+       "sha": "37bcb9a2c3d0e83c006f3195cfab343e11b7b9f9217d00852ceff6b4888710d8"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The first 8K is preferred: 256 sprite patterns fit there, but only 192 fit in the second 8K, which loses 2048 bytes to the screen map and Sprite Attribute Table.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "553-556",
+       "sha": "6103bf122619bdf6fbb74e446b9f77110c4ccce0dcbd99bb2ae512d141b35751"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "R6 is $FB at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "613",
+       "sha": "cd745d46abd2ff183c141bee4f6f3ef04027610dfe24544c98dea3745aa7bdf5"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows R6 as five 1 bits, a character generator bank bit and two 1 bits, $FB with the patterns at $0000.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "977-979",
+       "sha": "8675bd6e8b77f34b8c0e6280bb3e9d3beea65fc6738218873df669b3849fb952"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On the 315-5124 in mode 4 MAME masks the sprite tile number with R6 bits 1 and 0, so clearing either clears a tile number bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1141-1144",
+       "sha": "8ec662cd29f8dc7149273d0e8a5988c3db982e4c13b90834cfb4e38701a73211"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "differs",
+     "text": "In mode 4 MAME adds 256 to the tile number if R6 bit 2 is set; below mode 4 it stores ((R6 & 7) << 11) + sprite_line in m_sprite_pattern_line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1259",
+       "sha": "7dd530c4d36da47cd33396718ef1fa1e8c0f7d91ee551d7fdc1c73aa65edb454"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1304-1305",
+       "sha": "fca7c7c453746e194006aed9dadd13f401a257ca75919d8f94e7b49d37a2e053"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1193",
+       "sha": "8a55e9ad443a947fe207315ac85af5202bb6f5f5239fd039fe1a1371e7cc1e54"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1248",
+       "sha": "52207fff7cb0c33ed7fc779d0ece8c67762b7ce57b6488c4df565969d0c72596"
+      }
+     ],
+     "row": "1"
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "MAME's reset fills every register, R6 included, with 0x00.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2053",
+       "sha": "dea29c38e9df0d35aecaedef135992e42715a82bc0fd270b938f2573ca146283"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "547",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "549-550",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "976",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "980",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1193",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1304-1305",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1304-1305",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1410",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1410",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x107",
+   "name": "R7 backdrop color",
+   "aliases": [
+    "R7"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "557-562"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "614"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "981-985"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "99"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1649-1652"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1786-1787"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R7 sets the border color.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "558",
+       "sha": "07812817a0488ecedac0b2c01217f9543cf4bc902d16c8ce91e1501be5020308"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The border color is taken from the second bank of colors in VDP Color RAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "558-559",
+       "sha": "7363d031ad0684a60b4bc08fb04837ca877356167bfd02d3d9ae37cdd3e19e00"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 3-0 = C3-C0",
+     "of": "doc",
+     "text": "R7 holds the border color in its low four bits, C3 to C0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "560-562",
+       "sha": "ddc4536e2f92953bf3f825e4295fd821fcb42d725cd1ad29b107c20952a2d7fd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "reset",
+     "of": "doc",
+     "text": "R7 is $00 at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "614",
+       "sha": "e221c052b061a52401788a22cd8af4f17f407877144184623dda9c6874609c76"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows R7 as four 1 bits and four border color bits, the border color.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "982-984",
+       "sha": "34e147c8356e24c812f6a2f7affa71d797cd1e23e41336463c8882df0bd0d23a"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bits 7-0",
+     "of": "mame",
+     "vs": "extra",
+     "text": "For a set pattern bit MAME takes the pen from the high four bits of R7, and for a clear one from the low four bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1649-1652",
+       "sha": "dbac9b869c6eef05859ef8e85fc1ba731e7c71fad1f72db29b26609c33508686"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "557",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "981",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "985",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "99",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1786-1787",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1786-1787",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x108",
+   "name": "R8 horizontal scroll",
+   "aliases": [
+    "R8",
+    "XSCROLL"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "563-569"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "615"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "986-990"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "576"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "911-913"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1052-1055"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1074"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1118"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "567"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R8 sets the horizontal scroll value for the background scene, and a value of $00 produces no scrolling.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "564-565",
+       "sha": "3becd5c2a26c9b5b54c8097952c607b147d2417dfc78e9c2e8b4104a94a2885e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A value of $01 moves the background scene one pixel to the left and moves the leftmost column of pixels to the rightmost column.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "565-566",
+       "sha": "de33faad286ef718bf1108742aa7666e081c8d03f4866836b11bd0bf787f0b3f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Higher values of R8 rotate the screen horizontally to a maximum of 255 pixels for a value of $FF.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "567",
+       "sha": "f5996e5b27f857cae54d9dc5fa6c43f43aafd3bbcf3eaa4edb5eb52d66debf2e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Horizontal scrolling resembles a rotating vertical cylinder, with graphic information disappearing from the left side of the screen and reappearing on the right side.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "568-569",
+       "sha": "f45772fc89979e2c3bb311c8c90dd5cf0a783d746de0f2a77dada473a4f3309c"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "R8 is $00 at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "615",
+       "sha": "00c01b837a037405ac8ed458d9c50b8e8a0509fa3f586bcfd87efeac7d32b78a"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows R8 as eight horizontal scroll bits, $00, with an arrow pointing left.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "987-989",
+       "sha": "71c372113e01d2db13798f1ae25f6555065b015fbaa4f34bb21a2ba87a2417e6"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "MAME adds R8's low three bits to each tile pixel position and starts earlier by R8 divided by 8 tile columns, so larger values move the picture right.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1054-1055",
+       "sha": "75c65123b0ca98bf8a126db9ee26fe556a41375da1139c76335c68190e2f6b4d"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1074",
+       "sha": "9cd15468e596d688105530a9eac762254c20d4c664c1f342db8bdfe16df34021"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1118",
+       "sha": "4d82e30051d852104fdac9bd7fb9f6e5ff70400dd5b1ef65e9edf0b1153f03ef"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME copies R8 into m_reg8copy in its process_line_timer callback, and at once when R8 is written early in the line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "567",
+       "sha": "73f994246cda5b4f0e0573ca6f9d922881540a7f77f472c1cee7914198ddc087"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "576",
+       "sha": "b1253631bfdaf32e984692f485090bfc473a411358f334e4f8cf3479e516ec61"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "911-913",
+       "sha": "ddbd24f75f4b80fb2fb6145713c9e96e74fa8de8b3be08260857c6932ec6c36a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "563",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "986",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "990",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1052-1055",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1052-1055",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1074",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x109",
+   "name": "R9 vertical scroll",
+   "aliases": [
+    "R9",
+    "YSCROLL"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "570-576"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "616"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "991-995"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "648-651"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1064-1068"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1078"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1080"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1090"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "643"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R9 sets the vertical scroll value for the background scene, and a value of $00 produces no scrolling.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "571",
+       "sha": "ca42f3f8c84035eb297e672efedad8aaf9055d89d61997be42312d81f4e57133"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A value of $01 moves the background scene one pixel upward.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "571-572",
+       "sha": "9d0f7d6a6654b71774ec2c7568991efbc095e4d2ac763a5343eef381d7ccef68"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The vertical scrolling resembles a rotating horizontal cylinder whose wrap around point is at the 28th character row, not at the screen edge.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "572-575",
+       "sha": "221dc1228b940db6faa1b02371d8e4a3ac164a8d39844a682e3c9a0cd9ef062f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 9 is latched in vertical blanking.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "576",
+       "sha": "9ae868b9846715117d8e7823dd2ac97f1d2423201a5518c57076092c3328dfa6"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "reset",
+     "of": "doc",
+     "text": "R9 is $00 at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "616",
+       "sha": "9a9829f7beeed3fb342b6874b35473df22f5dcc97e7b3196016e3295d157ff4d"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows R9 as eight vertical scroll bits with the value $00.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "992-994",
+       "sha": "9e661757683eae777e31764b45bb57267890d5701c531911d2f50ec21c9a7a7a"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "MAME copies R9 into its scroll latch when the line timer reaches the first line of the active display.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "643",
+       "sha": "5987f34cafe750f36ecd245f2a18778ec465f88e1c5de031a55fde53afee02c2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "648-651",
+       "sha": "02d6c34b7b116f610d8f47f4fcd4ff3d7833ad2f3e00c3508f77abc4329d83b6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "570",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "991",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "995",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1078",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1080",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1080",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1090",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1067",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1080",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1064",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1065",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1066",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1068",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x10A",
+   "name": "R10 line counter",
+   "aliases": [
+    "R10",
+    "HLI"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "577-605"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "617"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "996-1000"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "602-605"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "607-612"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "653-662"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "676-679"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2056"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "643-646"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "108-113"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "R10 controls the Raster Line Interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "578",
+       "sha": "63eede8d7114d48e2422d8356fb9c912d13f6ba7d1ad75192f565bf7390e0ae8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The picture has 192 raster lines, each followed by an HBLANK of about 10 microseconds in which the beam retraces to the left.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "579-583",
+       "sha": "5e4fe54a87af6a976c20429042c1ff3ac5440dc8ca233e6fe682bf8449e9910c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "An interrupt just after a selected raster line has been displayed lets a program change a color after the beam has swept the top half.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "584-586",
+       "sha": "652a6d96a6c63b686c42300c4d787cca4ee941b997400de5ba16dc9538f039c1"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Loading R10 with 94 generates a Raster Line Interrupt Request every time the 95th horizontal line finishes its scan.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "587-588",
+       "sha": "2ce1827a42a376b2d7e45ccb11110c0dc17116408ee820b729b5bdc36dfea8c8"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The value loaded into R10 should be one less than the raster line that should trigger the interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "589",
+       "sha": "d0a6446a18b1a88ea724b7d6a7fedaff87039ce66edafb9822015c68b17423d0"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "The Raster Line Interrupt continues to generate interrupt requests as the beam sweeps the screen.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "590",
+       "sha": "5c08e0e8bb93ef7b6cb910f04181219eb3b1f95d425bb9bd28f81f2899575d53"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "R10 values $C0 to $FF give no interrupt requests at HBLANK.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "593-595",
+       "sha": "84aab8c7b11199de237b06299ed80fa0b447df3108ac0730e52181e326a1384f"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "R10 value $00 requests the interrupt at HBLANK of lines 1, 2, 3 and on to 191.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "596",
+       "sha": "afc725ac9a6a7ffda49fd380600fa4b15decff30caf71cf17a051a9ad527518c"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "R10 value $01 requests it at HBLANK of lines 2, 4, 6 and on to 190.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "597",
+       "sha": "46237aadfacd6d94618b7aa0b00dfef20c0fdce867aa5abb98dbf6213d1dd93d"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "R10 value $02 requests it at HBLANK of lines 3, 6, 9 and on to 189.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "598",
+       "sha": "dc9cce3929b997cf02c923f27b47dc0e18f2dd3f7de70c4ebe0810ea7f6d5800"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "R10 value $03 requests it at HBLANK of lines 4, 8, 12 and on to 188, and so on for higher values.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "599-600",
+       "sha": "ee1d5e4d9ce714cca66ba8f645f285cccfa3ffdbdf29da34ea98c68a8cc3c367"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "R10 value $FF turns off the interrupt requests.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "601",
+       "sha": "558b0d1378652168f78409071d58f6f46637d84b7cdcc7081937fd1d33642803"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "R10 value $00 gives a Raster Line interrupt request for every horizontal line.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "601-602",
+       "sha": "fa097ee3d44674acd1a944bcc5d7e1805f63db90a8e79e5a7bd8f1d4153185c0"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "There is a one interrupt delay between loading R10 and having the value take effect.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "603-605",
+       "sha": "98fe928e16da356072729acfd84d0dda486e1c297ac64a511d753825710bc751"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "reset",
+     "of": "doc",
+     "text": "R10 is $FF at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "617",
+       "sha": "38bfed650bb78297ab5d238ce1d15456cca9e101c6755eee38c219db9ff5ba22"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows R10 as eight line interrupt bits with the value $FF, where $C1 to $FF disable the interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "997-999",
+       "sha": "269fca17085b5402b0e912a9f8e453c04fdbde8cdf2c8eda6f80355da8ac2137"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME raises the line interrupt on the first bottom border line when its line counter is 0. Top border lines reload the counter from R10; active lines count it down.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "602-605",
+       "sha": "085918328461fe17a86cb6b6aecb4174094c005240733e59cbf8cdab7450a974"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "607-612",
+       "sha": "3709873ac1d9c791833c85c1059eab0468b756e2dfcaa247aa09eddb82f31205"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "643-646",
+       "sha": "1be0c09eaf57b700f95a5648828fa4d9cc6d6841e887fec46f6cc82bead04958"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "653-662",
+       "sha": "b9ac9cfa83633d7df53e282cf73443e4d336a16f9b3fdbcb051f8a0e278978c5"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "676-679",
+       "sha": "e9398a0439f341a868aa449f9d2fcc061008d8c401344d697f6d34bd426851c4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "577",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "591-592",
+     "as": "see-also"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "653-658",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "605",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "996",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1000",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "653-662",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "653-658",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "653-658",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "679",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "653-662",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2056",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "108-113",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "643-646",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0x10B..0x10F",
+   "name": "R11 to R15 unused",
+   "aliases": [
+    "R11-R15"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "363-364"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "416-417"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "251"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "887"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "892-896"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "256"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "265"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The VDP is controlled by eleven internal 8-bit registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "363",
+       "sha": "bd8deb253319877930b370742227fd5d243fbc3b47da59ca022823dc72545583"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The register number in a register write is r3 to r0 and ranges from 0 through 10, $00 through $0A.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "416",
+       "sha": "d45b062c9fa17d32160b9c6e75a78cb27eb85c27c59e96ae1bbc165551ac0a09"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "MAME's constructor passes 0x0F as reg_num_mask, which control_write ANDs with the second byte before storing the data for numbers up to 0x0F.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "251",
+       "sha": "42d561f2d6ed1539a98d48155b03fa9cd4f1817dab6c2abe5661a65b2a36524a"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "256",
+       "sha": "9effba9431906cfa2f60cf14a413ef40e42aa23c34567e2c43dadd2489eeac1a"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "265",
+       "sha": "b7f2f8fe26dfe3f57df65257968af1a7bb718ec4172c9efae4caf277e49fad29"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "887",
+       "sha": "8ca1a39836627a4798ed05374a79acb9daba32d0366a090f16d9a646ac6ee76f"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "892-896",
+       "sha": "d667d9d9cd6213e04a9cef10648d41a1dd95e212f92d10004c666da89d144915"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "364",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "417",
+     "as": "layout"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1908 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "sega315_5124",
+ "title": "Sega 315-5124 VDP ports",
+ "kind": "register",
+ "scope": "sega315_5124",
+ "covers": "The four direct ports of the Mark III and Master System VDP: data, command and status, vertical counter and horizontal counter, and what MAME does for each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SegaMk3-SRM.raw.txt",
+   "variant": "mark3"
+  }
+ ],
+ "official": {
+  "SegaMk3-SRM.raw.txt": [
+   "147-152",
+   "365-435",
+   "470-471",
+   "733-737",
+   "788-789",
+   "1001-1012",
+   "1024-1034",
+   "1041-1059"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:SegaMk3-SRM.raw.txt",
+   "lines": "1001",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:SegaMk3-SRM.raw.txt",
+   "lines": "1045-1046",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:SegaMk3-SRM.raw.txt",
+   "lines": "1050",
+   "as": "layout"
+  }
+ ],
+ "engine": [
+  "m_n_int_cb",
+  "set_display_settings",
+  "read_byte",
+  "write_byte",
+  "sega315_5124_palette"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "data read",
+   "aliases": [
+    "VDP data read"
+   ],
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "367"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "402-408"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "736"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1041-1042"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::data_read"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "I/O port $BE is the read/write DATA register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "367",
+       "sha": "cdeb10787d9611f6b38bd9db4e9a7e56d65cfb4158ef63d4aa8428a2d6f86f22"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "Data can be read at Input Port $BE.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "402-403",
+       "sha": "9c79a9381a166c0b55dcabb363869abfaa8594b79841dcfa69cafd939f5f618a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Once the Video RAM starting address has been loaded, repeated accesses of the data port increase the address automatically by one byte for every access.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "404-406",
+       "sha": "4491d9ef797f7e36c24cb7d4e31040e92f4af8ca971ca7bfea6dd2f88b1c0bcf"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "The autoincrement feature works only with all reads or all writes; changing from read to write or the reverse requires two writes to the command register to reselect the mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "407-408",
+       "sha": "90536d232d10e47a84a392a25095fbc2a80d440505ae93a369c8f6fa84c59b13"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Port $BE is an input and output port for the VDP data register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "736",
+       "sha": "3b813351c287480ea76ae39085dcbcbdb40d3094a79fb34d2ac04f338e6451dc"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "doc",
+     "text": "Port $BE is read to get VDP data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1041-1042",
+       "sha": "08bdb480032635d20834d32499bfd6817dac2ae69c058b6596df214685746898"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "Each data port read in MAME, except a debugger read, reloads the buffer and increments the address register, whatever came before.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "705-713",
+       "sha": "33dbfc7dea10e39a6e508efa28917f4bc8f9c3f165b72ee62b86235001eea1ed"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "714-722",
+       "sha": "aafab67cf6b9a6634d5d8748d2c3d50337be4f8838b5c06ac707275d3aafacfe"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's data port read returns the byte held in a buffer and, except on a debugger read, reloads it from video RAM at the address register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "707",
+       "sha": "0231dd4450c363538b617f1f96fdee9cd9727fdf1676c2cda7e2add969b04d4b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "713",
+       "sha": "a21e13538ad988e3359e470e31c0aa2b23ab9ad592a5183de72041c1b943c7bb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "716",
+       "sha": "2130957601d32a13e5a097fe5c1796e2d892de10938d86cbb9c2547bb015b839"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "721",
+       "sha": "91a32d9cb4a6e9709994e5659f26edc34df01289cccce9158c63ae5aefc67555"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data port read in MAME also cancels a half-finished command write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "711",
+       "sha": "4cc166c8a08857beadfc941f5853c609e3a81fb3af71999b606b01f293437c6e"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data port write in MAME loads the byte a later data port read returns, the read buffer, with the written byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "707",
+       "sha": "0231dd4450c363538b617f1f96fdee9cd9727fdf1676c2cda7e2add969b04d4b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "721",
+       "sha": "91a32d9cb4a6e9709994e5659f26edc34df01289cccce9158c63ae5aefc67555"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "807",
+       "sha": "fbf64526816293faaccedf81671cd429cc5c75620a91915d2ec10c82ca56eb85"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A completed command pair that selects read mode loads the read buffer from video RAM at the new address in MAME, and increments the address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "707",
+       "sha": "0231dd4450c363538b617f1f96fdee9cd9727fdf1676c2cda7e2add969b04d4b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "721",
+       "sha": "91a32d9cb4a6e9709994e5659f26edc34df01289cccce9158c63ae5aefc67555"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "879-880",
+       "sha": "a2248d93a4769df1b911cd955165522e3478640f46ca4580dfb65ff4b1628aa6"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's device reset sets the read buffer to 0, so a data port read straight after reset returns 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "707",
+       "sha": "0231dd4450c363538b617f1f96fdee9cd9727fdf1676c2cda7e2add969b04d4b"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "721",
+       "sha": "91a32d9cb4a6e9709994e5659f26edc34df01289cccce9158c63ae5aefc67555"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2071",
+       "sha": "068d8766132cfa30352bc3ab132f866ff6eeed9a3dc052269891b8c65b2b441c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "721",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "721",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "719",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "713",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "name": "data write",
+   "aliases": [
+    "VDP data write"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "427-435"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1043-1044"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::data_write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::write_memory"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::cram_write"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "After the COMMAND byte pair is loaded, the color RAM data is written to Output Port $BE.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "427-428",
+       "sha": "320badae96905038f8d161e8655d753ecafa35c84b73c5bf37fde98ec87f61d0"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The color RAM data written to Output Port $BE has the format 0 0 b1 b0 g1 g0 r1 r0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "429-431",
+       "sha": "c3ff898a81a94bd9ae61576edd2aced927d17f707544308e4ce19aa93b2b4e69"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "In the color RAM data b1-b0 set four intensities for blue, g1-g0 for green and r1-r0 for red.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "432-433",
+       "sha": "a8b295c712c205c0c7e565fec27123b510f0f54720db7d36a28ed49a8c749ae2"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "As with the Video RAM, repeated writes to Output Port $BE automatically increment the Color RAM address.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "434-435",
+       "sha": "7407dd76881946a2b77b3298e923aa57e0fb07762f12ffb757c2ba595ff61680"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "This port is written to send VDP data.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1043",
+       "sha": "ac163739f94bd0a12d86e4193ea4f0bd08bf8437c1bc5539bb17fe673c8cec91"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data port write in MAME also cancels a half-finished command write.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "832",
+       "sha": "4cc166c8a08857beadfc941f5853c609e3a81fb3af71999b606b01f293437c6e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A data port write in MAME also loads the read buffer with the written byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "807",
+       "sha": "fbf64526816293faaccedf81671cd429cc5c75620a91915d2ec10c82ca56eb85"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A color RAM write in MAME sets the m_cram_dirty flag only when the written byte differs from the stored one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1919-1927",
+       "sha": "a0f3b388a153473068496185bf63850a3eafc4c91e994f487e06c1d08f5b78b0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1044",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "835",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "798",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "802",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1924",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "802",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1924",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "793",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "795-797",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "799",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "801",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "803",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1921-1924",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "status",
+   "aliases": [
+    "VDP status",
+    "STATUS"
+   ],
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "147-152"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "365-366"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "370-372"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "470-471"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "737"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1002-1005"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1051-1059"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::control_read"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::check_pending_flags"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "I/O location $BF is the COMMAND register for a write and the STATUS register for a read.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "365-366",
+       "sha": "020e1ebedf563b043d84c60610fc536e36d34805921b51d1956389e7a062ad8c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "When read with an IN ($BF) instruction, the command register functions as an interrupt status register and also clears interrupt requests from the VDP chip.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "470-471",
+       "sha": "87a2903c9fef12bc3829818592b03a61d32ad3fd44c8940b6180a0a7be05a542"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading the I/O port at $BF clears the interrupt request line from the VDP chip.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "147-148",
+       "sha": "03201bb35cb95dea4f1a960193bb32a045681d1e45f004fb9856307141ed6cec"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 7",
+     "of": "doc",
+     "text": "Status bit 7 is 1 for a VBLANK interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "149",
+       "sha": "4479afe33c3ad2c615da6141e999dcdb69d964518815a00e23534a9d442b3b88"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bit 6",
+     "of": "doc",
+     "text": "Status bit 6 is 1 for 9 sprites on a raster line.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "150",
+       "sha": "7a50b124dbe356bf18bea2eb368ee88b2f93376850dedf80ad32f1074d87e864"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bit 5",
+     "of": "doc",
+     "text": "Status bit 5 is 1 for a sprite collision.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "151",
+       "sha": "8997a68180ba94b605429be98c9123a4c3fcb189e8856ea6786d1cefc41a58a8"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "bits 4-0",
+     "of": "doc",
+     "text": "Status bits 4 to 0 have no significance.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "152",
+       "sha": "53e7a71efe1d5edd3d1e11db9cc24191931a91b9d1a73d52181eca8dc3c1f72d"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "read",
+     "of": "doc",
+     "text": "An interrupt routine that reads the VDP status register disrupts the two byte synchronization of the command register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "370-372",
+       "sha": "4468090530fbed6648b722db08bb0d634cbebb5fd8d6fa2b91e42b4505474e1c"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Port $BF is an input and output port for the VDP command and status register.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "737",
+       "sha": "50473be8b3af5b396c8dc552d4d846b4b5ad8072647f4fb2012d6cd30b5f44ae"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows the read of port $BF as the status: interrupt source (VBL), nine sprites flag, sprites collide flag and five unused bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1002-1004",
+       "sha": "9cb122310aa3d3afd6af1db3db6a4b4d0c952678db7f8996218e3f7cf980d8c8"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "read",
+     "of": "doc",
+     "text": "The interrupt source, sprite overflow and sprite collision flags of port $BF are cleared by reading $BF.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1051-1059",
+       "sha": "b05ec05ffd9e6b6f362cbe7a3194a0f2ac317f3504cdf26cc99140be48989c41"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bits 4-0",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME's status read gives 1 in bits 4 to 0 once the flags are cleared; after sprite overflows they hold a value derived from the sprite indexes, ANDed together.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "754-755",
+       "sha": "b5162b357c12c2b400e383e254bc16823be3d9524dc47e23ae6534c9b06b85f0"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "778",
+       "sha": "11f664b3446409de904083f266ab1e6110f37a3e58e0616c1bea7fc9c7808a15"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "1160-1165",
+       "sha": "21f538b2a50b4397a1308a9da0844a5e6f81ef03600aae77fa294ea451eb69ef"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's status read first moves a pending line interrupt to the occurred latch once the beam has reached its position in the line, and clears that latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "736-741",
+       "sha": "73a39311863ba68711730dfd86ad09d86617bbcda7280ba21e3a474a38ef64a8"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "771",
+       "sha": "a21e13538ad988e3359e470e31c0aa2b23ab9ad592a5183de72041c1b943c7bb"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "777",
+       "sha": "7f1f357d84168666ece8482a2077b834b27104cfa41b515950c887831efa0655"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's device reset clears the vertical interrupt, sprite overflow and sprite collision flags of the status byte and sets the other bits to 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2058",
+       "sha": "fd90b0c84a726527fd1a8201c6b60928c671aa7e7f12fa48e977566172304246"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1005",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "771",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "727",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "728",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "743",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "748",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "757",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "774",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "778",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "780-783",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "778",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "780-783",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "787",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "780-783",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "745-746",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "750-751",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "759-761",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "control write",
+   "aliases": [
+    "VDP command",
+    "COMMAND"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "368-369"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "373-389"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "390-401"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "409-415"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "416-417"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "418-426"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1006-1012"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1047-1049"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::control_write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::load_vram_addr"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::write_memory"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::cram_write"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The Command Register is written twice in succession for all command operations.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "368",
+       "sha": "979512642e1e5c1b00fda08df488ce048ebb4d0e5854e7474fc9f2dff7e59235"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The data register may be read or written any number of times in succession, depending on the operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "368-369",
+       "sha": "167f8817d18406f95a8ce7a287aba062b3a1c94c4e724bf2ec44dc5f171dace5"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Two consecutive OUT or IN instructions to the VDP should be separated by at least a NOP, for Video RAM, Color RAM and the internal registers alike.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "377-379",
+       "sha": "991f37e1425994727ea716f8fee31d0de7b6cce8b2b6014268349a0b8907ce2a"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bits 7-6",
+     "of": "doc",
+     "text": "A two bit mode field in bits 7 and 6 of the second COMMAND byte determines one of four operations.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "380-381",
+       "sha": "8c11e2320b1ce4551cf8c79a3c42015633aa7d408a8df60b2289c02f87ecfe32"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 7-6 = 00",
+     "of": "doc",
+     "text": "Mode field 00 in the second COMMAND byte selects the Read 16 Kbyte VDP RAM operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "384",
+       "sha": "4f26e87e5182b8dc4a153df00e1dc54e275701a5c40dbdeec946316f8574e937"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 7-6 = 01",
+     "of": "doc",
+     "text": "Mode field 01 in the second COMMAND byte selects the Write 16 Kbyte VDP RAM operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "385",
+       "sha": "f1d12c46c13d113eb3543737b60263c82f165311f6acb06c0ce1dea288106527"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "bits 7-6 = 10",
+     "of": "doc",
+     "text": "Mode field 10 in the second COMMAND byte selects the Write VDP Register operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "386",
+       "sha": "e236f48fc8a22099d6b2cd7a62bd3a9dd60084aecf2b420644d81aa03b98fb5b"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bits 7-6 = 11",
+     "of": "doc",
+     "text": "Mode field 11 in the second COMMAND byte selects the Write Color RAM operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "387",
+       "sha": "cd96fb2e2d26a4b5f27789f282f3c46a36cf4f7759d8890dcb53739b1c2ed323"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "To set up a read or a write of Video RAM the two COMMAND bytes have the formats shown after this line.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "388-389",
+       "sha": "d0ae136520d49cc8363956350ee2449a540c6f45f58589f2d243857e02a59a45"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "To read VDP RAM the first command byte written to $BF is address bits A7 to A0 and the second is 0 0 followed by A13 to A8.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "391-395",
+       "sha": "a2f040a5555f60135fff9c2b6aaf9c280c4d18b778bb52b6198f004320e26775"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "To write VDP RAM the first command byte written to $BF is address bits A7 to A0 and the second is 0 1 followed by A13 to A8.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "397-401",
+       "sha": "8382736d15cfd30d1747344d06b0f8c7f5326403b9ac63c700e1af97aae42d1a"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The COMMAND register format for writing a VDP register is shown after this line, and the registers are write-only.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "409",
+       "sha": "7a0914df2b6324dba94e9ee9159b80c0cbbddd167eba42ec21a1e23766cb8001"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "doc",
+     "text": "To write a VDP register the first command byte is data d7 to d0 and the second is 1 0 0 0 then register number r3 to r0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "410-415",
+       "sha": "7d774216f0d71ffefea9b01d8e60938abf9cb1e6b75850e0238d8060b97f2d26"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "A register write has no write to the DATA register at $BE, since the data d7 to d0 is in the first byte of the COMMAND byte pair.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "418-419",
+       "sha": "e4d9f55c5ce69d73d3b98029cd26abb7bd6ec44f3004b4a06c841c273c7d5049"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "The final command mode allows writing color values to the write-only VDP Color RAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "420",
+       "sha": "944c6766c0fb3475da69f1cc0300d9f6cc2dc505849a9b1a8ff83bfbaf09488f"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "doc",
+     "text": "To write Color RAM the first command byte is 0 0 0 then address A4 to A0, and the second byte is 1 1 0 0 0 0 0 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "421-426",
+       "sha": "2296d6bb05a76ca0b90c9254aaeb9fdedbb20b8aef9da2c16ed9e6023698d823"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "The Appendix A diagram shows a register write as a first byte of register data and a second byte 1 0 X X r3 to r0.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1006-1010",
+       "sha": "6b32b6eac1c741d5b11457bbb1d94a07c34271ba6e17d6b531530a6e46573fc9"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "is",
+     "of": "doc",
+     "text": "Interrupts should be disabled first because the command register must always be written twice and register accesses are sequence sensitive.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1011-1012",
+       "sha": "94fcad744c75b9e32c020f3c001012788901ae202df08114a3d60a0f4f8a9f0a"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "write",
+     "of": "doc",
+     "text": "Port $BF is written to send a VDP command.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1047",
+       "sha": "cda5653bd32a146000a290d7cc85d49d22667d1003f7e1e5e5e2588f5707de89"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME completes a read command by loading the read buffer from video RAM at the new address and incrementing the address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "879-880",
+       "sha": "a2248d93a4769df1b911cd955165522e3478640f46ca4580dfb65ff4b1628aa6"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After a write to R0 or R1 with the matching interrupt flag already set, MAME clears /INT if the enable bit is 0 and asserts it if 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "918",
+       "sha": "55f8fdaa3fa49fd3fe35efa67db937fa4fd7182ef6bf4c3a34b15d8321c4df63"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "931-932",
+       "sha": "a1ea250409d0c72639916fea35c39b26afe95b717c0e5e2b57b46bba771a4226"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "934-937",
+       "sha": "4d09b69d7a6c829e9fbea73e5e91cd93319418e855527b2ae28993e136e5101c"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "940-949",
+       "sha": "a40b1e954a3c59554e310511b660f75f6b2513c3f262149d578e2f0d5327ce5f"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After a register write MAME sets the address mode back to 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "952",
+       "sha": "f45b9b2c7a48578f2e546321b815fa4adae12d6855bcd0074ea810987aebd01f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "373-376",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "382-383",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "390",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "396",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "416-417",
+     "as": "elsewhere",
+     "owner": "sega315_5124:register:0x10B..0x10F"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1048-1049",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "864",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "872",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "879-880",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "798",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "802",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1924",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "845",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "847",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "845",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "847",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "896",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "845",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "847",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "802",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1921-1924",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "864",
+     "as": "agrees",
+     "row": "19"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "874",
+     "as": "agrees",
+     "row": "19"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "862",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "868",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "876",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "878",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "881",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "883-884",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "886",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "892",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "894",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "899",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "901",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "903",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "905-906",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "908-909",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x101"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "910",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "911-913",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x108"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "953",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "807",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "793",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "795-797",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "799",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "801",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "803",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1922",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "1925",
+     "as": "parent",
+     "owner": "sega315_5124:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "955-956",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "847",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "887-896",
+     "as": "agrees",
+     "row": "13"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "879-880",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "798",
+     "as": "agrees",
+     "row": "11"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "V counter",
+   "aliases": [
+    "VCOUNT",
+    "gun spot vertical"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "733"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "788-789"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1024-1029"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::vcount_read"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::vcount"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Port $7E is an input port that holds the vertical gun spot position.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "733",
+       "sha": "b038db26916a033798c9b214e51c2f6864237c4bd88ba9475370bcc52cc0b144"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "The vertical beam position is latched into a register, which is read at input port $7E.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "788-789",
+       "sha": "42f265dbb65fa091ca5957f45572a0151abbef97f5a211591586ecf73d5936bc"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of port $7E returns the eight bits V7 to V0 of the vertical gun position.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1024-1029",
+       "sha": "cfcab4a4c341ea80362b8145ea628040fbccf53fce7c3cd77f20dfd8510dd464"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "MAME's read of port $7E returns the line number worked out from the screen position at the time of the read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "416",
+       "sha": "b3b89b0c523826ad70ef28307180b01ec23611a70ccc23a0762f356edd108bab"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "427",
+       "sha": "eeb17076434fdc2a294ff0e06118fd61b4d7a28a9d686fd24d5ae469f43210bd"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "433-443",
+       "sha": "362baa44fadce7a1165d928d8fef9cfcd9a17db28a7e7c01bd62a25e34d44aba"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "That line number is the screen line minus the first active line, and holds the previous line until a set position early in the line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "433",
+       "sha": "763bd79c5499472335f12dfca1111eb02bc74a759927895e7d8407fdc462b4a2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "436-441",
+       "sha": "fff2b157495d6043cc886126dcadf3701d62346e6825647f814365512f435330"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "443",
+       "sha": "fe18466640ba22b4b74b8a76d2fa080cf0b3c5f1ff7bcae4900cab195746d533"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "427",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "443",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "H counter",
+   "aliases": [
+    "HCOUNT",
+    "gun spot horizontal"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "734-735"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "1030-1034"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::hcount_read"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::hcount_latch"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::hcount"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "682"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "684"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Port $7F is an input port that holds the horizontal gun spot position, and as an output port it is the PSG.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "734-735",
+       "sha": "4596ba52bc6a7cd53481eaa99503fda353661d220d9ecb8376fc815f26a04a7b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "A read of port $7F returns the eight bits H7 to H0 of the horizontal gun position.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "1030-1034",
+       "sha": "3bae885b4048e12703c919191167729d098978328c7aa3a918c3a477b4665603"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME latches the horizontal count in its hcount_latch function, and a read of the port returns the stored count.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "454-457",
+       "sha": "c60f0e52cd9a8c823ec17356886277ddd4f582025d3db254dc1127b0374e39e2"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "450",
+       "sha": "19289a4d34dfc4116c33304977fcd3cf50c223966a93dc15c26348ff3522597e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of the horizontal counter port in MAME also clears the latched flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "449",
+       "sha": "fcf62c2ae79a42a280a06663814bc351a86247005e2473dd3a239a8e5a391cbe"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The stored count is the previous horizontal clock position minus 46, halved, in the low eight bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "464-468",
+       "sha": "4b77f6bcf174ca34f7ddf313ea2f628fd4692d347044a625b0f287a7ee95e9d5"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME clears the latched flag on the last line of the top border.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "682",
+       "sha": "747233dcdb5bdf63477c87a4d9cb6a9151aa633f070b8eb7901de71149bc20fc"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "684",
+       "sha": "fcf62c2ae79a42a280a06663814bc351a86247005e2473dd3a239a8e5a391cbe"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's device reset sets the stored horizontal count to 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2077",
+       "sha": "b28b9290e591d5e1c3624b88ff4b469287ef41e6400e4b38cc6cbcab035bf6b5"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "450",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "682",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "465",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

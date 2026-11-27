@@ -1,0 +1,452 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "upd7759-device",
+ "title": "The uPD7759 speech processor as a device",
+ "kind": "device",
+ "scope": "upd7759",
+ "covers": "the uPD7759 as a device: what the chip is, its features, reset and standby, and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "NEC-DSP-Speech-1992.raw.txt",
+   "variant": "upd7759"
+  }
+ ],
+ "official": {
+  "NEC-DSP-Speech-1992.raw.txt": [
+   "20933-20966",
+   "21161-21172"
+  ]
+ },
+ "engine": [
+  "stream_alloc",
+  "from_hz",
+  "timer_alloc",
+  "drq_update",
+  "adjust",
+  "m_drqcallback"
+ ],
+ "entries": [
+  {
+   "key": "upd7759",
+   "name": "NEC uPD7759",
+   "regions": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "20933-20966"
+    },
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21161-21172"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::device_start"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd7759_device::device_start"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd7759_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "379-383"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The uPD7759 is a speech processing LSI that uses ADPCM with an external ROM to produce high-quality speech.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20933-20936",
+       "sha": "1ba91c55155c2a1bddc1ef0a208cc90cadf1d405d6806ee187c796b2b741d7be"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Combining melody mode with ADPCM and pause compression gives a compressed bit rate that can reproduce sound effects and melodies as well as speech.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20936-20940",
+       "sha": "e7421312d77e6b03f5409ff0be54838c850fc9e39829d3abed27a77fd44478f0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The chip can address up to 1M bits of external data ROM directly, or the host CPU can control the speech data transfer.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20941-20943",
+       "sha": "bf09adee4a99d3c7c519856e598d35886829c0d83c00a3b95e7ce1cfa236925e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "It also suits applications with small production quantities or long messages, and emulating the uPD7755, 56, P56, 57, P57 and 58 (the capture reads `thepPD7755`).",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20943-20946",
+       "sha": "e96664d1456c86283a7ee2aeda255bad9ed8a38ac3a857e3745577520e0096b4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "ADPCM with pause compression gives bit rates of 10 to 32 kb/s, and melody mode gives bit rates below 1 kb/s for sound effects, melodies and DTMF tones.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20948-20952",
+       "sha": "ed58b43e86587aaa2c49a299354a1901bb0e0b9e36b2919eed3067a649b23954"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "The sampling frequency is 5, 6 or 8 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20953",
+       "sha": "9321386b49f978fcb369d83ff1c13d3588f491c09d69cac4a8abd3211daa9fe4"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The D/A converter has 9-bit resolution and a unipolar current waveform output.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20954-20955",
+       "sha": "2d2bf94ccb198c356d7da43bb13204fd4c8854ffc9814cdecae820f0bfa4007f"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The external data ROM addressing reaches 1M bits, and the reproduction time is 50 seconds typical at 6 kHz sampling.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20956-20958",
+       "sha": "e8a8ce4340252f345bd4cc699d610eb87238727dd4c7452ca554469871092c55"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The chip has a standby function and a circuit that eliminates popcorn noise when entering or releasing standby mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20959-20961",
+       "sha": "98819da0c486b48616c71cd1b36474a45577adf70041fad36806dd8f3d4f4660"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The control signal interface suits a general purpose 4- or 8-bit CPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "20962-20963",
+       "sha": "219855a602eaae9b3f454115db9e932de31e27580e185b8b14162a0483eae770"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The clock pins should be connected to a ceramic resonator at 640 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21161-21162",
+       "sha": "2a5a12ac6ad148b19f3cfaa578ff37bb4eb54ea174605e99ae014f4f546b657e"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "reset",
+     "of": "doc",
+     "text": "The RESET input pin is used to initialize the device.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21163",
+       "sha": "f05718499dcd06e96e0d997ad61e35ee83798133dfc02077ceedcb0096cc5636"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "To reset, the RESET pin is asserted for a minimum of 12 oscillator clock cycles (the capture reads `assertthe pinfor aminimum of 12oscillator`).",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21163-21165",
+       "sha": "7656a9a57c9f3fab95cca8c110308c4a3084e4456e1bdc53fa6a55a07c43116c"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "when",
+     "of": "doc",
+     "text": "The device goes to standby mode when it has been idle, with CS, ST and RESET not asserted, for more than 3 seconds.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21167-21170",
+       "sha": "8356620ab515e995af8e317034dc7e1bea6dc273ccaacea3eaaf3f0580672427"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "when",
+     "of": "doc",
+     "text": "The device leaves standby mode automatically when CS and ST are asserted again, or when RESET is asserted.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21170-21172",
+       "sha": "a8e59ab5acfa0de00023598a002a35514c31a40bcd9e1e8455b43e942f1fa81e"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The sound stream runs at the clock divided by 4, m_step starts at 4 units of 1<<20, and the clock period is zero when the clock is zero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "145-146",
+       "sha": "20dde18d4861b0af5a6a4d65a5bc7f3046be1280ee6da385ce407988ba6cfd0d"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "218",
+       "sha": "ed8a00505a46641795a0557a02b79ef290e0235fa4d64260773b9338889823ee"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "220",
+       "sha": "bfefb16185a22b83bf830695ebe28cd6c77985dffd681597f599a7d872e17979"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "222",
+       "sha": "22f4f6dd40052ac9b9de8bbf853e9d423afe05a25b55317ef8241c02e5ebf837"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The uPD7759 class sets m_sample_offset_shift to 1; its header comment calls that member the header sample address shift.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.h",
+       "lines": "86",
+       "sha": "d44368039eca2083bb518cf06c9ced234849f0a519be1962bcc227d13f9cbabc"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "269",
+       "sha": "bf65068bc56662140a25da5182263d21c6bdfc7bb913bf55c3586b221974ef76"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The uPD7759 class allocates the timer m_timer with drq_update as its callback.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "271",
+       "sha": "ecf7d102ff2d4c85b4462e473a9d1df152da65eef7968dee5b3db654602d2457"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On reset the uPD7759 class stops that timer and, if DRQ was high, sets m_drq to 0 and calls the DRQ callback with it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "305",
+       "sha": "41efa78256992fc9c4cb3f4e810d648cb9435890f62c2f18668c8aebd5a1b57e"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "307-311",
+       "sha": "51508a2be528d535626e0c711f7b08d205bd16eeaf96ddd314b1e153d6584297"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME times each nibble at 4 chip clocks times the header rate value plus 1, so it plays any of 64 header rates, not only 5, 6 or 8 kHz.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "495",
+       "sha": "9d22361b24ae18c83fd56e15267345e7ee49a5fab3fa487cd9c2500592c48843"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "502",
+       "sha": "9d22361b24ae18c83fd56e15267345e7ee49a5fab3fa487cd9c2500592c48843"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "537",
+       "sha": "a20c690e67f7d21cfb68ecbe9be7350ac83ce28c44b7a8768563b4559f640089"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "548",
+       "sha": "a20c690e67f7d21cfb68ecbe9be7350ac83ce28c44b7a8768563b4559f640089"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In its idle state MAME reloads m_clocks_left with 4 and leaves the state as it is.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "379-382",
+       "sha": "c0d471c075abc8cfa016e59d20c4140a43936c5161c5b32dfd7e6419e210e5c4"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "when",
+     "of": "mame",
+     "vs": "absent",
+     "row": "14",
+     "text": "In this idle case MAME starts no 3 second idle count and enters no standby state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "379-383",
+       "sha": "c0d471c075abc8cfa016e59d20c4140a43936c5161c5b32dfd7e6419e210e5c4"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "when",
+     "of": "mame",
+     "vs": "absent",
+     "row": "15",
+     "text": "This idle case reads no CS, ST or RESET to leave a standby state; it only reloads the wait.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "379-383",
+       "sha": "c0d471c075abc8cfa016e59d20c4140a43936c5161c5b32dfd7e6419e210e5c4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "20947",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "20964-20966",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21166",
+     "as": "electrical"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "281-292",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "293-298",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "303-310",
+     "as": "agrees",
+     "row": "12"
+    }
+   ]
+  }
+ ]
+}

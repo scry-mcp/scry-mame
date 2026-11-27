@@ -1,0 +1,367 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "6850acia-device",
+ "title": "The 6850 ACIA as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "The Motorola 6850 asynchronous communications interface adapter as a chip: master reset and the interrupt request output",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC6850.raw.txt",
+   "variant": "MC6850"
+  }
+ ],
+ "official": {
+  "MC6850.raw.txt": [
+   "305-307",
+   "414-420",
+   "421-425",
+   "430-436",
+   "441-442"
+  ]
+ },
+ "engine": [
+  "scheduler",
+  "timer_expired_delegate",
+  "synchronize"
+ ],
+ "entries": [
+  {
+   "key": "acia6850",
+   "name": "MC6850 ACIA",
+   "regions": [
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "305-307"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "414-420"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "421-425"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "430-436"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "441-442"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::update_irq"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::calculate_txirq"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::calculate_rxirq"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::output_irq"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "function": "acia6850_device::delayed_output_irq"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The master reset (CR0, CR1) must be set immediately after power-up to insure the reset condition and prepare for programming the ACIA.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "305-307",
+       "sha": "99c861c6d18bacc82569deb3f6ba8743a0b2bfa3680e4b5cf09d843604e7e2f8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "reset",
+     "of": "doc",
+     "text": "The master reset, CR0 and CR1, insures the reset condition after power-up.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "305-307",
+       "sha": "99c861c6d18bacc82569deb3f6ba8743a0b2bfa3680e4b5cf09d843604e7e2f8"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "The IRQ output remains low as long as the cause of the interrupt is present and the appropriate interrupt enable within the ACIA is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "416-418",
+       "sha": "10f7b462b4ec61598ae41a34af8c5697c5012339c8ff956f6c36cc4a88bcc643"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "The IRQ status bit, when high, indicates that the IRQ output is in the active state.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "418-420",
+       "sha": "9a872ca31105ac5e867e22305cc7ab2b88d73b4187abf2a45a94b113c0eb1181"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "The transmitter section causes an interrupt when the Transmitter Interrupt Enabled condition is selected by CR5 and CR6 and the TDRE status bit is high.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "421-425",
+       "sha": "f7d3ff3f9ba52f99a600653dad9e4e0d3ac4d6392a5633710b1b0318242d2539"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "The transmitter interrupt is masked by disabling it via CR5 or CR6, or by the loss of CTS.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "430-432",
+       "sha": "283b515049b2acb1e873bba989d0fb982c7f42e4f2b8b2a71797eaf19925d1f5"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "doc",
+     "text": "The receiver section causes an interrupt when the Receiver Interrupt Enable is set and RDRF is high, an Overrun has occurred, or DCD has gone high.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "432-436",
+       "sha": "09c52582af41bbb48410920fec99b4e00af28d218d111b2becdd16cf21e0f755"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "The receiver interrupt is masked by resetting the Receiver Interrupt Enable.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6850.raw.txt",
+       "lines": "441-442",
+       "sha": "4190e8513b13fa59c7a7c9b6cb11ba5737b58adfa0463f7c89169c7ff554a896"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "MAME's device_reset drives TxD, RTS and IRQ high with no master-reset write (CR0, CR1) involved; m_divide is initialised to 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "89",
+       "sha": "1b611108932b53040e429bfe9d745df178454379816cebb85f4a63db4d7cbb10"
+      },
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "149-154",
+       "sha": "fff573f0f40a171f8455f6cb69cabac7572a1ad178b79342bee1808af2fda954"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "calculate_rxirq tests the receive interrupt enable, RDRF and the DCD pending flag; the overrun flag is not among them.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6850acia.cpp",
+       "lines": "248",
+       "sha": "fb80825729cced80dc42deced143bf5ba8581ac9ebf2d3a91f81b2e9b82c6824"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "253",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "243",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "248",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "604-608",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "623",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "614-621",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "623",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "243",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "243",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "248",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "datasheet:MC6850.raw.txt",
+     "lines": "414-415",
+     "as": "electrical"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "196",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "182",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "223",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "272",
+     "as": "parent",
+     "owner": "acia6850:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "284",
+     "as": "parent",
+     "owner": "acia6850:register:0x01:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "321",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "346",
+     "as": "unseen",
+     "reason": "receiver state machine clocked by RxC, outside the register entries"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "510",
+     "as": "unseen",
+     "reason": "transmitter state machine clocked by TxC, outside the register entries"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "169",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "199",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "211",
+     "as": "parent",
+     "owner": "acia6850:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "295",
+     "as": "parent",
+     "owner": "acia6850:register:0x01:read"
+    },
+    {
+     "ref": "mame:src/devices/machine/6850acia.cpp",
+     "lines": "347",
+     "as": "unseen",
+     "reason": "receiver state machine clocked by RxC, outside the register entries"
+    }
+   ]
+  }
+ ]
+}

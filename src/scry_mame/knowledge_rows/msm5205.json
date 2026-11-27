@@ -1,0 +1,1095 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "msm5205",
+ "title": "The MSM5205 pins and MAME's handlers for them",
+ "kind": "register",
+ "scope": "msm5205",
+ "covers": "the MSM5205 has no registers: its S1, S2 and data-width selectors, its VCK output, and the MAME handlers and callbacks that stand for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "OKI-VoiceSynthesis-1994.raw.txt",
+   "variant": "msm5205"
+  }
+ ],
+ "official": {
+  "OKI-VoiceSynthesis-1994.raw.txt": [
+   "1198-1201",
+   "1213-1215",
+   "1216-1220",
+   "1228-1230",
+   "1245-1261"
+  ]
+ },
+ "engine": [
+  "update",
+  "set_sample_rate",
+  "adjust",
+  "clocks_to_attotime",
+  "timer_alloc",
+  "m_vck_cb",
+  "m_vck_legacy_cb",
+  "adpcm_capture_divisor",
+  "notify_clock_changed",
+  "bind",
+  "from_ticks"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "set_prescaler_selector",
+   "regions": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1198-1201"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1213-1215"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1245-1261"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.h",
+     "function": "msm5205_device::set_prescaler_selector"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::get_prescaler"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "S1 and S2 are inputs that select the sampling data according to Figure 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1200",
+       "sha": "d7a2aede62489b7cefec64a7ee83defa88e5a0329910d3cc9e5656ca29395150"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With S1 low, S2 low gives a sampling frequency of 4 kHz (fosc/96) and S2 high gives 6 kHz (fosc/64), at fosc = 384 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1245-1252",
+       "sha": "dbe38d70aff18f26ce26b6ad7557570f8986b3e80f95f9387c560fd5ca13120b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With S1 high and S2 low the sampling frequency is 8 kHz (fosc/48), at fosc = 384 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1245-1250",
+       "sha": "cb3ae8f47d1f3d5322548d7c37d6a69295bd32795fc4228548fa8e65e6f2aca0"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1253",
+       "sha": "2d93f8f9896674062410ea599945346e5e78f8c058bccc8f88b710ed95ac9f10"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "S1 and S2 both high is prohibited.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1245-1250",
+       "sha": "cb3ae8f47d1f3d5322548d7c37d6a69295bd32795fc4228548fa8e65e6f2aca0"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1254",
+       "sha": "559db6004f62516f9150712e8c0181cf0c6b3a5354aae3b47e223e717b56f078"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "A 384 kHz oscillator can select 4, 6 or 8 kHz, and a 768 kHz oscillator can select 8, 12 or 16 kHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1257-1258",
+       "sha": "3da9c06d36e1eaa3209a914676994c527beab6a4b2bce77dfe1817b0b997d4d8"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1260-1261",
+       "sha": "03d1aa5d13cebc23fdd899931ff2ac27f8d078c509db9e9a2bb1db8676ada461"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "The input that specifies the data width takes 4-bit ADPCM data at H level and 3-bit ADPCM data at L level.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1214-1215",
+       "sha": "bdc5205296c2f1da97df951e8cc7d6c4849f03f43f987bafcf34ad7f445b5cd5"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME sets S1 from bit 0, S2 from bit 1 and the data width from bit 2 of the select argument of set_prescaler_selector, which only stores them.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "25-30",
+       "sha": "1883d3817c3c3e6d5d0f3d14a69dd6c9fca593565909ee2a32550951a071fda0"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A MAME chip starts with S1 low, S2 low and 4-bit data.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "65-67",
+       "sha": "aabb92c12554b5cf3cc006a6f45d550616bf15ef5dc913cd83d573f16093abb6"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "With S1 and S2 both high MAME's get_prescaler returns 0, where every other combination returns 96, 64 or 48.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "260-263",
+       "sha": "1d45b650c1238d42d333eaf4c09a3077c45fd65ea3ac48533f29cc46cf6990a2"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME also stores S2 from bit 1 of the data of playmode_w and from the state argument of s2_w, notifying a clock change when S2 changes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "279-290",
+       "sha": "b85826263068df08ee376122f22170f87eddc63b105e9b4f68e145d8c26020e6"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "310-316",
+       "sha": "36268cb29d1b982779341a2004a4ad12136f4a619ef255bca6dde16b0bf0526d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1198-1199",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1201",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1213",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1255-1256",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1259",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "260-263",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "260-263",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.h",
+     "lines": "29",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "vck_callback",
+   "regions": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1228-1230"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.h",
+     "function": "msm5205_device::vck_callback"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::device_clock_changed"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::toggle_vck"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "A pin, terminal 14 with its name lost in the capture, is listed as an output (the capture reads `14 0`).",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1228",
+       "sha": "d79fd5acc29ebbe818c716ca8c42c62c6603198cde3202ec906139b8143b4249"
+      }
+     ]
+    },
+    {
+     "n": "2A",
+     "on": "read",
+     "of": "doc",
+     "text": "That pin outputs a signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1229-1230",
+       "sha": "e8232968999fdc70d89079a0c4bca07e45078a30d682df9c923da1eaa2761942"
+      }
+     ]
+    },
+    {
+     "n": "2B",
+     "on": "read",
+     "of": "doc",
+     "text": "The frequency of that signal equals the sampling frequency selected by the S1 and S2 inputs.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1229-1230",
+       "sha": "e8232968999fdc70d89079a0c4bca07e45078a30d682df9c923da1eaa2761942"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME hands the driver the VCK output through vck_callback, a binder for a write-line callback that toggle_vck calls with the new level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "31",
+       "sha": "3cd15f673e29d91cab08f400f670ee2807aaf74a41ce828f6576c391ae1178ae"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "169",
+       "sha": "d1a5d12ff44a88edf35be60c3f82a199b6c01a70cbaeb7eafcdc39623ebe0fc3"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "83",
+       "sha": "2c6b89579fea0a647cc101335430170cb4621561c3a67dd08a26e0a30c73ec57"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With prescaler 0, MAME logs VCK slave mode and stops its VCK timer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "329-330",
+       "sha": "9a3f4644de572597b64ecb5c429feb6d6ae474b7a948a230beeff16a21296f15"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "338-341",
+       "sha": "141e8712d5f464982e91dfe6492ccea1556e55ae2bc58de0f8cc22877699f13a"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On a falling edge of VCK, toggle_vck schedules the data capture with the capture divisor, 6 clocks in this class.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "170-171",
+       "sha": "a9b0e3075afa87c7bf1bdc4bdd3498049c65a688ccf275937f22d9d782401261"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "66",
+       "sha": "153ae17fd2e5ace0d486abf03fd2afebc2db3232ba08f8c63ce81e22940b9db1"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "334-335",
+     "as": "unfollowed",
+     "row": "2B"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "330",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "168-169",
+     "as": "agrees",
+     "row": "2A"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "vck_legacy_callback",
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "The comments of msm5205.cpp and msm5205.h cite no document and say nothing of this callback beyond its declaration."
+    },
+    {
+     "where": "maker",
+     "gave": "OKI's MSM5205 data sheet describes the VCK pin and has no software callback, which is MAME's driver interface."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Hosts OKI's 1994 voice synthesis data book, the document used here; it names no such callback."
+    },
+    {
+     "where": "archive-org",
+     "gave": "Holds an archived copy of the same data book; nothing else was looked for there."
+    },
+    {
+     "where": "index",
+     "gave": "A web search for the MSM5205 data sheet gave the same OKI data books and a standalone copy; none has a callback."
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.h",
+     "function": "msm5205_device::vck_legacy_callback"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "180-181"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME gives the driver vck_legacy_callback, a binder for a callback that update_adpcm calls with 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "32",
+       "sha": "536346cd22dc4e6ca59af1847331a56381f2623bdb95dff24580eb7e501fddbe"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "175",
+       "sha": "e8b2f210f746cca56ec92c33408cb9743eaef0491944cdc84bd6dce108e99ce4"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "181",
+       "sha": "66147b72b7a2e8c897fd5a9aa84d0f4d41178268ef88e7142a06e3b77b7ce0f2"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The legacy callback is a write-line callback member of MAME's device, exposed through a bind() binder.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "32",
+       "sha": "536346cd22dc4e6ca59af1847331a56381f2623bdb95dff24580eb7e501fddbe"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "84",
+       "sha": "d97aec9608ac4d6499c8ece4d675e4af87d9036fde4e93f5dba4ed5e89548633"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "update_adpcm calls the legacy callback first and reads the latched data m_data after it, past the reset check.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "181",
+       "sha": "66147b72b7a2e8c897fd5a9aa84d0f4d41178268ef88e7142a06e3b77b7ce0f2"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "184",
+       "sha": "21ead3f0d45a04d9a1f304d7d0d2f67aaaade18511b481075e76f88a338a45c5"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "193",
+       "sha": "c26043735c01fed5b4b2ab09ee5d6c30fecd5e68d6b5074101ce51889fdb04e4"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "update_adpcm calls the legacy callback with 1 when it is not unset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "180-181",
+       "sha": "bfe263112933f93721d197d5473cf8610f1bc3f2b3d310871a62ae71fba04b1f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x03",
+   "name": "reset_w",
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "msm5205.h says the reset signal should be kept for 2 cycles of VCLK; the comments cite no document."
+    },
+    {
+     "where": "maker",
+     "gave": "OKI's data book describes RESET as an active high input; that text is held by the msm5205 device entry, and it has no software handler."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Hosts OKI's 1994 voice synthesis data book, the document used here; it names no such handler."
+    },
+    {
+     "where": "archive-org",
+     "gave": "Holds an archived copy of the same data book; nothing else was looked for there."
+    },
+    {
+     "where": "index",
+     "gave": "A web search for the MSM5205 data sheet gave the same OKI data books and a standalone copy; none has a handler."
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::reset_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "reset_w is the handler that stands for the RESET input of the chip.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "237",
+       "sha": "995610b15ecdbb45b147fcc63f29643a0fc23cf29aa12a8d4e33fa76811ce377"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "242",
+       "sha": "6a639b7c8490f278b884d9f963cc7cf1afc088aa80f159ce085d4398a80c192d"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "reset_w stores its state argument in m_reset, 1 meaning reset on, and does nothing else.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "237",
+       "sha": "995610b15ecdbb45b147fcc63f29643a0fc23cf29aa12a8d4e33fa76811ce377"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "241-243",
+       "sha": "92a62f5e1fadcbe1d41783b968ce24036ad9a025840a1d5e2376120c82c31a0d"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME reaches the RESET input through reset_w; the device entry holds what the data book says of RESET and where m_reset is read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "242",
+       "sha": "6a639b7c8490f278b884d9f963cc7cf1afc088aa80f159ce085d4398a80c192d"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x04",
+   "name": "data_w",
+   "regions": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "1216-1220"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::data_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The ADPCM data inputs are the terminals the capture lists as `4 5 6 7`.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1216-1220",
+       "sha": "84a6e0e17b2f93238cc644265da208bf2c7d65a705d47931b01fd16b8f12b6f2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "For 3-bit ADPCM data the D0 input is not used (the capture reads `Do`).",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1220",
+       "sha": "6643bae23b4ed1069fd333720891dcdbd48b083c405a48a3662da86190db2f6c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "For 3-bit ADPCM data, the D0 input should be connected to ground (the capture reads `Do`).",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "1220",
+       "sha": "6643bae23b4ed1069fd333720891dcdbd48b083c405a48a3662da86190db2f6c"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME reaches the data inputs through data_w, which stores the nibble in m_data; the header comment says the data is latched after the vclk callback.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.h",
+       "lines": "37",
+       "sha": "4c8426ad0afb0adc229f03265a737d09aed23ff34ee2207cdfbd66f0541dfdb3"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "253",
+       "sha": "ce9c41905e80d4545e3b7b891c3ed35206ae70ba1451800d4d8c879f3cc88e43"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "255",
+       "sha": "a817f166ecb5a7c7f3ac886ca72bf6bf581da5b85340a70057c6cd806b0eed85"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "In 4-bit mode data_w keeps bits 0 to 3 of its argument as the nibble.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "252-253",
+       "sha": "2ff1fcc30654055bf120a521eee14f913df551b622a9f2f12ebdc7d3e8e6e060"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "In 3-bit mode data_w shifts bits 0 to 2 of its argument up by one place; the code's comment on that line says unknown.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "254-255",
+       "sha": "c0bc9d2db731c69198bf467e121dca799f2f971ef26d91e44b5d2c043df7108f"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "In 3-bit mode data_w keeps bits 0 to 2 of its argument as data and drops bit 3; the shift leaves the stored nibble's bit 0 at 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "254-255",
+       "sha": "c0bc9d2db731c69198bf467e121dca799f2f971ef26d91e44b5d2c043df7108f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x05",
+   "name": "vclk_w",
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "msm5205.h says to call vclk_w after data_w and reset_w when they change together; the comments cite no document."
+    },
+    {
+     "where": "maker",
+     "gave": "OKI's data book lists VCK as an output and S1 and S2 both high as prohibited; it describes no VCK input or slave mode."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Hosts OKI's 1994 voice synthesis data book, the document used here; it names no such handler."
+    },
+    {
+     "where": "archive-org",
+     "gave": "Holds an archived copy of the same data book; nothing else was looked for there."
+    },
+    {
+     "where": "index",
+     "gave": "A web search for the MSM5205 data sheet gave the same OKI data books and a standalone copy; none has a VCK input."
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::vclk_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "vclk_w gives the chip a VCK input; it logs an error unless get_prescaler returns 0, which it does when S1 and S2 are both high.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "225-232",
+       "sha": "a447f8d6cfc7d9e4aaad6bc81243605575639450be56c0f8811b569cf7ef41fd"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "260-261",
+       "sha": "e2d516fab361d768c079c4470a394367add2799479d83fcf3b8bec5578e0e518"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When get_prescaler returns 0, a fall of VCK from 1 to 0 schedules the capture 6 clocks later, and the level is stored in m_vck.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "225-232",
+       "sha": "a447f8d6cfc7d9e4aaad6bc81243605575639450be56c0f8811b569cf7ef41fd"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME reaches a driver-supplied VCK through vclk_w, which stores the level in m_vck.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "231",
+       "sha": "ea6f811aa90b096d7258a8b8ff9eb46f31d53681034717a567cf0042291b4df4"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When get_prescaler is not 0, that is for any S1 and S2 combination except both high, vclk_w only logs an error.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "225-232",
+       "sha": "a447f8d6cfc7d9e4aaad6bc81243605575639450be56c0f8811b569cf7ef41fd"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "260-263",
+       "sha": "1d45b650c1238d42d333eaf4c09a3077c45fd65ea3ac48533f29cc46cf6990a2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "225-226",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "lines": "228",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "playmode_w",
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "msm5205.h calls playmode_w the sampling pin selector option; the comments cite no document."
+    },
+    {
+     "where": "maker",
+     "gave": "OKI's data book describes the S1, S2 and data width pins, held by the msm5205 selector entry; it has no combined byte handler."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Hosts OKI's 1994 voice synthesis data book, the document used here; it names no such handler."
+    },
+    {
+     "where": "archive-org",
+     "gave": "Holds an archived copy of the same data book; nothing else was looked for there."
+    },
+    {
+     "where": "index",
+     "gave": "A web search for the MSM5205 data sheet gave the same OKI data books and a standalone copy; none has a handler."
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::playmode_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "playmode_w decodes S1, S2 and the data width from the bits of one byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "278-280",
+       "sha": "e345cc6749fbf89751539d5a19b02279b68c830ad08c8461f6dfbe39f9f46db3"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When S1 or S2 changes, MAME updates the stream, stores both and notifies a clock change; a width change only updates the stream and stores it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "282-290",
+       "sha": "0eb8975670b33e5c420c39965aeca162e362748a2e69a515f714f94309a51312"
+      },
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "293-297",
+       "sha": "02aa2f341eab4bc8b487bda71e8117ff8f333dec8611bbe66a9d9befb1fbb966"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "playmode_w takes S1 from bit 0, S2 from bit 1 and a data width of 4 bits when bit 2 is set and 3 otherwise.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "278-280",
+       "sha": "e345cc6749fbf89751539d5a19b02279b68c830ad08c8461f6dfbe39f9f46db3"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x07",
+   "name": "s1_w",
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "msm5205.h declares s1_w under the sampling pin selector option; the comments cite no document."
+    },
+    {
+     "where": "maker",
+     "gave": "OKI's data book describes the S1 pin, held by the msm5205 selector entry; it has no software handler."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Hosts OKI's 1994 voice synthesis data book, the document used here; it names no such handler."
+    },
+    {
+     "where": "archive-org",
+     "gave": "Holds an archived copy of the same data book; nothing else was looked for there."
+    },
+    {
+     "where": "index",
+     "gave": "A web search for the MSM5205 data sheet gave the same OKI data books and a standalone copy; none has a handler."
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::s1_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "s1_w is the handler that drives the S1 input from its state argument.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "302",
+       "sha": "7ca8b62e6413cbc301525a0a4bbb9a275ccabbc12086730963b237b726b5c226"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the state differs from m_s1, MAME updates the stream, stores it and notifies a clock change; the data width is not touched.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "301-308",
+       "sha": "54fb2ff67cb15f8eeca97002d46c5740cb143d0694dc68262913e1f66256c94f"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME reaches S1 through s1_w, which stores the state in m_s1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "305",
+       "sha": "e7d934a850df9f797a5935c71f3a08e267a5e500fef2f36009e74a3893c1b85b"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x08",
+   "name": "s2_w",
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "msm5205.h declares s2_w under the sampling pin selector option; the comments cite no document."
+    },
+    {
+     "where": "maker",
+     "gave": "OKI's data book describes the S2 pin, held by the msm5205 selector entry; it has no software handler."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Hosts OKI's 1994 voice synthesis data book, the document used here; it names no such handler."
+    },
+    {
+     "where": "archive-org",
+     "gave": "Holds an archived copy of the same data book; nothing else was looked for there."
+    },
+    {
+     "where": "index",
+     "gave": "A web search for the MSM5205 data sheet gave the same OKI data books and a standalone copy; none has a handler."
+    }
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/msm5205.cpp",
+     "function": "msm5205_device::s2_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "s2_w is the handler that drives the S2 input from its state argument.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "312",
+       "sha": "9ed62b041305b0aaefac4da307c00553fb1fa16d4b86999c236b9dcc2d3b5c5f"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the state differs from m_s2, MAME updates the stream, stores it and notifies a clock change; the data width is not touched.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "311-318",
+       "sha": "76e915489433451a247b94b1686348482c0bf3b759d831c59602f0fd90d5d642"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME reaches S2 through s2_w, which stores the state in m_s2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/msm5205.cpp",
+       "lines": "315",
+       "sha": "b9dd2feecaf1b611a1dee6ac2805ace6c6817f4dc99db4bd78e1af1976f7a0fc"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

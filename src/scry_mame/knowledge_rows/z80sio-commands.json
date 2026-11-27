@@ -1,0 +1,1173 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80sio-commands",
+ "title": "Z80 SIO WR0 commands",
+ "kind": "command",
+ "scope": "z80sio",
+ "covers": "the eight commands a Z80 SIO channel takes in bits D5 to D3 of write register 0",
+ "source": "official",
+ "documents": [
+  {
+   "name": "UM0081.raw.txt",
+   "variant": "Z80 SIO"
+  }
+ ],
+ "official": {
+  "UM0081.raw.txt": [
+   "10631-10690",
+   "10697-10705"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:UM0081.raw.txt",
+   "lines": "10648",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:UM0081.raw.txt",
+   "lines": "10658-10660",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:UM0081.raw.txt",
+   "lines": "10684-10686",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:UM0081.raw.txt",
+   "lines": "10702",
+   "as": "elsewhere",
+   "owner": "z80sio:register:0x00:write"
+  }
+ ],
+ "engine": [
+  "tx_setup",
+  "clear_interrupt",
+  "check_interrupts",
+  "advance_rx_fifo",
+  "update_rx_int",
+  "interrupt_priorities"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "null command",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10631-10633"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10649-10650"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_NULL"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 0 is the Null command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10631",
+       "sha": "a856a84c25de2018e54f0cd7ee24400561648a7df6df2639b68c58a9ed6dddd8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Null command, CMD2 CMD1 CMD0 = 0 0 0, has no effect.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10631-10632",
+       "sha": "0de4d3f81b754f8f601826d951d1de32e6d1a25c8dacdfcdf9722e03bae90829"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10649-10650",
+       "sha": "3e3ff52bfa0ac705a217c2780daaf9d3f618389db339527b38b0c823b5c49662"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Normally the null command instructs the Z80 SIO to wait while the pointers are set for the following byte.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10632-10633",
+       "sha": "7e5294272cf771967aa1d7f008391ac60847f39154b876b2b31c6c347dc5d95b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1642-1644",
+     "as": "agrees",
+     "row": "2",
+     "nothing": true
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "send abort",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10634-10635"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10651"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_SEND_ABORT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 1 is Send Abort.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10634",
+       "sha": "7f11d302c9439d9d0eaa9e56521bdca0156ce218786a41b7a12a17b7359b49d6"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Send Abort command, listed on the row 1 0 0 1, generates a sequence of eight to thirteen 1s.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10634-10635",
+       "sha": "11125427da437e82858b31b4f406503209ba4d11e6ff2878636491dfcad5eabc"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10651",
+       "sha": "7f37b8a33c123c131525d8ca1812b065ffb30855d1efe2724a4d51684482968f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The Send Abort command is used only in SDLC mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10634-10635",
+       "sha": "11125427da437e82858b31b4f406503209ba4d11e6ff2878636491dfcad5eabc"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10651",
+       "sha": "7f37b8a33c123c131525d8ca1812b065ffb30855d1efe2724a4d51684482968f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1647",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1652",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1654-1656",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1648-1650",
+     "as": "agrees",
+     "row": "3",
+     "nothing": true
+    }
+   ]
+  },
+  {
+   "key": "0x10",
+   "name": "reset ext status",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10636-10640"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10652"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_RESET_EXT_STATUS"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::reset_ext_status"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 2 is Reset External/Status Interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10636",
+       "sha": "4be1e4c60103cb4b5de19c1016991d2a43824c34ea5c9ff4ceaada3a90dcc7d0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Reset External/Status Interrupts command, listed on the row 2 0 1 0, re-enables the latched RR0 status bits, again allowing Interrupts to occur.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10638-10639",
+       "sha": "0c395f750c7d284cd7386bea36e097e7f4063926d1a37097afad957cfcd995bd"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10652",
+       "sha": "77e5e1fbc430c044b7caa7e607618af802389b7ece5dcfe5f60084ce790799a4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "After an External/Status interrupt, such as a change on a modem line or a break condition, the status bits of RR0 are latched.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10636-10638",
+       "sha": "33bd6cbd917bacf79b9eb1abf183a65e343d73ae9b175d9c24332058734d5641"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Latching the status bits captures short pulses until the CPU has time to read the change.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10639-10640",
+       "sha": "1b09044b4f2e900a651a237624f0f5b47c9c8ee19251593f16986bbf8d72dc51"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "The command also copies the current CTS and DCD input pins into RR0, and the sync input too unless WR4 selects a synchronous mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1383",
+       "sha": "a075dcbcff162b944957c0f5785d1b9ddbd6fdb102124d27d69c5ed0875aaf41"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1396-1405",
+       "sha": "17b1d49af01242cf15fbde71f37cb1b48e5bbdc1a03bb8a6bc4106c0ab95ee36"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1408-1414",
+       "sha": "ae11d0de9013775939d8144996b16a300626bde6fb25e548e8d4f6fba7f9d1a7"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1381-1382",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x18",
+   "name": "channel reset",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10641-10647"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10653"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_CHANNEL_RESET"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1153-1154"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::reset_interrupts"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 3 is Channel Reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10641",
+       "sha": "3d5a7db5df83b602ddb59277d38d97f9ee5d724c02a0af3c3226ccdcf0b0cefa"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Channel Reset command, listed on the row 3 0 1 1, performs the same function as an External Reset, but on a single channel.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10641-10642",
+       "sha": "43c1fdb60a8b83afc559cdc7cf8624ab29e5192ad9b4bd5d161ae5677cbb1095"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10653",
+       "sha": "d1feef883609d1d5d368e80122f4ca6a2e0e68f51106e9c0478964e50c12138d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A Channel A Reset also resets the interrupt prioritization logic.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10642-10643",
+       "sha": "50503a632b17a19093a4e7541544a935b483c98620b911f692bb3b479516ad1f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "All control registers for the channel must be rewritten after a Channel Reset command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10643-10644",
+       "sha": "b4987ec395e7c9114f70c19fab56409b78c8941e633e2b7f50ec1e3ce883ab66"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "After a Z80 SIO Channel Reset, add four system clock cycles before more commands or controls write to that channel, normally one Op Code fetch.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10645-10647",
+       "sha": "fd3551cf7b6892c93f4378fefb8a10840e1af65878885a1e6d2d43cdf74fb295"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "text": "On a Channel A reset MAME zeroes the interrupt state word of every interrupt source, prioritization state included; a FIXME there asks whether it should reset them all.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1152-1154",
+       "sha": "b2de6b5fc619c4a839b558817277260222e419ef0c18aba64e37c50ab845a243"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "670-673",
+       "sha": "804418c30a27c74911eed659652120b1a976f0adc21b5b722badeb6a7c6a995b"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "text": "On an MK68564 channel MAME's reset also clears the transmit auto-enable flag and the baud rate generator's time constant, control and state, and stops its timer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1157-1165",
+       "sha": "68caeee4e3d14b1a7650b0d6cdeb974b6c86f2389d64fe293592502a626f1dbd"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1666",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1153-1154",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x20",
+   "name": "enable int next rx",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10654"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10661-10664"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_ENABLE_INT_NEXT_RX"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 4 is Enable Interrupt On Next Receive Character.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10661",
+       "sha": "9692e26d0c35410affc175761481ec1488e023fe7b58139a52eabef77305a9ef"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "If Interrupt On First Receive Character mode is selected, command 4 (listed on the row 4 1 0 0) reactivates Enable Interrupt On Next Receive Character mode after each message.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10654",
+       "sha": "ad68f38a2c6ad4277a5e7af0312c38de5d1c659fa0ee5eaf623f18ef58dbdc88"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10661-10663",
+       "sha": "cf40e327d1aae0c83a88473e98fe94edec5d0721ed23fb08fa094ea01ca4ddcb"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "This sequence prepares the Z80 SIO for the next message.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10664",
+       "sha": "de7e91d2b8b23ef13f1c068f4bdd815ff801bb07a276ee9879055feb1c99596c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1671",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x28",
+   "name": "reset tx int pending",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10655"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10665-10670"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_RESET_TX_INT"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 5 is Reset Transmitter Interrupt Pending.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10665",
+       "sha": "9418e96e8fe4b1be3d49fa86c927d37f30e266b1f32469ffba1db4a0e21bf235"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "A transmitter interrupt occurs when the transmit buffer becomes empty, and only when the Transmit Interrupt Enable mode is selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10665-10667",
+       "sha": "827c0b41bb774746be91e0e2b762a95407a77c76703e817971d6d74f3e331821"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "When no more characters are to be sent, command 5 prevents further transmitter interrupts until the next character is loaded or CRC is completely sent.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10655",
+       "sha": "e97927c8c4860d330d6819467893d259a4f1cc8e3eda666bfc778ba172e1ef0d"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10667-10670",
+       "sha": "d6266050930a38b3d1abaf70fe63c38f0961e3ec32c2fd6a68f100127b26305c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1676",
+     "as": "unfollowed",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x30",
+   "name": "error reset",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10656"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10671-10674"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_ERROR_RESET"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 6 is Error Reset; the capture's table row for it is cut after '(latches'.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10656",
+       "sha": "eacd1b56c7d3bbd7eef4933f185e21583ad9fdb1209528482568c95bc0b4e156"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10671",
+       "sha": "712bf4e558fe98a52ebe5f7d098f7a60ae5a67c95f91bd255115916374cdb0fd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Error Reset command, listed on the row 6 1 1 0, resets the error latches.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10656",
+       "sha": "eacd1b56c7d3bbd7eef4933f185e21583ad9fdb1209528482568c95bc0b4e156"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10671",
+       "sha": "712bf4e558fe98a52ebe5f7d098f7a60ae5a67c95f91bd255115916374cdb0fd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Parity and Overrun errors are latched in RR1 until they are reset with the Error Reset command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10671-10673",
+       "sha": "fcbebb86f2423d75e814e1e74c0942fd59f58cbb61ed73ad97351cb8415e19ba"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Using this method, parity errors occurring in block transfers can be examined at the end of the block.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10673-10674",
+       "sha": "459b42d3a1e99a0fb5e1399334c6e2d16025e98784442d929bc1d2f07af04b08"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "When WR1 selects interrupt on first character and RR1 holds CRC/framing, overrun or end-of-frame, MAME's Error Reset also advances the receive FIFO (its TODO questions this).",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1681-1686",
+       "sha": "1973ce3b96efd52a2b1d4be2a0223e529c9a9bed42a23aaa79927d5ec8c39183"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1685",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1688-1692",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x38",
+   "name": "reset highest IUS",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10657"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10675-10681"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0",
+     "case": [
+      "WR0_RETURN_FROM_INT"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::return_from_interrupt"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Command 7 is Return From Interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10675",
+       "sha": "ae197e78aeb4ea44aadfeaa28815bfd7586cbc85ab06697637bdc5316289977f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The Return From Interrupt command must be issued in Channel A.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10675-10676",
+       "sha": "45984f43c3f020794e75f0ab83226412918d1adb16a09f8b6b731e18271e2eb0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The Z80 SIO interprets the Return From Interrupt command in the same way it interprets a RETI command on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10676-10677",
+       "sha": "c92996bee8840db5205760602e65a413ecf0f685895dd2c05a127e128a4f6587"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The Return From Interrupt command, listed on the row 7 1 1 1, resets the interrupt under-service latch of the highest priority internal device under service.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10657",
+       "sha": "ed175a784ff3ac69ff3b6ea9f703c23ddc90ae98f25e263d7d944893628ea9c0"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10677-10678",
+       "sha": "a22b9f4a4518074951dc5f25fda2ece0cde13f1317d98c1dc40a56ac2c268ca8"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "This reset allows lower-priority devices to interrupt through the daisy-chain.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10678-10680",
+       "sha": "c669662cdc903ff68eaecfada296eaa959bce92bf4a4038a373505ab7893c316"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The command also allows use of the internal daisy-chain even in systems with no external daisy-chain or RETI command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10680-10681",
+       "sha": "010e22d1ad55ea250f422524ed220adfa728ba416eb9a4434407a6453b0325fd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1640",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1696-1697",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "724-734",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x40",
+   "name": "reset rx CRC checker",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10682-10683"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10697-10701"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10703"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0_resets",
+     "case": [
+      "WR0_CRC_RESET_RX"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRC Reset Codes 0 and 1, WR0 D6 and D7, used together select one of three reset commands, listed in Table 14.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10682-10683",
+       "sha": "d64d2c9c0d5ca1c5ae0cdd69004407d3e262a3095e6378d1330a16a1ca0ad0df"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "WR0 D7 D6 = 01 selects the Reset Receive CRC Checker command.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10682-10683",
+       "sha": "d64d2c9c0d5ca1c5ae0cdd69004407d3e262a3095e6378d1330a16a1ca0ad0df"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10697-10701",
+       "sha": "4332f8dcd11b342a1960ab34db41c11e1d0249a1db0946517b9b557a260e00ba"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10703",
+       "sha": "9e72e961d7349714bd24d611c9919aaaf02549f342e24a0ab41ac07738ed5944"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME's Reset Receive CRC Checker command also clears the receive CRC enable flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1615",
+       "sha": "910a8241c9ea21f8131d06ad0cdd625f0ab125b4165d45632dc0132c5bf8b8db"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1607",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1612-1614",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x80",
+   "name": "reset tx CRC generator",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10687-10690"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10704"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0_resets",
+     "case": [
+      "WR0_CRC_RESET_TX"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The Reset Transmit CRC Generator command is listed with the pair 1 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10704",
+       "sha": "8eb217f9769a82389418029401952b254327a19ff4f0246081dc75336e59e375"
+      }
+     ],
+     "links": [
+      "z80sio:command:0x40"
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Reset Transmit CRC Generator command normally initializes the CRC generator to 0s, and to 1s if the SDLC mode is selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10687-10689",
+       "sha": "17e09a427abca20ed2e5ac609da0c5b3c76cf747bd07f2dbf40dda364fe21971"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The Receive CRC checker is also initialized to 1s for the SDLC mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10689-10690",
+       "sha": "522d2314e202df7fc3b40a57a987d66ac0470c54b2492df178aa1763ea91e95b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1607",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1617-1619",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1617-1619",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0xC0",
+   "name": "reset tx underrun latch",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "10705"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::do_sioreg_wr0_resets",
+     "case": [
+      "WR0_CRC_RESET_TX_UNDERRUN"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The Reset Tx Underrun/End of Message latch command is listed with the pair 1 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10705",
+       "sha": "b42cb3396ee7622aecba3de747bb9818587be23fb7405603e5af4ee649d4db9c"
+      }
+     ],
+     "links": [
+      "z80sio:command:0x40"
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The Reset Tx Underrun/End of Message latch command resets the Tx Underrun/End of Message latch.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "10705",
+       "sha": "b42cb3396ee7622aecba3de747bb9818587be23fb7405603e5af4ee649d4db9c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME clears the Tx underrun bit of read register 0x00 only while its transmitter is in an active packet; otherwise it logs that the command was not accepted.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1621-1628",
+       "sha": "fadd5238b6778e54175f6e72edff563874c6813c737fa97a7bdc2c16f6a91486"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1607",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

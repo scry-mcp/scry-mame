@@ -1,0 +1,532 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "qsound",
+ "title": "The Capcom QSound command and DSP registers",
+ "kind": "register",
+ "scope": "qsound",
+ "covers": "the host's command data and address offsets and the DSP command words for echo feedback, reverb end position, delay update and the next state, as MAME's two QSound devices handle them; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The headers of qsound.cpp and qsoundhle.cpp name the chip as Capcom's QSound DL-1425, describe its DAC, and cite a die map at siliconpr0n, never a datasheet."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search for a Capcom QSound or DL-1425 manual found no page of Capcom or QSound Labs holding one."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "Searching the site found two VIA codec datasheets licensing QSound audio effects, no QSound chip document; the components listing answered HTTP 403."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search for DL-1425 or QSound returned 82 items, all QSound Labs software, demos and game images, with no datasheet."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com answered DL-1425 with five Amphenol connectors and no QSound document."
+  }
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "command data high byte",
+   "access": "write",
+   "aliases": [
+    "command data[h]"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/qsound.cpp",
+     "function": "qsound_device::qsound_w",
+     "case": [
+      "0"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "function": "qsound_hle_device::qsound_w",
+     "case": [
+      "0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0 is the high byte of the command data word, which a write to offset 2 sends with the address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "153",
+       "sha": "746aa535e8cd2898fb767b6496ccc3fe1025f1111b98fa31bde62561823ab4db"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "391",
+       "sha": "acef69da294d6f3f3b1ac2bd4244462c7e24f85ca47fb226f7247b8ab6150c63"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "167",
+       "sha": "d6904c412c39354ec6eb28cd02b8e1bd56b1b977fa6249c2cfca50f0dfefd4b8"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "207",
+       "sha": "62f3269c206cfba4f4551707ef4da7a679976ecd7b38d9aa912512c25fdfcc54"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the high half of the word and keeps the low half, in both the LLE and the HLE device.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "155",
+       "sha": "57dbde1e537896932ea9b3cee8c2814d47ca8146079c024f6e821bc152629781"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "198",
+       "sha": "56a157d54995752c044181dd32f77aa428e81ef66b0dcd2c2b4bb70abc2ca8a4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/qsound.cpp",
+     "lines": "149",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "lines": "195",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "command data low byte",
+   "access": "write",
+   "aliases": [
+    "command data[l]"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/qsound.cpp",
+     "function": "qsound_device::qsound_w",
+     "case": [
+      "1"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "function": "qsound_hle_device::qsound_w",
+     "case": [
+      "1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 1 is the low byte of the command data word, which a write to offset 2 sends with the address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "159",
+       "sha": "fc40dea836d3c0f8df444987e1dbfb2fb2f4fecdad52d733541925b97693b488"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "167",
+       "sha": "d6904c412c39354ec6eb28cd02b8e1bd56b1b977fa6249c2cfca50f0dfefd4b8"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "207",
+       "sha": "62f3269c206cfba4f4551707ef4da7a679976ecd7b38d9aa912512c25fdfcc54"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte in the low half of the word and keeps the high half, in both the LLE and the HLE device.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "161",
+       "sha": "5fd386df5822ef9fe2771c95e7e4bef90f3e0f2b7b3a323d035cdcf85a8b9b27"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "202",
+       "sha": "78c1c6f60727ec0687a6b02d39f5e343ed48b384a69bf638bc32f131d8bab3d4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/qsound.cpp",
+     "lines": "149",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "lines": "195",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "command address",
+   "access": "write",
+   "aliases": [
+    "command address"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/qsound.cpp",
+     "function": "qsound_device::qsound_w",
+     "case": [
+      "2"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/qsound.cpp",
+     "function": "qsound_device::set_cmd"
+    },
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "function": "qsound_hle_device::qsound_w",
+     "case": [
+      "2"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "function": "qsound_hle_device::write_data"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 2 is the command address: its byte travels with the accumulated data word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "165-167",
+       "sha": "8d8f63fed9d856cc2064e5e95f2c14aa0f1f8504b9694b2491b23d4ef7021806"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "391-394",
+       "sha": "663a9ec10e313621e5ff8cf42a3f7ae4642f9fff6d26b0e212a65627f122883d"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "207",
+       "sha": "62f3269c206cfba4f4551707ef4da7a679976ecd7b38d9aa912512c25fdfcc54"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the LLE device the write clears the ready bit, then set_cmd stores the address and data, marks a command pending and asserts the DSP's INT line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "164-167",
+       "sha": "76add653681bd152fe500ca2421c2ad56ccb9796e84b489a36967ded7c2a5fc9"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsound.cpp",
+       "lines": "391-394",
+       "sha": "663a9ec10e313621e5ff8cf42a3f7ae4642f9fff6d26b0e212a65627f122883d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In the HLE device the write updates the stream, stores the word in the register the address selects when there is one, and clears the ready flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "205-207",
+       "sha": "0d80d3fb6c1b3246ea3c9786cc01216cbc0ce0086bc63ab5e2a11910c2d616ba"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "225-231",
+       "sha": "b75a55c89644625f32b0002c6a8dce9d550cfe0e8bfa6f6be5140cd8549b51cd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/qsound.cpp",
+     "lines": "149",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "lines": "195",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x93",
+   "name": "echo feedback",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "lines": "266"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Word 0x93 is the echo feedback of the HLE device.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "266",
+       "sha": "96fc4b6770c818b50be1f0945dca18d938d470560b4d5a46de3a069769670301"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word as the feedback: the average of the last two delay-line samples times it, shifted left by 2, is added to the input written back.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "266",
+       "sha": "96fc4b6770c818b50be1f0945dca18d938d470560b4d5a46de3a069769670301"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "499-506",
+       "sha": "d787b37e1e773fba6d4fca6eded430f52d7dedef2dbbc23576c46fb8608a9b95"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xD9",
+   "name": "reverb end position",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "lines": "267"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Word 0xD9 is the end position of the echo delay line in the HLE device.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "267",
+       "sha": "ee722a4045b15f40eed41de16730fc3609fb0a5d255116b1775266313fbaedcf"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word as that end position; each normal-state update makes the length that position less the mode's base offset, held to 0 through 1024.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "267",
+       "sha": "ee722a4045b15f40eed41de16730fc3609fb0a5d255116b1775266313fbaedcf"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "514-525",
+       "sha": "f9a707a56d85ac965ea299e3c21dae8d50c034aac949d7ea294b4044340a9b9e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xE2",
+   "name": "delay update flag",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "lines": "268"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Word 0xE2 is the delay update flag of the HLE device, non-zero to update delays.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "268",
+       "sha": "6284ac9a043321ace25db5bb91a24d891410154230e86a5ff5db7dc4453415c9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word; while it is non-zero, the next output sample recalculates the read position of both component delay lines and clears the flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "268",
+       "sha": "6284ac9a043321ace25db5bb91a24d891410154230e86a5ff5db7dc4453415c9"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "182-186",
+       "sha": "418b7c25600697e7dadbc012add6d1f523cbd5f3cd568ef7e40448f0618f2cb3"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "298-308",
+       "sha": "84686ea857377754a652b883641e854cbe0a536f1e589e4a38462fd2a314fbec"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "514-516",
+       "sha": "d964e02c72be173b2b7799888220c6700b3e36d375e181fe74ce6e74470b112a"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "572-579",
+       "sha": "ea0691bb055bb81599f235a8b5536cc3cdd3c80096c0552032eb06f8db3290ca"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "626-633",
+       "sha": "e0eb3cdfa33433da6b8e81aec1809a10c4ca17bb5e86e98256e289c506f919c0"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xE3",
+   "name": "next DSP state",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/qsoundhle.cpp",
+     "lines": "269"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Word 0xE3 is the state the HLE device's DSP switches to.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "269",
+       "sha": "068ae94282cb0274bcca5823ab0545ab46cefd61aadda3dfc5ad3b1c1b99641a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word as the next state, which the DSP takes after its busy samples in init and after six samples in normal play.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "269",
+       "sha": "068ae94282cb0274bcca5823ab0545ab46cefd61aadda3dfc5ad3b1c1b99641a"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "313-323",
+       "sha": "83cabf80905e5e538537e547d5d94275670ea44928a265674976c6f44a52114a"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "515-516",
+       "sha": "2a0efc0d1ad93c0fcd3d979227bbc817f9005dab6c7827bc9698b0f1928a7181"
+      },
+      {
+       "ref": "mame:src/devices/sound/qsoundhle.cpp",
+       "lines": "581-587",
+       "sha": "e30b88ea9bd79de231b76d37d4ba4f4b8e384dd6337d5665d4414bd9835275ec"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "engine": [
+  "logerror",
+  "read_byte",
+  "save_item",
+  "scheduler",
+  "stream_alloc",
+  "synchronize",
+  "timer_expired_delegate",
+  "update"
+ ]
+}

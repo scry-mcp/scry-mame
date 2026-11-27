@@ -1,0 +1,4841 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ym2203",
+ "title": "The YM2203 registers",
+ "kind": "register",
+ "scope": "ym2203",
+ "covers": "the registers of the YM2203 as Yamaha's data sheet describes them, and MAME's handling of each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "YM2203.raw.txt",
+   "variant": "ym2203"
+  }
+ ],
+ "official": {
+  "YM2203.raw.txt": [
+   "185-228",
+   "246-394"
+  ]
+ },
+ "engine": [],
+ "entries": [
+  {
+   "key": "0x00..0x05",
+   "name": "tone period",
+   "aliases": [
+    "tone fine",
+    "tone coarse"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "185"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "339-346"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "360-368"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "382-384"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "137"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $00 to $05 generate the frequency of the square wave sound source.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "185",
+       "sha": "73925dbccf2dfe515ac4bb373870efc530041fa5353771e029006da3a34130a5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Addresses 00 to 05 are listed in a table headed READ I WRITE DATA, the I being a doubtful glyph.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "339-346",
+       "sha": "f2eab709809ef8c5b79bce8d068ce4fbde64e406457e2c2af6081db0d56c1dcb"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "The same heading names reading as well as writing; the I between READ and WRITE is a doubtful glyph.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "339-340",
+       "sha": "251dfcd7d0537a1682318d9f21ae081153c9e60bf2da9d3f99e98b77b77fb2a6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Per channel the table has a Fine Tune and a Coarse Tune register, and its comment column names Channel-A, Channel-B and Channel-C Tone Period.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "360-368",
+       "sha": "310146d6013e7e9186a46cc87efbf01d39a99e588bc548097806e5df1629a55e"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "382-384",
+       "sha": "9ef5e17a68c5bb081d603943928dd92f4acd8a48455581f8e8cf8ca473b85fed"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME forms each channel's tone period from register 2n as the low 8 bits and the low 4 bits of register 2n+1 as bits 8 to 11.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "137",
+       "sha": "a48d7f65ee76ce266dcc019808d8cf6886da557780f9aa4f7b6119f04d1ffc80"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "noise period",
+   "aliases": [
+    "noise"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "186"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "347"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "369"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "385"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "123"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Address $06 generates the frequency of the noise source.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "186",
+       "sha": "b1f6aa9e4e598cb545bb4050d313be64b3cfaa284241b98564469d2af2b3740a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's comment for register 06 is Noise Period.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "347",
+       "sha": "aacd834b5cdc64a329e27649143406dd068306542988dfc250d6184745894849"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "385",
+       "sha": "feed0463bae01357a5fc1f6b9029d6ca83a74709929f9f20f5398af5dc9df2ff"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The capture's table lists address 06.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "347",
+       "sha": "aacd834b5cdc64a329e27649143406dd068306542988dfc250d6184745894849"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "The table of that heading, READ I WRITE DATA, covers reading as well as writing; the I is a doubtful glyph (heading quoted at 0x00..0x05).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "347",
+       "sha": "aacd834b5cdc64a329e27649143406dd068306542988dfc250d6184745894849"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads the noise period from the low 5 bits of register 0x06.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "123",
+       "sha": "c83edc8d23d611d80d3446e8dfdb2a5751af9846372a8def61db622cf9499753"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "369",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "mixer, I/O direction",
+   "aliases": [
+    "mixer",
+    "IOA IOB"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "187-188"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "348"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "370-372"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "386"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "124-125"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "135-136"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Address $07 controls the input and output of the I/O ports and the output of musical sound and noise.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "187-188",
+       "sha": "5593da76596d1bd91d1d6dccc4f3efb95451c0ef818173347306da7141467108"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The table labels register 07 with IN/OUT, IOB IOA, /Noise and /Tone, garbled in the capture, and the comment column says /ENABLE.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "370-371",
+       "sha": "3271f92d6f733541a0f0a7cc774d312b1834f9f522c1a2549f4b7876ea569efe"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "386",
+       "sha": "0932fb9c972c6c199fb5e39ec7c00e8adf7e48bb53804a79e3b7e7643e1f24ca"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The capture's table lists address 07.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "348",
+       "sha": "19b100ab7725c612f3d80ff203ca53cea5cadaafae3bf0f88f0fb4089fe08815"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "The table of that heading, READ I WRITE DATA, covers reading as well as writing; the I is a doubtful glyph (heading quoted at 0x00..0x05).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "348",
+       "sha": "19b100ab7725c612f3d80ff203ca53cea5cadaafae3bf0f88f0fb4089fe08815"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bit 7 of register 0x07 as the output flag of I/O port B and bit 6 as that of port A.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "124-125",
+       "sha": "84fe9a6522bc2621a119c9764bb224e560e78216b7625bdf6c28d902cbff1883"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "6",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME's ch_tone_enable_n reads bit choffs of register 0x07 and ch_noise_enable_n reads bit 3 plus choffs, choffs being the channel offset it is given.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "135-136",
+       "sha": "4dbabd96f278e3c1d60de0a7e1bba7284d61ac527a5068cea164bc4b38442602"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "372",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0A",
+   "name": "amplitude",
+   "aliases": [
+    "volume",
+    "level"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "189-190"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "349-351"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "373-375"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "387-389"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "138-139"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $08 to $0A control sound volume; either a fixed volume (programmable) or a variable volume system can be selected.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "189-190",
+       "sha": "7c70032266915a6303db4db2082769070c94c20c26e9142898dd61b022c15379"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The table labels each of these registers M Level, the M being doubtful, and the comments name Channel-A, Channel-B and Channel-C Amplitude.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "373-375",
+       "sha": "ff0b68c12cdb70967265c9af206abb91260573bfbf06b11570ad99ab655dd042"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "387-389",
+       "sha": "3e28453ab3a81e3270152ddae316a03058f08a087c758b681281b5605f8a5e3d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Addresses 08 to 0A are listed in the address column of the READ I WRITE DATA table, whose heading is quoted at 0x00..0x05.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "349-351",
+       "sha": "1bdfd951df31ce496199d6f8e221f28d3b4c02638ce40706d2e0827f1627f9f6"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "The table of that heading, READ I WRITE DATA, covers reading as well as writing; the I is a doubtful glyph (heading quoted at 0x00..0x05).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "349-351",
+       "sha": "1bdfd951df31ce496199d6f8e221f28d3b4c02638ce40706d2e0827f1627f9f6"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bit 4 of each register as the envelope enable of its channel and bits 3 to 0 as its amplitude.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "138-139",
+       "sha": "521f22ddbd929475074646014d836fa8952d4c290cda3febea00055b9b5342cf"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "name": "envelope period low",
+   "aliases": [
+    "envelope fine"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "191"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "352"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "376"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "390"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "126"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $0B and $0C control the envelope cycle of the variable sound volume system.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "191",
+       "sha": "aecdf5c0988aaa7fe3e43363477442a31f66b45d9b304667825e31c357dcb1b8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The table labels register 0B Fine Tune, the f of the capture's f'ine being doubtful, and the comment column says Envelop Period.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "376",
+       "sha": "c74c628fb632bce6d7a635edb58fff8d81114f1308af8b04766d512d19ec8977"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "390",
+       "sha": "803a3fe68fb9dcb3f7e938c4a30912ca0642adeac0a176d4f706dd96eba7c811"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The capture's table lists address 0B.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "352",
+       "sha": "a6d3e418967763454165f7d985e0b24338dc580eeec4d619507dad8769edfd47"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "The table of that heading, READ I WRITE DATA, covers reading as well as writing; the I is a doubtful glyph (heading quoted at 0x00..0x05).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "352",
+       "sha": "a6d3e418967763454165f7d985e0b24338dc580eeec4d619507dad8769edfd47"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME forms the 16-bit envelope period from register 0x0B as the low byte and register 0x0C as the high byte.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "126",
+       "sha": "7c501335115218b464fdee6658c69c3514a11f9d7ae516b9c613de3c77325f75"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x0C",
+   "name": "envelope period high",
+   "aliases": [
+    "envelope coarse"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "191"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "353"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "377"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "390"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "126"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's table labels register 0C Coarse Tune.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "353",
+       "sha": "5f751e08c9cb40a3e239a4d4b7762296d3b238b71285276adb7ca0376297ef5c"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "377",
+       "sha": "a31aa5285da63c79864b0fb01c95cbd1a26577f1390cce3e0e3bf382fd37b222"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The capture's table lists address 0C.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "353",
+       "sha": "5f751e08c9cb40a3e239a4d4b7762296d3b238b71285276adb7ca0376297ef5c"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "The table of that heading, READ I WRITE DATA, covers reading as well as writing; the I is a doubtful glyph (heading quoted at 0x00..0x05).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "353",
+       "sha": "5f751e08c9cb40a3e239a4d4b7762296d3b238b71285276adb7ca0376297ef5c"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME forms the 16-bit envelope period from register 0x0B as the low byte and register 0x0C as the high byte.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "126",
+       "sha": "7c501335115218b464fdee6658c69c3514a11f9d7ae516b9c613de3c77325f75"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "191",
+     "as": "elsewhere",
+     "owner": "ym2203:register:0x0B"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "390",
+     "as": "elsewhere",
+     "owner": "ym2203:register:0x0B"
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "name": "envelope shape",
+   "aliases": [
+    "envelope shape/cycle"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "192"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "354"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "378"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "391"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "127-130"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "268-270"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Address $0D specifies the envelope shape of the variable sound volume system.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "192",
+       "sha": "87006d030cb8970a43dd968b29aa1bafe1cffb89b940692218dd6ddb13dad3f4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The table's label for register 0D is garbled in the capture and its comment column says Envelop Shape/Cycle.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "378",
+       "sha": "c6faf73d1022544327ffb13aa6e1ea496052cd19b2bdeeca622a123e60d998a4"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "391",
+       "sha": "a5d963405123e8ea2c2ac874f2d1a6b195d83c3bb14d30845057e29b7f110517"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The capture's table lists address 0D.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "354",
+       "sha": "d7fcf32ee8e1cd3eef022fead751340276a82cd865ccaabc42af0a680ab8387d"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "The table of that heading, READ I WRITE DATA, covers reading as well as writing; the I is a doubtful glyph (heading quoted at 0x00..0x05).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "354",
+       "sha": "d7fcf32ee8e1cd3eef022fead751340276a82cd865ccaabc42af0a680ab8387d"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bit 3 of register 0x0D as continue, bit 2 as attack, bit 1 as alternate and bit 0 as hold.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "127-130",
+       "sha": "18ce1f426f00e500618f9628aac41607ca124942f6c38ab110972fe81d5254ad"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to register 0x0D also sets the envelope state counter to 0.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+       "lines": "269-270",
+       "sha": "d0bb95d914a16bcbeb8cd9099686074ed4da6d46196d70d8d867477fbba26dc0"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "268",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x0E..0x0F",
+   "name": "I/O ports A and B",
+   "aliases": [
+    "port A",
+    "port B"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "193"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "355-356"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "379-380"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "392"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-758"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-818"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "243-250"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "272-276"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119-120"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "124-125"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "124"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "131-132"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $0E and $0F are 8 bit general-purpose input and output ports.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "193",
+       "sha": "f355cb27fa0bd28e031c23afe18a7b815fa372671db5e4241219b72b4f5e0f9b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The table labels registers 0E and 0F 1/0 Port-A and 1/0 Port-B, the 1/0 being a capture reading of I/O, and the comment says 1/0 Port Date.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "379-380",
+       "sha": "703b984d973a7638a933bf99ff50f2b48801c4f7210f08917ae49b10e60b3985"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "392",
+       "sha": "a27a8f37dd749a86fc79744065b945f7bbb17baf287e43f514c5334a4f5e814d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Addresses 0E and 0F are listed in the address column of the READ I WRITE DATA table, whose heading is quoted at 0x00..0x05.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "355-356",
+       "sha": "5172d0d477ae2bdfeff8466945a60eece7dacd07935cdf0c763e3f6dbd3d16c3"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "The table of that heading, READ I WRITE DATA, covers reading as well as writing; the I is a doubtful glyph (heading quoted at 0x00..0x05).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "355-356",
+       "sha": "5172d0d477ae2bdfeff8466945a60eece7dacd07935cdf0c763e3f6dbd3d16c3"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x00..0x05"
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "Register 0x0E reads through the port A callback when bit 6 of 0x07 is 0, register 0x0F through port B's when bit 7 is 0, else the stored byte.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+       "lines": "244-247",
+       "sha": "973b008b54b47bde18b215bc7945121c3a44112c7991c18c2abe7602c9fb7e69"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+       "lines": "250",
+       "sha": "f4167c8545310e496fd1b1f4e4152b6109c43aa461e7cf2d0793495f7399d95d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "124-125",
+       "sha": "84fe9a6522bc2621a119c9764bb224e560e78216b7625bdf6c28d902cbff1883"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "124",
+       "sha": "354fbd4b28f1401210ede2de0162e8878acaec2f3484b9174aba50c9b381831d"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "6",
+     "on": "place",
+     "of": "mame",
+     "text": "A write of 0x0E also calls the port A write callback when bit 6 of 0x07 is 1; a write of 0x0F calls port B's when bit 7 is 1.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+       "lines": "273-276",
+       "sha": "8290e3f9ff2b81fe5bd0cb62d6664b6e991ee26e308973a103a813f6addadd02"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+       "lines": "124-125",
+       "sha": "84fe9a6522bc2621a119c9764bb224e560e78216b7625bdf6c28d902cbff1883"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "131-132",
+       "sha": "77ecdbcbfed2aa9737014ea7e93725a2cd74527876feae241ad8389caad4cf95"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "818",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "266",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "120",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "815-817",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "757",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "250",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "754-756",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "758",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "243",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "249",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.cpp",
+     "lines": "272",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
+     "lines": "119",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x21",
+   "name": "test",
+   "aliases": [
+    "LSI test"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "194"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "246-249"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "287"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "311"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Address $21 holds test information, always set to 0, the capture reading the 0 as O.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "194",
+       "sha": "f258f364a58d6faf278713352ea7b6abc8ff2de79fe73e034b61e285557af557"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Address 21 is listed in the address column of the WRITE DATA table, heading quoted at 0x21, with the label TEST and the comment LSI TEST DATA.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "246",
+       "sha": "e1668377d51369a8ebdf24d841c35044e1edf907cdd2989a8354575191bf5524"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "249",
+       "sha": "6f4b6612125fb3a0daecd2799dfd6c9c299424fd920f9b308110a2c1fbd8f443"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "287",
+       "sha": "94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "311",
+       "sha": "1c326a1fd2a7fd23e136b3ee87da9d03599523d2541ce93d9a682c8b0e1e1569"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "247-248",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x24",
+   "name": "timer A high",
+   "aliases": [
+    "timer A MSB"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "195"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "250"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "288"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "312"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "242-245"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $24 to $26 give the set time of Timers A and B.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "195",
+       "sha": "32f40666c1c1c1e084524498193d0979f569279380b7b64bdb47bbb3713d7578"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment for register 24 is most significant bits of TIMER-A, its leading figure, read B in the capture, being doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "250",
+       "sha": "c2356069e9d1e79ca924378153cfbbfb4d4416b1f99d41a2940bfdb66c5319db"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "312",
+       "sha": "54f1ab7aab584aec4bf71ed17337dd6c654a7028984ace3400f3535b73b310c6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "Address 24 is listed in the address column of the WRITE DATA table, heading quoted at 0x21, with the label TIMER-A.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "250",
+       "sha": "c2356069e9d1e79ca924378153cfbbfb4d4416b1f99d41a2940bfdb66c5319db"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "288",
+       "sha": "8e470e804338b14db8d8a17fcd48b115fa9b6923bced187069ff0bc2f23c45a8"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME forms the value of timer A from register 0x24 as bits 9 to 2 and the low 2 bits of register 0x25 as bits 1 to 0.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "196",
+       "sha": "931bd4cf7605f13fb00688609929fd9c237679771f92b362303eef10bfbbb3db"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "242-245",
+       "sha": "deaf0be5bdd093f114b7b21814fbf4ab3eb10e02ebba46f9880c8de40b7341c6"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x25",
+   "name": "timer A low",
+   "aliases": [
+    "timer A LSB"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "195"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "251"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "289-290"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "313"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "242-245"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment for register 25 is 2 least significant bits of TIMER-A.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "313",
+       "sha": "65f9e0c989afc4f7904b91bd84965d80416a69f739a7550dd08eb29b5c5862e8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Address 25, read 2S in the capture, is listed in the address column of the WRITE DATA table, heading quoted at 0x21, under a garbled TIMER-A label.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "251",
+       "sha": "24388db4da5e774cadac9afded1af388b4030846637912f70633742d1673a391"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "289-290",
+       "sha": "5a467e0ac806ed4f3b94f352502afba1f5a72896319a6bc34b8e71d768453e21"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME forms the value of timer A from register 0x24 as bits 9 to 2 and the low 2 bits of register 0x25 as bits 1 to 0.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "196",
+       "sha": "931bd4cf7605f13fb00688609929fd9c237679771f92b362303eef10bfbbb3db"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "242-245",
+       "sha": "deaf0be5bdd093f114b7b21814fbf4ab3eb10e02ebba46f9880c8de40b7341c6"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "195",
+     "as": "elsewhere",
+     "owner": "ym2203:register:0x24"
+    }
+   ]
+  },
+  {
+   "key": "0x26",
+   "name": "timer B",
+   "aliases": [
+    "timer B data"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "195"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "252"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "291"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "197"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment for register 26 is TIMER-B DATA.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "314",
+       "sha": "7155db091ef6a5a0ee93811c7687477d2dc83b325f0ad44b1ece161cc3a19b66"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Address 26 is listed in the address column of the WRITE DATA table, heading quoted at 0x21, with the label TIMER-B.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "252",
+       "sha": "5f9c4ab08cac7457e9111a30e4664920607ea2c115a1433d7be98e97e64244ca"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "291",
+       "sha": "f8c17c19c684d630d0c3636632364ce75d938a05c1363533ef6bb8205c81cd8f"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME takes the value of timer B from the whole byte of register 0x26.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "197",
+       "sha": "17069876d9a5375a81b025a13a5d66d04985645a4030835c0e67fa70fb706903"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "195",
+     "as": "elsewhere",
+     "owner": "ym2203:register:0x24"
+    }
+   ]
+  },
+  {
+   "key": "0x27",
+   "name": "timer control, mode",
+   "aliases": [
+    "mode",
+    "reset",
+    "enable",
+    "load"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "208-209"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "253"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "292-295"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "316"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1405-1409"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "64"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1565-1589"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "198-205"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "121"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Address $27 controls the operation of Timers A and B, and sets the third channel mode of the FM sound source.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "208-209",
+       "sha": "57a724df1bb635a59e572c671a17bcc99144f01f621c3968053904854eacf906"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Address 27 is listed in the WRITE DATA table (heading at 0x21) with labels MODE, RESET, ENABLE and LOAD, the last three followed by B and A.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "253",
+       "sha": "670671cd97404156226e507973f2ab8330d3022ca96e0c93bdbdb320c41adcaf"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "292-295",
+       "sha": "01a2a1610d2ca870909e2434b58b518ff2be7ab7250f2176f80f90be9b6bffc4"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment for address 27 is TIMER-A/B control and 3 channel mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "316",
+       "sha": "f47064df6152a05f5721600c36a56949e9204b59a4c6951d730344ec9a526009"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to address $27 controls the operation of Timers A and B.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "208",
+       "sha": "54add4d9343db8c44a9b73b9abb5d25a41650d3b9b11831ecf7eb7adb9b6e8e4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to address $27 sets the third channel mode of the FM sound source.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "208-209",
+       "sha": "57a724df1bb635a59e572c671a17bcc99144f01f621c3968053904854eacf906"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 1-0 of register 0x27 as the load of timers B and A, bits 3-2 as their enable and bits 5-4 as their flag reset.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "200-205",
+       "sha": "fd35b35640ff6395fbbfab6076a514122397c7cf2aaa190028a447dc81d9788c"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1578-1582",
+       "sha": "b672aead90129c06943ce88e1dad2d8960b34d217ff37c69d99f10eeebe52598"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "7",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 7 and 6 of register 0x27 as the mode: the value 2 is CSM and any nonzero value is the multi-frequency mode.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "198-199",
+       "sha": "03915ecebda20e233f4d344d29e7453ae766038f0d944548a541ebd5969ea318"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "8",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME does not store a write of register 0x27 at once: the device defers it with a scheduler synchronize call.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1405-1409",
+       "sha": "8983825f367b2878d5fe63cbde1222cd32a9cd6e84a2d8bbe719ba1904db14ba"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "121",
+       "sha": "c46a245e93c9f996970ef74b3703b66cdb577982b90facd2a4e1134b0dfbb51c"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "64",
+       "sha": "4cca515bd584e3e3e1a3cfab55358aa806e486f62149e2d92bffbf5412c04090"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1578-1582",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1587-1588",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1567",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "198-199",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1565-1566",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1569-1577",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1583-1586",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1589",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1572-1573",
+     "as": "dead"
+    }
+   ]
+  },
+  {
+   "key": "0x28",
+   "name": "key on/off",
+   "aliases": [
+    "key on",
+    "key off"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "254"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "296"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "317"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "176-184"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417-1423"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "842-844"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Address 28, read 2B in the capture, is listed in the WRITE DATA table (heading at 0x21) with the labels SLOT and CH.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "254",
+       "sha": "5c19c5dfd9c3b4a25e2d34dc6eac5e5c2d6200aa5e3267e8423ccb679525be61"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "296",
+       "sha": "347777e712dc08f1db2ac1f46492fe7f70e6ad359c1ce84d150f12b8f9fc0824"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for address 28 is Key-ON/OFF.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "317",
+       "sha": "5aab9108bdd68aaf34d3d9098e1cd2fd69235ec400b3a255b94b378158d479dc"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME takes the low 2 bits of register 0x28 as the channel, skips the key event for channel 3, and takes bits 7 to 4 as the operator mask.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "176-184",
+       "sha": "2876ce20d44dac8a2b77fcc9d9b42ff4ae89f08200ea691a27ecbf2dbd17de33"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1423",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "844",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417-1422",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "842-843",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2D",
+   "name": "prescaler 6",
+   "aliases": [
+    "prescaler"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "789"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "210-212"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "255"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "318"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "795-799"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "804"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $2D to $2F specify the dividing number of the input clock; 2 through 6 are for the FM sound source, 1 through 4 for the square wave one.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "210-212",
+       "sha": "f229d61cb36a68e54efa5de836fb725410706245f2ad3d00549611da325ace87"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's table lists address 2D.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "255",
+       "sha": "269de770b942ed95cef5b9fa6bd826e3189a0c0472db276393b60df39d50aa36"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for address 2D is Set pre-scaler.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "318",
+       "sha": "b8412dba969825f1427081d22e09c7a8e7f4a4355c30f9317c2da6a72a739d72"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME sets the prescale to 6 when 0x2D is written to the address port; the data write then stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "789",
+       "sha": "ec7a7a0611ffff932ee469091d57e87a2946535ba30786467bbbdd0966de4ed1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "795-799",
+       "sha": "844abf255dcb65a55773048068992f49a0edeb18883871cfcdb8bf58f27887dd"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "820-823",
+       "sha": "6e6ebda4a4c7096e3b1fcc7300193d84556ab65f3d53ced925e275395a2bbaf7"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "795-797",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "804",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2E",
+   "name": "prescaler 3",
+   "aliases": [
+    "prescaler"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "789"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "256"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "319"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "795-797"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "800-801"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "804"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's table lists address 2E.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "256",
+       "sha": "bf86f0d41f3f516858992abfbb37cd07ead8d0dd31752d6226a9d1c1bb5098c0"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for address 2E is Selection of the dividing numbers of 1/3 and 1/6.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "319",
+       "sha": "caebd4924dae23083572ec86ae9e710b6e5a98a988ef7d615ba4c9c06a9e21bf"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME sets the prescale to 3 when 0x2E is written to the address port while the prescale is 6; the data write stores the byte.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "789",
+       "sha": "ec7a7a0611ffff932ee469091d57e87a2946535ba30786467bbbdd0966de4ed1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "795-797",
+       "sha": "5dcb0e5f5bf170284ecaf3bfdfa6242326eeacf8e25029abf8d43aa27bd60e01"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "800-801",
+       "sha": "78a984da9bdb469f4adb1a203c6d97fd6a52181dd3616687aeea34e79c34ef46"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "820-823",
+       "sha": "6e6ebda4a4c7096e3b1fcc7300193d84556ab65f3d53ced925e275395a2bbaf7"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "795-797",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "804",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x2F",
+   "name": "prescaler 2",
+   "aliases": [
+    "prescaler"
+   ],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "789"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "257"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "320"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "795-797"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "802-803"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "804"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's table lists address 2F.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "257",
+       "sha": "b4b51f5bb4e8064915fa97864bfcca8961777ead5fd70b7ff073f9655e363e26"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for address 2F is Set a divider to the dividing number of 1/2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "320",
+       "sha": "5946e1b9c9bedd231d1add18f40e93f39f87d6dbf0f422ed76b84bfa3bdcdca6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME sets the prescale to 2 when 0x2F is written to the address port; the data write then stores the byte in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "789",
+       "sha": "ec7a7a0611ffff932ee469091d57e87a2946535ba30786467bbbdd0966de4ed1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "795-797",
+       "sha": "5dcb0e5f5bf170284ecaf3bfdfa6242326eeacf8e25029abf8d43aa27bd60e01"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "802-803",
+       "sha": "7faa4a8160770f24dd56613f84868a4521c441e15c25e40148d5b9ba275f02be"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "820-823",
+       "sha": "6e6ebda4a4c7096e3b1fcc7300193d84556ab65f3d53ced925e275395a2bbaf7"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "795-797",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "804",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x30..0x3F",
+   "name": "detune, multiple",
+   "aliases": [
+    "DT",
+    "MULTI"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "213-214"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "258-259"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "297"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "321-322"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "221-222"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $30 to $3E control detune and multiple, which set tones and the relationship between the fundamental wave and the harmonic.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "213-214",
+       "sha": "ec71dc1665e9db326edfc76771d3d69a876f9ba677a135338568637022f1d898"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The WRITE DATA table (heading at 0x21) lists addresses 30 and 3E with the labels DT and MULTI, the capture reading I / DT MULTI.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "258-259",
+       "sha": "9cae9ae3d5e0ebc2770aabf891c121398c33e21252b3ede6a6550669bf5682ac"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "297",
+       "sha": "4dd3619f2ae9d95094b234127c1e40e0c2ae0fb67d374ed80433f9ee47033490"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for addresses 30 to 3E is Detune / Multiple.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "321",
+       "sha": "6aecb9e7d49440a8bf6f268c32ed4dc734520979241344a1bc12b4b6dad17ecf"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment adds that addresses 33, 37 and 3B are empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "322",
+       "sha": "c40453fb25a4f022a3de9086802b35dd604771f1f9154cfe8072afa5d71581ad"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 6 to 4 of each register as the detune and bits 3 to 0 as the multiple of its operator.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "221-222",
+       "sha": "50abded62f39c919f8e3233b6ab3fe0b8b15d333ead651c4f690f3fdb8fddee7"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x4F",
+   "name": "total level",
+   "aliases": [
+    "TL"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "215-216"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "260-261"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "298"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "323-324"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "223"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "155-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "238"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $40 to $4E give the total level, which becomes the modulation index of the sound volume and modulation wave of the modulated wave.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "215-216",
+       "sha": "12d70f584683352b225f0d2d421bda7739420bad9a08689677bb586c6df82223"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The WRITE DATA table (heading at 0x21) lists addresses 40 and 4E with the label TL, the capture reading I / TL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "260-261",
+       "sha": "74a41006025fa563d10a369928e0d5fc7861898c0fa8caa145ed84535708ded4"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "298",
+       "sha": "d006d820dac19da0cb81a8906abbb64b483d5f129d6c37bd2a56f79d047a0c70"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for addresses 40 to 4E is Total Level.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "323",
+       "sha": "465cde8e5d54be81bbcf60ad83351e586ce1303daa62fc5e5746f11b43e516e6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment adds that addresses 43, 47 and 4B are empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "324",
+       "sha": "72d255238b833d2bd07f5398a2dea921c16d3a3eed189689261df0b766791f12"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 6 to 0 of each register as the total level of its operator.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "223",
+       "sha": "694c065d2737ba677d2a1191c9a53b3a1a96d2574687d4948a70c129918cafd7"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "6",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads the total level of its operator n at 0x40 plus n plus n/3, in integer division.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "155-156",
+       "sha": "6837781810a8e7bd01732b89452c3a0c5a28c0f57b2354052cb20ca2e45e75a9"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "223",
+       "sha": "694c065d2737ba677d2a1191c9a53b3a1a96d2574687d4948a70c129918cafd7"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "238",
+       "sha": "51685e8db4bbcb1f83eb1c82dcffc74409738f49fbfccfaf50ea6720533c69a5"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x50..0x5F",
+   "name": "key scale, attack",
+   "aliases": [
+    "KS",
+    "AR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "217-218"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "262-263"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "299"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "325-326"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "224-225"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $50 to $5E: Key Scale controls the rate of change of A, D, S and R according to keyboard information; Attack rate gives the rate of change at attack.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "217-218",
+       "sha": "96e075feb050bac70140e3d17559190b98472fb7212f18c217ca88367da793f2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The address column of the WRITE DATA table holds two entries the capture reads so and SE, doubtful OCR glyphs; the label line reads KS~ AR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "262-263",
+       "sha": "648aaf36572a3299fd933d06b101639e4f851f1d6b4943c1f9acb3a394abde6a"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "299",
+       "sha": "bece3074ba4edb58bf9853708fa6d7d18375163e68ffcb6b9dd14682baa57311"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for these addresses is Key Scale / Attack Rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "325",
+       "sha": "6cc10939c6a239450559a6a2e8b3b05dcf892170c9daf7470fe39a1248e8afad"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment adds that addresses 53, S7 and SB are empty; the capture's S7 and SB are doubtful OCR glyphs.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "326",
+       "sha": "5e68752dda92ae28ad8f1abd5d348b00dc7e9bd2a298102ef5c1973b77e4f207"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 7 and 6 of each register as the key scale rate and bits 4 to 0 as the attack rate of its operator.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "224-225",
+       "sha": "ce9ac6023502bbce87b0bc56867450cb6bb4333a7143ed54e1a8949322cbd9eb"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x60..0x6F",
+   "name": "decay rate",
+   "aliases": [
+    "DR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "219"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "264-265"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "300"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "327-328"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $60 to $6E: Decay Rate shows the rate of change of the envelope at the time of decay.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "219",
+       "sha": "cb5720fea7ff539eddb476746f713667e2535fdf3b70dbc804d54942a7c3164f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The WRITE DATA table (heading at 0x21) lists addresses 60 and 6E with the label DR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "264-265",
+       "sha": "02d6d78b89fe1c058daedf7eb69f8a0767ffd78e7728ae4c1b486fff0ac6bb74"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "300",
+       "sha": "40c30a28814a86ba4b87cc9a4cdcad03569be3b313fb27d623f7caa5d3eca287"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for addresses 60 to 6E is Decay Rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "327",
+       "sha": "ead31d1d27984670910bcbbbaf14caaee5fd5f6494bbd95898c47c246f2c157d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment adds that addresses 63, 67 and 68 are empty; the capture's 68 is a doubtful OCR glyph.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "328",
+       "sha": "542a4892f68ea48367cfba771b834221754d807c006ffbae79479cddf011a2fe"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 4 to 0 of each register as the decay rate of its operator.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "226",
+       "sha": "9ba5127765c533202d9f39c184ddf55defd7d0c400d75056ccc7e7327a1e8e00"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x70..0x7F",
+   "name": "sustain rate",
+   "aliases": [
+    "SR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "220"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "266-267"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "301"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "329-330"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "228"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $70 to $7E: Sustain Rate shows the rate of change of the envelope at the time of sustain.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "220",
+       "sha": "00fb6037dfc59ef3757723a02bb3fcedfd18218257f535fbe2c863894d64666e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The WRITE DATA table (heading at 0x21) lists addresses 70 and 7E with the label SR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "266-267",
+       "sha": "ec81f0cbe98fb6be1f4d794599643348c375f8a6c36d1d4c8aca7a34f0368cf9"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "301",
+       "sha": "4418ba61334db484dbac70718aa91d59d8e47334fbcd739a260f0fb51b9a0f57"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for addresses 70 to 7E is Sustain Rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "329",
+       "sha": "82ad6ad52337284b85219c59d486a7722e8f63281d77385fcf94dfab40e7e555"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment adds that addresses 73, 77 and 7B are empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "330",
+       "sha": "39db15ec1ae2006f070586340c5598acd39aaadcd307f21669e28a9f8c84e471"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 4 to 0 of each register as the sustain rate of its operator.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "228",
+       "sha": "944a8cd8af7e9d9ec744f24c198625328aad86ea0e8df84eec2cf3e9762e9282"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0x8F",
+   "name": "sustain level, release",
+   "aliases": [
+    "SL",
+    "RR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "221-222"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "268-269"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "302"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "331-332"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "229-230"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses from $80: Sustain level shows the level of the shift from decay to sustain; Release rate shows the rate of change at release.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "221-222",
+       "sha": "ac309be87b23fcc5e79be29506e82565bc992398b2405bd052e33bd74db3293b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The address column of the WRITE DATA table holds two entries the capture reads BO and BE, doubtful OCR glyphs; the label line reads SL RR.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "268-269",
+       "sha": "05c60a1a7c67cdfcf08e12638a5bcc6200ad05cb14c3e28788753aa4eef064de"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "302",
+       "sha": "d3fcc1accb9d18f76171829f678632c4d573979bc4cd1b15e02e4ae2d30332d5"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for these addresses is Sustain Level / Release Rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "331",
+       "sha": "2e8fb1a72b48993cd43780c3a958f23ceeab9052b8e04b1393f0b8a5f6c4a22e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment adds that addresses B3, B7 and BB are empty; the capture's letters are doubtful OCR glyphs.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "332",
+       "sha": "ea378c7b46d7ae78adfd356a5b6bc1d47e3784a5066bb09f7b941d742987a929"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 7 to 4 of each register as the sustain level and bits 3 to 0 as the release rate of its operator.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "229-230",
+       "sha": "cdf13ff4004cd9c42636f15216230216d7809b9e1c8d086121fb392bbfd9210f"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x90..0x9F",
+   "name": "SSG-EG",
+   "aliases": [
+    "SSG-type envelope"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "223-224"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "270-271"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "303"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "333-334"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "231-232"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $90 to $9E generate the envelope including the repeat pattern similar to that of the square wave sound source.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "223-224",
+       "sha": "60a16afc7137b790aa15f73bc9d77d882bda650ba0e6c4193e512ec80fbccdfd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The WRITE DATA table (heading at 0x21) lists addresses 90 and 9E with the label SSG-EG, the capture reading 0 SSG-EG.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "270-271",
+       "sha": "b6ffb63106d522620c7b8555eddc4937d25cda9d38e1af118e7eb08e05c591de"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "303",
+       "sha": "bd90aaa46b2d3423ed1c5f7ecbfb7df0be0aaa09559acb36a5eac1abcb7a58b6"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment for addresses 90 to 9E is SSG-Type Envelop Control.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "333",
+       "sha": "5df39e70d949e86a9cb958c43ba914239623e7fd5104615898b0916dd90257ca"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The comment adds that addresses 93, 97 and 9B are empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "334",
+       "sha": "9eb1417da0972a3adc28f2d15bb6392fb9a398eacdf7b520a288b82bd6c61fb4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bit 3 of each register as the SSG-EG enable and bits 2 to 0 as the SSG-EG mode of its operator.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "231-232",
+       "sha": "d33d380e31edc4d83f5302710f10b2ab70790374094d5a434ac9ec1bb2fda851"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xA0..0xA3",
+   "name": "frequency low",
+   "aliases": [
+    "F-Num. 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "225"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "272-274"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "304"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "335"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-152"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "158-165"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "241-244"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $A0 to $A6 give the key-code (F-number) of each channel; the capture reads the first address $AO.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "225",
+       "sha": "aef0bf5a53510f39b66b50f0fff82d79542fd26321df4bce62d085ebeb6c4d33"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The address column of the WRITE DATA table holds three entries the capture reads AO, Al and A2, doubtful OCR glyphs, with the label F-Num. 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "272-274",
+       "sha": "bb4336ca87f35c1fac594da99bc7339d7d1bbed01c459b9bdbdb37b3febe70b8"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "304",
+       "sha": "3f8f7414290612281920631db354e757d3d3a60bb701dc6c126fdac995ce8276"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The comment line after the one for 90 to 9E reads F-Numbers / BLOCK; the capture shows no address beside it.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "335",
+       "sha": "1afd4dad6374febaaf1fb00c17da78233c233c4da3771b3e65066f1cfdedb99e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads a channel's block and frequency as a 14-bit word: bits 5 to 0 of its 0xA4 register shifted above all 8 bits of its 0xA0 register.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "209",
+       "sha": "294918ffaa50e1822be9a44b0926e10b21450c8b197e58df497ae611a48733dc"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "241-244",
+       "sha": "8f4c14211285b839b82f4369f343fcb9e5b4e10a0c1babb4917fb8fab1fe229d"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "5",
+     "on": "order",
+     "of": "mame",
+     "text": "A write to 0xA0..0xA2 is stored and copies the latch byte (internal register 0xB8) into the register 4 above it.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "158-164",
+       "sha": "2ad8457486d3287d5afcef3515d99e59b317581ab24ae3a9c037036f4c5a6669"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "text": "A write whose address has 3 in its low two bits (0xA3, 0xA7, 0xAB, 0xAF) is not stored in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "149-150",
+       "sha": "b5b169d74d5b70085c14c5c21555df9d78c90c84f096c7540257123e661c77ce"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "161",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-148",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "165",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0xA4..0xA7",
+   "name": "block, frequency high",
+   "aliases": [
+    "BLOCK",
+    "F-Num. 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "275-277"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "305"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "241-244"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The address column of the WRITE DATA table holds three entries the capture reads A4, AS and A6, AS being doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "275-277",
+       "sha": "c5a0dcd7fa5d2f18564a8222db64f00732cf5b6f16e751c0b3b0e626884156fa"
+      }
+     ],
+     "links": [
+      "ym2203:register:0xA0..0xA3"
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The label line for these addresses reads L BLOCK F-Num. 2, the L being doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "305",
+       "sha": "515374fdfc4d69dbd9f4fc858198276b8aa182ba396c8819cc6eb6fca1ed2a7d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 5 to 0 of a channel's 0xA4 register as the six high bits of its 14-bit block and frequency word.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "209",
+       "sha": "294918ffaa50e1822be9a44b0926e10b21450c8b197e58df497ae611a48733dc"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "241-244",
+       "sha": "8f4c14211285b839b82f4369f343fcb9e5b4e10a0c1babb4917fb8fab1fe229d"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "order",
+     "of": "mame",
+     "text": "A write to 0xA4..0xA6 stores its low 6 bits in a latch that the three channels share.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "154-156",
+       "sha": "f64e787594dad30a2b9c8ae5e8e4441188e8fc3f61a4618f2ceceeffc4a9bcd4"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "A write whose address has 3 in its low two bits (0xA3, 0xA7, 0xAB, 0xAF) is not stored in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "149-150",
+       "sha": "b5b169d74d5b70085c14c5c21555df9d78c90c84f096c7540257123e661c77ce"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-148",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "156",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0xA8..0xAB",
+   "name": "channel 2 freq low",
+   "aliases": [
+    "3CH F-Num. 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "226"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "278-280"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "306"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "336-337"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-152"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "158-165"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "285-295"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "206"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "199"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "241-244"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "when",
+     "of": "doc",
+     "text": "Addresses $A8 to $AE give the key-code (F-number) of three channels when set to the special mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "226",
+       "sha": "ab5460584859c131bfae9407c30e989b127d7913ca60bf6243ec512b8da37101"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The address column of the WRITE DATA table holds three entries the capture reads AB, A9 and AA, AB being doubtful; the label line reads 3CH * F-Num. 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "278-280",
+       "sha": "d2eb4d3a9581b37afb4daf3641dd4c33fa3d7d30fa21c8119ecf6486811386ce"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "306",
+       "sha": "1de03aee5061e5eaa0b0c952497ba2079fc80a5dba4002549b80a018d572e0fc"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The capture has the two comment lines 3CH-3slot and F-Numbers / BLOCK, with no address beside them.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "336-337",
+       "sha": "563db5f69b1ce1bf688ca07590be08a8e2ca5f357d602d4fd70093ebf6ee721f"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "When 0x27 bits 7 and 6 are not 0, MAME gives channel 2's operators at register offsets 6, 2 and 10 the frequency of 0xA8, 0xA9 and 0xAA.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "199",
+       "sha": "e230232110182754c81a2ef66a2381184fa55396e0cda544749cf47d426a95f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "285-295",
+       "sha": "d6234f2ae0edc3ec55d4ec648b354b564d1c1b166b7dc7beba325787b7c08808"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME builds a special-mode frequency from bits 5 to 0 of 0xAC plus n, shifted above all 8 bits of 0xA8 plus n; n is a group offset.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "206",
+       "sha": "2cf8c4fbfea6a4ce1d3f9bba03f8fdf723ccf6200dca87143e7829928fa6fe60"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "241-244",
+       "sha": "8f4c14211285b839b82f4369f343fcb9e5b4e10a0c1babb4917fb8fab1fe229d"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "6",
+     "on": "order",
+     "of": "mame",
+     "text": "A write to 0xA8..0xAA is stored and copies the latch byte (internal register 0xB9) into the register 4 above it.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "158-164",
+       "sha": "2ad8457486d3287d5afcef3515d99e59b317581ab24ae3a9c037036f4c5a6669"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "mame",
+     "text": "A write whose address has 3 in its low two bits (0xA3, 0xA7, 0xAB, 0xAF) is not stored in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "149-150",
+       "sha": "b5b169d74d5b70085c14c5c21555df9d78c90c84f096c7540257123e661c77ce"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "161",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-148",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "165",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "285-295",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "199",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "206",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0xAC..0xAF",
+   "name": "channel 2 block, high",
+   "aliases": [
+    "3CH BLOCK",
+    "3CH F-Num. 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "281-283"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "307-308"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-156"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "206"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "241-244"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The address column of the WRITE DATA table holds three entries, which the capture reads AC, AD and AE.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "281-283",
+       "sha": "7fb24f3d73f69a798dd04de51dd0f119340fc651eaccfbbd5de6f94e3c42ccb9"
+      }
+     ],
+     "links": [
+      "ym2203:register:0xA8..0xAB"
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The label lines read Vl3CH * 3CH * and BLOCK F-Num. 2, the Vl being doubtful.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "307-308",
+       "sha": "2c2bf43e0c49cd343d474ddf4da7e44338c607f65860b1f081bf7400051edfcd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME builds a special-mode frequency from bits 5 to 0 of 0xAC plus n, shifted above all 8 bits of 0xA8 plus n; n is a group offset.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "206",
+       "sha": "2cf8c4fbfea6a4ce1d3f9bba03f8fdf723ccf6200dca87143e7829928fa6fe60"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "241-244",
+       "sha": "8f4c14211285b839b82f4369f343fcb9e5b4e10a0c1babb4917fb8fab1fe229d"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "4",
+     "on": "order",
+     "of": "mame",
+     "text": "A write to 0xAC..0xAE stores its low 6 bits in a latch of its own, apart from the one of 0xA4..0xA6.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152",
+       "sha": "2975d08a33556472bc123adbf19dcce836171444da8a17fd84dcd3ac67ecb16b"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "154-156",
+       "sha": "f64e787594dad30a2b9c8ae5e8e4441188e8fc3f61a4618f2ceceeffc4a9bcd4"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "mame",
+     "text": "A write whose address has 3 in its low two bits (0xA3, 0xA7, 0xAB, 0xAF) is not stored in the register array.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "149-150",
+       "sha": "b5b169d74d5b70085c14c5c21555df9d78c90c84f096c7540257123e661c77ce"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-148",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "156",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0xB0..0xB3",
+   "name": "feedback, algorithm",
+   "aliases": [
+    "FB",
+    "CONNECT"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "227-228"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "284-286"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "309"
+    },
+    {
+     "ref": "datasheet:YM2203.raw.txt",
+     "lines": "338"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-823"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "210-211"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-146"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Addresses $B0 to $B2 give the modulation system (connection) of the FM modulation and the factor of the feedback FM (self-feedback); the capture reads $BO and $82.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "227-228",
+       "sha": "a6a7775986c7596db26cd8a5119cc463faed6ba870b91e1bc0cedf84193232ce"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The address column of the WRITE DATA table holds three entries the capture reads BO, Bl and B2; the label line reads L FB CONNECT.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "284-286",
+       "sha": "e69af3d565022911f57c9e992b1f4815485a43a563acd9e4ba36a19b0b7c948d"
+      },
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "309",
+       "sha": "a1c5ad318476ae2be2be43ecdc29e683a75aab30cd3a0cdc1014e8806765e831"
+      }
+     ],
+     "links": [
+      "ym2203:register:0x21"
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The capture's line reads Self-Feedback / Connection and then YM2203.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "338",
+       "sha": "1c192b7313ddafe93e0e8deb16c4ce770d256ae6b20d5479078c9f0c4ff9aa7d"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads bits 5 to 3 of each register as the feedback and bits 2 to 0 as the algorithm of its channel.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "210-211",
+       "sha": "7cf85c6fc17eccc3f013f156b3e227dc4ae337e85cf3f4f0b737c7f75d963329"
+      }
+     ],
+     "vs": "place"
+    },
+    {
+     "n": "5",
+     "on": "place",
+     "of": "mame",
+     "text": "MAME reads the feedback and algorithm of channel n at 0xB0 plus the channel offset, which is n when the chip is not an OPNA.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "142-146",
+       "sha": "659781b86c5d9ebea12d360a2013c5f96ffd086aafc4e4c5592947d7ec6d1539"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "210-211",
+       "sha": "7cf85c6fc17eccc3f013f156b3e227dc4ae337e85cf3f4f0b737c7f75d963329"
+      }
+     ],
+     "vs": "place"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "820-822",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172",
+     "as": "structure"
+    }
+   ]
+  }
+ ],
+ "closed": [
+  {
+   "ref": "datasheet:YM2203.raw.txt",
+   "lines": "196-207",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM2203.raw.txt",
+   "lines": "310",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM2203.raw.txt",
+   "lines": "315",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM2203.raw.txt",
+   "lines": "381",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:YM2203.raw.txt",
+   "lines": "357-359",
+   "as": "elsewhere",
+   "owner": "chip:device:ym2203"
+  },
+  {
+   "ref": "datasheet:YM2203.raw.txt",
+   "lines": "393-394",
+   "as": "elsewhere",
+   "owner": "chip:device:ym2203"
+  }
+ ]
+}

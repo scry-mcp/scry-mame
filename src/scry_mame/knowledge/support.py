@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 from importlib import resources
-from pathlib import Path
 
-import scry_core
-from scry_core.knowledge import Base, Chip, Confirmation, Scope, Support, shared
-from scry_core.knowledge.lock import parse_lock
+from scry_core.knowledge import Chip, Scope, Support, quote, sealed, shared
+from scry_core.knowledge.base import Base
 
 #: The first tier of MAME's chips. A chip's key is MAME's short name of the family's base type;
 #: `types` are the short names whose register layout was read and is the same.
@@ -51,18 +49,46 @@ SUPPORT = Support(
     live=("memory", "input", "device"),
 )
 
-_CORE = Path(scry_core.__file__).parent / "knowledge"
+#: Where this server's dictionaries of rows are, and the shared ones every server loads.
+SOURCES = ("scry_mame", "scry_core")
 
 
-def confirmation() -> Confirmation:
-    """The shared dictionaries' confirmation plus this server's lock. It has no second-check
-    file of its own, so none of its own entries is confirmed."""
-    own = (resources.files("scry_mame") / "knowledge_index" / "lock.json").read_text(
-        encoding="utf-8")
-    return Confirmation.of((*shared.locks(), parse_lock(own, "lock.json")),
-                           (shared.second_check(),))
+def merged(*locks: sealed.Lock) -> sealed.Lock:
+    """One lock of several, part by part: a part two of them seal is refused by name, as nothing
+    says which seal holds."""
+    held: dict[str, dict[str, sealed.Part]] = {}
+    for lock in locks:
+        for id_, parts in lock.sealed.items():
+            mine = held.setdefault(id_, {})
+            for part, got in parts.items():
+                if part in mine:
+                    raise ValueError(f"{id_}: the part {part} is sealed in two locks")
+                mine[part] = got
+    return sealed.Lock(held, tuple(r for lock in locks for r in lock.reopened))
+
+
+def own_lock() -> sealed.Lock:
+    name = "rows-lock.json"
+    return sealed.parse_lock((resources.files("scry_mame") / "knowledge_index" / name).read_text(
+        encoding="utf-8"), name)
+
+
+def rows_lock() -> sealed.Lock:
+    """The seals of the shared dictionaries and of this server's own."""
+    return merged(shared.rows_lock(), own_lock())
+
+
+def own_index() -> quote.Quotes:
+    name = quote.QUOTES_NAME
+    return quote.parse_quotes((resources.files("scry_mame") / "knowledge_index" / name).read_text(
+        encoding="utf-8"), name)
+
+
+def rows_index() -> quote.Quotes:
+    """The index of the shared dictionaries and of this server's own."""
+    return quote.merge(shared.rows_index(), own_index())
 
 
 def load(fts5: bool | None = None) -> Base:
-    return Base.load("scry_mame", _CORE / "chips", _CORE / "cpus", fts5=fts5, pins=shared.PINS,
-                     confirmation=confirmation())
+    """The base this server serves: the entries the locks seal."""
+    return Base.load(*SOURCES, lock=rows_lock(), fts5=fts5)

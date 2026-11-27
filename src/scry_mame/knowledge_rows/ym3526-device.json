@@ -1,0 +1,697 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ym3526-device",
+ "title": "The YM3526 OPL as a device",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "the YM3526 as a device: its bus, status read, interrupt line and reset, and what MAME does for each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "YM3526.raw.txt",
+   "variant": "ym3526"
+  }
+ ],
+ "official": {
+  "YM3526.raw.txt": [
+   "44-68",
+   "200-202",
+   "217"
+  ]
+ },
+ "engine": [],
+ "entries": [
+  {
+   "key": "ym3526",
+   "name": "YM3526 OPL",
+   "regions": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "44-68"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "200-202"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "217"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "function": "ym3526::reset"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "function": "ym3526::read_status"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "function": "ym3526::read"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "function": "ym3526::write_address"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "function": "ym3526::write_data"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "function": "ym3526::write"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "function": "opl_registers_base<Revision>::reset"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1222"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1225"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1229"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "function": "fm_engine_base<RegisterType>::status"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "function": "fm_engine_base<RegisterType>::engine_check_interrupts"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "97-100"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "207-210"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "206"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "798-806"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "814-822"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm.h",
+     "lines": "548-552"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "129"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The master clock input of the OPL has an input frequency of 3.58 MHz.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "45-46",
+       "sha": "c5adc1e7083345f4e91b9f995e6573ea8f6bd2cc7e9cf29860f8e823446a4097"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "D0 to D7 form an 8-bit bidirectional bus that sends and receives data between the OPL and the processor.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "51",
+       "sha": "f7ca7a5b00120db5170d5e824cb18260e81cb78f572765c7294609738801ef48"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "CS, RD, WR and A0 control the bidirectional bus D0 to D7.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "53",
+       "sha": "b5175aadfaf79c2b5f6a39fad47d1ae8291051a1c28f24731bb6e97a95c1992e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "One listed bus case writes the register address to the OPL; the capture lost the CS, RD, WR and A0 levels of each case.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "54",
+       "sha": "721204bf0afc7445eb98a3748b4b974d47915151f54800b50f7d46f78e5e3661"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "Another listed bus case writes the contents of the register to the OPL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "55",
+       "sha": "b7d1fa939367ef853d2345bb30114b286182bf19668694ec78e3cb3296b4d1db"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "Another listed bus case reads the contents of the OPL status.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "56",
+       "sha": "1cf91cc9b0ba6e927ca132472ab19afaf43802783fc568ffd9a18086610a3dd6"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "In another listed case the data on the bus are not guaranteed.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "57",
+       "sha": "98e1c9b867d94648fc79cd75f46d2c16efe8dc856f0ae199e9ab5d6900a649bc"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "doc",
+     "text": "In the last listed case the bus lines D0 to D7 have high impedance; the capture garbles the level cells that start the line.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "58",
+       "sha": "0152a6c258f0380baea8a395df12d4b362d1ce858daef28f3f54f000827c13cb"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "The IRQ signal is an interrupt signal output from the two timers.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "59-60",
+       "sha": "bbaef1e3fb3b069f693f6546d9f97184a0181775f3f906177e5e21b246093f2f"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "The interrupt signal can be masked by the program.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "59-60",
+       "sha": "bbaef1e3fb3b069f693f6546d9f97184a0181775f3f906177e5e21b246093f2f"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "reset",
+     "of": "doc",
+     "text": "When the IC terminal is set to low level, the system is reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "61-62",
+       "sha": "5d5dd830fd72699d4388e198b3c79e73c6a183aac687f9b1741b1fd38fdec40f"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "reset",
+     "of": "doc",
+     "text": "The contents of the register array become 0 (the capture puts the 0 inside quotation marks).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "62",
+       "sha": "e33fcd2f7e10b2748178fb83d839b312f29174f7c1896dc6c5dfedc91faacc48"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "MO is the digital output of the FM sound generator, and an external D/A converter is required.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "63-64",
+       "sha": "399b7eec741068bd6b68faef7394b548cf15a29f4b8a0a2135359e42758d39a4"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "when",
+     "of": "doc",
+     "text": "The status register shows an IRQ bit and the flags T1 and T2; the capture gives no bit positions.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "200-202",
+       "sha": "c5453e4f55637555d02c54f65acfd0329360512c4674a12cc7289d3431bd49ba"
+      },
+      {
+       "ref": "datasheet:YM3526.raw.txt",
+       "lines": "217",
+       "sha": "2a63131b16298190058e67c27452bd04c2a4781694198d922e86b26f5c1bef0a"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME's read and write decode offset bit 0 alone: 0 is the status read and the address write, 1 is the data port.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "780",
+       "sha": "2a358f42a40a2afdc70416c1972bdda896647f8815b74bcc18cc7ab4e1b8ef61"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "782",
+       "sha": "a837394cba6d998cac496b0caa1e430752429d2f2079e7d3c6467842e55b5758"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "786",
+       "sha": "ef9f2aa3d0b5a94a3d351803fe62ab8fd9aea4959775f2d682ff1e5e2db13a54"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "832",
+       "sha": "2a358f42a40a2afdc70416c1972bdda896647f8815b74bcc18cc7ab4e1b8ef61"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "834",
+       "sha": "1d3278720e92c8012e7a21ee7a9e1547005a6f69b7a48afbf0ce8dfe80d06ca7"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "838",
+       "sha": "c66777850388ed016acaf89ed7b58f901886e7f35c06c1116c90a27b32fb7958"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "After an address write MAME marks the chip busy for 12 times the clock prescale, and after a data write for 84 times, in clocks.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "798-806",
+       "sha": "a49e6a35a0aaee55bc302edb4e61f209fd012ec6c94ddbea9e77508ddf3d0366"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "814-822",
+       "sha": "ef364c72a95e5336d6f95c5341b64f2c775d901439a4e94c324c92d62494f451"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm.h",
+       "lines": "548-552",
+       "sha": "a053f57a88a475e34336a328af17f0b6c08cef02670677be930f5f8578e81fa6"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A device reset reaches the engine's reset, which also clears all status bits, writes 0 to the mode register 0x04 and resets each channel and operator in turn.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "748",
+       "sha": "db400b0c46f76f877b53923c744d8c9bd68ceea5205a929632dc07dc037de2a6"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1222",
+       "sha": "1dd3f2c2b00f43a3df713b30d0676c5e0f98418ce54b59c376c25ab19a707c55"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+       "lines": "129",
+       "sha": "6cd20a48b764adf7235c8ba9ed0f3234e5fa861432efbe800ef49303c80df6c4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1229",
+       "sha": "be2cd6b1b3ffa50205b58a6d0d482df7a588c322b185b5ff1f5f1a87574431f6"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1232-1237",
+       "sha": "d9bc7bef6745dd6c46e4fda90298878f98b54ba932da81dbde8e4b033d610633"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's status read also sets bits 1 and 2 on top of the engine's status.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "769",
+       "sha": "915e21ff7b9e211b27fda660b8d8aea96f8a161806ff0a31770ad3ec8ebfb337"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME's read at offset 1 returns 0xFF, a fixed value, where the document says the data on the bus are not guaranteed.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "779",
+       "sha": "91da7a6fbff27949398740298341cd6fc962f344176fffcdbe05c92d2c3efc3f"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "786-787",
+       "sha": "627fa8a45ed63d08082105897ba91e2ac1e314484867d1c0925b09e95ef6e70c"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "789",
+       "sha": "882101dd8697a52e0480af0873d4640b6bb8b487665fdc6013a1e87120badb76"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "reset",
+     "of": "mame",
+     "vs": "differs",
+     "row": "11",
+     "text": "MAME resets the chip when its device is reset: device_reset only calls the chip's reset and reads no IC signal or level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "207-210",
+       "sha": "3884813636ed903cd5fb1ddc0adc1ed8dd1bfdb6cdbae75681a938290849ce36"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "when",
+     "of": "mame",
+     "vs": "absent",
+     "row": "8",
+     "text": "MAME's read has no chip select: its body dispatches on offset bit 0 alone.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "778-784",
+       "sha": "e6e5b7aa1c7040312da101ce4dba08ca0578cc7d9eb0b34ff1a09e59244c2210"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "785-790",
+       "sha": "5c293d7c2c2753f8cd8571732e70c0981d3483f864d0475dec7551e05fa7629e"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "when",
+     "of": "mame",
+     "vs": "absent",
+     "row": "8",
+     "text": "MAME's write has no chip select: its body dispatches on offset bit 0 alone.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "831-837",
+       "sha": "2cbc224f248c5168625288678ab4f21bf0a697d869d4f258a553e0e736d35951"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+       "lines": "838-842",
+       "sha": "8824dea896f4da42e440c36745938652507fa0cba4cdb58d41e4ff1c435dfc5e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "44",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "47",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "48-49",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "50",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "52",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "65",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "66",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "67",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:YM3526.raw.txt",
+     "lines": "68",
+     "as": "electrical"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "805",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "821",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "769",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1444",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "783",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1540",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1550",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "99",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1540",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.h",
+     "lines": "206",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "118",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1225",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1544",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1510-1513",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1444",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "769",
+     "as": "agrees",
+     "row": "14"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "784",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "836",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opl.cpp",
+     "lines": "840",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1543",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1546",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1549",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "97",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "98",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "100",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

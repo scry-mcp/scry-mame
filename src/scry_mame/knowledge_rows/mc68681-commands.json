@@ -1,0 +1,1220 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "mc68681-commands",
+ "title": "The 68681 DUART, its command register",
+ "kind": "command",
+ "scope": "mc68681",
+ "covers": "The byte written to the command registers CRA and CRB of the 68681 DUART: a command in bits 6 to 4 and the transmitter and receiver enable bits",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC68681.raw.txt",
+   "variant": "MC68681"
+  },
+  {
+   "name": "XR68C681.raw.txt",
+   "variant": "XR68C681"
+  }
+ ],
+ "official": {
+  "MC68681.raw.txt": [
+   "1714-1786"
+  ],
+  "XR68C681.raw.txt": [
+   "697-716"
+  ]
+ },
+ "engine": [
+  "receive_register_reset",
+  "transmit_register_reset",
+  "baud_updated",
+  "LOG",
+  "logerror",
+  "adjust"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x0F",
+   "name": "no command",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1714-1723"
+    },
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1753-1778"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "0"
+     ]
+    },
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1779-1786"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA is the register that supplies commands to channel A, and one write may carry several non-conflicting commands.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1714-1718",
+       "sha": "7513f36dbec9fe2599e723212bfb0aba376249ab40a8005302a1263032b9d233"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[7] is not used and may be set to either zero or one.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1719",
+       "sha": "4e3d8e0b37bfbceb8f0407a7b4c43f57d3d5794663323d23e4c7465fdf6f0249"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The encoded value of CRA[6:4] specifies a single miscellaneous command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1720-1722",
+       "sha": "d37cce34298adb104a50bdb18db7ac727ae6ae68b9a5228e18247f0bc067bcf3"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "CRA[6:4] = 000 is no command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1723",
+       "sha": "92f56ef254764a8f908df6035d9fe4c625c3c9314c7d1fe816a3bf4cd191405d"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The encoded value of CRA[3:2] specifies the transmitter commands.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1753-1755",
+       "sha": "da7a9203db518ff45ae3e402c93bd700838f95451c1f9beab8e331304f71a254"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[3:2] = 00 takes no action: an enabled transmitter stays enabled and a disabled one stays disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1756-1757",
+       "sha": "37a76e1481d0799768ed04a01970c4e353b482de0f0fee6b9c47f9ea7e6efec0"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "CRA[3:2] = 01 enables the transmitter and asserts the transmitter-ready status bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1758-1759",
+       "sha": "ad116ae484558d5e3029ad95cf6b662e43b1723df92af73623c4f7dafdb5581d"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "CRA[3:2] = 10 terminates transmitter operation and resets the ready and empty status bits; a character in transmission completes.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1760-1763",
+       "sha": "033abfbccb08a131d470298177719755ab12bbea8b83071348904f9c96f64b2d"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "CRA[3:2] = 11 is not to be used; the result is indeterminate.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1764",
+       "sha": "b5ec8b03397f5a7633d24b6fe76eebfc3930e078dd3747fe561752f57eb70368"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The encoded value of CRA[1:0] specifies the receiver commands.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1765-1767",
+       "sha": "c271fea557959a33f976be7cea124c7a70439e33cc892b7db0af7630fb20be99"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[1:0] = 00 takes no action: an enabled receiver stays enabled and a disabled one stays disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1768-1769",
+       "sha": "5d0d60e37221665821511a4791a68a3650db84ef283f06d90f7d9caf4cf56eae"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "doc",
+     "text": "CRA[1:0] = 01 enables the receiver and, outside multidrop mode, forces the search-for-start-bit state.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1770-1772",
+       "sha": "c8afd34e968368c06b187c8250b2315390fe5d845a7a165157e36358e3228d70"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "write",
+     "of": "doc",
+     "text": "CRA[1:0] = 10 terminates the receiver at once and a character being received is lost.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1773-1774",
+       "sha": "e3b2239f3ad4326c86709f894cdecdf45e3e51306d879bce9b7663c1a5f7ef8b"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "write",
+     "of": "doc",
+     "text": "Disable receiver leaves the status bits and the other control registers untouched; in loopback or multidrop the receiver runs even disabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1774-1777",
+       "sha": "d027d2e937098c5c96e2c86753741db9288ff8e0c6f17b810d92632a6d3c36e9"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "doc",
+     "text": "CRA[1:0] = 11 is not to be used; the result is indeterminate.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1778",
+       "sha": "b5ec8b03397f5a7633d24b6fe76eebfc3930e078dd3747fe561752f57eb70368"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bits 3-2 = 01",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME sets TxRDY and TxEMT and clears the buffer only when bit 2 of the previous command byte was clear; it also sets the ISR TxRDY bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1810-1819",
+       "sha": "38b64e4b6b8e5283d9113f6b6cf8c2897b3e23664d5fdaf51fb4a437d1b3a05c"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1832",
+       "sha": "4a74604c5c83e25dc5ffa245e3f878ba1128380dd7c1c32cc0f565901a655fab"
+      }
+     ],
+     "row": "7"
+    },
+    {
+     "n": "102",
+     "on": "bits 3-2 = 10",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME clears TxRDY, TxEMT and the ISR TxRDY bit, disables the transmitter and drops a character held for transmission.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1820-1829",
+       "sha": "f4dd187d5659d528cbe6a508b69e7817d2a724d9856ec474c5ef56db6f536f85"
+      }
+     ],
+     "row": "8"
+    },
+    {
+     "n": "103",
+     "on": "bits 3-2 = 11",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME runs the enable step, when bit 2 of the previous command byte was clear, then the disable step; the transmitter ends disabled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1810-1815",
+       "sha": "06e6aacf0bacbc97054409e052c14c76a69488405587bfd7102666dc54a22619"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1820-1825",
+       "sha": "717b86198d55dc37f491cebbbd9b8db0d89e783e3190bf7b43ebe2747b3d9657"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1832",
+       "sha": "4a74604c5c83e25dc5ffa245e3f878ba1128380dd7c1c32cc0f565901a655fab"
+      }
+     ],
+     "row": "9"
+    },
+    {
+     "n": "104",
+     "on": "bits 1-0 = 01",
+     "of": "mame",
+     "vs": "differs",
+     "text": "The enable receiver block only sets rx_enabled; nothing forces the receiver into the search-for-start-bit state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1800-1803",
+       "sha": "2db2a3fb8107fd42dc63c7a86ba6a9becef809b8cd4751ac3aad9ef4cd991e3f"
+      }
+     ],
+     "row": "12"
+    },
+    {
+     "n": "105",
+     "on": "bits 1-0 = 10",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME also clears the RxRDY bit of SR when the receiver is disabled.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1804-1808",
+       "sha": "b7a558cb972be7ed9cc0ffe341ba3c582d364420392fe919428011483742c0d1"
+      }
+     ],
+     "row": "13"
+    },
+    {
+     "n": "106",
+     "on": "bits 1-0 = 10",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME clears the RxRDY bit of SR, so disable receiver does touch a status bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1804-1808",
+       "sha": "b7a558cb972be7ed9cc0ffe341ba3c582d364420392fe919428011483742c0d1"
+      }
+     ],
+     "row": "14"
+    },
+    {
+     "n": "107",
+     "on": "bits 1-0 = 11",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME runs the enable step and then the disable step, so the receiver ends disabled with RxRDY clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1800-1808",
+       "sha": "08962a55beb35eaf45ae27c60caa7a0b27cdb99643dce37aabf7577e5d0c86f4"
+      }
+     ],
+     "row": "15"
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "CRB supplies commands to channel B, and one write may carry several non-conflicting commands.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1779-1783",
+       "sha": "7349eb41aa272cc4a3a34939ad2dd6f35b8a9f26e3a52d4b41d81ebf832e06fb"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "The bit definitions of CRB are identical to those of CRA, except that all control actions apply to channel B.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1784-1786",
+       "sha": "7c32c18be7fb107277388091efd1395ed553342dd3e70b28c28417a8f4f71bba"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1724-1725",
+     "as": "agrees",
+     "row": "4",
+     "nothing": true
+    }
+   ]
+  },
+  {
+   "key": "0x10..0x1F",
+   "name": "reset MR pointer",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1724-1725"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[6:4] = 001 is the Reset Mode Register Pointer command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1724",
+       "sha": "86181bf61f14473ea3dbe7891a90bb0ca6cd2c829d21538d0b0da1c768c6c300"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command causes the channel A mode register pointer to point to mode register one.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1724-1725",
+       "sha": "55fac1f7035a071a026fea65166866309478899936b66af46e562646630e69e1"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1727",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x20..0x2F",
+   "name": "reset receiver",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1726-1730"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[6:4] = 010 is the Reset Receiver command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1726",
+       "sha": "80105568d79f68f8c871e2616a681b945ef706ec42b0ea4e22d0f20111b220a0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Reset receiver disables the receiver immediately, clears RxRDY and FFULL in SRA, reinitializes the RxFIFO pointer and leaves the other registers unaltered.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1726-1728",
+       "sha": "5e93e080edc18af0e02be81c84519314bd4b4fed9c513ac46971db821b9c7a1e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Reset receiver should be used instead of the receiver disable command when the receiver configuration is to change.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1728-1730",
+       "sha": "1df457b31214feee683610fc0f0781f6f8f23e773090d110f49ef0dd77dd1ee3"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME also clears the break, framing, parity and overrun bits of SR; its own comment questions the last clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1729-1738",
+       "sha": "9356316864ec18aec483344fc89aa915a32905177393ef3aef0597e40ed38020"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x30..0x3F",
+   "name": "reset transmitter",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1731-1735"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[6:4] = 011 is the Reset Transmitter command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1731",
+       "sha": "2fc98514edee2593aba727c1445479606ae3c15f58d3e5f387e2aa8f7e06f4dd"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Reset transmitter disables the transmitter at once, clears the TxRDY and TxEMT bits of SRA, and leaves the other registers unaltered.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1731-1733",
+       "sha": "de817b4e5f601b49b9a7eb598dce85fb9fec4726c7b1c4164dc67f816ffc2f53"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Reset transmitter should be used instead of the transmitter disable command; the capture says it places the receiver in a known state.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1733-1735",
+       "sha": "02d68e4f723de2e1dc37bf51c1010d96a913ce4e4fb19fe2d18ad039139f3143"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME also clears the ISR TxRDY bit, drives TxD high, resets the shift register and drops a held character.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1739-1750",
+       "sha": "952fb3346c395bc8341fb653b038b052eaad23d7f389fdae410c3c0c8976e2d3"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1751-1754",
+       "sha": "ec6c534cb7b90a309a2351485236f45b791e558854d42097fda442fe2aed52f0"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x4F",
+   "name": "reset error status",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1736-1740"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "4"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[6:4] = 100 is the Reset Error Status command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1736",
+       "sha": "427f179e8968d13d3d2b4e707b4df2a82efa57a2f941a9b0b18516099d91a618"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command clears the received break, parity error, framing error and overrun error flags in SRA[7:4].",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1736-1738",
+       "sha": "0cd988e2fba65a4639660494f39ab65486f7487010d02922af7ee574356929c6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "In character mode it clears the overrun flag, and in block mode all the error flags after a block.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1738-1740",
+       "sha": "7d4f0cdaff5c811c77e2b8e8380ec47d621acb6f100517202b1640984ffceb21"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1757",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x50..0x5F",
+   "name": "reset break change",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1741-1742"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "5"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[6:4] = 101 is the Reset Channel A Break Change Interrupt command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1741",
+       "sha": "17445fae28166928c1f4fccda9f7f6fa33654a63546236998b8c798a8b53b870"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The command clears the channel A break detect change bit of the interrupt status register, ISR[2].",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1741-1742",
+       "sha": "ff78725920a3118be9d6d1d835ca74bdae0d5980b8293a19fb32c4dc95979082"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1760-1763",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x60..0x6F",
+   "name": "start break",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1743-1749"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "6"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[6:4] = 110 is the Start Break command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1743",
+       "sha": "7fe2ac93e420c48366c21bb6cb7b1bfe9d8053559f9bf24510a391f6da6d1d9f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Start break forces TxDA low when the character being transmitted completes, and the transmitter must be enabled for it to be accepted.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1743-1749",
+       "sha": "6e46dd35cdba297623fbecc218f9cf638f709738a706eb4ebaaee7b79991eda4"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME sets m_tx_break without checking that the transmitter is enabled, leaves the TxD output to a TODO, and in loopback sets the break bit and queues a break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1765-1776",
+       "sha": "f7c59726ea057e63e49c533c3b64ef4c2b56eb156216e5c85845fb04b53853e9"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1777-1780",
+       "sha": "412a5390d4e08f2bc855a38dbe26dfa7a68b77108bc0876ec428a51f0ed154c9"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x70..0x7F",
+   "name": "stop break",
+   "regions": [
+    {
+     "ref": "datasheet:MC68681.raw.txt",
+     "lines": "1750-1752"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "duart_channel::write_CR",
+     "case": [
+      "7"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CRA[6:4] = 111 is the Stop Break command.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1750",
+       "sha": "85251d229830fb27aec7e17547570bf754023448e93d788c6bb17f40d1ac4950"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Stop break raises TxDA within two bit times, and it stays high one bit time before the next character.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC68681.raw.txt",
+       "lines": "1750-1752",
+       "sha": "39415e31304fb62d683a164f808c20b8653f64b4109bda9283520bc35b11e3f7"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME clears m_tx_break and in loopback sets the break bit of ISR; the case does not drive the TxD output.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1781-1790",
+       "sha": "606b101d4e20cb8f29e5bae863b4d61f62c9008bc39f68fa3f84ab157e7bbe18"
+      },
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "1791-1794",
+       "sha": "22742dd1a4cda8959921d198524c5b3e0ce07b520d434607a4445772221cc22a"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "1722",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0xBF",
+   "name": "xr68c681 baud extend",
+   "regions": [
+    {
+     "ref": "datasheet:XR68C681.raw.txt",
+     "lines": "697-704"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "xr68c681_device::write",
+     "case": [
+      "0x08"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "xr68c681_device::write",
+     "case": [
+      "0x09"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "xr68c681_device::write",
+     "case": [
+      "0x0a"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "xr68c681_device::write",
+     "case": [
+      "0x0b"
+     ]
+    },
+    {
+     "ref": "datasheet:XR68C681.raw.txt",
+     "lines": "716"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Table 3, the miscellaneous commands of the command registers' upper nibble, lists four commands that set or clear the BRG select extend bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "697-704",
+       "sha": "4d05ef816128434def27285be12261167736f7c8a9f98a3fe170c18cdf156034"
+      },
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "716",
+       "sha": "3588bbdb0407cd1fe7f746eba71dc8c010c6930ca606eb90e80d718bd7b2b9ce"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Set Rx BRG select extend bit sets the channel's Receiver BRG Select Extend Bit to one.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "697-698",
+       "sha": "9d6f4f77f3162b55215a0f7f8cd58da3f9350ca8ef953b0db46f37927d90e190"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Clear Rx BRG select extend bit clears that bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "699-700",
+       "sha": "9b1a3ec1baceb4388c8aa1bbb43c1e5cd566e92f203b2adbb98c421208b3c67b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Set Tx BRG select extend bit sets the channel's Transmitter BRG Select Extend Bit to one.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "701-702",
+       "sha": "a182db3351945f853fd722863427014de530073bbf330ecbfd65d49694d00877"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Clear Tx BRG select extend bit clears that bit; the capture garbles its value, so the value is not stated.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "703-704",
+       "sha": "57af48d613fa297f3958e083ca251ee18059fddd0a49ac529a3486e2edc0f0c6"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "874",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "875",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "878",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "884",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "890",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "896",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0xC0..0xFF",
+   "name": "xr68c681 power",
+   "regions": [
+    {
+     "ref": "datasheet:XR68C681.raw.txt",
+     "lines": "705-715"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "xr68c681_device::write",
+     "case": [
+      "0x0c"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "xr68c681_device::write",
+     "case": [
+      "0x0d"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "function": "xr68c681_device::write",
+     "case": [
+      "0x0e"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "The four codes of this range are Set Standby Mode, Set Active Mode, and two reserved codes; both standby commands act through channel A.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "705-715",
+       "sha": "c5b28f02be60874c9d5c10c7b03c24f7d739516bcdf12fb446b2be9cb293fdf9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Set standby mode removes power from the transmitters, receivers, counter/timer and other circuits, placing the whole DUART in low power mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "705-710",
+       "sha": "f3b1b20945fb6787c0c5ce0611b05937325fbcd247793a97bc8dbc22663a02b8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Set active mode leaves the standby mode and resumes normal operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "711-713",
+       "sha": "c73d841eee17f0a25821b2c49af7ded6aac4e464a9fa75898ccb9cf2265886e5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "Normal operation is also restored by a hardware reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "709-710",
+       "sha": "0a223892c6c1fd03808cdbb7adc1271c22b2f800dcfa817aa9135ffbf8b14a55"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "variant": "XR68C681",
+     "text": "The last two entries of the table are reserved codes.",
+     "quotes": [
+      {
+       "ref": "datasheet:XR68C681.raw.txt",
+       "lines": "714-715",
+       "sha": "a648c8d21fab58ed5d86e61c76609253b58391f89f0b6ad9b41858c09a5343b1"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "text": "MAME's case for these codes only masks the byte to its low nibble, with a TODO for the low power mode; nothing places the chip in standby.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "901-906",
+       "sha": "77cb3bf4ed4a5625e6adf26f3da757b1ebd01f795f53ec79a9cb31895a2563f7"
+      }
+     ],
+     "row": "2"
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "text": "MAME's case for these codes only masks the byte to its low nibble; nothing returns the chip from standby.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/mc68681.cpp",
+       "lines": "901-906",
+       "sha": "77cb3bf4ed4a5625e6adf26f3da757b1ebd01f795f53ec79a9cb31895a2563f7"
+      }
+     ],
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "874",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "875",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/mc68681.cpp",
+     "lines": "902-904",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

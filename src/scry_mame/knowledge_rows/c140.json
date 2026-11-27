@@ -1,0 +1,1201 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "c140",
+ "title": "The Namco C140 voice and timer registers",
+ "kind": "register",
+ "scope": "c140",
+ "covers": "the registers of a C140 voice that MAME's device names, offsets 0x00 to 0x0B, repeated for its 24 voices, and the INT1 timer registers; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of c140.cpp says the simulator is based on AMUSE sources and cites no document."
+  },
+  {
+   "where": "maker",
+   "gave": "Web searches found no Namco or Fujitsu page holding a C140 document, only emulator sources and tracker notes."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The host refused this client (HTTP 403) and a web search of the site found no Namco document, so its listing was not read."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search of the archive's catalogue gave a tracker release and unrelated audio items, no manual or scan of the part."
+  },
+  {
+   "where": "index",
+   "gave": "A search naming datasheetarchive returned no page of the part, only emulator and tracker pages."
+  }
+ ],
+ "engine": [
+  "sound_stream_update",
+  "find_sample",
+  "device_start",
+  "device_clock_changed",
+  "int1_on",
+  "keyon_status_read"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "voice volume right",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0 of a voice is its right volume; the mixer multiplies it by 32 over 24 and shifts the sample product right nine bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "249",
+       "sha": "9f9560050f0c54ef32a34ca499c809e6ddc64fd0c6148e82a84032334395dd77"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "305",
+       "sha": "b663f3d9aa133fb4237c88a89153fde9a6e3662fcaf24b6a1005a69fd0156457"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.h",
+       "lines": "50",
+       "sha": "1f10f861abaa7fb11935a4c6e4be7dae4b1cb91557d415359ac12f9058bc915e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "voice volume left",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 1 of a voice is its left volume; the mixer multiplies it by 32 over 24 and shifts the sample product right nine bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "248",
+       "sha": "735d3ecb2a6128a930ebd0c5a692ba1cc0cc5262852cad136b44ff56971b7b3d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "304",
+       "sha": "eac4735ba5c8dd17f50b9f9aec707626e4ef520e18e16042426f6f5bc9f8af7e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.h",
+       "lines": "50",
+       "sha": "1f10f861abaa7fb11935a4c6e4be7dae4b1cb91557d415359ac12f9058bc915e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "sample frequency MSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 2 and 3 of a voice are the high and low bytes of a sixteen-bit frequency that steps the sample position each output sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "239",
+       "sha": "927d12d220e87a562459cc30edf249b33639cf7d4cc988552a8ddfbb3d08a91c"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "245",
+       "sha": "34f704aed7b5d0a66a5f4e6486619268f84d89f728db1ba50b09ae920940cd7d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "273",
+       "sha": "30ce059f36b6c8b1573783838bdab58bd14c083afd815d8b4b4c52bf502b6290"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "271",
+       "sha": "39a1bc0fa070904d0e80a528ca6dc5c2d47517b13dc8b350c3ce4ee7df7d8905"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A voice whose frequency word is zero is skipped at each update and adds nothing to the mixer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "241-242",
+       "sha": "d805ebba09619edbb9c336a0b3dc973732be353707bcabb79f3f6e9f73a20814"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the register file; the mixer reads the frequency word at each update.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "239",
+       "sha": "927d12d220e87a562459cc30edf249b33639cf7d4cc988552a8ddfbb3d08a91c"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "sample frequency LSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 3 is the low byte of the voice's frequency; the mixer joins it to register 2's high byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "239",
+       "sha": "927d12d220e87a562459cc30edf249b33639cf7d4cc988552a8ddfbb3d08a91c"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "voice ROM bank",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 4 of a voice is the sample bank; the address the mixer resolves is the bank shifted sixteen bits plus the sample address.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "514",
+       "sha": "67db4981b3486a052e3200096fd846fb7bab17f563db2d604d6d6b6ce028b154"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "261",
+       "sha": "1d79b1f460584b93709c59c9d1508bc292e68edd271b928875893bae208e06d7"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "662",
+       "sha": "92a3b805b2f80a98cbf8fc06746194fa079f79adf755b3ed163f7bbcec9086a6"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A key on copies the bank into the voice, and the mixer resolves samples with that copy.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "514",
+       "sha": "67db4981b3486a052e3200096fd846fb7bab17f563db2d604d6d6b6ce028b154"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "261",
+       "sha": "1d79b1f460584b93709c59c9d1508bc292e68edd271b928875893bae208e06d7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "name": "key on/off + mode",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "503-516"
+    },
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "521-525"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 5 of a voice is its mode byte, and a write keys the voice: bit 7 set, or bit 6 set while the voice is keyed, starts it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "503-508",
+       "sha": "99f71c13e6bc237578463be8a3c999a5418b723b92119e332e07cc5f79619c44"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "515",
+       "sha": "4d6f6e51e39e6e4e94d4ce895ffa7e16db2e96072c2bede33e33553604742d49"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A key on zeroes the position, the interpolation history and the delta, and copies the bank and the mode from the registers.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "506-516",
+       "sha": "f3cdbe4febfa1f3d10107a062eb69f85b76809eebfe764391e9cf38eb7a27648"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write that does not key the voice on clears its key, and the mixer skips a voice whose key is clear.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "521-525",
+       "sha": "e856ef0a9a0478e7cc4b9a825767ddf44fc75bbac32c1d3a0590923603544d55"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "237",
+       "sha": "1bccb0a2d6351623950e2fc67076ef63a3570ed917d32f11159b06f2b81c4895"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Mode bit 4 makes the voice loop when the sample reaches its end, and bit 3 selects the mu-law table the mixer reads.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.h",
+       "lines": "76",
+       "sha": "050d65409ec012ae032c5f2749d8b3ac69d56ca20cb90c98ca0dc84c63d1bd9d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "278-283",
+       "sha": "c9cb6a5bb2b40d1376a701b2d0bec6ee2adb254a8c755cf3b718952ca123a19e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.h",
+       "lines": "78",
+       "sha": "f868096c4a5af827d6be0cd4aeb0af3dd7e7776969ac9fe743461f4eda37ce0c"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "296",
+       "sha": "f08aae7cf73eb0f24e01e751d47a5713c2740ecb6c646873e707daf890cbcbf7"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The header names bit 6 of the mode byte as used, with its purpose unknown.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.h",
+       "lines": "79",
+       "sha": "9ec6e627b46d91ea9eaa3961697389e417c58c6a9f531ccfab784f59c43f16c7"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to register 5 stores the byte in the register file and then keys the voice on or off.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "503",
+       "sha": "cef22149511882c20b098f746cb57bc9bd043d5c726f6f0e2efe4513e5917238"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "name": "sample start address MSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 6 and 7 of a voice are the high and low bytes of the sample start address, which a key on latches.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "505-509",
+       "sha": "b84080a778e6b08d4436d39db1a96ab2323003d4fda949423db7c6a0e21f9fee"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "518",
+       "sha": "190fd2bbc0b017b78f6dc9aee937158c153cb19bcb49b231e550d649e03ff3e8"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The mixer takes the latched start as the sample's base and measures the end address against it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "256",
+       "sha": "bd553f7025b3d397a17878a15c509104d43aae011dae91d7b3d85a3a95e0b774"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "258",
+       "sha": "edfcee30a87a967a01992a7c3b8bf51c8b146a943814eb6b0924127c7c76f01b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "name": "sample start address LSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 7 is the low byte of the sample start address, latched at key on with register 6's high byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "505-509",
+       "sha": "b84080a778e6b08d4436d39db1a96ab2323003d4fda949423db7c6a0e21f9fee"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "518",
+       "sha": "190fd2bbc0b017b78f6dc9aee937158c153cb19bcb49b231e550d649e03ff3e8"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "name": "sample end address MSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 8 and 9 of a voice are the high and low bytes of the sample end address, which a key on latches.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "505-509",
+       "sha": "b84080a778e6b08d4436d39db1a96ab2323003d4fda949423db7c6a0e21f9fee"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "519",
+       "sha": "ad9d3b9259d1a059419643a1e24e092b13b1d544b80e70de5d159d8485c2b87e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The mixer compares the position against the size, the end address minus the start, at each sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "257-258",
+       "sha": "7dab6ac6ff8f951889825389f0a738600d7ebc15679cfd9d956b51ff0d67b22d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "278",
+       "sha": "25e35cee3008b26901234027c2a6f7be218c406e10216b504233413617231127"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "name": "sample end address LSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 9 is the low byte of the sample end address, latched at key on with register 8's high byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "505-509",
+       "sha": "b84080a778e6b08d4436d39db1a96ab2323003d4fda949423db7c6a0e21f9fee"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "519",
+       "sha": "ad9d3b9259d1a059419643a1e24e092b13b1d544b80e70de5d159d8485c2b87e"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x0A",
+   "name": "sample loop address MSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Registers 0xA and 0xB of a voice are the high and low bytes of the loop address, which a key on latches.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "505-509",
+       "sha": "b84080a778e6b08d4436d39db1a96ab2323003d4fda949423db7c6a0e21f9fee"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "517",
+       "sha": "f0ea0b3a9572a5e0978caffad84fd985fd096c336b56e42664178e061a3bf460"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "At the sample end a voice whose mode bit 4 is set moves the position to the loop address minus the start.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "281-283",
+       "sha": "5b8ad9b66625b8e3976871cf02eabaac36f74cada16776bc4686ce8bc4c65196"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "name": "sample loop address LSB",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "495-498"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0xB is the low byte of the loop address, latched at key on with register 0xA's high byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "505-509",
+       "sha": "b84080a778e6b08d4436d39db1a96ab2323003d4fda949423db7c6a0e21f9fee"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "517",
+       "sha": "f0ea0b3a9572a5e0978caffad84fd985fd096c336b56e42664178e061a3bf460"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "57-68",
+       "sha": "73213ebeb31081a2fe3dc91a8c3cb4efa80a1ff3d5dd427063eb53003698715e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the byte at its offset in the 0x200-byte register file, whose sixteen-byte records hold the 24 voices.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "495-498",
+       "sha": "a85c4ec0794505071fc09c4bba8492bd6f2e4e2b59b1edf11ccf199c63663316"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "235",
+       "sha": "874e6d823641c453a270dedac7bd14c61093d7c71a791b72f0705c2ab2f9b02d"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "232",
+       "sha": "68b74c03341cf510e40d9ade2bfb6f3111992e22a957e67475175ee4c4eef47e"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x1F8",
+   "name": "INT1 timer reload value",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "531-532"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x1F8 is the INT1 timer reload value: the timer is scheduled for the stored byte plus one, times two, at the base rate.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "539",
+       "sha": "c681a2cfd29c6addc5f2b24f6b548d67abf5c197c3888145274a212f47834b13"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The reload register's own case does nothing; the byte stays in the register file and the timer is scheduled from it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "531-532",
+       "sha": "a02f4e87463e33c955d43d966430ee2095285f17d88dbbdf03e9151849bf1827"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "497",
+       "sha": "fd433bba01d6065c984d5b0556d8300d7637a40e219fe760365ec659114322f8"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "539",
+       "sha": "c681a2cfd29c6addc5f2b24f6b548d67abf5c197c3888145274a212f47834b13"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read of 0x1F8 returns the stored byte plus one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "475",
+       "sha": "30a062462a04dcb60843b2e65e8c945a1c32ddc7ebaa54ab0dbfdae586810ae7"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "481-485",
+       "sha": "94a65a2f30f5f9f08b62420f929be2e96cbaf184d7d501af95573e125795509a"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "487",
+       "sha": "28f9e6eed27c8992504ded5b7e13364d8867f2c9abe1291c7a2634b6f1e72ec1"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x1FA",
+   "name": "INT1 timer start",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "535-541"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x1FA starts the INT1 timer: a write clears the interrupt line and, with bit 0 of 0x1FE set, schedules the timer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "535-541",
+       "sha": "f4c0c2682341e0b8dd4e46cfeeafbf6dec15e794b7c2666af6abea23665d3b0f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 0 of 0x1FE clear, a write to 0x1FA clears the line and schedules nothing.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "535-541",
+       "sha": "f4c0c2682341e0b8dd4e46cfeeafbf6dec15e794b7c2666af6abea23665d3b0f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The timer's expiry asserts the INT1 line through the device's callback.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "635-638",
+       "sha": "90afc0c7cf60e9ad0b217036205f7f17fe4f7bf7a9fd6110d68fbe5b72dadb71"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "121",
+       "sha": "dbb85187a41e20f5b888ce2166cb40f3f03876ad147c7a3a6ac76a6791b7d0f9"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x1FA stores the byte, clears the interrupt line and, with 0x1FE's bit 0 set, schedules the timer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "497",
+       "sha": "fd433bba01d6065c984d5b0556d8300d7637a40e219fe760365ec659114322f8"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "535-541",
+       "sha": "f4c0c2682341e0b8dd4e46cfeeafbf6dec15e794b7c2666af6abea23665d3b0f"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0x1FE",
+   "name": "INT1 timer enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/c140.cpp",
+     "lines": "544-556"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Register 0x1FE is the INT1 timer enable: its bit 0 decides whether a write to 0x1FA schedules the timer.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "543",
+       "sha": "1b4b6c506d1b43a853dfc8efbf4b309cd3837feee27a9365f6a00b75244b6b3c"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "538-539",
+       "sha": "15e8d225b6094b82aef060a745048cfe4c61d2a4cb3478abda541e0e6b29cf63"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 0 set, a write raises the interrupt at once only when the timer has no expiry pending.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "544-550",
+       "sha": "2b602f1ff5037a40c7d8e6f40b4fea64c17558cf47993398446e79bb1da61969"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With bit 0 clear, a write clears the interrupt line and sets the timer to never expire.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "551-556",
+       "sha": "b45a5bf9aa2631c2582708cda857f8b8e25f7479b823755d58c680d0223ac358"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to 0x1FE stores the byte in the register file and then acts on the interrupt line by bit 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "497",
+       "sha": "fd433bba01d6065c984d5b0556d8300d7637a40e219fe760365ec659114322f8"
+      },
+      {
+       "ref": "mame:src/devices/sound/c140.cpp",
+       "lines": "545-555",
+       "sha": "cc1d564d1c0527a3f53ed22f6505ca62f50ad45668d7bc69bb56085b867a7f3d"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

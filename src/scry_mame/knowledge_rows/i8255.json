@@ -1,0 +1,1437 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "i8255",
+ "title": "The 8255 PPI, its ports",
+ "kind": "register",
+ "scope": "i8255",
+ "covers": "The four addresses of the 8255 programmable peripheral interface: ports A, B and C and the control word, each read and written",
+ "source": "official",
+ "documents": [
+  {
+   "name": "82C55A.raw.txt",
+   "variant": "82C55A"
+  }
+ ],
+ "official": {
+  "82C55A.raw.txt": [
+   "42-43",
+   "49-61",
+   "65-73",
+   "81-82",
+   "110-115",
+   "123-128",
+   "443-456",
+   "474-499"
+  ]
+ },
+ "engine": [
+  "m_in_pa_cb",
+  "m_in_pb_cb",
+  "m_in_pc_cb",
+  "m_out_pa_cb",
+  "m_out_pb_cb",
+  "m_out_pc_cb",
+  "m_tri_pa_cb",
+  "m_tri_pb_cb",
+  "m_tri_pc_cb"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "port A read",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "42-43"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "49-53"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "81-82"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read",
+     "case": [
+      "PORT_A"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read_mode0"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read_mode1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read_mode2"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The address pins A1 and A0, with RD and WR, select one of the three ports or the control word register.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "49-51",
+       "sha": "b61b44c0210d511282b43858a62f7bcaf65c01a4964c7bc692ae0c0392b3508d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Port A is an 8-bit data output latch/buffer and an 8-bit data input latch; its pins PA3-0 are the lower nibble and PA7-4 the upper.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "42-43",
+       "sha": "949da481c31dd9d44b1db049751966acff159b3d7f157fbf51de7b6a6a6b2b2a"
+      },
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "81-82",
+       "sha": "2fff61a5e538bc66a9aad39f0b509debfbbd388b3e44d1b87455a78dbdc1c367"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "With A1 A0 = 0 0, RD low, WR high and CS low, a read puts port A on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "52-53",
+       "sha": "c81189e382c858ea89101e193af87450b740e7671e508ed7214cf4d0e1c9cb6e"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In mode 1 with port A an input, and in mode 2, a read of port A also clears the input buffer full flag, interrupt request and input latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "711-712",
+       "sha": "a537b48c24bb96c2b3778d9044ed6fbc09a92148140d3de1de64fdd66ee77fe3"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "294-300",
+       "sha": "80d2ce66d87ab5bfbd045b97f78c2bfb29e66d1bcfa8f1512a4a562b4ae9c47a"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "304-313",
+       "sha": "ac464069db259caf6e6e600c719226ac10a757c700371892c430f56189e3ec75"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "326-335",
+       "sha": "11ed11f8caa0f72b581f0b3153dde6b7d1fc1a191fe17d815879599a0f0ff570"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "705",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "708",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "710-712",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "275-286",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "294-302",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "317",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "324",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "338",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "304",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "326",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "name": "port A write",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "57-58"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write",
+     "case": [
+      "PORT_A"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write_mode0"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write_mode1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write_mode2"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's row for port A reads 0 0 1 0 0 Data Bus - Port A.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "58",
+       "sha": "a0980f88daccac88e15a5befda571987039b5e2c11b1b538908a1458056bc93d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With A1 A0 = 0 0, RD high, WR low and CS low, a write puts the data bus into port A.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "58",
+       "sha": "a0980f88daccac88e15a5befda571987039b5e2c11b1b538908a1458056bc93d"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In mode 1 with port A an output, and in mode 2, a write of port A also sets the output buffer full flag and clears the interrupt request.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "751-752",
+       "sha": "5283106c5f6ab1221aec2a9ff9a00e9a8516baf76adafc736ccd0d1a9c49bc1d"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "456",
+       "sha": "9d753f0eb6077dad0d722a8ab44959f5fe00e2dfd247378a0df4079e01dff55d"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "467-471",
+       "sha": "d1b03392211e1a35e0c210f3b97ad5e4a143d2bd032b34b3f254cf85524df522"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "484-488",
+       "sha": "439b3a11925f14728152fb6215bdee66473d210c4dfa601b38c1f0f8a06cab39"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "A write to port A is latched and sent in mode 2, and in modes 0 and 1 only when port A is an output; otherwise nothing is done.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "750-752",
+       "sha": "a487c95da4aadfcbfcd7ec38fe2500c7069e4ca9d6870ae31963b67ecf5f34cb"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "440-450",
+       "sha": "c8dd18513869c1ca6c9fb5b3231670e25677dfca2b38b2c60d39f54c75646071"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "454-465",
+       "sha": "ed2e449177e1e95580192f7c3d3b08d64149435aa1cc32db5ed5aef6a87016b3"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "466-473",
+       "sha": "f766523565aa480fa494ba9daa167fafd6e830ce186003a825fd8aa3ac764e94"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "479-482",
+       "sha": "d0c8b0d3f60cb1efe225b0f9a85d99855bef2fb46e9974cb2ddf7bf74230569a"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "57",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "743",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "748",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "port B read",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "54"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "72-73"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read",
+     "case": [
+      "PORT_B"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read_mode0"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read_mode1"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Port B is an 8-bit data output latch/buffer and an 8-bit data input buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "72-73",
+       "sha": "be2c3005a81090eb9859fb390184d6370c4d6d7ec8c82eed383df7fc86135dc3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "With A1 A0 = 0 1, RD low, WR high and CS low, a read puts port B on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "54",
+       "sha": "2a997f1c102f1b099e0985e85f54db0cc42f534c41c81b133020ee42cce775de"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In mode 1 with port B an input, a read of port B also clears the input buffer full flag, interrupt request and input latch.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "721",
+       "sha": "82faadb9aa4b68405f656d217e9923aefe89c6b90cfbc5a8aeec0d53e33a8273"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "294-300",
+       "sha": "80d2ce66d87ab5bfbd045b97f78c2bfb29e66d1bcfa8f1512a4a562b4ae9c47a"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "304-313",
+       "sha": "ac464069db259caf6e6e600c719226ac10a757c700371892c430f56189e3ec75"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "705",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "718",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "720-721",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "275-286",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "294-302",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "317",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "304",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "port B write",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "59"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write",
+     "case": [
+      "PORT_B"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write_mode0"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write_mode1"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's row for port B reads 0 1 1 0 0 Data Bus - Port B.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "59",
+       "sha": "62628726235ab693dc2d248af0418fbdc7f70e28f5b76330c802424802a4c9ad"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With A1 A0 = 0 1, RD high, WR low and CS low, a write puts the data bus into port B.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "59",
+       "sha": "62628726235ab693dc2d248af0418fbdc7f70e28f5b76330c802424802a4c9ad"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In mode 1 with port B an output, a write of port B also sets the output buffer full flag and clears the interrupt request.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "762",
+       "sha": "ad437acec20c5179cf3b76917134283083126f5ba82fd390975f726a05dbc5e5"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "456",
+       "sha": "9d753f0eb6077dad0d722a8ab44959f5fe00e2dfd247378a0df4079e01dff55d"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "467-471",
+       "sha": "d1b03392211e1a35e0c210f3b97ad5e4a143d2bd032b34b3f254cf85524df522"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "A write to port B is latched and sent in modes 0 and 1 only when port B is an output; otherwise nothing is done.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "761-762",
+       "sha": "c0253e1cf05244329400710b959f121b64b61f735bc0753261362d307dea40b8"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "440-450",
+       "sha": "c8dd18513869c1ca6c9fb5b3231670e25677dfca2b38b2c60d39f54c75646071"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "454-465",
+       "sha": "ed2e449177e1e95580192f7c3d3b08d64149435aa1cc32db5ed5aef6a87016b3"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "466-473",
+       "sha": "f766523565aa480fa494ba9daa167fafd6e830ce186003a825fd8aa3ac764e94"
+      }
+     ],
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "759",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "743",
+     "as": "decode"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "port C read",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "55"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "65-71"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "443-448"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "474-499"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read",
+     "case": [
+      "PORT_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read_pc"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Port C is an 8-bit data output latch/buffer and an 8-bit data input buffer with no latch for input; it can be divided into two 4-bit ports.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "65-70",
+       "sha": "e920e28c5e4c8187aaf17fad16986b3fdefc8b9c3f8e7bb9ded58e12bc4b5fde"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "PC0-3 are the lower nibble of port C.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "71",
+       "sha": "328ed53cdc8a9b60cead51f0c91f0582f4615b05a49f0cfa2a84b23bb8e72f3c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "With A1 A0 = 1 0, RD low, WR high and CS low, a read puts port C on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "55",
+       "sha": "07dd2fbf652bfe20bcc624f5a23c3b5556e5a708159b8279fcb664bad4965e8c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "During a read of port C, the state of all the port C lines, except the ACK and STB lines, is placed on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "443-445",
+       "sha": "cbf0597dd5643bcacdb12326526488600e89a8af3341a7198881eafcc8268779"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "read",
+     "of": "doc",
+     "text": "In place of the ACK and STB line states, flag status appears on the data bus in the PC2, PC4 and PC6 bit positions.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "445-448",
+       "sha": "aff5402aa41ce69d4cb8516c6550e402e6d6bbb0e7ca0f58f56e3347725b4bf0"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Reading port C lets the programmer test the status of each peripheral; no special instruction is needed, a normal read of port C does it.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "474-485",
+       "sha": "c0a077af7dae6bfd7a58dd7e3e48587878b77fa9c0a4d75be2bf6bacaef7e517"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 7-0",
+     "of": "doc",
+     "text": "In the mode 1 input configuration, D5 is IBFA, D4 INTEA, D3 INTRA, D2 INTEB, D1 IBFB and D0 INTRB; D7 and D6 are I/O.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "486-489",
+       "sha": "c208e0021c19178a26c2fd4aa40856ffe9209fe985c1553f2416d36e81317bae"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "bits 7-0",
+     "of": "doc",
+     "text": "In the mode 1 output configuration, D7 is OBFA, D6 INTEA, D3 INTRA, D2 INTEB, D1 OBFB and D0 INTRB; D5 and D4 are I/O.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "490-493",
+       "sha": "b2c00b9690416d85b02c87cd4469515b8ace992f28743d5d140bff7c2660bdbb"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bits 7-0",
+     "of": "doc",
+     "text": "In mode 2, D7 is OBFA, D6 INTE1, D5 IBFA, D4 INTE2 and D3 INTRA; group B follows its mode 0 or mode 1 selection.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "495-498",
+       "sha": "09864a9b54c92a7450cd66e99208d3a287c9034e3800bf291e43294a60c414ab"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "494",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "499",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "705",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "349",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "351",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "362",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "364",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "367",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "374",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "386",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "388",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "395",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "399",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "401",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "412",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "414",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "418",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "423",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "727",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "352-361",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "380-385",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "402-411",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "428-434",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "370",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "376",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "391",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "393",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "415",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "390-394",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "402-411",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "415-416",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "355-360",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "371-377",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "380-385",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "405-410",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "428-434",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "365",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "375-377",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "415-416",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "424",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "428-434",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "365",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "369-371",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "415-416",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "420",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "428-434",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "133",
+     "as": "parent",
+     "owner": "i8255:command:0x00..0x7F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "143",
+     "as": "parent",
+     "owner": "i8255:command:0x00..0x7F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "587-591",
+     "as": "parent",
+     "owner": "i8255:command:0x80..0xFF"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "615-617",
+     "as": "parent",
+     "owner": "i8255:command:0x80..0xFF"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "630",
+     "as": "parent",
+     "owner": "i8255:command:0x80..0xFF"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "640",
+     "as": "parent",
+     "owner": "i8255:command:0x00..0x7F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "769",
+     "as": "parent",
+     "owner": "i8255:register:0x02:write"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "port C write",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "60"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "449-456"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write",
+     "case": [
+      "PORT_C"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::output_pc"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "With A1 A0 = 1 0, RD high, WR low and CS low, a write puts the data bus into port C.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "60",
+       "sha": "7252b43c8da107ceb4fc8bdc85b78576e81276512bd6ea7c0cede5698edae2f0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write of port C changes only the port C pins programmed as outputs in a mode 0 group; no other pin and no interrupt enable flag can be affected.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "449-453",
+       "sha": "b712d4e4752b09964965471c6a96c56bcb35eda56731824324ddf31d89607d18"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "To write a port C output of a mode 1 group, or to change an interrupt enable flag, the Set/Reset Port C Bit command must be used.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "453-456",
+       "sha": "b78bc8dc78007c98819c197bf6dd4c59afa47f72947177275fcfc9197bab4425"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "2",
+     "text": "In mode 1, MAME also drives the two port C pins that are not handshake lines from the data written, through the output mask.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "513",
+       "sha": "930eb387ccc11b9f52f98d310b533f929c6d1b473a0dd5404f073a39136c1684"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "516-525",
+       "sha": "91dc1756fe9efc6e29eed83f7d0cf5381eaff65605c4b3a998e5658461e5c73f"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "564-566",
+       "sha": "b2deaa268f90c1b6db72242566ca3c21ebc0153c9bf994a3b3e441b5a8f246ec"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "769",
+       "sha": "90791bfea0e671ea3dcceaa317723939e732e2820b9e296779d2f8cca320915b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "743",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "769",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "564-566",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "499",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "502",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "514",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "540",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "501",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "507",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "511",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "513",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "526",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "528",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "530",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "531",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "532",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "533",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "537",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "539",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "545",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "549",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "551",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "552",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "554",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "556",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "559",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "560",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "control read",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "56"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "123-128"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::read",
+     "case": [
+      "CONTROL"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "read",
+     "of": "doc",
+     "text": "With A1 A0 = 1 1, RD low, WR high and CS low, a read puts the control word on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "56",
+       "sha": "c1774d122dd6072f375acab5249b3a76e9eef19246030a4d03593bbab788eb5f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The control word register can be both written and read; when it is read, bit D7 is always a logic 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "123-128",
+       "sha": "46975a6a97529ead8da892a0ae373bbe568b57fc10dcd0e19786c7361ca46e6a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "705",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "732",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "572",
+     "as": "parent",
+     "owner": "i8255:command:0x80..0xFF"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "control write",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "61"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "110-115"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::write",
+     "case": [
+      "CONTROL"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The CPU outputs a control word to the 8255; the control word holds information such as mode, bit set and bit reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "110-115",
+       "sha": "b948e0e84975b8c3d12e75fe37b09011c40c45a02320f4065fbf6579be060139"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With A1 A0 = 1 1, RD high, WR low and CS low, a write puts the data bus into the control register.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "61",
+       "sha": "6de9ee94af9ed2fa76d1aa328b8476ea8b82cd4e814d29fe252bf09fc1156870"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "743",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "778",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "787",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "774",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "781",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "785",
+     "as": "structure"
+    }
+   ]
+  }
+ ]
+}

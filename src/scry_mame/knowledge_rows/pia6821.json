@@ -1,0 +1,1894 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "pia6821",
+ "title": "The 6821 PIA, its registers",
+ "kind": "register",
+ "scope": "pia6821",
+ "covers": "The four addresses of the Motorola 6821 PIA, each read and written: peripheral and data direction registers A and B and control registers A and B",
+ "source": "official",
+ "documents": [
+  {
+   "name": "MC6821.raw.txt",
+   "variant": "MC6821"
+  }
+ ],
+ "official": {
+  "MC6821.raw.txt": [
+   "428-429",
+   "444-450",
+   "451-454",
+   "455-459",
+   "460-468",
+   "469-474",
+   "476-478",
+   "490-491",
+   "498-499",
+   "506-518",
+   "519",
+   "520-521",
+   "522",
+   "538-541",
+   "543-552",
+   "553-560",
+   "561-567",
+   "568-572",
+   "573-578",
+   "583-589",
+   "641",
+   "652",
+   "653-656",
+   "657-658",
+   "662-665",
+   "669-675",
+   "676-678",
+   "680-683",
+   "684-686",
+   "693-697"
+  ]
+ },
+ "engine": [
+  "m_ts_b_handler",
+  "m_in_a_handler",
+  "m_in_b_handler",
+  "m_in_ca1_handler",
+  "m_in_ca2_handler",
+  "m_in_cb1_handler"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "port A data or DDR A",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "428-429"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "451-454"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "460-468"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "506-518"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "538-541"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "662-665"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "669-675"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::read",
+     "case": [
+      "0x00"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::port_a_r"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::ddr_a_r"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::get_in_a_value"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Six locations are accessible to the MPU data bus: two peripheral registers, two data direction registers and two control registers, selected by RS0, RS1 and control register bit 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "506-510",
+       "sha": "81f27e2e9254a750490fd238278f125318056b9de510aed501c7f9b07e8448c0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "With RS1 RS0 = 0 0, CRA-2 = 1 selects Peripheral Register A and CRA-2 = 0 selects Data Direction Register A.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "516-518",
+       "sha": "2773747aafe00c9597f9fd56302e1ea48644ff32a47320a1e37290bdc3dbfe72"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "The data on peripheral lines programmed as inputs appears directly on the corresponding MPU data bus lines.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "451-452",
+       "sha": "ea4b3f5cfad8709f7940accedf8e30f649d61b6e8b5a0ceca73e6fe9192ebc7c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "Output Register A data may be read by an MPU read of peripheral data A when the corresponding lines are programmed as outputs.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "460-461",
+       "sha": "0f15d34a4a4ef44e8df41b120c428635a1cfc1b133a88af0a52fae5e69359def"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "read",
+     "of": "doc",
+     "text": "In the output mode, a read of port A reads the actual pin, whereas the B side read comes from an output latch ahead of the pin.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "538-541",
+       "sha": "6d32e400242b462d69df7eedc763e52b9edf08dcd211b5fad893561206a146c4"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "The interrupt flags are cleared as a result of an MPU Read Peripheral Data Operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "428-429",
+       "sha": "98c9a9800476203448e72af5ffe3ed4ec9756eeaf803b11d08b6a4a37a0dc3e3"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "With bit 3 = 0, read strobe with CA1 restore: CA2 goes low on the first high-to-low E transition following an MPU read.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "663-665",
+       "sha": "a9cd7236e04adc918327631ab7e261a6ad449677bda5608ee585b5910c33104b"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "doc",
+     "text": "With bit 3 = 1, read strobe with E restore: CA2 goes low on the first high-to-low E transition following an MPU read.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "669",
+       "sha": "b2c1bc6db9bd7a66803a6a1d40df7c9f1c90385d60d1daca36d3db252e8a3a00"
+      },
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "671-672",
+       "sha": "98ef517ce5b796eba75a3d149a8e7ffeac371883196da0c668e522d650c6c7f7"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "when",
+     "of": "doc",
+     "text": "In read strobe with E restore, CA2 is returned high by the next high-to-low E transition during a deselect.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "669",
+       "sha": "b2c1bc6db9bd7a66803a6a1d40df7c9f1c90385d60d1daca36d3db252e8a3a00"
+      },
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "671-675",
+       "sha": "eb693ee33813297960494dedd3b682e58212282f5dbdd3d1e2c63aeeac2b5531"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "A port A read returns Output Register A bits for output lines; only pins in m_a_input_overrides_output_mask return the pin level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "238-240",
+       "sha": "7aeefaf1940422d93cc0e4bfec333aa425709f46a04714fde374ec396c3cdece"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME drives CA2 low during the read itself, not at an E transition.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "403-408",
+       "sha": "33fae29d0c600365bb9c749b85ad15b670f183f39c8da8d3ef562b8a813ef375"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "8",
+     "text": "MAME drives CA2 low during the read itself, not at an E transition.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "403-408",
+       "sha": "33fae29d0c600365bb9c749b85ad15b670f183f39c8da8d3ef562b8a813ef375"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "9",
+     "text": "When strobe_e_reset is set (bit 3 of the control register) MAME sets CA2 high again inside the same read, not at a deselect E transition.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "406-411",
+       "sha": "4b71e906d6d24178e41a53b7db83722cd0be2ba282ed8e04230c6ffb7a71e5b8"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1111",
+       "sha": "3f837785173d07d47bdc7b205195d6002061c75d9d6e33f9630c0618ee9f006b"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A debugger read, with side effects disabled, clears no flag and moves no CA2 level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "395-406",
+       "sha": "165b97beca2d29aeac01b465ee227f659e4ead21271c8fc1e6c40816c395cab8"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "407-416",
+       "sha": "ef32ca24e95f9a5e86182f9e2f2d0de9ff3528371cf88ccf2e2e2cfb000431a4"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With no input handler and no pushed value, MAME reads 0xFF on the input pins, and logs a warning once if any pin is an input.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "211",
+       "sha": "573f04c83afc8c8094d4a798baa322134d6f3c7073d6ca114a80eb4069c60929"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "215-224",
+       "sha": "12c399a67b83436484bef4d9d36360baa6687eb59a318018885c572c872f52f5"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "226-231",
+       "sha": "26464fdbff7e10c57ea2b20c6045ca6ca920d4375f5eee9f98b2e361a5e98fc8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "511-512",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "513-515",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "662",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "670",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "453-454",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "462-468",
+     "as": "electrical"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "579",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "583",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "417",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "431",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "238-242",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "238-242",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "398-400",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "146",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "743",
+     "as": "parent",
+     "owner": "pia6821:register:0x01:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "145",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "678",
+     "as": "parent",
+     "owner": "pia6821:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "143",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "660",
+     "as": "parent",
+     "owner": "pia6821:register:0x00:write"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "name": "port A data or DDR A",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "444-450"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "455-459"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::write",
+     "case": [
+      "0x00"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::port_a_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::ddr_a_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::send_to_out_a_func"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::get_out_a_value"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Each peripheral data line can be programmed to act as an input or an output.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "444-446",
+       "sha": "28c016b4f8fc9b96f7d7094e2bb88e65cc01e8ed741889d4b5c4653e9a2baff4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A 1 in a Data Direction Register bit makes its line an output and a 0 makes it an input; the register bit is stored.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "446-450",
+       "sha": "7d508856556aa802f03fde2270f1da11bffdc6c68ebf14556482bf90a4301a8f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The data in Output Register A appears on the lines programmed as outputs; a 1 written into it makes the line high, a 0 low.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "455-459",
+       "sha": "fcd8cd5924eb27f17784f018efc08934f414230ae7c42495f96f6189dbc1663b"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With no output handler set, MAME only remembers that a value is pending and logs a warning if the next one overwrites it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "619-625",
+       "sha": "70a4f7a24022f6d77dca49c87dfa647827fef2aeb532c9bdd6ca1dd7c33e67e4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "816",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "819-820",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "675-678",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "680",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "823",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "611",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "615-617",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "304-315",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "660",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "663",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "821",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "611",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "615-617",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "304-315",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "673",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "679",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "143",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "145",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "control A",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "519"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "543-552"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::read",
+     "case": [
+      "0x01"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::control_a_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The control registers let the MPU control the four peripheral control lines CA1, CA2, CB1 and CB2, enable the interrupt lines and monitor the interrupt flags.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "543-547",
+       "sha": "51d744b24b90badbd10d9afa3e554844342c8473b024c2a6e16b60d9048dd8e3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "Bits 0 through 5 of the two control registers may be written or read by the MPU.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "547-548",
+       "sha": "3d5a842933a1fa643efed8833e2cca8e583a6a88bf0dea4126f7ecad15b4ec18"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Bits 6 and 7 of the two control registers are modified by external interrupts occurring on CA1, CA2, CB1 or CB2.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "549-551",
+       "sha": "cdba12bcd7413b54c478252c426c44d8c0121484338ccdd4d0b5ec375138a153"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "The table row 0 1 X X lists Control Register A.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "519",
+       "sha": "aa2b925d089d2e5a337a633e6485080be82f60007ab8c5ce0b54fb8ce70251ef"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The format of the control words is shown in Figure 18.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "551-552",
+       "sha": "e057b183b82cac52fde8a88a7fcdc51bfcc33cc5018c6b4a1523821fa0c438fa"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read first polls CA1 and CA2 through the input handlers, so a pending edge sets its flag before the value returns.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "487-498",
+       "sha": "cd2bc08319da88777d29a3c24620f13c630a8bef6c42b65a3e903e946997e182"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "500-509",
+       "sha": "de702237c322cd792ea7636f697150487354e0926419ea0c69f8d416d24d8c15"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "579",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "586-588",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "512-523",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "514-519",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "146",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "743",
+     "as": "parent",
+     "owner": "pia6821:register:0x01:write"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "control A",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "490-491"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "553-560"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "561-567"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "568-572"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "693-697"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::write",
+     "case": [
+      "0x01"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::control_a_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::set_out_ca2"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Bits 3, 4 and 5 of the two control registers control the CA2 and CB2 lines, deciding whether a line is an interrupt input or an output control signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "568-572",
+       "sha": "11205b4f9f5d335ff9dd59c52039bec1a39f30b6ccec88c5961ff86647ea8a05"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Bit 2 is stored; the text says a 1 gives access to the peripheral register and a 0 addresses the Data Direction Register.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "555-560",
+       "sha": "f40515fb5059efc8344f6232a47d93a0ddf421d311dcfa22e7ca38c13e5c8c08"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The interrupt flag bits cannot be set directly from the MPU data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "561-567",
+       "sha": "c64d8aa086dd721d42b3c319f911d32cb6c0551a9df23323c392a22430a41468"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The function of this signal line is programmed with Control Register A.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "490-491",
+       "sha": "13507a67ef61e0d2206f50a9cc06fe7eeb23bcfdaa5977c1a7f773d4d411d779"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "In set/reset mode CA2 goes low as the MPU writes bit 3 = 0 into the control register and high as it writes bit 3 = 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "693-697",
+       "sha": "b4815a1ac578e3958c0dd24f85eac9ab9410f4dda6bf79165900f62ffcb61760"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In strobe output mode a control write drives CA2 high when CA2 was not an output or is low.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "755-760",
+       "sha": "99ea3a3654cd24b921e1c509ae071c88f5c00af7fcc0420277034127ca17f190"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When bit 5 changes from output to input, MAME drives CA2 high through its output handler.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "742",
+       "sha": "4fb9d3a5341243627cf5122cc0c79259d6cecb2641aa2281a0b4bc9e8ee8ece6"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "746",
+       "sha": "44b672e48006815d5d395f0c1391009c3ed76da130d775eb75847dd738f43027"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "762-767",
+       "sha": "2de4f02fe44a3e1846094723a060d86b69c57ee90d0f2f48a71e1d54eb1a9682"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1118",
+       "sha": "2fa653261170f2370c69c619fae2ffa3fc6b9375d03ae1db4c248d29cbca385a"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With no output handler set, MAME only remembers that a value is pending and logs a warning if the next one overwrites it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "348-354",
+       "sha": "35f461f51d61c3decde56033d700f78437f00be22df99aeaf97b085e3548d347"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "816",
+     "as": "decode"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "553-554",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "743",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "734-743",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "743",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "746-753",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "341-346",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "port B data or DDR B",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "476-478"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "520-521"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "653-656"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "680-683"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::read",
+     "case": [
+      "0x02"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::port_b_r"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::ddr_b_r"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::get_in_b_value"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "when",
+     "of": "doc",
+     "text": "High by the next active CB1 transition, as specified by bit 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "680-681",
+       "sha": "4a5ba7064a578f479b3fa7f86455c1ddf6d547c2e5e06a87ddbdcad6e0f91011"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "PB0-PB7 data is read properly from lines programmed as outputs even if the voltages are below 2.0 V for a high or above 0.8 V for a low.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "476-478",
+       "sha": "9710fafcb288b08d1849b5f9b8c56628cef72350e20a46c466cbeeccfdcf5b5a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "The row 1 0 X 1 gives Peripheral Register B and the row 1 0 X 0 gives Data Direction Register B.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "520-521",
+       "sha": "97f65036655cfa693bc753a3510ebc82786ae9830c2ad508fce060e6d416e026"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "doc",
+     "text": "When CA2 (CB2) is an input, IRQA(B) is automatically cleared by an MPU read of Output Register A(B).",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "653-656",
+       "sha": "8364ab86fafb6c60425361940758da79c4ddec7580b82c0a43e541308a5c7f3c"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "CRB bit 7 must first be cleared by a read of data.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "681-683",
+       "sha": "84253740bdafc93b06d6703453d3377a155e034d7f7e0246395a2f3e29384127"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The table has two rows beginning 1 0, ending X 1 and X 0, for Peripheral Register B and Data Direction Register B.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "520-521",
+       "sha": "97f65036655cfa693bc753a3510ebc82786ae9830c2ad508fce060e6d416e026"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "1",
+     "text": "MAME returns CB2 high inside the port B read when flag B1 is set, as the comment in cb1_w says.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "450-451",
+       "sha": "ef8152fab58c0e2b60b234a52674edd6d13bb3c1487084fcc01759df0850f2b7"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1040-1043",
+       "sha": "776c6db2a76132bf3d71cb09a29063eaf88be458d26f537a5d96475262ed690e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A debugger read, with side effects disabled, clears no flag and moves no CB2 level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "443-454",
+       "sha": "82c9924f4313e0ce4b54c08bef5a18d728f5da6f740bd8b10574ed2522d47c5a"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "455-461",
+       "sha": "4c31df8f4b5955de45ab719776dd07b249b9dbad76c4f37da6311de25a348b84"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With no input handler and no pushed value, MAME reads 0x00 on the input pins, and logs an error once if any pin is an input.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "264-275",
+       "sha": "4dc096071cb6d0c4e4c59d53108c485a777c2a55d275eb1f2267d5720772589d"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "276-285",
+       "sha": "de9839f9fd79ec8c7406a0852419ace040438cc92b4c18abeb05c6bd9134b3fe"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "579",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "260",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "591",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "461",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "475",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "254-257",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "288-292",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "453-456",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "454",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "154",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "789",
+     "as": "parent",
+     "owner": "pia6821:register:0x03:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "153",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "720",
+     "as": "parent",
+     "owner": "pia6821:register:0x02:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "150",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "692",
+     "as": "parent",
+     "owner": "pia6821:register:0x02:write"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "port B data or DDR B",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "469-474"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "676-678"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "684-686"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::write",
+     "case": [
+      "0x02"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::port_b_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::ddr_b_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::send_to_out_b_func"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::get_out_b_value"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The B section peripheral data lines can be programmed as inputs or outputs in a manner similar to PA0-PA7, with three-state capability.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "469-474",
+       "sha": "2eadd30336ca5972144934f3c8535c70fd4217f25d3bb39b2abf563a0b4b9301"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Data Direction Register B is stored; the text says the B lines are programmed as inputs or outputs similarly to PA0-PA7.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "469-472",
+       "sha": "8cc56f91cfd9ccf4b843e1f0c48e3571e6990690981e6bf47bf617c70e5bfab5"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "In write strobe with CB1 restore, CB2 goes low on the first low-to-high E transition following an MPU write.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "676-678",
+       "sha": "c1a17a59cbd37635e83b7fc16fe5fd860b6177fcf048e9d130016974bcf06eb2"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "In write strobe with E restore, CB2 goes low on the first low-to-high E transition following an MPU write.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "684-686",
+       "sha": "a9cb383d9b22c237fbc8f99411c6f2ea2f1ca004ffda1851ff64404b63d7f202"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "A write of port B drives CB2 low inside the write itself, not at an E transition.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "697-701",
+       "sha": "10db37936b6ecdd59ea2cefd7af16de85ad1253181352dd3aaba7831e14f0755"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "A write of port B drives CB2 low and, with bit 3 = 1, high again inside the write itself.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "697-705",
+       "sha": "499ed3e6cedb3f3c2f2e3f100df9ce599cf76e3b229bd013f111f31513c6462b"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1111",
+       "sha": "3f837785173d07d47bdc7b205195d6002061c75d9d6e33f9630c0618ee9f006b"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write of Output Register B stores the byte in m_out_b and calls send_to_out_b_func.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "692-694",
+       "sha": "190775ca954e8b2e32165c58763525911aed0d9a06cc4a45902ab8022090f500"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With no output handler set, MAME only remembers that a value is pending and logs a warning if the next one overwrites it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "643-648",
+       "sha": "ba7a0597db162da5c2ea5239e517bc36f3d4cbe10ef08ddf70e92ad8a416682c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "816",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "831",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "834",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "715",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "717-720",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "722",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "639-641",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "323-331",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "721",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "150",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "153",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "control B",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "522"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "641"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "652"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "657-658"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::read",
+     "case": [
+      "0x03"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::control_b_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "read",
+     "of": "doc",
+     "text": "Control register bit 7 is the interrupt flag IRQA(B)1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "641",
+       "sha": "eab2b132d1c5888db7d1a7eb94c91c1bcec23e9c74d9fe8bd5a41301c5c7df5b"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "In the table, the row beginning 1 1 has X in both of the last two columns and gives Control Register B.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "522",
+       "sha": "1292e876b6249498416cd91d7b621a957cd22e7b7a29860be87fb84306c39f5f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "The table row 1 1 X X lists Control Register B.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "522",
+       "sha": "1292e876b6249498416cd91d7b621a957cd22e7b7a29860be87fb84306c39f5f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Control register bit 6 is the interrupt flag IRQA(B)2.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "652",
+       "sha": "8eccdc227fcc23b1c1668504b6c02a00ea8a5cea1a721abb8b5357861ed6f430"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "With CB2 established as an output (b5 = 1), IRQB2 is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "657-658",
+       "sha": "84a01b12034674e9582d13346607ac49239d945594e1fbfd37493023abfe7b82"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read first polls CB1 through its input handler, so a pending edge sets its flag before the value returns.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "535-546",
+       "sha": "f6e15314ab8a282274a8986be2701dcaa8054d6b15c1138bc584343117ca05c6"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read logs an error once when CB2 is an input with no pushed level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "548-552",
+       "sha": "6374401fa487f9fdfd4b4273c5abed97c3c18ccee467473e9d958e9b1e160d8b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "579",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "594-596",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "556-567",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "559-560",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "562-563",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "562-563",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "154",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "789",
+     "as": "parent",
+     "owner": "pia6821:register:0x03:write"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "control B",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "498-499"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "573-578"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "583-589"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::write",
+     "case": [
+      "0x03"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::control_b_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::set_out_cb2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "function": "pia6821_device::cb2_output_z"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The two lowest-order bits of the control registers control the interrupt input lines CA1 and CB1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "583-585",
+       "sha": "24c586835a401ab0005d58cace80dd0eab6b421619cdcde526099bc254a408ac"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Bits 0 and 1 are stored; the text says CRB-0 enables the MPU interrupt IRQB and CRB-1 determines the active transition of CB1.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "585-589",
+       "sha": "e76bdd13d8687997877e07cc289bec078f30c9e66a0433996cc85618aacce6ad"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "This line is programmed by Control Register B.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "498-499",
+       "sha": "c45d63814151fcba84be3f1c5064f2d3e9ba47ee8e2dd74435078aae586a8673"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Bit 5 is stored; the text says low makes CB2 an interrupt input like CB1 and high makes it an output signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:MC6821.raw.txt",
+       "lines": "573-577",
+       "sha": "1785dc9c839588791164691cb663edd070bca4529671278754833daac4e88738"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "4",
+     "text": "MAME stores bit 5 and also drives CB2 from bits 4 and 3 on every control write, even with bit 5 low.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "789-799",
+       "sha": "bbbc86665f51fd7e8d31e20f755d50bf86563cc9977d9b5e9778a7cb1d5a6f69"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "800-803",
+       "sha": "414d2e2a6f7c9922ef85ec7f0624cc8332a0416b259ea4d410736dc5741c0c19"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1113",
+       "sha": "d01b97f68e9aea8360920e21ff9f8eaf1041cbee7b8c7f0fdaa3dead36f5c10f"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1116",
+       "sha": "22aa53845e486588e6891e0eb19cb31b7d955269d42a89edc448c8f44621dad7"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "set_out_cb2 calls the output handler only when the level or the high-impedance state changes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "363-374",
+       "sha": "be83dd7637ebeb1701b7b336cbebca62a903f4f5c7cc1640a61dd28b495801a3"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "375-384",
+       "sha": "d71a56a9eced44e022c353587c39a63bc3336371ca7e4e0c27b7f542b54cf95e"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With no output handler set, MAME only remembers that a value is pending and logs a warning if the next one overwrites it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "376-383",
+       "sha": "f079bcf7c1065e48b1a67fdb15f5a88af7e3bb816051aff8f00f10c41e1a2537"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "cb2_output_z returns true while bit 5 is low.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1096-1098",
+       "sha": "72fc7f5134127506d175267963d6ea2bea1cd74866483c46b4283663fd18c516"
+      },
+      {
+       "ref": "mame:src/devices/machine/6821pia.cpp",
+       "lines": "1118",
+       "sha": "2fa653261170f2370c69c619fae2ffa3fc6b9375d03ae1db4c248d29cbca385a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "816",
+     "as": "decode"
+    },
+    {
+     "ref": "datasheet:MC6821.raw.txt",
+     "lines": "578",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "784-786",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "789",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "789",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/6821pia.cpp",
+     "lines": "154",
+     "as": "parent",
+     "owner": "chip:device:pia6821"
+    }
+   ]
+  }
+ ]
+}

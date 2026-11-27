@@ -1,0 +1,1074 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "i8251",
+ "title": "The 8251A USART, its two ports",
+ "kind": "register",
+ "scope": "i8251",
+ "covers": "The two ports of the 8251A USART, selected by C/D: the data port and the control/status port, each read and written",
+ "source": "official",
+ "documents": [
+  {
+   "name": "8251A.raw.txt",
+   "variant": "8251A"
+  }
+ ],
+ "official": {
+  "8251A.raw.txt": [
+   "145-154",
+   "214-226",
+   "505-516",
+   "919-938",
+   "953-961",
+   "969-970",
+   "973-978",
+   "549-592",
+   "825-853"
+  ]
+ },
+ "engine": [
+  "update_rx_ready",
+  "update_tx_ready",
+  "transmit_register_setup",
+  "m_rxrdy_handler",
+  "m_txrdy_handler",
+  "m_txempty_handler",
+  "m_syndet_handler"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "receive data",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "145-154"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "214-215"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "219-226"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "511-516"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::read",
+     "value": "offset=0"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::data_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The command, status, data-in and data-out registers are separate 8-bit registers that reach the system bus through the data bus buffer.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "152-154",
+       "sha": "a88a6d7fa3a53e876fc42842dfdd3648e1392d53a95ae9f95917f7b4bec3fe9d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The data bus buffer carries control words, command words and status information, and transmits or receives data on the CPU input and output instructions.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "145-151",
+       "sha": "3bc0f26976389c0ea06a065a51ed7acc33c6bf81aec2a9a92f4f3c762af7666a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The C/D input tells the 8251A whether the word on the data bus is a data character, a control word or status: 1 is control/status, 0 is data.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "221-226",
+       "sha": "8c4209acf02f114d039637b225f05e6b0072b11044240e34d02e08f982e30a81"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "With C/D 0, RD low, WR high and CS low, a read puts the 8251A data on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "215",
+       "sha": "4f161342f7d1c88b06e426d85e617f0ea6861dab14bc3e8aabb58086ef5cfd5f"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "On receiving a whole character the 8251A raises RxRDY to tell the CPU a complete character is ready to fetch.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "511-515",
+       "sha": "bff7e40cc6f56bc48b54cdb95e73967ca47564d938875c29ee0b0eaa8d0ef203"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "RxRDY is reset automatically upon the CPU data read operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "515-516",
+       "sha": "c06f24d4b0fe8eb4bedf64c2b6663b4d7feee2aed4225bb781be0f71c3b643c4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "214",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "219-220",
+     "as": "electrical"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "858",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "849",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "845-847",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "843",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "107",
+     "as": "unseen",
+     "reason": "zero-fill at device start; device_reset sets it again"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "528",
+     "as": "parent",
+     "owner": "chip:device:i8251"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "816",
+     "as": "parent",
+     "owner": "i8251:register:0x01:read"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "name": "transmit data",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "216"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "505-510"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::write",
+     "value": "offset=0"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::data_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::check_for_tx_start"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::start_tx"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::is_tx_enabled"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Once programmed, the 8251A is ready to work; its TxRDY output is raised high to tell the CPU it can take a data character.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "505-508",
+       "sha": "7ea6118e2409ee54564bbc60784a61ec092e16e3d4b1706b7b17b2af4aaf347c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "With C/D 0, RD high, WR low and CS low, a write puts the data bus into the 8251A data register.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "216",
+       "sha": "f0eaf883fb950cc8f2c930c438289b7c0c9aadf1d51233b05813d72dd519fd73"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "TxRDY is reset automatically when the CPU writes a character into the 8251A.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "508-510",
+       "sha": "62bd4e1cd85aab42b4b1b519e12785690b6973e34e5f0a15d73b1c6f48845610"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write records the transmit enable state; when enabled, empty and not TX_READY, it loads the transmit register, clears the empty flag and sets TX_READY.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "797-798",
+       "sha": "19d553b713568711fe79f595ffca1364b82ce6f74a62a4758bc31c2d41183aa3"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "357",
+       "sha": "0877d5fc6c365ab6c72461dc539b4d07068dd029c262e81f986c0d4bcbf488be"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "367-368",
+       "sha": "3d23fb1ba34e6279b186e75d10c2edc3dd778c407e1234c38ee8041e21f2b776"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "379-381",
+       "sha": "deddfb65b6ef3fda179e886a1dda460068f39d77040511dc6cff42330c7f2ff7"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A change of the CTS input stores its level; once the device has started it then rechecks the transmit start and updates the TxRDY and TxEMPTY outputs.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "877-887",
+       "sha": "f4d61e929e816e1033917d01bf62e2facdee899df4f66bac65a1fe3aadfff500"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "787",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "792-794",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "99",
+     "as": "unseen",
+     "reason": "zero-fill at device start; device_reset sets it again"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "527",
+     "as": "parent",
+     "owner": "chip:device:i8251"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "550",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "status",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "217"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "919-938"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "953-961"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "969-970"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "973-978"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::read",
+     "value": "offset=1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::status_r"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::update_syndet"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::receive_character"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::txrdy_r"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::write_dsr"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The programmer can read the status of the device at any time, to learn of errors or conditions that need the processor.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "919-925",
+       "sha": "0771f9997e73c83c5c987c7f735a99a40d929a7636bbeee745284fee8258b574"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "With C/D 1, RD low, WR high and CS low, a read puts the status on the data bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "217",
+       "sha": "94226892a187e39af4d13a63e8d4bbcd0acaaaaffc64a091ebd60aeab3190c06"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Status update is inhibited during a status read.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "926-927",
+       "sha": "881e5a9e90d5895d99bcc848438ec74f99944ce62b89c89da94b2f913f9989cd"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "read",
+     "of": "doc",
+     "text": "A normal read command with C/D = 1 does the status read.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "930-931",
+       "sha": "8786aeeac0ec9c9be0f333dfdffbb37e3a00b5cf0ce94c63169261d959bcd80a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Some status bits have the same meaning as external output pins, so the 8251A can be used completely polled or interrupt driven; TxRDY is an exception.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "932-936",
+       "sha": "af687ce740d0fae2fb6ad4239553995a066fc3bdff6e44245752a63a11894edc"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bit 4",
+     "of": "doc",
+     "text": "The OE flag is set when the CPU does not read a character before the next one becomes available.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "953-956",
+       "sha": "5c95ef5670b3ae351a0dbfbb5312b869cc24bab146c69d7d70aeaed5be98c847"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The ER bit of the command instruction resets the OE flag.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "957-958",
+       "sha": "debefa30bd8cdc799ddc21edddfeaa01308f97761b5aa0a12a9b0024a171a002"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bit 4",
+     "of": "doc",
+     "text": "OE does not inhibit operation of the 8251A, but the previously overrun character is lost.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "958-961",
+       "sha": "f0a59a0389d40f7a07168735f50c545fcafdaba63e44458a7802da9b8c1f9ac4"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "bit 7",
+     "of": "doc",
+     "text": "The DSR status bit indicates that the DSR input is at a zero level.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "969-970",
+       "sha": "34ad5dae95843a833e8f878876d285e69daa5b6baa31331ead6540cd0cb8b53e"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "bit 0",
+     "of": "doc",
+     "text": "The TxRDY status bit is not conditioned by CTS and TxEN, unlike the TxRDY pin: the status bit is DB buffer empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "973-977",
+       "sha": "3d236afabec547f796f0d4639ba60860dc3a14a35242c13047d4742d1d3cd55b"
+      }
+     ]
+    },
+    {
+     "n": "111",
+     "on": "read",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "The status read does not hold off updates: it clears SYNDET through update_syndet(false) at src/devices/machine/i8251.cpp:774 and logs the status at 771.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "768-777",
+       "sha": "361fc78b0ce13645c0ddf2deb6345601fd150ff5914595ab519b4510a33bc371"
+      }
+     ]
+    },
+    {
+     "n": "112",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Updating SYNDET sets bit 6 (0x40) of the status when true and clears it when false; a status read clears it after capturing the status.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "487-490",
+       "sha": "939871c9d263972b68e5e9c7706fe2f19b76e0f9614afe2e501d6da6d80492be"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "774",
+       "sha": "a78446f46f4fe9b9ea11ba9ac6d5d97d687852c01c408a3ff805da8263767511"
+      }
+     ]
+    },
+    {
+     "n": "113",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the receiver enabled in asynchronous mode, a completed character with a parity error sets PE (0x08), and one with a framing error FE (0x20), in the status.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "174",
+       "sha": "6de27c6cb005417b537a8de7e867444629fc42aa5c78495b3241fc1e76e79558"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "191-197",
+       "sha": "dfec84f97eec8a9d2d649c8e5fb4f3913da1f2334125f73cb86e0edcbc3dccc4"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "900-905",
+       "sha": "ade7883e29779bbbdde64ab98215d8e83bb9200775110e8ccf9bd626e4845226"
+      }
+     ]
+    },
+    {
+     "n": "114",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "In synchronous receive with parity enabled, the parity bit sets PE when the data ones, that bit and mode-byte bit 5 total an even count.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "217-222",
+       "sha": "505bbf514c72e5e65ec348e0e242abd11ab0640d9f5ff3dc0940fa626d4a5be5"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "290-295",
+       "sha": "505bbf514c72e5e65ec348e0e242abd11ab0640d9f5ff3dc0940fa626d4a5be5"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "900-903",
+       "sha": "063659420ce23182a5c2f8e9474bd89c43ce31455f5d61099de887f9dd70c268"
+      }
+     ]
+    },
+    {
+     "n": "115",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the transmit register is found empty and no transmission is started, the TxEMPTY bit (0x04) of the status is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8251.cpp",
+       "lines": "395-402",
+       "sha": "194ce16e55eb60e39be0d01119701936bfdcb712f6a38163acd3774a8686a7c5"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "937-938",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "978",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "856",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "769-776",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "856",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "776",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "820-822",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "813-824",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "825-831",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "769-776",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "891",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "769-776",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "937",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "928-929",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "483",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "487",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "493",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "98",
+     "as": "unseen",
+     "reason": "zero-fill at device start; device_reset sets it again"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "524",
+     "as": "parent",
+     "owner": "chip:device:i8251"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "380",
+     "as": "parent",
+     "owner": "i8251:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "459",
+     "as": "parent",
+     "owner": "chip:device:i8251"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "568",
+     "as": "parent",
+     "owner": "i8251:command:0x00..0x1F"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "792",
+     "as": "parent",
+     "owner": "i8251:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "845",
+     "as": "parent",
+     "owner": "i8251:register:0x00:read"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "mode, sync, command",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "218"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "549-592"
+    },
+    {
+     "ref": "datasheet:8251A.raw.txt",
+     "lines": "825-853"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::write",
+     "value": "offset=1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::control_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::sync1_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "function": "i8251_device::sync2_w"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "718"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Before it sends or receives data, the 8251A must be loaded with control words that define its function; they must immediately follow a reset, internal or external.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "549-555",
+       "sha": "3eb918b4830b94d788182fbe5b28b5f1718d6d6c749d567c1c5390168de3a5e2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The control words come in two formats: the mode instruction and the command instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "556-558",
+       "sha": "e39bcedd139db41e825ad9b6a8b64973f54a263b7f09a0cf0fc2bc37d4789d16"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "With C/D 1, RD high, WR low and CS low, a write puts the data bus into the control register.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "218",
+       "sha": "7723ef19ec239dae942e7ca84ef61274a76e9fc1047cc5ed7a5ee0bc0b1416f6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "order",
+     "of": "doc",
+     "text": "Once the mode instruction has been written, SYNC characters may be written.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "563-565",
+       "sha": "42d09a68113c0a2f3a33a010bfe90bd1be459e864270de547a347ecdbb018113"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "order",
+     "of": "doc",
+     "text": "The mode instruction must follow a reset, and command instructions may be written after it.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "559-565",
+       "sha": "ff41f2d2f9cc24779101cd5e6a23afc33262ac9757941d76be1f936ee21dcc85"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The command instruction defines a word that controls the actual operation of the 8251A.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "566-568",
+       "sha": "aa262e86c03689908b03cd71b0caf49a6b75dce619501cd84f31dc87208a394a"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "order",
+     "of": "doc",
+     "text": "The mode instruction must be written immediately after a reset; every control word written after it loads the command instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "569-575",
+       "sha": "bbf7212e4c6c7a5898028f7cddfe535e66f5d6125def1fd21055ed90497b64da"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "order",
+     "of": "doc",
+     "text": "The master reset bit of a command instruction starts an internal reset that returns the 8251A to the mode instruction format; commands follow the mode instruction or SYNC characters.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "576-583",
+       "sha": "a829d380ee84a43e1e5e19aa492e58211eeb35899225ebf88cc88e02c1251308"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The device can be seen as two components, asynchronous and synchronous, sharing the package; the format can be changed only after a master chip reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "584-592",
+       "sha": "05b172df5b03147249b2372a8dec5809426010d50d1feb820d128f38ff45ffa4"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The command instruction controls the actual operation of the selected format, with functions such as enable transmit/receive, error reset and modem controls.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "825-834",
+       "sha": "41359bc7d4a6157b09596c55cc6d52948c4b42bcb4cd10492a6dc3f20579461c"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "order",
+     "of": "doc",
+     "text": "After the mode instruction and any SYNC characters, all further control writes with C/D = 1 load a command instruction; a reset returns the device to the mode instruction format.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "835-840",
+       "sha": "f8ad8261407c88cc9483c24b2c9c2852d06a26684423e12f9b9cb9b86a57c99f"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "On power-up the 8251A may start in any format; writing three 00H bytes with C/D = 1 covers the worst case, and an internal reset command (40H) can then follow.",
+     "quotes": [
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "841-846",
+       "sha": "c8aea892a43664c3552b0b06ce88359615060633777cb3827687244d4ff8dddb"
+      },
+      {
+       "ref": "datasheet:8251A.raw.txt",
+       "lines": "847-853",
+       "sha": "eab41db30456c714c8505897bd358772383062b64c39e3b39c25c129c157c085"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "752",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "754",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "735-736",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "741-746",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "751",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "753",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "755",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "756",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "758",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "756",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "758",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "756",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "758",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "758",
+     "as": "unfollowed",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "758",
+     "as": "unfollowed",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8251.cpp",
+     "lines": "718",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  }
+ ]
+}

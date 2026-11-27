@@ -1,28 +1,28 @@
 {
  "task": {
   "id": "m224",
-  "prompt": "Show me the whole entry the base holds under the id mc6845:register:0x0D.",
+  "prompt": "Show me the whole entry the base holds under the id ay8910:register:0x07.",
   "tool": "knowledge_find",
   "args": {
-   "id": "mc6845:register:0x0D"
+   "id": "ay8910:register:0x07"
   }
  },
  "runs": [
   {
    "lines": [
-    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"mc6845:register:0x0D\"}}"
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"ay8910:register:0x07\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"mc6845:register:0x0D\"}}"
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"ay8910:register:0x07\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"mc6845:register:0x0D\"}}"
+    "m224: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"ay8910:register:0x07\"}}"
    ],
    "right": true
   }

@@ -1,0 +1,722 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "okim6295",
+ "title": "The MSM6295 port: busy status and the start command",
+ "kind": "register",
+ "scope": "okim6295",
+ "covers": "the two things the MSM6295 data bus does: the busy status a read returns, and the two-byte start command a write takes",
+ "source": "official",
+ "documents": [
+  {
+   "name": "OKI-VoiceSynthesis-1994.raw.txt",
+   "variant": "msm6295"
+  }
+ ],
+ "official": {
+  "OKI-VoiceSynthesis-1994.raw.txt": [
+   "2077-2093",
+   "2140-2195",
+   "2207-2237",
+   "2247-2264",
+   "2291-2319",
+   "2338-2370",
+   "2389-2403"
+  ]
+ },
+ "engine": [
+  "update",
+  "add_int",
+  "read_byte",
+  "reset"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "status",
+   "access": "read",
+   "aliases": [
+    "voice busy"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2085-2093"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2389-2403"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "function": "okim6295_device::read"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The RD input outputs the busy state of channels 1 to 4 on the data bus, and a high level indicates busy.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2088-2090",
+       "sha": "7f428ab27b3e2896580329b48d6561126dc5cc8a618be938f44b1a6f048ab95e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "While CS and RD are low, a read outputs the busy state of channels 1 to 4, and a channel's bit is high during synthesized playback.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2390",
+       "sha": "a0faa7cfc01efdf8fc5e4e94940fdb862601a4582dbae78d72c8b83a163dd77c"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2398-2400",
+       "sha": "43677a5ceca68ce7a41f1efa8d63e830abf13ff18010a96be2d46b6864c48d1f"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The upper four bits of a status read are 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "216",
+       "sha": "068f3ac427b00e45a4416d9fbdf1e0ee06a43485f86fd542e94c46512e5f0ddc"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "224",
+       "sha": "882101dd8697a52e0480af0873d4640b6bb8b487665fdc6013a1e87120badb76"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2085-2087",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2091-2093",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2389",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2391-2397",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2401-2403",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "219-224",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "name": "command",
+   "access": "write",
+   "aliases": [
+    "command byte"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2077-2084"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2140-2195"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2207-2237"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2247-2264"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2291-2319"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2338-2370"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "59-77"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "function": "okim6295_device::write"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The instruction bus pins are inputs for phrase specification, 127 phrases at most; some also output the busy state of channels 1 to 4 and select the attenuation rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2077-2081",
+       "sha": "5d0e20ad3f25fb0f1ce7c241609f283b2c4e431e6e1a50762642e3a2bf8da948"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The second byte of a start specifies the synthesis channel as well as the attenuation of the synthesized playback.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2158-2161",
+       "sha": "1ba172e0e9beba290e4a8ad2d1ef023d0e2b7e43dd3f062d63e7c535404fd3b1"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "It is not possible to specify several channels at the same time, for instance channels 1 and 3.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2164-2167",
+       "sha": "624a6b5e2ead019bfec1cd8424f3ad7f19efb9faba6d0c72a75ad9a660cfa5bd"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The second byte carries the attenuation in its bits D0 to D3 (the capture reads `DO - 03`).",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2362-2365",
+       "sha": "e002bb9edee7fd8282aa4c010e04684585e492f0036c4ff117c1d4a7ae2c7ef3"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "The attenuation code in bits I3 to I0 (the capture reads `13 12 11 lo`) steps 0000 to 1000 through 0, -3.2, -6.0, -9.2, -12.0, -14.5, -18.0, -20.5, -24.0 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2175-2176",
+       "sha": "5a4e7e2870335bda1c7d31cfdbd6caa0fffd99d5f36dc871b80b73fbcc41b0aa"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2186-2195",
+       "sha": "6a095f2480679315b1798987bb3a03f3a3fdfbe5cba9dfe6756c44599afdb9c4"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The reduction is made through 9 levels from about 0 dB to -24 dB, in steps of about -3 dB.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2182-2183",
+       "sha": "054acc9a068fb2881fb8a77aa574468cd496009699f7f3ff8859ec25e8022964"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "Voice synthesis does not start until the second byte is fully latched.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2338-2339",
+       "sha": "ac2d7903348415c9fe325e2d816d15f0665a02c041613ea414954b48d9bce4a3"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "doc",
+     "text": "Voice synthesis can be started from any channel, 1 to 4, and the channels can be used in any order.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2351-2354",
+       "sha": "84dd7f68fc3f5fd1c7b3bc8bc080f995f2f9fb5a9b1b22c96d3574d460855255"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Phrase selection data goes to the address outputs A3 to A9, which address the phrase's start and stop addresses in the external ROM.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2140-2143",
+       "sha": "2f1771abf64e1624eec217cf2dd7795a1cca750442106b3bb9bba6c5e7dc470c"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "Phrase 1 is addressed at ROM address 00008h, phrase 2 at 00010h and phrase 3 at 00018h, up to phrase 127.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2149-2155",
+       "sha": "93b0386bf5cfa54f0ae6a13602a4a78bce5eba7d9557ff66976b24b2753f5edd"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2316-2319",
+       "sha": "fb7d3d2d2ade90d3e97b7ece72f81a14c88f60d4c9b3fdc05448bbd90ad038c4"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "A phrase takes 8 bytes of address data: the first 3 bytes show the start address, the last 3 the stop address, and the other 2 are empty.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2209-2211",
+       "sha": "d4dbd7fb3d491ddae00c36b2afd3ded101ca1b2f4eed9ada2e4d49255c55fbad"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2247-2249",
+       "sha": "ec1b93c5bd553371ee87caf5488d11636aa9ce5a77f974547998d8b030ce2ade"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "when",
+     "of": "doc",
+     "text": "Selecting the first address, where the start address is stored, plays back the selected speech data.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2250-2252",
+       "sha": "c9c2af4cbb03177fda6a6f57be92857371a74951fbdc7cfa58055d86e691a655"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "when",
+     "of": "doc",
+     "text": "Phrases cannot be specified with all inputs 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2156",
+       "sha": "92f56f5dafe9919ef8823a7d765d40ec3524eccf55afee379c02515be2eef17b"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "With the maximum of 127 phrases the address data section is written up to ROM address 003FFh.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2299-2301",
+       "sha": "22d91385b24105b4c799f84874a37115c42fbb631cf37fe6de8e3263e954cb4b"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "In the ROM the address data section comes first, then the ADPCM speech data section, up to the maximum ROM address 3FFFFh.",
+     "quotes": [
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2291-2298",
+       "sha": "771dfedea599a356279ed8a1a9e922426ed3225cdbd7c4db5323727dd5a5e1ce"
+      },
+      {
+       "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+       "lines": "2312-2315",
+       "sha": "7d6ed6fb4e8f86e3d87bf758ab291eac08ddd302cf7ec26eb9482a2de6686f66"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "MAME starts every idle voice whose bit is set in the second byte, so several channels can start together.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "234-235",
+       "sha": "349ebae9b9a8551a7b72e54d24ae5178d1aee67ebb5270f10da9d907cb6d7ec8"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "238",
+       "sha": "d4e500b0c1017ce1c350f1961f82076699c76492c2566b35d49a3856118fd711"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "246-251",
+       "sha": "1eef7fa8827f8bbb08ef2d241ccbe9e52a7ef4f0ec6d1fa7cd2a3b9687e228e8"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "269-272",
+       "sha": "c19f3a642a3c7b0469aaf1d4f0c1a4ce9ea801b7eb7367ababe9cca23a4f85c2"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "13",
+     "text": "For phrase number 0 MAME computes the table address as 0 x 8, the expression it uses for every phrase.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "254",
+       "sha": "ea52c366b9a4366e95d62abab45da8d521a8437f134554594d07df37512ba26c"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A start for a voice that is already playing is ignored and logged.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "251",
+       "sha": "61edc82703a5f60d6780833a8c88a60b39611bfdd639ad4dabd452a2f8424d32"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "286-288",
+       "sha": "d34485b53cf68a59331aaccd62107c18599c27608886a56a38da9291f104230a"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A phrase whose start address is not below its stop address is not played and is logged as an invalid sample.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "266",
+       "sha": "10b2c3881d8916f620b2e0b693fe42e639304ea28277cc1046de4ead3c5bba23"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "281-283",
+       "sha": "576c5c88f8637c87012130025d54986ea03f6cbdb43dfd9cc613303a69c1918f"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "While a phrase is pending, the next byte is processed as the second half of a start, and the pending command is then reset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "234-235",
+       "sha": "349ebae9b9a8551a7b72e54d24ae5178d1aee67ebb5270f10da9d907cb6d7ec8"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "291-292",
+       "sha": "f52ece5c74e047c9ceabffbabb4ae5c43647977db4e88327b5cd0e9d65d12272"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A phrase plays 2 x (stop - start + 1) samples, so the byte at the stop address is included.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "272",
+       "sha": "f69993c549629a8048749d386162b6dfb461c1575b2d3d68cea0646d8872f42d"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "An attenuation code from 0x09 to 0x0F sets the voice volume to 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "59-69",
+       "sha": "c43c9fa4d367089dc687fc8ea426bb9d50a39ee3093c0237615ed97adcfc8b8c"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "70-76",
+       "sha": "4aeeffab4ed0fd580128cec135c80fa4135c5353d5d355c3794df11588f8f6c9"
+      },
+      {
+       "ref": "mame:src/devices/sound/okim6295.cpp",
+       "lines": "276",
+       "sha": "10cdcdf9d5f74d6f90bad8b9a38e6bdd2e16c62f9aff86b6531fec964eb41bbf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2082-2084",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2144-2148",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2157",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2162-2163",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2168-2174",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2177-2181",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2184-2185",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2207-2208",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2212-2218",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2219-2221",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2222-2237",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2253-2264",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2302-2311",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2340-2350",
+     "as": "electrical"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2355-2361",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:OKI-VoiceSynthesis-1994.raw.txt",
+     "lines": "2366-2370",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "61-69",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "276",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "276",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "254-258",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "269-275",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "235-238",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "269-275",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "238-247",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "269-275",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "238-247",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "269-276",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "59-60",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "77",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "296-297",
+     "as": "parent",
+     "owner": "okim6295:command:0x80..0xFF"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "300-310",
+     "as": "parent",
+     "owner": "okim6295:command:0x00..0x7F"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "235-238",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/okim6295.cpp",
+     "lines": "235-238",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  }
+ ]
+}

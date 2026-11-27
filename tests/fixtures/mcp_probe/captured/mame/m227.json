@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "m227",
+  "prompt": "From the knowledge base entry ay8910:register:0x07, show me only its row 2, with the links to the lines it cites.",
+  "tool": "knowledge_find",
+  "args": {
+   "id": "ay8910:register:0x07#2"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "m227: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"ay8910:register:0x07#2\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m227: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"ay8910:register:0x07#2\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m227: {\"tool\": \"knowledge_find\", \"args\": {\"id\": \"ay8910:register:0x07#2\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

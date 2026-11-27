@@ -1,0 +1,2312 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "es5505",
+ "title": "The Ensoniq ES5505 OTIS registers",
+ "kind": "register",
+ "scope": "es5505",
+ "covers": "the sixteen register addresses of the Ensoniq ES5505 OTIS sound device, whose meaning the page register selects, as its specification describes them and as MAME's device handles them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "ES5505.raw.txt",
+   "variant": "ES5505"
+  }
+ ],
+ "official": {
+  "ES5505.raw.txt": [
+   "120-143",
+   "144-259",
+   "260-288",
+   "289-339"
+  ]
+ },
+ "engine": [
+  "set_sample_rate",
+  "m_sample_rate_changed_cb",
+  "update_internal_irq_state",
+  "update_irq_state",
+  "m_irq_cb"
+ ],
+ "entries": [
+  {
+   "key": "0x00..0x01",
+   "name": "control and frequency",
+   "aliases": [
+    "CR",
+    "FC",
+    "CH0L",
+    "CH0R"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "144-149"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "150-208"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "209-213"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "260-270"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "289-297"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x00"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x01"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x00"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x01"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x00"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x01"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The registers of a voice are reached by the A3-A0 address lines, the page register directing the data flow to a particular voice.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "145-147",
+       "sha": "6b9d4ad08cff7ef120c4bedf04111127c71e8b19079e6399c5a9ce0d5aea5324"
+      }
+     ]
+    },
+    {
+     "n": "1a",
+     "on": "is",
+     "of": "doc",
+     "text": "The abbreviation in parentheses after a register's name may be used interchangeably.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "148-149",
+       "sha": "b9caa9075fee1f7f3dd5095c117304d6efc4e87f9a25830b86dbe6e8c05c9a5c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Every bit of the voice specific registers can be written to.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "147-148",
+       "sha": "b7a31e35e6cdfb0fa4e37eab7668d0f5b89a17ad9c4389640435ee06965178f3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Every bit of the voice specific registers can also be read back from the register.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "147-148",
+       "sha": "b7a31e35e6cdfb0fa4e37eab7668d0f5b89a17ad9c4389640435ee06965178f3"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 0 is the Control Register, an eight bit register that directs various aspects of the chip.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "150-152",
+       "sha": "897a165ee6667ea67f5d7a15bd281933893827b746c492e731ff5d1d8b48997f"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "LP4 and LP3, lowpass pole 4 and lowpass pole 3, select one of four filter configurations.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "153-156",
+       "sha": "365149960cb0da5bd7da0b7c39d8dd403859c5ccf5c5ab2dd9de76124c9f0d2e"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "With LP4 and LP3 both 0, filter poles 4 and 3 are high pass with K2.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "163-166",
+       "sha": "58aaa8ef77cd22e4a791af39c4c189b20f8648d0a5ee4c18f02bcbbf3a70aff2"
+      }
+     ]
+    },
+    {
+     "n": "6a",
+     "on": "is",
+     "of": "doc",
+     "text": "With LP4 0 and LP3 1 pole 3 is low pass with K1; with 1 0 both poles are low pass with K2.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "167-168",
+       "sha": "5316a8deb50e6eb08517a3814cc36e6cddeea29301fa859119668ec42c0dcc64"
+      }
+     ]
+    },
+    {
+     "n": "6b",
+     "on": "is",
+     "of": "doc",
+     "text": "With LP4 1 and LP3 1 pole 4 is low pass with K2 and pole 3 is low pass with K1.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "169",
+       "sha": "a4dd470c5d3a0b3be43a1f8b8364cb12119cccad495cddcad6289a66054de7e1"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Filter poles one and two are low pass and use K1.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "170-173",
+       "sha": "bdb70482ec6cac73366e20a6d3aad27f5c842fcb1c0ccbaf83f13bedfe34d875"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "CA1 and CA0 are a two bit code assigning the voice to one of four serial output channels.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "156",
+       "sha": "f219683a3e2d5fd45d895d6f6b301d64998cebb7df306f261fda2bea984da210"
+      },
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "174-176",
+       "sha": "eaa066d22001672a24d41821cf8b999cef4925d74e488ce6a9e8ec9658790709"
+      }
+     ]
+    },
+    {
+     "n": "8a",
+     "on": "is",
+     "of": "doc",
+     "text": "Channel 0 is also connected to the pulse width modulated playback outputs.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "176-177",
+       "sha": "250063f6484ef460009701db52c7672ec15f1dc08f3c0e16759d42849095ca54"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "IRQ is a status flag showing the voice requested service through the interrupt vector or has a request pending.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "178-180",
+       "sha": "6069075e4876059d5cc78261dda27fce6a09c567ffa87f408aa692a3003ecb9d"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "DIR is the direction the sample is scanned: zero increments through memory, one decrements, and bidirectional looping toggles it at the loop start or end.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "181-186",
+       "sha": "4a9c3948fa46d35707fc9e490764f0119e07ac7699c111407ac88286ce104ce0"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "IRQE enables the voice's interrupt when it is one.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "187",
+       "sha": "c84164e30dc0e6cb708d60bbbad3d0fd7b3d97b55ef6a64015e3e85d027685e4"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "Bidirectional looping is enabled if BLE and LPE are both one.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "188",
+       "sha": "57beeeafb0b69ec8139ed3db3fb8efbde8ba47e3d2b0e8c171d28bda7770a8a1"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "LPE enables looping; with LPE zero the accumulator stops at the loop stop, the start and stop roles reverse when DIR is one, and BLE is ignored.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "189-194",
+       "sha": "f210836d97f48ac7b177cb08bae3f0113bff47abfed9f5ea0f7833f8da2f984d"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "BS is output on the BS pin at the same time as the address of a memory cycle, for choosing between two 1Mword banks.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "195-197",
+       "sha": "1adf88bb0b7730564ccce8c726922f7bb5204d91bee7ef60329420bd9d7a7ce0"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "is",
+     "of": "doc",
+     "text": "STOPI stops the address ALU from changing the voice during processing, so the processor may change the control register or the accumulator.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "198-203",
+       "sha": "59db0605e509dd11396b6e9678dddc61f4e6a9dbf12a1d468f23cf631536fae7"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "STOPO does the same and is set when looping is disabled and the accumulator reaches the loop stop; both STOPI and STOPO must be zero for the voice to run.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "204-208",
+       "sha": "0d0c071a05a78aa7521e399e517ed5f326fc15bd1ca3e1aa3c22f1d48518817d"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "is",
+     "of": "doc",
+     "text": "The Frequency Control register defines the rate the address ALU steps through the sample memory.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "209-211",
+       "sha": "17edf831afdce98c45142733b6b587d574ea483dd91a887f2c4cd44f2347288d"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "bits 15-1",
+     "of": "doc",
+     "text": "The frequency word is fifteen bits, left justified, six bits of integer and nine of fraction.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "210-213",
+       "sha": "bcbcc8b1b3cd69de8b01bfef6b0ad94567c1a1ccedb124a16f131e4b830925bd"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "Pages 32 through 63 address six sixteen bit filter storage registers in each voice, for testing and initialization.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "260-267",
+       "sha": "92ab4ba4fa4bfe7417e92641dd69d64e6be26b5238aae02ba6f9271de5d0ac25"
+      }
+     ]
+    },
+    {
+     "n": "20",
+     "on": "bits 15-0",
+     "of": "doc",
+     "text": "Register 1 of those pages is sixteen bits and holds the last output of the filter's final stage, the data presented to the converter.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "268-270",
+       "sha": "7c48e08345a81885fe1cf6af4771865d1054adf6c70afb7487536474133d5ad5"
+      }
+     ]
+    },
+    {
+     "n": "21",
+     "on": "is",
+     "of": "doc",
+     "text": "Pages 64 through 128 address eight output channel registers, a mode register and the pot A/D register, reached when the page register's MSB is one.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "289-292",
+       "sha": "a68143b42daebf56ebf2c9d2a820bca13379723942803a21162951cc61252fb4"
+      }
+     ]
+    },
+    {
+     "n": "22",
+     "on": "is",
+     "of": "doc",
+     "text": "Channel 0's left and right registers hold the left and right volume multiplications and feed serial port 0 and the PWM D/A output.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "293-296",
+       "sha": "479f7b2c372b2b55382ffa6392f41f4e543a27f6ccb54be49bc63d6247a67411"
+      }
+     ]
+    },
+    {
+     "n": "23",
+     "on": "write",
+     "of": "doc",
+     "text": "These registers can be written when the serial mode register's TEST bit is set.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "296-297",
+       "sha": "49deaf95f9f041256b21f796e72668939812aaaaed734f83b7972159bbd3f483"
+      }
+     ]
+    },
+    {
+     "n": "24",
+     "on": "is",
+     "of": "doc",
+     "text": "These registers can not be read.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "296-297",
+       "sha": "49deaf95f9f041256b21f796e72668939812aaaaed734f83b7972159bbd3f483"
+      }
+     ]
+    },
+    {
+     "n": "23a",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to channel 0's pair does nothing: its case falls through the other channel labels to a bare break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1806-1814",
+       "sha": "883922467f79e68445c4ff14bac3a67dc987ff97f08efb86eabf3b5f9354dcbe"
+      }
+     ],
+     "vs": "absent",
+     "row": "23"
+    },
+    {
+     "n": "25",
+     "on": "bits 15-12",
+     "of": "mame",
+     "text": "MAME forces the control word's top four bits to one, whatever the write carried, and the read returns them set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1577",
+       "sha": "18f0a3af67210c03c706371a5c68e84e8d4c87f2674a249fc91206e63bf9ac44"
+      },
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1884",
+       "sha": "2d9b5a559474fd5f7efc8196e7b9d8ac03e1613d43375148cc0158dbb204a472"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "26",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME's high block handles register 0x00 as the same Control Register of the voice.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1713-1721",
+       "sha": "26515f43f46bc365129cc5b598fbf138edeab621810718317a2859b9d558820c"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1574",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1711",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1804",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1577-1588",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1713-1718",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1593-1597",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1723-1727",
+     "as": "agrees",
+     "row": "20"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1806-1814",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "157-162",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "144",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x02..0x03",
+   "name": "loop start, pole 3, CH1",
+   "aliases": [
+    "STRT",
+    "O3",
+    "CH1L",
+    "CH1R"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "214-223"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "271-278"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "298-301"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x02"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x03"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x02"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x03"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x02"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x03"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Registers 2 and 3 hold the 24 bit loop start: register 2 its upper 13 bits and register 3 its lower 11.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "214-217",
+       "sha": "976720fafe5d071b211e06f6337681dc7a45a697e4c6e42550300f8d2b382165"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 12-0",
+     "of": "doc",
+     "text": "The loop start's upper thirteen bits are right justified.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "217-218",
+       "sha": "96c2d008450c57d67f1c7fb97c95b75ef87c96b2824bb4a6f3f6087c79174cd6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 15-5",
+     "of": "doc",
+     "text": "The loop start's lower eleven bits are left justified.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "218",
+       "sha": "8ffe87994d567aed6afe397d2c9c681fde59631d346f274c494b29b0f3e94961"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The loop start is where the accumulator jumps when it reaches the loop end, and holds a 20 bit integer part and a 4 bit fractional nibble.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "219-223",
+       "sha": "ab2483a46a9a2d3db9a8bca64cc70d1f3592a3231bfff2dcf51f20700e0371a6"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 2 of pages 32 to 63 holds the last output of the filter's third stage, which feeds the fourth stage.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "271-274",
+       "sha": "3b646442e3be7edbab3846b0af54accf33c95ef72184412f9fc91f04e7961ca6"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 15-0",
+     "of": "doc",
+     "text": "That register is sixteen bits wide.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "271-273",
+       "sha": "c8348fb75ea27c4430759da2867644d12650aaa0cbeedf530bb1338b1b823104"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 3 of those pages records the third stage's output of the previous sample time, which the high pass mode of pole 4 needs.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "275-278",
+       "sha": "41374de9c37f2ba4c7ebadc45366acffc103e506cca54f1bd0c9dacead501c1c"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bits 15-0",
+     "of": "doc",
+     "text": "That register is sixteen bits wide as well.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "275-277",
+       "sha": "3f42d703a2fe3f370ffc0bb3edc788fe482a9d86c3ff5bca5f508d48b034f5cc"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Channel 1's left and right registers do what channel 0's do, without the PWM outputs, and feed serial port 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "298-300",
+       "sha": "60b020a5c5ecd8b6d8d2f08c452e6cacbe047f24311627529f05e4d86baee14b"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "They can be accessed for testing in the same way as channel 0's registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "300-301",
+       "sha": "ac6c8bfa85b56600c4a53632818b72398bcf4b56c1edbab082f293ef5d22fe99"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to channel 1's pair does nothing: its case falls through the other channel labels to a bare break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1808-1814",
+       "sha": "08c2df0878c9dae103d725cc989e1f80134ea0e6bca7bc41bccf050670b1156a"
+      }
+     ],
+     "vs": "absent",
+     "row": "10"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1574",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1711",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1804",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1601-1607",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1609-1615",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1731-1737",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1739-1745",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1808-1814",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x04..0x05",
+   "name": "loop end, pole 2, CH2",
+   "aliases": [
+    "END",
+    "O2",
+    "CH2L",
+    "CH2R"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "224-229"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "279-285"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "302-303"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x04"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x05"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x04"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x05"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x04"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x05"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Registers 4 and 5 hold the loop end, partitioned as the start: a right justified 13 bit MSW and a left justified 11 bit LSW.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "224-226",
+       "sha": "4209b03ee2d6702b98e2081d6f64c0a1865ac0fe61475bac083f2f48662c3c22"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 12-0",
+     "of": "doc",
+     "text": "The loop end's upper thirteen bits are right justified.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "225-226",
+       "sha": "69bf42144ca4d78a79deb90136f34549151d7f51afe2aa5413ac191adc9b08f1"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bits 15-5",
+     "of": "doc",
+     "text": "The loop end's lower eleven bits are left justified.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "226",
+       "sha": "53a78a5b653392cace6861eeb4bf2f1bc5d5563677c4524bb68432f551f74378"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The loop end marks the end of a loop in the sample memory, and the start and end registers reverse their roles when the direction bit is one.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "226-228",
+       "sha": "44eef76e0ca1e7e1698d4c570af9878604ea0ff96a457c7c5e951923ad6702e7"
+      }
+     ]
+    },
+    {
+     "n": "4a",
+     "on": "is",
+     "of": "doc",
+     "text": "The end register has the start register's integer and fractional partition.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "228-229",
+       "sha": "7130d70d816e043ff88162847e8c8b1ea5b96a908c931b9601420722a9c15b55"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 4 of pages 32 to 63 holds the last output of the filter's second stage, which feeds the third.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "279-281",
+       "sha": "baf3d82324c21906480a8d11838e8ff8b8831ed1fc7fb935f8bcbf095fff0314"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 15-0",
+     "of": "doc",
+     "text": "That register is sixteen bits wide.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "279-281",
+       "sha": "baf3d82324c21906480a8d11838e8ff8b8831ed1fc7fb935f8bcbf095fff0314"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 5 records the second stage's output of the previous sample time, which the high pass mode of pole 3 needs.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "282-285",
+       "sha": "cf52d2c124aaa2f30f2ac588fd1268e70b4e1cc4e8db6a32d8b0cf3963debc25"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bits 15-0",
+     "of": "doc",
+     "text": "That register is sixteen bits wide as well.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "282-284",
+       "sha": "5934e88024b8f28bbc30dc3fa75d198890fc0cc5c90a668074f4cf9fe21f77f7"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Channel 2's left and right registers are the same as channel 1's, connected to serial port 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "302-303",
+       "sha": "8326629738f2381f5a225ec2232d48abc181bcf202c197d4e4b9081593393ce3"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "They are accessed for testing as the channel 1 registers are.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "302-303",
+       "sha": "8326629738f2381f5a225ec2232d48abc181bcf202c197d4e4b9081593393ce3"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to channel 2's pair does nothing: its case falls through the other channel labels to a bare break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1810-1814",
+       "sha": "82013ef10cea31b054499f6c6a3115717f479883d1abc5da16e5ff2a03e74632"
+      }
+     ],
+     "vs": "absent",
+     "row": "10"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1574",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1711",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1804",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1617-1621",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1628-1632",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1747-1753",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1755-1761",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1622",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1633",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1810-1814",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x06..0x07",
+   "name": "cutoff, pole 1, CH3",
+   "aliases": [
+    "K2",
+    "K1",
+    "O1",
+    "CH3L",
+    "CH3R"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "230-237"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "286-288"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "304-309"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x06"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x07"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x06"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x07"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x06"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x07"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The filter cutoff high register sets the 3 dB point of poles three and four, and its use is discussed with the digital filter.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "230-233",
+       "sha": "ced4a66d5cdcc3783f820585eaadec62c89e127bc4bb3841314aff3e088ef591"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 15-4",
+     "of": "doc",
+     "text": "It is a twelve bit register, left justified, using bits 15 through 4.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "232",
+       "sha": "08ca715476c5ee4711d60a4c16454df6434a5b077e2f54cc67819eac6993d74d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The filter cutoff low register sets the 3 dB point of poles one and two, and its use is discussed with the digital filter.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "234-237",
+       "sha": "7763b3a7b7e7e7545f228f985d5d6575eb254c25802a59dd71a446fe783e63d6"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bits 15-4",
+     "of": "doc",
+     "text": "It is a twelve bit register, left justified, using bits 15 through 4.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "236",
+       "sha": "08f7b643cf14308541291c083d4f85c0e04127bd01b801588b04f684f417086e"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 6 of pages 32 to 63 holds the last output of the filter's first stage, which feeds the second.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "286-288",
+       "sha": "ff0b1f9ca8931a1e3486e646e2a2348cc1d9678550bb550e3b64784a03abfd74"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "bits 15-0",
+     "of": "doc",
+     "text": "That register is sixteen bits wide.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "286-287",
+       "sha": "8a5a66e5f4a6cf33431cd5fda4186c09f8df816ed6e5936ad75d103364b9e457"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Channel 3's registers serve serial port 3, which the A/D bit turns into a serial input.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "304-306",
+       "sha": "b6a1c91ef9abaad030eaece6636b79f9e155c7be4888b7fa4dfe8bdc2c46cc45"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The received data is held for the processor, and the two registers are readable in any mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "306-309",
+       "sha": "f0da089add31c0429bd558a5c38728b66fbf09060eceab8fe8bc87e5e396c6f8"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "They can only be written for testing, as the earlier channel registers can.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "308-309",
+       "sha": "e17f1b57a5460448522c0fbc8df8928fbb01ac0d8d1b5e14fd409a8e501e915c"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to channel 3's pair does nothing: its case falls through the other channel labels to a bare break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1812-1814",
+       "sha": "1bc246ce444a7108c07e086a8f75a6f9f5926a1cd5a52ba273bf206ce5c65c77"
+      }
+     ],
+     "vs": "absent",
+     "row": "9"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1574",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1711",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1804",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1639-1643",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1647-1651",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1763-1767",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1771-1777",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1812-1814",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x08..0x0C",
+   "name": "volume, mode, pot",
+   "aliases": [
+    "LVOL",
+    "RVOL",
+    "ACC",
+    "SERMODE",
+    "PAR"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "238-242"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "243-246"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "247-259"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "310-332"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "333-339"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x08"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x09"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x0a"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x0b"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x0c"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x08"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x09"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x0a"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x0b"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x0c"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x00"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x01"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x02"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x03"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x04"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x05"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x06"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x07"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x08"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x09"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The left volume register is an eight bit register that holds the left channel's amplitude as a four bit mantissa and a four bit exponent.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "238-240",
+       "sha": "27cdb5fc88c77053e42803c0eba9a3076ff7031230d01f3ea5160d459a5b6c67"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 15-8",
+     "of": "doc",
+     "text": "The eight bits are left justified in the register's word.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "238-239",
+       "sha": "292ff952c29bd19014e9c34d6abe9a583cb2d5fcccd55e347b14343d3ac00444"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The filter output is multiplied by a five bit value, a leading one and the four mantissa bits, and the product is shifted by the exponent.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "240-242",
+       "sha": "9b4d51f85b5c1ebe332cff7509e6fac1542e06ad0df5027c30e050b55cba3f71"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The right volume register defines the right channel's amplitude, with the same contents as the left, and the two pan the signal.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "243-246",
+       "sha": "efb2f0617c1b203cf8c6ffd78691dde00c2f15f52608a581711232f83245b59a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 15-8",
+     "of": "doc",
+     "text": "The right volume register's eight bits are left justified as the left register's are.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "243-245",
+       "sha": "5b1b595929106e1a19a9b9685187191b4b7a1684e907d54691f5cbdf9bb05ff7"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The accumulator is a 29 bit register divided into an accumulator high part and an accumulator low part.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "247-249",
+       "sha": "e092a38e943a99543f35544870f0361ddedcf5c263c45ed081a388d98fc63a9a"
+      }
+     ]
+    },
+    {
+     "n": "6a",
+     "on": "is",
+     "of": "doc",
+     "text": "The twenty integer bits address the sample memory and the nine fractional bits give the frequency resolution and the interpolation.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "251-255",
+       "sha": "4d27bf22a95a75c721c91be1735c42acb1447e657d2ef17f01e89b3fa4f1b972"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "bits 12-0",
+     "of": "doc",
+     "text": "The accumulator's high half holds its 13 bits right justified.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "249",
+       "sha": "6f9d6ae8c2d439c9085a608e77b59332c9822e336f842ce12539277c7c861d43"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bits 15-0",
+     "of": "doc",
+     "text": "The accumulator's low half is a full 16 bit word.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "249-250",
+       "sha": "83fd83c5b8d85997961d9ac58b1fd36e7881b98d8b8241e519ab8a7c8cc7a6fd"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "The accumulator also holds the waveform start position, which is not the loop start position.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "256-259",
+       "sha": "ddcedc05d8de20a383f0e1b21b55364454b8ed9fcd25f7c3bb8b53cc1378108d"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "The serial mode register holds the bits that configure and test the serial and PWM output ports.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "310-312",
+       "sha": "df2e8e494406d4eec5be6ec80d224b542ac4a0b5b0324b207e888b8fc26f268b"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to the serial mode register stores the bits that configure and test the serial and PWM ports.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "310-312",
+       "sha": "df2e8e494406d4eec5be6ec80d224b542ac4a0b5b0324b207e888b8fc26f268b"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "is",
+     "of": "doc",
+     "text": "The five MSB bits are the channel registers' guard bits, which test their overflow detection.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "314-319",
+       "sha": "5dd6c294143921c77f80fb1e35333ff5b4a2f227daea452eb97f77c5bfb9191c"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "SONY/BB selects whether serial input on port 3 follows the Sony or the Burr-Brown convention.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "320-325",
+       "sha": "ea63408dfe2cda1fba810766322fdbd6810b144fa24ecaca36076df08a383520"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "TEST turns off the signal accumulation and allows write access to the channel registers; A/D puts serial port 3 in input mode and is set on chip reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "326-332",
+       "sha": "faadc724ed3dc0d36d47f87b1c60a0c9222e8b77d678784bc31893ab9bc0c077"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "doc",
+     "text": "When a channel register is written, the five guard bits are written to its five most significant bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "314-317",
+       "sha": "792e9e6b8a85777fbd2b1dc69d0784c5bc4bd60bdcad7ef984c43f33a5f5fadc"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "is",
+     "of": "doc",
+     "text": "The pot A/D register holds the digital count of the conversion for tracking pots and wheels, compared against an internal reference of about 2.8 V.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "333-338",
+       "sha": "f32c726ff40fa03b835c1a42dafdc8824a3301875c9019eb81a19e5887d62833"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "read",
+     "of": "doc",
+     "text": "The counter's value is loaded into the register for reading by the processor.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "339",
+       "sha": "f7d4211e41af00e4dfb68f8d27054407721e7afae69e16e69213b94ed8dc60bb"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "bits 2-0",
+     "of": "mame",
+     "text": "MAME keeps SONY/BB, TEST and A/D in bits 0x0001 to 0x0004 of the mode word, and forces bits 0x07F8 to one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1816-1821",
+       "sha": "911fde441b2af40f0e0d68982e70717a8047ffbb9714c1b604ea5e658995fee8"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "15a",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to the channel registers does nothing: the eight cases hold only a break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1806-1814",
+       "sha": "883922467f79e68445c4ff14bac3a67dc987ff97f08efb86eabf3b5f9354dcbe"
+      }
+     ],
+     "vs": "absent",
+     "row": "15"
+    },
+    {
+     "n": "19",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to register 0x0C does nothing in the voice and filter page blocks: their cases hold only a break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1683-1684",
+       "sha": "ee8762cc73837fc59f3c48f3fb5119af6ae59072786a33b4b7a2a9d3fcad934e"
+      },
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1771-1777",
+       "sha": "450f8a68fc14852df759504a7d63cc88f132f9d7fb77658577f17ba556eee3be"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "20",
+     "on": "read",
+     "of": "mame",
+     "text": "A read of the pot register returns the board callback's value with its low six bits cleared when one is installed, and zero otherwise; the device does no conversion.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "2043-2046",
+       "sha": "8aa874b00526949b089573cd1ab7a2bcdf53ceeda9f6cee396a3ecf23f8a2124"
+      }
+     ],
+     "vs": "differs",
+     "row": "17"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1574",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1711",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1804",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1655-1657",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1661-1663",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1667-1671",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1675-1679",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1816-1821",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1806-1814",
+     "as": "structure"
+    },
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "313",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x0D..0x0F",
+   "name": "voices, IRQ, page",
+   "aliases": [
+    "ACT",
+    "IRQV",
+    "PAGE"
+   ],
+   "access": "write",
+   "regions": [
+    {
+     "ref": "datasheet:ES5505.raw.txt",
+     "lines": "120-143"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x0d"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x0e"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_low",
+     "case": [
+      "0x0f"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x0d"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x0e"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_high",
+     "case": [
+      "0x0f"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x0d"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x0e"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_write_test",
+     "case": [
+      "0x0f"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_read_low",
+     "case": [
+      "0x0e"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_read_high",
+     "case": [
+      "0x0e"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es5505_device::reg_read_test",
+     "case": [
+      "0x0e"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es550x_device::generate_irq"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "function": "es550x_device::update_internal_irq_state"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The Active Voice Register defines how many voices are enabled to produce sound.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "137-138",
+       "sha": "9a6ee462e90ba9b6af7f6b815566ef2447cfca6361a13addf4d851a3a9ed5808"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bits 4-0",
+     "of": "doc",
+     "text": "The register uses bits 4 through 0, encoding values 31 through 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "139",
+       "sha": "9f114bcb4278a2daff327281418739d8b167173c3af72628fedb17eb9319aac8"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "The active voice count is the register's value plus one, and it sets the output sample rate: 19.5 kHz with all 32 voices, 39 kHz with 16.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "139-143",
+       "sha": "48267e835c9f47834b473e2dc43c769b2bb9bc3781bbb09780ed8c2eaf9981dc"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The Voice Interrupt Vector register tells the microprocessor which voice caused an interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "128-129",
+       "sha": "405122fb4b5529fd25ff706d10f3d1068dd3c232a7b846571a3f64e1b23e5712"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "read",
+     "of": "doc",
+     "text": "The processor reads this register for the voice number in bits 4 through 0; bit 7 monitors the IRQ output line, which goes high after the read.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "129-136",
+       "sha": "87d048a4de1d6098917228d4fd0de7ad830e9f4350b68c079de4b1938152c9b6"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The Page register reaches the set of 16 registers that control a voice; it appears at location F in all pages.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "120-122",
+       "sha": "02495e2564238613b40d57a44d1f583d604dba1dd9bbc94a26b752bb61070ea7"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "value 0x7F",
+     "of": "doc",
+     "text": "128 pages are accessed through the page register.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "122-123",
+       "sha": "eda9a136c1958aaaf84c1f37f54503e421924727dde8de4bf4e2dbc0077ee93a"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "Locations 0 through A of pages 0 to 31 hold a voice's most used settings.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "123-124",
+       "sha": "700cd8180383c145fe4fa3a26292f8f212b6dfe76241ec57d90e142935fd815c"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "Locations 1 through 6 of pages 32 to 63 reach the filter's temporary registers, and locations 0 through 8 of pages 64 to 127 the serial and special mode registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "124-127",
+       "sha": "138d08ff62f9d2eb9274672595887533ec9b25fdca70f6a507c8b447feb49487"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "When an enabled voice's interrupt event occurs, the voice number is placed in this register for the processor to read.",
+     "quotes": [
+      {
+       "ref": "datasheet:ES5505.raw.txt",
+       "lines": "130-133",
+       "sha": "cc24588742d416729c3690cf8243a36640b3c60e8d8d49323a68ba4886e50da1"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "text": "A write to register 0x0E in any page block does nothing: the case holds only a break.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1698-1699",
+       "sha": "6a94c1abd051355105f946d466cf3c4d0d8810b2e944f80acde1f474e6c3a145"
+      },
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1791-1792",
+       "sha": "6a94c1abd051355105f946d466cf3c4d0d8810b2e944f80acde1f474e6c3a145"
+      },
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "1840-1841",
+       "sha": "6a94c1abd051355105f946d466cf3c4d0d8810b2e944f80acde1f474e6c3a145"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME's shared start and its interrupt acknowledgement both set the vector byte to 0x80, and the constructor gives the active voice count 0x1F.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "204",
+       "sha": "94f47a3191d891a8e12fe83052b0875ea09e60f1193c621bc857a3ab2fea26f2"
+      },
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "431",
+       "sha": "94f47a3191d891a8e12fe83052b0875ea09e60f1193c621bc857a3ab2fea26f2"
+      },
+      {
+       "ref": "mame:src/devices/sound/es5506.cpp",
+       "lines": "163",
+       "sha": "af935dd8f88b2328cc790fc230ceba8d8e3b73fb6ff40dcd103b52f8d2fe2c63"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1574",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1711",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1804",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1881",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1956",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "2027",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1687-1689",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1780-1782",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1829-1831",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1690-1692",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1783-1785",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1832-1834",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "430-432",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "991-997",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1938-1942",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "2010-2013",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "2054-2057",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "986-997",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1701-1703",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1794-1796",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/sound/es5506.cpp",
+     "lines": "1843-1845",
+     "as": "agrees",
+     "row": "7"
+    }
+   ]
+  }
+ ]
+}

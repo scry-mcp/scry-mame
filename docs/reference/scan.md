@@ -25,11 +25,11 @@ Call:
 scan(method="start", ref="0x0", length=2048)
 ```
 
-Reply, 6 of 9 fields:
+Reply, 6 of 10 fields:
 
 ```json
 {
-  "summary": "scan start: 0x0, 2048 1-byte candidates on :maincpu",
+  "summary": "scan start: 0x0 (spriteram), 2048 1-byte candidates on :maincpu",
   "status": "ok",
   "length": 2048,
   "cell_bytes": 1,
@@ -46,7 +46,7 @@ Call:
 scan(method="filter", operator="=", value=3)
 ```
 
-Reply, 5 of 11 fields:
+Reply, 5 of 12 fields:
 
 ```json
 {
@@ -70,7 +70,7 @@ The first call's:
 
 ```json
 {
-  "summary": "scan start: 0x0, 2048 1-byte candidates on :maincpu",
+  "summary": "scan start: 0x0 (spriteram), 2048 1-byte candidates on :maincpu",
   "status": "ok",
   "ref": "0x0",
   "addr": "0x00000000",
@@ -78,7 +78,11 @@ The first call's:
   "cell_bytes": 1,
   "hits_total": 2048,
   "cpu": ":maincpu",
-  "space": "program"
+  "space": "program",
+  "names": [
+    {"field": "given.ref", "number": "0x0", "kind": "memory", "name": "spriteram"},
+    {"field": "addr", "number": "0x00000000", "kind": "memory", "name": "spriteram"}
+  ]
 }
 ```
 
@@ -100,7 +104,12 @@ The second call's:
   "hits_total": 3,
   "truncated": false,
   "cpu": ":maincpu",
-  "space": "program"
+  "space": "program",
+  "names": [
+    {"field": "hits[].addr", "number": "0x000003ee", "kind": "memory", "name": "spriteram"},
+    {"field": "hits[].addr", "number": "0x0000042b", "kind": "memory", "name": "spriteram"},
+    {"field": "hits[].addr", "number": "0x0000042c", "kind": "memory", "name": "spriteram"}
+  ]
 }
 ```
 

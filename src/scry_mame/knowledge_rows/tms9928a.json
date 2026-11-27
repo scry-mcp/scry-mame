@@ -1,0 +1,1845 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "tms9928a",
+ "title": "The TMS9918A family VDP registers and status",
+ "kind": "register",
+ "scope": "tms9928a",
+ "covers": "The eight write-only registers of the TMS9918A, TMS9928A and TMS9929A and the status register read from the same port: the option bits, the base addresses of the name, colour, pattern, sprite attribute and sprite pattern tables, the text and backdrop colours, and the interrupt, coincidence and fifth sprite flags",
+ "source": "official",
+ "documents": [
+  {
+   "name": "TMS9918.raw.txt",
+   "variant": "tms9928a"
+  }
+ ],
+ "official": {
+  "TMS9918.raw.txt": [
+   "551-556",
+   "557-562",
+   "563-571",
+   "572-595",
+   "599",
+   "600",
+   "601",
+   "603",
+   "606",
+   "608-609",
+   "611",
+   "613-616",
+   "619",
+   "622",
+   "632-635",
+   "636-639",
+   "640-643",
+   "644-647",
+   "648-651",
+   "652-654",
+   "834-862"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:TMS9918.raw.txt",
+   "lines": "557-562",
+   "as": "see-also"
+  }
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "access": "write",
+   "name": "Register 0 options",
+   "aliases": [
+    "R0",
+    "register 0"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "563-571"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "599-600"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "0"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "0"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "241-247"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::update_backdrop"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::update_table_masks"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 0 holds two option control bits, and all its other bits are reserved and must be 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "564",
+       "sha": "f1fc58ae1481b16a68925ac925e8e3cab8dbe72ab79c88660f9ebc7910771594"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "BIT 6 is M3, mode bit 3.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "565",
+       "sha": "bea8752f8d125a57d3817100214e13fbe36273ebcc2ccc7c19c8ae762cf01c9b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "BIT 7 enables the external VDP input: 0 disables it and 1 enables it.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "566-568",
+       "sha": "532d56a91bc41d940751c75ad53565709650919c5afda3523d251e8d286e8970"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In the TMS9928A and TMS9929A, enabling bit 7 sends A-Y and B-Y to the sync level only when every plane in front of the pixel is transparent.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "569-571",
+       "sha": "da2e33c5dffad1d5b711cc81e1a879eeef9af60245be8d786ae77209b29f39d2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Figure 2-3 labels its register rows MSB and LSB and draws register 0 with M3 and the external VDP bit as the two rightmost fields.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "599-600",
+       "sha": "da690c017ca99007a972bc6b6f556e455431cabe734765450d8b15e7f26fd711"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "MAME masks the value with 0x03 and, while 0x01 is set, makes pen 0 transparent when the backdrop index is 0; the external video input remains a TODO.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "240-241",
+       "sha": "21c294ed752823c3c6e116e10674e03f66fed93b37515a64dd6bf64735742f00"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "251-252",
+       "sha": "dcd2cb6ff3890c450984272117989022c1c6704a59a0fef42f63917fc59d9a9e"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "272",
+       "sha": "b01043656bccaacf6d498b50623374f59f9c551ae43e79f99b1513a787285291"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "224-225",
+       "sha": "8291edc1169b4d0a9ab051ec85aa26825f93fb2cc7a3eed23ba83a7677fb7078"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "17-18",
+       "sha": "2cead891bd7840caaca34569ff9fa83a8b9e63b04dc923bf324d057187ffe584"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "bit 7",
+     "of": "mame",
+     "vs": "absent",
+     "row": "4",
+     "text": "MAME uses the bit only to make pen 0 transparent in this body; no line here produces A-Y or B-Y sync levels.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "222-226",
+       "sha": "d2de8cc5903386764b7537ca14c90a388837b990c24aa01d400c4a79349fe2b7"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "bit 6",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With M3 set, MAME derives the colour and pattern table bases from single bits of registers 3 and 4 and rebuilds the address masks from both.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "260-269",
+       "sha": "13c1646372d8e0927a70a1b0a7a6ed6a4637a0623bef96292afa50815bd629e0"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "231-234",
+       "sha": "7bfd81c16c18aee5a3b0d52d2f9c6a1b04d42d94b87b752fe99ebc9c2f54406e"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "bits 3-4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME names all eight combinations of M1, M2 and M3, four of them marked as a variation or bogus: Mode 1+2, Mode 1+3, Mode 2+3 and Mode 1+2+3.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "242-247",
+       "sha": "94513d76f3628af469a85f5484af0362dc0ebe888f823dc0d4400aafb00f9a81"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME logs the chosen mode name and each register write only when its TRACE_MODE and TRACE_REG are set; both are 0 in this source.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "43",
+       "sha": "5dfbbff0d94adff784f8610887ea2a641df8c6e293ded218fc48c570db76dc79"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "46",
+       "sha": "3b3f443b3f03004dc8bc7bf1af454eb173e4801934209c44825db724ebdc44c5"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "274",
+       "sha": "8e32f286f08ab45f195b3a42b874a02a8591eec95b985834799b37910b84fce7"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "254",
+       "sha": "9a3ffa95d0466eb0e3a6b9d367b4c60008bf1ea6d5ef346e0acd18eadb861c34"
+      }
+     ]
+    },
+    {
+     "n": "106",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0's two control bits from the least significant end: 0x02 is M3, the document's BIT 6, and 0x01 the external VDP bit, BIT 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "271",
+       "sha": "f9d311b2a7524d79d21fd3298ce9c4388d9b54cb3fb7d160e68037e9e772203d"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "272",
+       "sha": "b01043656bccaacf6d498b50623374f59f9c551ae43e79f99b1513a787285291"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "271",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "563",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "access": "write",
+   "name": "Register 1 options",
+   "aliases": [
+    "R1",
+    "register 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "551-556"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "572-595"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "601"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "1"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "1"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::check_interrupt"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "368-372"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "543-552"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "768-769"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "reset",
+     "of": "doc",
+     "text": "An external reset clears VDP registers 0 and 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "554",
+       "sha": "abe8c36ccc1dd65d74cb38e809c9097d7ab29c7d61c4f1dea5121269773ae6b3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "reset",
+     "of": "doc",
+     "text": "After reset the display is blanked because the BLANK bit of register 1 becomes 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "554-555",
+       "sha": "7c87e6dceca4bbb95b8deae864f6664226bc2acae1f980d7644128ce168a5aa3"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 1 holds eight option control bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "572",
+       "sha": "cae7c1797c0593082139efbb5a8d69f15af20d3fd2e8500d18d746035823509e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "BIT 0 selects 4027 RAM operation at 0 and 4108/4116 RAM operation at 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "573-575",
+       "sha": "bb37762264dba86cc18754344069730c3f40958cd122a2129e33e49d677bdb4a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "BIT 1 (BLANK): 0 blanks the active display area, which then shows only the border colour.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "576-577",
+       "sha": "d5b59ef537549bc5528e8fa595d398a3cc96c730230815c637c437cf37dee74b"
+      },
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "579",
+       "sha": "03f03cfd4169a1d41507455db762f1f3f432e9c7856e37422554c2e7cca2d86b"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "BIT 1 at 1 enables the active display.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "578",
+       "sha": "078c44536f79dd57e2e919e025310a249c25645395c544ea196bb22fb88f71e7"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "BIT 2 (IE): 0 disables the VDP interrupt and 1 enables it.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "580-582",
+       "sha": "617e032fe585226fe62e031fb6fad9aaa80a098a5e69c477855cc35285f9e6ae"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "bits 3-4",
+     "of": "doc",
+     "text": "BITs 3 and 4 are M1 and M2, mode bits 1 and 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "583",
+       "sha": "55884f66d5679301d8ed288a6bb3e20821d895a5066584d795de9c0004f41de4"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "bits 3-4",
+     "of": "doc",
+     "text": "M1, M2 and M3 select the mode: 000 Graphics I, 001 Graphics II, 010 Multicolor and 100 Text.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "584-589",
+       "sha": "719775592ec46e3a0169c579addd9050da00a8052d89ff82efe70aa17523f850"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "is",
+     "of": "doc",
+     "text": "BIT 5 is reserved.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "590",
+       "sha": "b9e607c44e2e7d41d86b28a4ecdcbefe5ac6c8db9c0cd85bf6685b49e898e366"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "BIT 6 (Size): 0 selects 8x8 sprites and 1 selects 16x16.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "590-592",
+       "sha": "03bc0376028b85e624925858028a1a99640b5347681a46e661bb9b08e1a898fb"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "doc",
+     "text": "BIT 7 (MAG): 0 selects 1x sprites and 1 selects 2x.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "593-595",
+       "sha": "ac3739e3606336d12b92de35110606c40c0830551d1110bdb9e45e60ef51b55d"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's line for register 1 reads 4/16K PBLANKE 1E M1 M2 0 size | MAG.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "601",
+       "sha": "b90d5633d64d8e72be3663ed623cde5f7c0bf1722c243a7bce746d18899fff30"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "absent",
+     "row": "4",
+     "text": "MAME does not use this bit: its register 1 case only re-evaluates the interrupt and the mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "276-280",
+       "sha": "4b05c616cd2b5f782b7a1bae0c0ea37d3604a603e2f2c83d10f9200a313561fc"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "bits 3-4",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME draws no sprites and sets the fifth sprite number to 31 while the display is blanked or 0x10 (M1) is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "543-546",
+       "sha": "eed272f2c906999c6c2c53ec9f7e8ef065e15bfa5ddea51fe336fb657396e1e3"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "368",
+       "sha": "83043b3922c9fb56ce512863c346f58b139b58fcf8ba0e457be9acef3ad2d3a1"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "271",
+       "sha": "f9d311b2a7524d79d21fd3298ce9c4388d9b54cb3fb7d160e68037e9e772203d"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "242-247",
+       "sha": "94513d76f3628af469a85f5484af0362dc0ebe888f823dc0d4400aafb00f9a81"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's reset clears all eight registers and the status register, not only registers 0 and 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "768-773",
+       "sha": "e9828f269f14cecbd72bcb8dd54da76cb29fce5a0f4c3ebb8223ecfb3be0fc07"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME tests the document's bits as masks: 0x40 is BIT 1, 0x20 is BIT 2, 0x02 is BIT 6 and 0x01 is BIT 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "368",
+       "sha": "83043b3922c9fb56ce512863c346f58b139b58fcf8ba0e457be9acef3ad2d3a1"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "211",
+       "sha": "3e5d033f6513c2cece112088b8ea6b26922bd61d038d815290851b0313ecb28e"
+      },
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "550-551",
+       "sha": "e613a6f5f9f59a88930f030faf241b86548166d3a62096d3b02ac8ff975258e9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "768-769",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "768-769",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "368-372",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "368-372",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "208-217",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "278",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "278",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "242-247",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "550",
+     "as": "agrees",
+     "row": "11"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "551-552",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "543-549",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "254",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "279",
+     "as": "dead"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "556",
+     "as": "see-also"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "551-553",
+     "as": "electrical"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "access": "write",
+   "name": "Register 2 name table",
+   "aliases": [
+    "R2",
+    "register 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "632-635"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "603"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "2"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "2"
+     ],
+     "preamble": true
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 2 holds the Name Table base address: its contents are the upper 4 bits of the 14-bit address, so the base is R2 x 0x400.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "632-635",
+       "sha": "135da3228cf04aeeacdc67da20195522630b3a8bfb142710a8cee41c2a18e6ce"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The register's range is 0 to 15.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "633",
+       "sha": "cb6a98038d7fff5b3d3025b7b87a4f49a1de09eb032f0df5baa7e13f6cd17fdb"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's line for register 2 reads 0 0 0 NAME TABLE BASE ADDRESS.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "603",
+       "sha": "99df7d2313d1b077c46376b3274c0bfa4e89520874772b6ac631299c3158605c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "242",
+     "as": "parent",
+     "owner": "tms9928a:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "254",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "282",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "access": "write",
+   "name": "Register 3 colour table",
+   "aliases": [
+    "R3",
+    "register 3"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "636-639"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "606"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "3"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "3"
+     ],
+     "preamble": true
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 3 holds the Colour Table base address: its contents are the upper 8 bits of the 14-bit address, so the base is R3 x 0x40.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "636-639",
+       "sha": "821f1feb952efe913a006f26dc6742c55fc75175fdebdcb2ff94a889e082dc0c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The register's range is 0 to 255.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "637",
+       "sha": "bcbb4f5f2df15ff218487023b4a8775d9622685c2333d2065b2cca288eb9b108"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When M3, 0x02 of register 0, is set, MAME uses only 0x80 of this register to form the colour table base.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "285-287",
+       "sha": "a8fac26fb08b79b4e57605229796c63ee5584e82391fb934a7e3121ae122d22d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "242",
+     "as": "parent",
+     "owner": "tms9928a:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "254",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "285-293",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "606",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "access": "write",
+   "name": "Register 4 pattern base",
+   "aliases": [
+    "R4",
+    "register 4"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "640-643"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "608-609"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "4"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "4"
+     ],
+     "preamble": true
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 4 holds the Pattern, Text or Multicolor Generator base: its contents are the upper 3 bits of the 14-bit address, so the base is R4 x 0x800.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "640-643",
+       "sha": "15d5e896036508b6b93d5946953d8564212ab0a3ac6fef519dbaf8037aab202d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The register's range is 0 to 7.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "641-642",
+       "sha": "0ed0417d34e20d758fa171ac65bff993ddfea58f69a9a9d2d3d3777cbd3215ab"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When M3, 0x02 of register 0, is set, MAME uses only 0x04 of this register to form the generator base.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "296-298",
+       "sha": "0571aaf45fe230076fd458dbf19bdd7ccc3fd7930001f8bfc5b94a48d581bb87"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "242",
+     "as": "parent",
+     "owner": "tms9928a:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "254",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "296-304",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "608-609",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "access": "write",
+   "name": "R5 sprite attribute base",
+   "aliases": [
+    "R5",
+    "register 5"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "644-647"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "611"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "5"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "5"
+     ],
+     "preamble": true
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 5 holds the Sprite Attribute Table base: its contents are the upper 7 bits of the 14-bit address, so the base is R5 x 0x80.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "644-647",
+       "sha": "0a9a625ea953e0018bfde65925318953363e6b5651985082f35df983eb37eee4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The register's range is 0 to 127.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "645-646",
+       "sha": "28f972db433ee001c83e7bc6ae267e96ceea7cf59e083b940c816646f0b78374"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "242",
+     "as": "parent",
+     "owner": "tms9928a:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "254",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "307",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "611",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "access": "write",
+   "name": "R6 sprite pattern base",
+   "aliases": [
+    "R6",
+    "register 6"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "648-651"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "613-616"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "6"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "6"
+     ],
+     "preamble": true
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 6 holds the Sprite Pattern Generator base: its contents are the upper 3 bits of the 14-bit address, so the base is R6 x 0x800.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "648-651",
+       "sha": "b83cd2472c50aa693ade4042baf111e2fe450eff94ff5f59a6def17cfaaa66ac"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The register's range is 0 to 7.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "649",
+       "sha": "8a223132ad3ca71e784edff972344fb42cd5885a7218130c11a975d75bbed12c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "242",
+     "as": "parent",
+     "owner": "tms9928a:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "254",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "310",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "613-616",
+     "as": "layout"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "access": "write",
+   "name": "Register 7 colours",
+   "aliases": [
+    "R7",
+    "register 7"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "652-654"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "619"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "7"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::change_register",
+     "case": [
+      "7"
+     ],
+     "preamble": true
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "363"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "416-417"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::update_backdrop"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 7 holds the colour code of colour 1 in Text mode in its upper 4 bits, and of colour 0, the backdrop in every mode, in its lower 4.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "652-654",
+       "sha": "2d9433b4d1f22a6df32eea40b292eb91b86369f02fc89083136cca03c2d0c202"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's line for register 7 reads TEXT COLOR TEXT COLORG/BACKDROP COLOR.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "619",
+       "sha": "8c1b27fca6acaab97e7cb9915978e091b21f36b3b45158a074fe22e187fdd3a9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "256",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "240-241",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "251-253",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "242",
+     "as": "parent",
+     "owner": "tms9928a:register:0x00:write"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "254",
+     "as": "dead"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "363",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "416-417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "312-315",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "221-226",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "access": "read",
+   "name": "Status register",
+   "aliases": [
+    "status register",
+    "status"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "834-862"
+    },
+    {
+     "ref": "datasheet:TMS9918.raw.txt",
+     "lines": "622"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::register_read"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "function": "tms9928a_device::check_interrupt"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "375-378"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "613-617"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "584-587"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "641-645"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "561"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "771"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The VDP has one 8-bit status register, read by the CPU, holding the interrupt flag F, the coincidence flag C, the fifth sprite flag 5S and the fifth sprite number.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "834-837",
+       "sha": "2996fa110fe2998d4e46fb19e66680e604998a43d730508bb48a94aed3b68ab8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture's status-register line reads F 5S c FIFTH SPRITE NUMBER.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "622",
+       "sha": "2c41e7a25848c28bccf01ccf8b7e47fcc34f675b54c360ce06ed46226d2b1c33"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The status register may be read at any time to test F, C and 5S.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "838",
+       "sha": "76451b4470dcdab0d0f93bfb8c9731113707e6b4bbeaeb22075aa5a035cc0ec5"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "F is set to 1 at the end of the raster scan of the last active display line.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "841-842",
+       "sha": "9ef1880e203f55a426af865e381e60bf0107c1228be8009e2df7640b88b1d607"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "F is reset to 0 after the status register is read or when the VDP is externally reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "842-843",
+       "sha": "14af651d48d75787ed08f26cfb350572cbc83a3d072b2b9e2a537fde548dbef8"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading the status register clears F, and an asynchronous read can reset the frame flag and miss it.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "838-840",
+       "sha": "0d533061e5b22e508d4b723b0b11245cf377764326e09c5143d5dd11c29471e9"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "The status register should be read only when the VDP interrupt is pending.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "838-840",
+       "sha": "0d533061e5b22e508d4b723b0b11245cf377764326e09c5143d5dd11c29471e9"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "The status register needs to be read frame by frame to clear the interrupt and receive the next frame's.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "845-846",
+       "sha": "8fa8f2a5694a80eaecf3fa0b22b3a07b5449fa81026566ca58992bcfbcdb3467"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "If the interrupt enable bit of register 1 is 1, the INT output is active low whenever F is 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "843-844",
+       "sha": "5c854a3e95963429a093a9fc01037d5021a09e1ead3469416abc77d9d692803e"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "C is set to 1 if two or more sprites coincide, which means one overlapping pixel.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "847-849",
+       "sha": "56503fbf6439f8ccda82455d870394e2458bf1b9e414b5b9635f752c160069be"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "write",
+     "of": "doc",
+     "text": "Transparent sprites and those partly or wholly off-screen are considered for coincidence; sprites beyond the sprite attribute table terminator are not.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "848-850",
+       "sha": "4aef90728c8fea27fc5351c1385bd4fd81303c509783836022355a3caebb3888"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "write",
+     "of": "doc",
+     "text": "C is cleared to 0 after the status register is read or the VDP is externally reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "850-851",
+       "sha": "5f0d176caa92bcc8efc65175df36584fb3f5f1015c4cb3fda2ba4f27b3f71fa6"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "on": "is",
+     "of": "doc",
+     "text": "The status register should be read immediately on power-up to reset the coincidence flag.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "851-852",
+       "sha": "ffe8ad960b9be192c1aa693a67ff7c03b0eff851ee498c67f1e6214da7aaee98"
+      }
+     ]
+    },
+    {
+     "n": "14",
+     "on": "is",
+     "of": "doc",
+     "text": "The VDP checks each pixel position for coincidence every 1/60 s for the TMS9918A and TMS9928A and every 1/50 s for the TMS9929A.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "853-855",
+       "sha": "a8467cf3314c037c2d340802a619af3ebf0db595f5c988798a5eb53d4f974341"
+      }
+     ]
+    },
+    {
+     "n": "15",
+     "on": "write",
+     "of": "doc",
+     "text": "5S is set to 1 whenever five or more sprites are on a horizontal line, lines 0 to 192, and F is 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "858-860",
+       "sha": "1544316b756a55fef761ba4a997dd1d209ce3324778f379a072958c187a2d9ad"
+      }
+     ]
+    },
+    {
+     "n": "16",
+     "on": "write",
+     "of": "doc",
+     "text": "5S is cleared to 0 after the status register is read or the VDP is externally reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "860-861",
+       "sha": "21fcf51cdd51e75bac8bc2cbde74db160a8fe0db74f9708da7a629990e82de06"
+      }
+     ]
+    },
+    {
+     "n": "17",
+     "on": "write",
+     "of": "doc",
+     "text": "The fifth sprite's number is placed in the lower 5 bits when 5S is set and is valid while 5S is 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "861-862",
+       "sha": "d11b3aceb3353b02dd0daff59ed168f6efdb213f516a9473c3e6a56d34335110"
+      }
+     ]
+    },
+    {
+     "n": "18",
+     "on": "write",
+     "of": "doc",
+     "text": "Setting the fifth sprite flag does not cause an interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "862",
+       "sha": "decfb5644064553666438e8f3c64813bbc212eba8067dee18c7fe903074fdd86"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "11",
+     "text": "MAME counts a coincidence only for pixels inside the 256-pixel active area, so a sprite wholly off-screen there is not considered.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/tms9928a.cpp",
+       "lines": "613-617",
+       "sha": "608e38abcd72e0b9551dfccd82822343f274bdf495ad3cb130c5153e26344d44"
+      }
+     ]
+    },
+    {
+     "n": "19",
+     "on": "is",
+     "of": "doc",
+     "text": "Moving sprites more than one pixel position between checks can let them overlap several pixels or pass over each other unseen.",
+     "quotes": [
+      {
+       "ref": "datasheet:TMS9918.raw.txt",
+       "lines": "856-857",
+       "sha": "56585f7881e1e8962e55e8a3e8ed18e437c24943b63c39fea993b02ff542dadb"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "375-378",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "195-206",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "771",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "195-206",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "208-218",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "613-617",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "195-206",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "771",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "584-587",
+     "as": "agrees",
+     "row": "15"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "641-645",
+     "as": "agrees",
+     "row": "15"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "195-206",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "771",
+     "as": "agrees",
+     "row": "16"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "561",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "643",
+     "as": "agrees",
+     "row": "17"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "641-645",
+     "as": "agrees",
+     "row": "18"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "561",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "561",
+     "as": "agrees",
+     "row": "12"
+    },
+    {
+     "ref": "mame:src/devices/video/tms9928a.cpp",
+     "lines": "561",
+     "as": "agrees",
+     "row": "16"
+    }
+   ]
+  }
+ ],
+ "engine": [
+  "m_out_int_line_cb",
+  "set_pen_color"
+ ]
+}

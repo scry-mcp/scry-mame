@@ -1,0 +1,941 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "upd7759",
+ "title": "The uPD7759 pins and MAME's handlers for them",
+ "kind": "register",
+ "scope": "upd7759",
+ "covers": "the uPD7759 has no registers: its RESET, ST, BUSY and MD pins and its data lines, and the MAME handlers that stand for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "NEC-DSP-Speech-1992.raw.txt",
+   "variant": "upd7759"
+  }
+ ],
+ "official": {
+  "NEC-DSP-Speech-1992.raw.txt": [
+   "21059-21135",
+   "21173-21181"
+  ]
+ },
+ "engine": [
+  "update",
+  "scheduler",
+  "synchronize",
+  "timer_expired_delegate",
+  "adjust"
+ ],
+ "closed": [
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21059-21061",
+   "as": "electrical"
+  },
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21067-21069",
+   "as": "electrical"
+  },
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21075-21076",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21077-21080",
+   "as": "electrical"
+  },
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21091-21092",
+   "as": "electrical"
+  },
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21104-21108",
+   "as": "electrical"
+  },
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21116-21119",
+   "as": "electrical"
+  },
+  {
+   "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+   "lines": "21126-21135",
+   "as": "electrical"
+  }
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "reset_w",
+   "regions": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21109-21115"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::reset_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::internal_reset_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "RESET is the reset input, which initializes the chip.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21109-21110",
+       "sha": "dc3077d393cbe88555789383369e8cd65c8ddd83bd5e7aecf41ca608ded2a5c5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The RESET input initializes the chip (the capture reads `initializedthe`).",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21110",
+       "sha": "16788672c0aa2cdb2dd86942536a022cd55788997385cce7d85586aa0d9491dd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "RESET is used following power-up to abort speech reproduction or to release standby mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21110-21112",
+       "sha": "92a6cbf5d4bdf5b7362e90240dfb1bb216b0b4729e794187caa3fa1e2aac8004"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "RESET must remain low for at least 12 oscillator clocks.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21112-21113",
+       "sha": "9bd0a96934e5688a3e5e0fa19943c8278ec1302cbfda59b6079154b990fe7796"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "At power-up or when recovering from standby mode, RESET must stay low 12 more clocks after clock oscillation stabilizes (the capture reads `least.12`).",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21113-21115",
+       "sha": "5f3fd1eca81f7e84fd6029e02a20bc6331e73bbc5188dfbe9801843a8a4c724e"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "reset_w has the scheduler call internal_reset_w, which stores the level in m_reset and calls device_reset when the level falls from 1 to 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "595",
+       "sha": "753962ebb40edef935e21dcfdeeb655fe3732e07ad061e5025b9943e13ead00e"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "603",
+       "sha": "f793c90e116a61d0b5b03f0216e057cc1aada119c346a65b1cc137be1463deae"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "605-606",
+       "sha": "33119e98900de63d164803b3257f150b0ad305e20790324e7632ba4bd3eac3ca"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "605-606",
+     "as": "unfollowed",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "name": "start_w",
+   "regions": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21088-21090"
+    },
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21120-21125"
+    },
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21173-21181"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::start_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::internal_start_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "678-679"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "CS is the chip select input.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21088",
+       "sha": "1a0a7b2ec61522d8875749dfbaf7873c8ac8514c2ef98afe0d2a4391234ad659"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "when",
+     "of": "doc",
+     "text": "When CS goes low, ST is enabled in stand-alone mode (the capture's punctuation is garbled).",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21089-21090",
+       "sha": "660ab40d104b77bb8245df5de9101d610f597f1df2cb9da0cf7f7c00da2ccd75"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Setting the ST input low while CS is low starts speech reproduction of the message in the speech ROM locations addressed by the contents of I0 to I7.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21121-21123",
+       "sha": "bcd8f4baabb210e9166de9bd9ffc918fb31ea224baa4df0fe83ad02b51902fd3"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "Setting the ST input low starts speech reproduction; the document adds the condition that CS is low (see row 2).",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21121-21122",
+       "sha": "3aaee2f5b1e22a4097b6cf214964e974edbea2db23217709537e075560d385d2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "In the paragraph on setting ST low, the document adds that if the device is in standby mode, standby mode will be released.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21121-21125",
+       "sha": "d8a0b92af3fc41261ebb92ca3dad7e3d9f85e9939023af4f2ade42e2aae706ea"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The chip has a message selection interface for 1 Mbit of external ROM, and stores a maximum of 256 messages and up to 50 seconds of speech.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21173-21176",
+       "sha": "e5a6c5002643164d58b02a96af73207c6cdf6fc5ddbd4143115bf38ee9ad7e0b"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "doc",
+     "text": "The message is selected on I0 to I7 and the selection is latched at the rising edge of ST when CS is asserted.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21176-21178",
+       "sha": "1ac88ff52ff91d0d74112ce0c3d6183999329978c492b4ad7c5149a9d8bff6e8"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "When ST is asserted, BUSY goes low.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21178-21179",
+       "sha": "e5de8640fa3527647f1298cdf6181855277c3cababf475f788138f73c69472e0"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "is",
+     "of": "doc",
+     "text": "BUSY stays low until the selected speech output is completed.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21179-21180",
+       "sha": "b78704a7fa8002b67cf13d0f05d2fab6a20208733e922df6f975ad910cd32456"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "when",
+     "of": "doc",
+     "text": "While BUSY is low, a new ST is not accepted.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21180-21181",
+       "sha": "319b00360edf466f6d29b1e2665104f4ce1f5287315c672400e0a2ff5288df51"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "start_w has the scheduler call internal_start_w, which stores the level in m_start.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "612",
+       "sha": "ebdd4dd03e04e90384c4d298be02d7b6ed2ced33b7338dfe58890e446084373c"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "620",
+       "sha": "26d23fcfbf6b7abf1e68b6d08a3303c2867222dfd780377cae392a7f078e1706"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Besides a fall of ST from 1 to 0, MAME's start check needs an idle chip, stand-alone mode and RESET high.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "624",
+       "sha": "9c786b78ce764c0b6ea78f9ac7cb14f9f8fcf62a90279b1490d5d65d2f8fc202"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "absent",
+     "row": "2",
+     "text": "MAME's internal_start_w has no chip select input, so a fall of ST is not gated by CS.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "616-622",
+       "sha": "9da20fc148ac425fe80fc430508e974f5650d4e70c8996f1873e7e94d9c4acd5"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "623-628",
+       "sha": "bccb80bdd0c13682e841ed23c90ebe028a6a7fa0198384868cbe6b54e315d90b"
+      }
+     ]
+    },
+    {
+     "n": "104",
+     "on": "when",
+     "of": "mame",
+     "vs": "absent",
+     "row": "5",
+     "text": "MAME's internal_start_w does nothing about a standby mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "616-622",
+       "sha": "9da20fc148ac425fe80fc430508e974f5650d4e70c8996f1873e7e94d9c4acd5"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "623-628",
+       "sha": "bccb80bdd0c13682e841ed23c90ebe028a6a7fa0198384868cbe6b54e315d90b"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "7",
+     "text": "MAME takes the sample number from m_fifo_in, the last byte written to port_w, when the start state runs, not from a latch at a rising edge of ST.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "394",
+       "sha": "c857849d216ce2cd00361508947e0de6fe6b4ecaa32d7566e63fd866a8dd4641"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "640",
+       "sha": "64be2c33e98c197b4a0aacf2136e7b8b9c08325182959857227ecc182cf9ed6e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21120",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "624-627",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "624-627",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "678-679",
+     "as": "agrees",
+     "row": "10"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "name": "busy_r",
+   "regions": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21081-21087"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::busy_r"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "BUSY outputs the status of the uPD7759.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21081-21082",
+       "sha": "556e01a6cb0da366b0cf266a3a40405c149ce25bbd961ba4eefd6696273d79c5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "BUSY is an active low output that goes low during speech decode and output operations.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21082-21083",
+       "sha": "40d8a2d35b667062081272161ccb61bd1b160bfdb5545cffa923b145f3b2b6ae"
+      },
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21086-21087",
+       "sha": "e322e43c9d3dd96755797d02b9026840058288b484a070cfc9016451d3f463b6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "When ST is received, BUSY goes low.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21083-21084",
+       "sha": "7cdaacb9f378a1219dfe0e38c7773bd851df162fa8e3d7b3eaf2e4273c9d4d41"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "While BUSY is low, another ST is not accepted.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21084-21085",
+       "sha": "145beadeac25176ae60a8ba836b8c6d5f986c20907ccf03d91babf7ddb6d213a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "when",
+     "of": "doc",
+     "text": "In standby mode BUSY becomes high impedance.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21085-21086",
+       "sha": "e67a3994d57d9b22af07432ce4ec280ef955b7c17153cc48b7f62d1e03dd5f58"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When the DRQ drop state runs, MAME sets m_state to the state saved for after it; busy_r returns whether m_state is the idle state.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "388-389",
+       "sha": "682109374b4ace3f79ae4c953e8923dcef2e29cbcc49a45103b79b7b18929e5f"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "675-680",
+       "sha": "1bf524c99932afc400e1e4bf1b4f2639b9bba580c88b6623c6075df35aa5ab38"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "MAME's busy_r has no high impedance state: it returns 0 or 1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "675-680",
+       "sha": "1bf524c99932afc400e1e4bf1b4f2639b9bba580c88b6623c6075df35aa5ab38"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "678-679",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "282",
+     "as": "parent",
+     "owner": "upd7759:device:upd7759"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "626",
+     "as": "parent",
+     "owner": "upd7759:register:0x01"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "663",
+     "as": "parent",
+     "owner": "upd7759:register:0x04"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "name": "port_w",
+   "regions": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21062-21066"
+    },
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21070-21074"
+    },
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21093-21099"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::port_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd775x_device::internal_port_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "394"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "533"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "In stand-alone mode AEN/WR is AEN, which is high while the address signal is valid.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21062-21065",
+       "sha": "a23498b0c0247cbed284259f8a2993742d63db1cdd0f98e0f091e8ca8c5ea869"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "In slave mode WR is the write input signal for speech data.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21065-21066",
+       "sha": "b9810392457b746887b0e7fc6e0f90a638839fafa6fffcffce596621eb18e46a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "In stand-alone mode ASD0 to ASD7 are the output lines for the higher 8 bits of the address and the input lines for speech data.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21070-21073",
+       "sha": "6d6a1bea1101788e322fffa0f434e8c9016fecb50b5cef2a0a5ac4bfe962498e"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "In slave mode ASD0 to ASD7 are input lines for speech data.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21073-21074",
+       "sha": "d3add0c4aba4df58d2834a87b91f12586b0fc010703d03e8a6cb42bc1be1a2d7"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "I0 to I7 input the message number of the message to be reproduced.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21093-21094",
+       "sha": "b17ecbb9ac55611ddd1615ba80ee4e1cbb0a713ffe609870200e48ffaa1270f5"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "doc",
+     "text": "The I0 to I7 inputs are latched at the rising edge of the ST input.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21094-21096",
+       "sha": "714989c1d6b64eb2b10e52043899bc4ace41a8338bee426fbd9207e6fc0e4c82"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "Unused I0 to I7 pins should be grounded; in standby mode they should be set high or low, as at or near the CMOS switch input they drain excess current.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21096-21099",
+       "sha": "5a8928a0bd93c6840f24bd33df0a621c6fbbb124073d7dc079ecd8e2accb41de"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "port_w has the scheduler call internal_port_w with the byte, which stores it in m_fifo_in.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "633",
+       "sha": "919b23c58074eef8e4398307782a966cce56cd3b52064025d6a6dd62677df030"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "640",
+       "sha": "64be2c33e98c197b4a0aacf2136e7b8b9c08325182959857227ecc182cf9ed6e"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME reads m_fifo_in back as the sample number when the start state runs in stand-alone mode, and as the data byte in slave mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "394",
+       "sha": "c857849d216ce2cd00361508947e0de6fe6b4ecaa32d7566e63fd866a8dd4641"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "533",
+       "sha": "f030ed7bffd3ee36bdbc3ceff4e01cf56b413d0a090b1446887ac372c8561565"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "6",
+     "text": "MAME stores each byte in m_fifo_in as soon as internal_port_w runs, with no ST edge involved.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "636-641",
+       "sha": "9f122ddc61a076e760f0ffc742cbc09704634559c49dbfafa3d36653fb200d58"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "640",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "533",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "640",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "394",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "name": "md_w",
+   "regions": [
+    {
+     "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+     "lines": "21100-21103"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd7759_device::md_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "function": "upd7759_device::internal_md_w"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "MD is the mode select input.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21100",
+       "sha": "72f476351021d9ba223c8c7b4a0d8c9ab0d7c89b75cabebcd4c3ff446a20d37f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A low level on MD specifies slave mode operation.",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21101",
+       "sha": "762bf7f2bd013ea1a459d01abcfc495a852f01b886e6e20e1c5f382a65e668fd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "doc",
+     "text": "Transition between the two operation modes is not accepted during speech output or in the standalone mode (as the capture reads).",
+     "quotes": [
+      {
+       "ref": "datasheet:NEC-DSP-Speech-1992.raw.txt",
+       "lines": "21101-21103",
+       "sha": "dea4e93ffd0dda25cb92e964a48bf4045a6c249afcb63e2e9c359179f8f62b23"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "md_w has the scheduler call internal_md_w, which stores the level in m_md.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "646",
+       "sha": "eab24966a3204bb5a371e2fd3fef0b56db059be4b438fc1d696319e96f90548d"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "654",
+       "sha": "ec96e696d0b5de127c0f38d4cf89b2d6c3fe2e6d8306cf42318bc5a5d7f0e8b5"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "When MD falls while the chip is idle and RESET is high, MAME also sets the start state and arms its DRQ timer to run at once.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "658-664",
+       "sha": "acf497f5b6573b4b7d28252f676ea01c7c6e97c33b9f067c422ebc24140d3132"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "internal_md_w changes mode only while idle with RESET high: to slave on a fall of MD and back to stand-alone on a rise, accepting a change from stand-alone mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "658-664",
+       "sha": "acf497f5b6573b4b7d28252f676ea01c7c6e97c33b9f067c422ebc24140d3132"
+      },
+      {
+       "ref": "mame:src/devices/sound/upd7759.cpp",
+       "lines": "666-669",
+       "sha": "10843f1a7ca705fd1c198c4fce4b19b928069f8fdac8cc0f7313aaf2c846c24e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/upd7759.cpp",
+     "lines": "660-662",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  }
+ ]
+}

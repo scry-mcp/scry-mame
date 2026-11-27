@@ -1,0 +1,3803 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "ym2612",
+ "title": "The YM2612 registers",
+ "kind": "register",
+ "scope": "ym2612",
+ "covers": "the registers of the YM2612 (OPN2) in both banks, as Yamaha's data sheet for its CMOS version, the YM3438, lists them, and what MAME does for each",
+ "source": "official",
+ "documents": [
+  {
+   "name": "YM3438.raw.txt",
+   "variant": "ym3438"
+  }
+ ],
+ "official": {
+  "YM3438.raw.txt": [
+   "159-165",
+   "209-219",
+   "230-238",
+   "239-248",
+   "327-338",
+   "394-402",
+   "403-408",
+   "409-426",
+   "427-434"
+  ]
+ },
+ "closed": [],
+ "engine": [],
+ "entries": [
+  {
+   "key": "0x21",
+   "name": "test",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "394"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "411"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "239"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description lists $21, together with $2C, as test information; the glyphs of the word after the first one are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "394",
+       "sha": "6ab174ebebeb42542302bc9023878a6b31f01c803aaf6234c24d1e68c2b19afa"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "411",
+       "sha": "06ef52ab42b2591cd573487e8f1b5aae882b408e3dff9e8e2a2c673639c0becf"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The description says to keep it always in the state 0; the glyphs around the 0 are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "411",
+       "sha": "06ef52ab42b2591cd573487e8f1b5aae882b408e3dff9e8e2a2c673639c0becf"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $21 as LSI Test Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "239",
+       "sha": "408a1d198c97f5ff23372023ea0aea4ed511a3643a6bea1ccb68842bee6b88ed"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "209",
+       "sha": "04bfa2551f471ad33adbd3b59f07f19f919d2346d63a681b4bff23806a1ab558"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x22",
+   "name": "LFO control",
+   "aliases": [
+    "LFO"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "395"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "412"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "240"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "210"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "194"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "202-212"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "217"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "195"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "214-216"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "221"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $22 controls LFO ON/OFF.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "395",
+       "sha": "12e83f767d8e88b85cf8acfbbde2b72711b905dd3189c752174d3b75f104137f"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "412",
+       "sha": "16d78450e5546e79e4a56940443e29ab5a3f736ff09311c496258ff56ab3cd63"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $22 sets the LFO oscillation frequency; the glyphs of the frequency word are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "395",
+       "sha": "12e83f767d8e88b85cf8acfbbde2b72711b905dd3189c752174d3b75f104137f"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "412",
+       "sha": "16d78450e5546e79e4a56940443e29ab5a3f736ff09311c496258ff56ab3cd63"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $22 as LFO FREQ CONTROL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "240",
+       "sha": "32d57e6a1f352611d9cdf0edf3d1100d4b26f43f6dae4be92d65c48bf585995a"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "210",
+       "sha": "edfb44edd4aaad8269b136b7d82381c081d23b0e9520dd5fed9043338215f370"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture lists the map's addresses and its comments as two columns in the same order; the second of each is $22 and LFO FREQ CONTROL.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "240",
+       "sha": "32d57e6a1f352611d9cdf0edf3d1100d4b26f43f6dae4be92d65c48bf585995a"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "210",
+       "sha": "edfb44edd4aaad8269b136b7d82381c081d23b0e9520dd5fed9043338215f370"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "194",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "202-212",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "217",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "195",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "214-216",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "221",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "195",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "214-216",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "221",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x24..0x26",
+   "name": "timer A, timer B",
+   "aliases": [
+    "Timer-A",
+    "Timer-B"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "396"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "413"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "241-243"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "211-213"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196-197"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "197"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The description gives $24 to $26 as one range and names timer A and timer B; the glyphs of the words saying what they set are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "396",
+       "sha": "1c8d23d7f69e3c341a6eec639148f23d832bf00ab6119ad696df71444e290e02"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "413",
+       "sha": "d6200a16c193400b1295001351f282493a872ace9cfd7fa093e9f08bd75a023b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $24 as Timer-A's 8 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "241",
+       "sha": "4e4f8ca6a79cde75a4dd1bbbc456e687abb497ef0d0d7f1209a686a95d607562"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "211",
+       "sha": "5fa503445bcd7b0b195880fbfafd649488a7f310ee8e2bb9b1b30be01f904c1d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $25 as Timer-A's lower 2 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "242",
+       "sha": "b91a56a470379c416a8be602c05fd9c5cb014df31e72fb3cfe1edd9aa51361a2"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "212",
+       "sha": "dc87435497b604a96b36065050948adebb34e4de9803260015e5967d4b59992b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $26 as Timer-B's data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "243",
+       "sha": "55cb5a6f132c00ccc46dd6ad71a0d1956214b89129902a27e3f996566c0bfd95"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "213",
+       "sha": "88b6e5f651ed1bc24e737c30a78f8174402b594f6115cd9304eb39f4d4547ac2"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "196",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "197",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x27",
+   "name": "timer control, mode",
+   "aliases": [
+    "Mode"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "397"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "414-415"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "244"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "214-215"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "121"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1405-1408"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "62-65"
+    },
+    {
+     "ref": "mame:src/devices/sound/ymfm_mame.h",
+     "lines": "147"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1560-1567"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "198-205"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1578-1588"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The description names $27 and says it controls the operation of timers A and B and sets the mode of FM channel 3; several glyphs are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "397",
+       "sha": "49c7e511feb50c51596fad923e9ef103d23e088d1c5f491ebdfffe7d21356a9f"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "414-415",
+       "sha": "31bb098a23aa6f3f10320edc1420aec3abaa7fa701fe2b7103132d2b78204b5c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $27 as the Timer-A/B Control and the 3CH Mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "244",
+       "sha": "eece35a31a61fdb4e2f7d9d1182f923193e573ea993467fccd365fb8b66851aa"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "214-215",
+       "sha": "55c66931f36793ef8b44ea4c6a157e524c9cb16ce49a6db6e6b83867fa2249da"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME does not store a write of 0x27 at once: it hands the byte to a scheduler synchronisation, and the store happens when the engine's mode-write handler runs.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "121",
+       "sha": "c46a245e93c9f996970ef74b3703b66cdb577982b90facd2a4e1134b0dfbb51c"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1405-1408",
+       "sha": "2f347995de73c1bebd86628f15399cbb049a65ccca7ea55c12895f58a704d43b"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "62-65",
+       "sha": "0e534a33043eab6d334bd3220bd186fbc6be7f068f9bd5d9698496363f1e8ef5"
+      },
+      {
+       "ref": "mame:src/devices/sound/ymfm_mame.h",
+       "lines": "147",
+       "sha": "5c54eacc08c1fc464e60109d97114c260c0e065d0add2e10ad3fb7266fa286d3"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1560-1567",
+       "sha": "7c4b722d3403dbc9e7f8f99c1a8919dfacd12f2755664712f9559929587e786a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1560-1567",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "198-205",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1578-1588",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x28",
+   "name": "key on/off",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "245"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "216"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "159-165"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "176-184"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1423"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register $28 is the key on/off register.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "245",
+       "sha": "5aaf555d039dbe636d44b1b6a92f654d16d9534b51ff0c75a2aef1b0bb0eeb52"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "216",
+       "sha": "f3e70d6dbe232a49288236923bff19b93c0cf18562998a6396e73f6228753437"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register $28 is for key on/off.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "159-165",
+       "sha": "cce73eea62f606b84fb4d97a3cd4c912234be69ec3e0431b70e992c8e5cc8fa8"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "245",
+       "sha": "5aaf555d039dbe636d44b1b6a92f654d16d9534b51ff0c75a2aef1b0bb0eeb52"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "216",
+       "sha": "f3e70d6dbe232a49288236923bff19b93c0cf18562998a6396e73f6228753437"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "176-184",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1423",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "521",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2A",
+   "name": "DAC data",
+   "aliases": [
+    "DAC"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "409"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "416"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "246"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "217"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2296-2300"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2406-2411"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2444-2446"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says DATA is written directly to the DAC; the capture lists $2A far from this line, so the pairing follows the order of the page's table.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "409",
+       "sha": "9c001eeffc3935f7ea08c487148e1b98390245fc49e4b3b10ae29bf1c7031829"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "416",
+       "sha": "ecc1f5286eab9a5bdb8a3568a667485bb10ac78363985695f72f9b3126017ec6"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $2A as DAC Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "246",
+       "sha": "ecb453ad73e4d5382d42360899fc59b6eec69e64cf02fe47f9d8d99c304ea6ae"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "217",
+       "sha": "2c0fef1269e6b497501d62b5ac2f2227c9add33db74ba702b132895650cc5745"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture lists the map's addresses and its comments as two columns in the same order; the eighth of each is $2A and DAC Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "246",
+       "sha": "ecb453ad73e4d5382d42360899fc59b6eec69e64cf02fe47f9d8d99c304ea6ae"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "217",
+       "sha": "2c0fef1269e6b497501d62b5ac2f2227c9add33db74ba702b132895650cc5745"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME takes a write to 0x2A as the byte with its bit 7 inverted, shifted left once, and stores it in bits 8 to 1 of its DAC data.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2296-2300",
+       "sha": "3bba1b34a2f18efaf7b93b8b8813159b4de8be038dd2a88c3f8bc9082a9d745b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2296-2300",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2406-2411",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2444-2446",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2296-2300",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2406-2411",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2444-2446",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2B",
+   "name": "DAC enable",
+   "aliases": [
+    "DAC select"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "410"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "417-418"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "247"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "218"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2301-2305"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "213-214"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2410-2411"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2445-2446"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "766"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2409"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2444"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2397-2399"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2406-2411"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2436-2447"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $2B selects whether channel 6 outputs its FM sound or the DATA written to $2A; the glyphs of the output word are garbled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "410",
+       "sha": "a25ea4026e4176aa1edfa8e777f99e9eb6983aeea8c082140cd1f0266ea4e999"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "417-418",
+       "sha": "b1c06741a5f5e95004167a4f07dcc2c4e9c0729f35fac6e689d7f7141e5f0d79"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $2B as DAC Select.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "247",
+       "sha": "66f4fa6870faeccafee08a67e68b44810b2702ab43619c94c9cba0002a968c21"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "218",
+       "sha": "134b7e1bcd0e12711838c28e7a5c50c54f9bcc192e92df1dafedb609c58450f1"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture lists the map's addresses and its comments as two columns in the same order; the ninth of each is $2B and DAC Select.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "247",
+       "sha": "66f4fa6870faeccafee08a67e68b44810b2702ab43619c94c9cba0002a968c21"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "218",
+       "sha": "134b7e1bcd0e12711838c28e7a5c50c54f9bcc192e92df1dafedb609c58450f1"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores bit 7 of the byte written to 0x2B as its DAC enable.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2301-2305",
+       "sha": "d75692697a703f8bb3b556716db5a07548e1728a6d1562223d73add3edf608f4"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME adds the DAC value to output 0 when bit 7 of register 0x1B6 is set and to output 1 when bit 6 is set.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "213-214",
+       "sha": "32a9f9fde7e0613649d03346b4691f4f48e575019de670380428e067c2286cf1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2410-2411",
+       "sha": "d3fdadb0e84f7d7f3ab1e450041b86897adf0a022409f44dd0f37f731a5bfc8e"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2445-2446",
+       "sha": "d240f0bf62f8c903fb70ad082611733ec3cc9e0a7dce5f9f3288512da2a427d7"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's YM2612 output passes the DAC value through a discontinuity offset, 3 below zero and 4 otherwise; its YM3438 output takes the sign-extended DAC data as it is.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "766",
+       "sha": "9315e3d4898248b5aa3adb2d7e5a5312858f5c08b9523000e655fadaafa296ec"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2409",
+       "sha": "88b7561c5e123dd307f247343f74e47f103219633aaf529324b113e503109113"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2444",
+       "sha": "8f7bb0ab91fa74c4b73ec76c088f51170b273c4e7427911813f6cc41753faaae"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2301-2305",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2397-2399",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2406-2411",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2436-2447",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2301-2305",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2397-2399",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2406-2411",
+     "as": "agrees",
+     "row": "2"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2436-2447",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2C",
+   "name": "DAC low bit",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "248"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "219"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "394"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "411"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2306-2310"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map comments $2C as LSI Test Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "248",
+       "sha": "0bd33d5e12071d796c983f5c478781dc967a215c9ee9c75ed8a17f31a8394ead"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "219",
+       "sha": "04bfa2551f471ad33adbd3b59f07f19f919d2346d63a681b4bff23806a1ab558"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture lists the map's addresses and its comments as two columns in the same order; the tenth of each is $2C and LSI Test Data.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "248",
+       "sha": "0bd33d5e12071d796c983f5c478781dc967a215c9ee9c75ed8a17f31a8394ead"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "219",
+       "sha": "04bfa2551f471ad33adbd3b59f07f19f919d2346d63a681b4bff23806a1ab558"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "text": "MAME does not pass a write to 0x2C to the FM registers: it copies bit 3 of the byte into the lowest bit of its DAC data.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2306-2310",
+       "sha": "b5ee79a59e7b54bd78aa22f2155742cd2a79709ba52d920e175a7bed04db285a"
+      }
+     ],
+     "row": "1"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "394",
+     "as": "elsewhere",
+     "owner": "ym2612:register:0x21"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "411",
+     "as": "elsewhere",
+     "owner": "ym2612:register:0x21"
+    }
+   ]
+  },
+  {
+   "key": "0x30..0x3F",
+   "name": "detune, multiple",
+   "aliases": [
+    "DT",
+    "MULTI"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "398"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "419-420"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "221-222"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $30 to $3E hold the control of Detune and Multiple.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "398",
+       "sha": "f816d46d0a4bcc1773608c96db3106777346bbd80af039aa127b53074f5bb768"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "419",
+       "sha": "c9dcc8f06b02111589dca06a9be2972415c69f2037f47f861c27e708639c28fc"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It adds that this is used when setting a timbre and controls the relation of the fundamental to its overtones; several glyphs are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "419-420",
+       "sha": "26295a574192981beac1cb65877b30b5f9e2c947962249d71cbf98b02fbe5e0c"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "221-222",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x40..0x4F",
+   "name": "total level",
+   "aliases": [
+    "TL"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "399"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "421-422"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "223"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $40 to $4E give Total Level.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "399",
+       "sha": "2db3fbbc2b1d39c51def5c5d178c299de8a740589bf92258f4e477df6b787ba6"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "421",
+       "sha": "c260f30816dfa0d81f854960052398851f27811c8249e148fb848cf85a1b7f9a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It adds that this information becomes the volume of the modulated wave and the modulation index of the modulating wave; several glyphs are garbled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "421-422",
+       "sha": "1d47d04b1b29cdd21a8e22a7fd4bb75ecb04f499f157b2f93afea52c6cb990f9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "223",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x50..0x5F",
+   "name": "key scale, attack",
+   "aliases": [
+    "KS",
+    "AR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "400"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "423-424"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "224-225"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $50 to $5E hold Key-Scale and Attack Rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "400",
+       "sha": "99c9e70c8348bdf8b0405aa1e00b9ff1e43d5cbce4f5180228751ed59f514f91"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "423",
+       "sha": "7e97cf4fcc5833f3d22ee2cc745d903b40eb7cc13667fd3d45b7416e2b19380b"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "424",
+       "sha": "6cae92309e9078280690d8f1a3b3a14d54424ddde87b71256552753f09ef3020"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Key-Scale controls how A, D, S and R change with pitch information; Attack Rate gives the envelope's rate of change at attack; some glyphs are garbled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "423-424",
+       "sha": "dcb15d239a7407bde2e116fa6e0e73b09b16cf01455aafee041af12649ffec26"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "224-225",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x60..0x6F",
+   "name": "AM enable, decay rate",
+   "aliases": [
+    "AMON",
+    "DR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "401"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "425"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226-227"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $60 to $6E hold Decay Rate and the amplitude modulation ON/OFF; the glyphs of amplitude are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "401",
+       "sha": "289617079d69fae345184d8e59855e40e0e7bdc892cb9789fc6e2c6d7f171b8d"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "425",
+       "sha": "82c9163ebada8d290c737d2290e94d0122ab1a0b34cb1ae0386bff010356e2be"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Decay Rate is the rate at which the envelope changes at decay; a few glyphs of the line are garbled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "425",
+       "sha": "82c9163ebada8d290c737d2290e94d0122ab1a0b34cb1ae0386bff010356e2be"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226-227",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x70..0x7F",
+   "name": "sustain rate",
+   "aliases": [
+    "SR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "402"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "426"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "228"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The description says $70 to $7E hold Sustain Rate.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "402",
+       "sha": "3a7d3aff6f88285e4f0d23c7c22484ca2c84d1891ddf5948bb743dc15930fe5e"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "426",
+       "sha": "dd44a3fc4afdd9f4acb2674911a70ff92cac6becdfedc7be78391ae94baa06b5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Sustain Rate is the rate at which the envelope changes at sustain; one glyph of the line is garbled.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "426",
+       "sha": "dd44a3fc4afdd9f4acb2674911a70ff92cac6becdfedc7be78391ae94baa06b5"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2313-2314",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1417",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "172-173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "228",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x80..0x8F",
+   "name": "sustain level, release",
+   "aliases": [
+    "SL",
+    "RR"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "230-231"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "327"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "403"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "427-428"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "229-230"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "332-335"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map gives $80 to $8E to Sustain Level and Release Rate, and $83, $87 and $8B have no address.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "230-231",
+       "sha": "ad4aab79fd70a9a40be4562eddc273fb78e566ebe31faa2868ee13cadcf406ae"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "327",
+       "sha": "151ad57476146f37858d95b04baa08f25b04e9974789f0c4cca1a56c6eddccaa"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "403",
+       "sha": "591ec78fe395d85e0d657e19cfbae6f83ace64052b5b244d34f5c54dd9025ff5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Sustain Level gives the level at which the envelope moves from decay to sustain.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "427",
+       "sha": "327e81f8f026a0f2d3f0125b329cb73af4a2e0061a189461a8a2b5c3d2b1757f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "Release Rate gives the rate at which the envelope changes at release.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "428",
+       "sha": "066002f7c2ed6a0b4626f8d032244e4c25fcbef45e89fbb35ef04ecb2f716c39"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME expands a cached sustain level of 15 to 31, so the four-bit field acts as five bits.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "332-335",
+       "sha": "7b50b5cca21768631fd74f38d6cb8870965802ff73f8bb6265c34bacdbe0a29d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "229-230",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x90..0x9F",
+   "name": "SSG-EG",
+   "aliases": [
+    "SSG-EG"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "232-233"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "328"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "404"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "429"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "231-232"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "595-603"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "542-543"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "773-774"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map gives $90 to $9E to SSG-type envelope control, with $93, $97 and $9B absent.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "232-233",
+       "sha": "451d1701bd85644fc8413766abc1b96ca32d08f69882c89f01299c05e012f7f8"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "328",
+       "sha": "cfe81bae47eedbb1ed68e7f0d6258696a9a1f246e7cd35dea7a39ccfdac235a8"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "404",
+       "sha": "81021f3d09b2cf0068f4da296fde9b5e89e053b88161b758099ad130c303d7c9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It gives the envelope a preset shape; several glyphs of the line are garbled in the capture.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "429",
+       "sha": "82cc975c87578c07f7d4a050fd73a4ba7f59c0faae1137487e42bc22ebefb4d5"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads D3 as the SSG-EG enable and, when it is set, inverts the envelope at key on if mode bit D2 is set.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "231-232",
+       "sha": "d33d380e31edc4d83f5302710f10b2ab70790374094d5a434ac9ec1bb2fda851"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "595-603",
+       "sha": "122c8cd8443f9c1225e53ef4ef880ef7eca4137d0b9a71f27db82dce072fa067"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "542-543",
+       "sha": "8ff39e71b306acafa57606b2d1ecd2003847445c77a68b59964cd0baf74fb4f1"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "773-774",
+       "sha": "ebd148266ae4b1a4b9a1396b5b4c936a553d7e5bc3c5e26c262c44b6024c2755"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "231-232",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0xA0..0xA7",
+   "name": "freq number, block",
+   "aliases": [
+    "F-Num",
+    "BLOCK"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "234"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "329-330"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "405"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "430"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-150"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152-163"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map gives $A0 to $A6 to each channel's key code, the F-Number.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "405",
+       "sha": "82bef8b8fdf9ec5ba6cdc799f78ef7c56961b18b163a973e7e9ea712263c3b4d"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "234",
+       "sha": "fb84c9489b9d4572c765e5126496658b13f5148efe5f432bfaa74dad693dbdae"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "430",
+       "sha": "9092ce41b6d4d36455d43e719b9baffd199506acbcbff5e63dac2935bd195fe3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The map names the two fields F-Num 1 and BLOCK F-Num 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "329-330",
+       "sha": "0797635fb25e086fa7182277edd0c6591bce1fe883f49753ea7d6538425e2037"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores nothing for a write to $A3 or $A7: the handler returns before any store.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "147-150",
+       "sha": "d1a378e691c045ab07882f20425796e2884cb0e74f93db5a9fd39689da55cdb0"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME latches a write to $A4 to $A6 and applies it only when the lower byte at $A0 to $A2 is written.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152-163",
+       "sha": "6c4a07215e41f0a707b876f840c4d1ac14b2fbd9eca6b734fbe0652a35ceae5a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "160-163",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0xA8..0xAF",
+   "name": "3CH F-Num, block",
+   "aliases": [
+    "3CH"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "235"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "236"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "331-336"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "406"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "431"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-150"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152-163"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "206"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "199"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "287-295"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "123-131"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map gives $A8 to $AE to the F-Numbers of the special mode, whose key codes the description gives.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "406",
+       "sha": "de85fbdf754c962e320132e12f339e3a48d53b7748ddcdd99b0f5e11ae5c3bec"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "236",
+       "sha": "fb84c9489b9d4572c765e5126496658b13f5148efe5f432bfaa74dad693dbdae"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "431",
+       "sha": "0d5d54c773969b9118ba4d0daae26a9a517b9952088198a0f489d77c1cd5083b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The map names the mode 3CH-3Slot and its fields 3CH F-Num 1 and 3CH BLOCK F-Num 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "235",
+       "sha": "3d7dac2fab8fcefc84854951ce7d8bf4e0307e0d30a02ca14b2ce522d5c14304"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "331-336",
+       "sha": "32559602ae0665628cdb0dcd5bf52e5f61ff3c6d1a33a40e14ad26bc9473353b"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME replaces the frequency of three of the third channel's four operators with $A9/$AD, $AA/$AE and $A8/$AC when register 0x27 selects multi-frequency mode.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "199",
+       "sha": "e230232110182754c81a2ef66a2381184fa55396e0cda544749cf47d426a95f4"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "206",
+       "sha": "2cf8c4fbfea6a4ce1d3f9bba03f8fdf723ccf6200dca87143e7829928fa6fe60"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "287-295",
+       "sha": "e5b68cf43d2a9c38a1735c271489c47a1cd661e91418f5ec8f802c8d90dc3b62"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "123-131",
+       "sha": "4c882fab2c9839efc7acdc174b40eb2b8850c80ea7cc295556bdf59312512504"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores nothing for a write to $AB or $AF: the handler returns before any store.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "147-150",
+       "sha": "d1a378e691c045ab07882f20425796e2884cb0e74f93db5a9fd39689da55cdb0"
+      }
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME latches a write to $AC to $AE and applies it only when the lower byte at $A8 to $AA is written.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152-163",
+       "sha": "6c4a07215e41f0a707b876f840c4d1ac14b2fbd9eca6b734fbe0652a35ceae5a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "160-163",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "206",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "287-295",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0xB0..0xB3",
+   "name": "feedback, algorithm",
+   "aliases": [
+    "FB",
+    "ALGO"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "237"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "337"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "407"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "432-433"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "210-211"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1021-1028"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+     "lines": "1034"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map gives $B0 to $B2 to the self-feedback and the connection.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "237",
+       "sha": "3aa64e43ba4ea2040865f9b3379ef02d8523e6817162d14782bfd3e1cd9816b3"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "337",
+       "sha": "13cf5844a6da99a2331ec1e432a011746972ad21b7b1f2928116df4989534a78"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "407",
+       "sha": "6705b0065c7c6fb58767a5d6a1b1696bbcd35ffc0e2071fae61562175604687d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The description says they give the FM modulation form (Connection) and the depth of the feedback FM (Self-feedback).",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "432-433",
+       "sha": "946c3a0842eac7774914df8a69516ae752d11aec40560698557ca646e0ef9a47"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads the feedback from bits 3 to 5 and the algorithm from bits 0 to 2 of the byte.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "210-211",
+       "sha": "7cf85c6fc17eccc3f013f156b3e227dc4ae337e85cf3f4f0b737c7f75d963329"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME picks one of eight operator connections from the algorithm bits, by table lookup.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1021-1028",
+       "sha": "a40baa31cb07b26d4fbd1ba1b29dde1d29a3af43df5fce0660234bb840052b4c"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "211",
+       "sha": "9c00154490518a0baad820f4a4eb3e2bb367cd91da910736fd05ff90b68deda3"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.ipp",
+       "lines": "1034",
+       "sha": "262abd2d9b1957d8c33f011982803978e39a6cffddc01bc4facb03f7483c0667"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "210-211",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0xB4..0xB7",
+   "name": "pan, LFO sensitivity",
+   "aliases": [
+    "LR",
+    "AMS",
+    "PMS"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "238"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "338"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "408"
+    },
+    {
+     "ref": "datasheet:YM3438.raw.txt",
+     "lines": "434"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "212-218"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "80-81"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_fm.h",
+     "lines": "314-322"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "256-258"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "265-267"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "360-368"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "The register map gives $B4 to $B6 to the L/R output selection and the LFO depth on amplitude and frequency.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "408",
+       "sha": "9ec5c55db22cec68f2d1038627869c8160f7dc57c391cffc4ae696ed2a5ab0e7"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "434",
+       "sha": "b1dde5d30fcf8bd562bc9c71ea0d4623b3497771b5bb152c460d90854b6f7e79"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The map names the three fields LR, AMS and PMS.",
+     "quotes": [
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "238",
+       "sha": "c105d6b2b30c933e4c274c539bfc428cce59c11dcb209669ec482dd3531d7eeb"
+      },
+      {
+       "ref": "datasheet:YM3438.raw.txt",
+       "lines": "338",
+       "sha": "6185776d7f9e0c19d5747242ea9f3582cd78f68fe22e158fb915d0e99d081d63"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads the left output bit at D7 and the right at D6, and adds a channel to a side only when its bit is set.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "80-81",
+       "sha": "25877109192fb46945b0b475d8e5bc1ef70821b725d377068de7e2b5173f6252"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "212-214",
+       "sha": "9ca122dbd98b1985fc15ca4f440f5671eda0a3ee7583d95beed451077b2b4f59"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_fm.h",
+       "lines": "314-322",
+       "sha": "67f3e021fe89216f27e22d78467e848a6d6c9987154a5697fcb924eb94324f3c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME shifts the LFO value by 7, 3, 1 or 0 for AMS, and PM depth 0 leaves the phase unmodulated.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "256-258",
+       "sha": "659927b42dcd059404d45ab03be154ebc6f1801f11094178962560c5a73a2359"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "265-267",
+       "sha": "bb540496eb2f8e441dbb7f8b1ae25b8e5eaa4af1c65ba5c4fa49cf4f3f05706d"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "360-368",
+       "sha": "ae645ed4d9c2a8159e5a83e785b39d24c6d696846971cb1f227cf923f0089010"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "212-218",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149",
+     "as": "agrees",
+     "row": "1"
+    }
+   ]
+  },
+  {
+   "key": "0x130..0x13F",
+   "name": "detune, multiple 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "221-222"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0x30 plus the operator offset, which adds 0x100 for the second group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "221-222",
+       "sha": "50abded62f39c919f8e3233b6ab3fe0b8b15d333ead651c4f690f3fdb8fddee7"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x30..0x3F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x30..0x3F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x30..0x3F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x140..0x14F",
+   "name": "total level 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "223"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0x40 plus the operator offset, which adds 0x100 for the second group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "223",
+       "sha": "694c065d2737ba677d2a1191c9a53b3a1a96d2574687d4948a70c129918cafd7"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x40..0x4F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x40..0x4F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x40..0x4F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x150..0x15F",
+   "name": "key scale, attack 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "224-225"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0x50 plus the operator offset, which adds 0x100 for the second group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "224-225",
+       "sha": "ce9ac6023502bbce87b0bc56867450cb6bb4333a7143ed54e1a8949322cbd9eb"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x50..0x5F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x50..0x5F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x50..0x5F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x160..0x16F",
+   "name": "AM enable, decay rate 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "226-227"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0x60 plus the operator offset, which adds 0x100 for the second group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "226-227",
+       "sha": "70836602eebfcd713ec0625abe98fa473dfc9d1a441d7b7f54f4c61a22fc664f"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x60..0x6F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x60..0x6F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x60..0x6F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x170..0x17F",
+   "name": "sustain rate 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "228"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0x70 plus the operator offset, which adds 0x100 for the second group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "228",
+       "sha": "944a8cd8af7e9d9ec744f24c198625328aad86ea0e8df84eec2cf3e9762e9282"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x70..0x7F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x70..0x7F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x70..0x7F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x180..0x18F",
+   "name": "sustain level, release 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "229-230"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0x80 plus the operator offset, which adds 0x100 for the second group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "229-230",
+       "sha": "cdf13ff4004cd9c42636f15216230216d7809b9e1c8d086121fb392bbfd9210f"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x80..0x8F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x80..0x8F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x80..0x8F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x190..0x19F",
+   "name": "SSG-EG 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "152-159"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "231-232"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0x90 plus the operator offset, which adds 0x100 for the second group of 12 operators.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "152-159",
+       "sha": "8434fa49974a7ae5fb073747dece90195edf1496ffc67f203936b924af4f5a33"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "231-232",
+       "sha": "d33d380e31edc4d83f5302710f10b2ab70790374094d5a434ac9ec1bb2fda851"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x90..0x9F"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x90..0x9F"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0x90..0x9F"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x1A0..0x1A7",
+   "name": "freq number, block 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "209"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "147-150"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "152-163"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads registers 0xA0 and 0xA4 plus the channel offset, which adds 0x100 for channels 4 to 6.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "142-149",
+       "sha": "866cb7b9848963a668c2b7dbcf9a569adcbd9c735d28d00c183fae0e76e4abfb"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "209",
+       "sha": "294918ffaa50e1822be9a44b0926e10b21450c8b197e58df497ae611a48733dc"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xA0..0xA7"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores nothing for a write to $1A3 or $1A7: the handler returns before any store.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "147-150",
+       "sha": "d1a378e691c045ab07882f20425796e2884cb0e74f93db5a9fd39689da55cdb0"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xA0..0xA7"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME latches a write to $1A4 to $1A6 and applies it only when the lower byte at $1A0 to $1A2 is written.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "152-163",
+       "sha": "6c4a07215e41f0a707b876f840c4d1ac14b2fbd9eca6b734fbe0652a35ceae5a"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xA0..0xA7"
+     ]
+    },
+    {
+     "n": "104",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xA0..0xA7"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x1B0..0x1B3",
+   "name": "feedback, algorithm 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "210-211"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0xb0 plus the channel offset, which adds 0x100 for channels 4 to 6.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "142-149",
+       "sha": "866cb7b9848963a668c2b7dbcf9a569adcbd9c735d28d00c183fae0e76e4abfb"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "210-211",
+       "sha": "7cf85c6fc17eccc3f013f156b3e227dc4ae337e85cf3f4f0b737c7f75d963329"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xB0..0xB3"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xB0..0xB3"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xB0..0xB3"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  },
+  {
+   "key": "0x1B4..0x1B7",
+   "name": "pan, LFO sensitivity 2",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "142-149"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+     "lines": "212-218"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "173"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2327-2331"
+    },
+    {
+     "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+     "lines": "2339-2346"
+    }
+   ],
+   "rows": [
+    {
+     "n": "101",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME reads register 0xb4 plus the channel offset, which adds 0x100 for channels 4 to 6.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "142-149",
+       "sha": "866cb7b9848963a668c2b7dbcf9a569adcbd9c735d28d00c183fae0e76e4abfb"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.h",
+       "lines": "212-218",
+       "sha": "c2efd02a03ae80b303c32b698fc29cb3b90095a8e6fc6f803af278433a1f147f"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xB4..0xB7"
+     ]
+    },
+    {
+     "n": "102",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME stores the byte written to this range in the FM register array at that register number.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "173",
+       "sha": "ca56d385d00a23fa5b4c4a83baea292fe990c2ca60a5c7a66a4a7d66f2bc3252"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xB4..0xB7"
+     ]
+    },
+    {
+     "n": "103",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME takes a write to the upper address port as 0x100 ORed with the data, and its upper data port hands the register to the FM engine.",
+     "quotes": [
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2327-2331",
+       "sha": "e02bad318459c69d6bfe5d921b8364a29f456e98e9a8f3780f2be47b34974805"
+      },
+      {
+       "ref": "mame:3rdparty/ymfm/src/ymfm_opn.cpp",
+       "lines": "2339-2346",
+       "sha": "29e48095519b2f0fe3c2fbd6f515a9927205f18abd7b3b0e1ea4b1cfb0f04faf"
+      }
+     ],
+     "links": [
+      "ym2612:register:0xB4..0xB7"
+     ]
+    }
+   ],
+   "closed": [],
+   "source": "emulator",
+   "searched": [
+    {
+     "where": "mame-header",
+     "gave": "ymfm_opn.h and ymopn.h cite no manual; the comments list the register bit layout and say it applies at address+100 on OPNA+."
+    },
+    {
+     "where": "maker",
+     "gave": "Yamaha's own YM3438 data sheet, already in the table, is the maker's document; its port table names channels 4 to 6."
+    },
+    {
+     "where": "bitsavers",
+     "gave": "Its Yamaha folder lists YM2149, YM2151, YM2203, YM2413, YM3439 and YM3613 sheets; it has no YM2612 or YM3438 sheet."
+    },
+    {
+     "where": "archive-org",
+     "gave": "The archive.org item yamaha-chip-jpn is the table's archive copy of the YM3438 data sheet."
+    },
+    {
+     "where": "index",
+     "gave": "No datasheet index was consulted: the maker's data sheet for the chip is already in the table."
+    }
+   ]
+  }
+ ]
+}

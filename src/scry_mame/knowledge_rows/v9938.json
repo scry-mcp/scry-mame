@@ -1,0 +1,5702 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "v9938",
+ "title": "The V9938 VDP control, command and status registers",
+ "kind": "register",
+ "scope": "v9938",
+ "covers": "The write-only control registers R#0 to R#23 and the command registers R#32 to R#46 of the Yamaha V9938, and the read-only status registers S#0 to S#9 read from the same port, with each bit the data book defines",
+ "source": "official",
+ "documents": [
+  {
+   "name": "V9938.raw.txt",
+   "variant": "v9938"
+  }
+ ],
+ "official": {
+  "V9938.raw.txt": [
+   "682-1442"
+  ]
+ },
+ "closed": [
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "682",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1127-1145",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1279",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "686",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "695",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "700-702",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "731",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "897",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "911-913",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "961",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "985-987",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1008-1010",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1033-1035",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1068",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1077-1079",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1100-1101",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1110-1112",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1151-1153",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1170",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1179-1181",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1205-1207",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1228-1230",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1247-1249",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1270",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1278",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1281",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1283",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1285",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1287-1288",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1290",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1292",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1294",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1296-1297",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1299",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1301",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1303",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1305-1306",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1308",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1310",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1312",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1319",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1326-1327",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1329",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1343-1344",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1346",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1373-1374",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1376",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1405-1406",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1410",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1412",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1414",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1422-1423",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1425",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1432-1433",
+   "as": "layout"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "689",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "691",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "900-901",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "904-906",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "964-965",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1071-1072",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1173-1174",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1273-1275",
+   "as": "see-also"
+  },
+  {
+   "ref": "datasheet:V9938.raw.txt",
+   "lines": "1322-1323",
+   "as": "see-also"
+  }
+ ],
+ "engine": [
+  "m_int_callback",
+  "cpu_to_vdp",
+  "command_unit_w",
+  "vdp_to_cpu",
+  "rand"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "access": "write",
+   "name": "R0 mode register 0",
+   "aliases": [
+    "R#0",
+    "register 0"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "706-708"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "736-738"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "742-743"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "747-748"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "752-753"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "757-758"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "762-763"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "0"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::set_mode"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::check_int"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "834-839"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "841-845"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 0 is mode register 0: bit 7 and bit 0 read 0, and bits 6 to 1 are DG, IE2, IE1, M5, M4 and M3.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "706-708",
+       "sha": "29de848a852642af15b324ea6071a6766ebf3bf1cd61b59d2d70a9c6cde7b1c4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "bit 6",
+     "of": "doc",
+     "text": "DG sets the color bus to input mode and inputs data into the VRAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "736-738",
+       "sha": "39a60ce40278b0b51a53b9b6eadfc5fcdec79b078e3af27c4e2770867b24512f"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "bit 5",
+     "of": "doc",
+     "text": "IE2 enables the light pen interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "742-743",
+       "sha": "9450b31f41f844714fde8d4f7fd76ea448d160a6aa8fbec5485caf310b99b212"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "bit 4",
+     "of": "doc",
+     "text": "IE1 enables the interrupt from a horizontal scanning line.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "747-748",
+       "sha": "068e1b90f175fe4e5cd49ea29d28e844645fbc28345e3c9e206a2133d7bccc9a"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "bits 1-3",
+     "of": "doc",
+     "text": "M5, M4 and M3 change the display mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "752-753",
+       "sha": "42949d9ed766af8b4977a18234c5ac3c58d890cb9ec354f3916d43a2e6a8e01a"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "757-758",
+       "sha": "044098a8a71202479718f764a8fa6de3d3b621c73144b80aaaf971199deba802"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "762-763",
+       "sha": "d309f1a2c0b018ed651f4d109b93f2c83647b1057f17206b73e68600df98f11d"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 0 keeps bits 1 to 6 of the value, the bits the data book names, and drops bits 7 and 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "706-708",
+       "sha": "29de848a852642af15b324ea6071a6766ebf3bf1cd61b59d2d70a9c6cde7b1c4"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "bit 6",
+     "of": "mame",
+     "text": "MAME's register-0 case stores the value, recomputes the mode and the interrupt line, and does nothing for bit 6: the color bus is neither switched nor fed.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "851-857",
+       "sha": "e51ec90252de850918efbc409c4b9135b606597e49fc85cd3b889620723ca274"
+      }
+     ],
+     "vs": "absent",
+     "row": "2"
+    },
+    {
+     "n": "102",
+     "on": "bit 5",
+     "of": "mame",
+     "text": "MAME's register-0 case stores the value, recomputes the mode and the interrupt line, and does nothing for bit 5: no light pen interrupt is armed.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "851-857",
+       "sha": "e51ec90252de850918efbc409c4b9135b606597e49fc85cd3b889620723ca274"
+      }
+     ],
+     "vs": "absent",
+     "row": "3"
+    },
+    {
+     "n": "103",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME aborts a running command and clears bit 0 of S#2 when the mode changes; the data book leaves that case open.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "1893-1898",
+       "sha": "088bcb090be85e466436c4c0212e2c05be96a04650a1b5b34410c3b4522e9aca"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "104",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME looks the mode number up in a table of named modes, each with its own entry, and stops at the row holding 0xff, the UNKNOWN mode.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "77-81",
+       "sha": "11aea283d026856fd2d9321fce932b2c47c2865d512a7bbeb79a98b32bec2830"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "1864-1869",
+       "sha": "25b5436bf030f9464dc387268a400dd5459c620224b8bd89837e121f2c52a8dd"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "1877-1880",
+       "sha": "b66a5a00342f96f19bf9440e4f499fe722c1ea650f67d190710e70960f43be92"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "834-838",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "839-845",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849-857",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "1876",
+     "as": "agrees",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "77",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "1803",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "1877-1880",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "1876",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "1900",
+     "as": "agrees",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "793-798",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "803-806",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "796",
+     "as": "build"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "access": "write",
+   "name": "R1 mode register 1",
+   "aliases": [
+    "R#1",
+    "register 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "712-714"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "770-772"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "776-777"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "781-782"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "786-787"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "791-792"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "796-797"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "1"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::check_int"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 1 is mode register 1: bit 7 and bit 2 read 0, and bits 6 to 0 are BL, IE0, M1, M2, SI and MAG.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "712-714",
+       "sha": "fdcd36702af2fe2b82c32ec90456094a7d9e0a343cc9a3b9b0dfb7e0f1156e79"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "BL enables the screen display when 1 and disables it when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "770-772",
+       "sha": "2e73a6c2c315814e65c3552febe1be9f6a05008679b5ea21b93b994b851db3dd"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "IE0 enables the interrupt from a horizontal scanning line.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "776-777",
+       "sha": "796f73e2675dd537ae9f14faca3d1eb00552a0743079b483186fe54716000d2d"
+      }
+     ]
+    },
+    {
+     "n": "105",
+     "on": "bit 5",
+     "of": "mame",
+     "text": "MAME gates bit 7 of S#0, its vertical scanning flag, with IE0, not a horizontal one; S#1 bit 0 is the flag it reads with IE1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "793-794",
+       "sha": "b06276836d0c052d7d39ce8bd3c8f92ed7f863322eab956fdf64bff5e5c44ca5"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "186-190",
+       "sha": "da2073c37420e6482dc1afc5c457177b1e924e41ed4c6a9b3ea1971de2345f60"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "M1 and M2 change the display mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "781-782",
+       "sha": "7601c561f6d58be4010b6f7546c1ae96cd8025a1120549bb72784a6d89bdb35d"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "786-787",
+       "sha": "90f214783f30a872838bd2807b308d220d094335d99394b39f691994093cba42"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "SI sets the sprite size: 16 by 16 when 1, 8 by 8 when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "791-792",
+       "sha": "cbd31cc470bbe2a02060cf0bbaf8d9fd58615de4d9dd66a6b89f7cdabae64a40"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "MA expands the sprites when 1 and leaves them normal when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "796-797",
+       "sha": "e1f3464e137e04b0bafa796b3e91889d188a26ffdb02542cf3ff8754ca9e0280"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 1 sets the six bits its line names: BL, IE0, M1, M2, SI and MAG.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "712-714",
+       "sha": "fdcd36702af2fe2b82c32ec90456094a7d9e0a343cc9a3b9b0dfb7e0f1156e79"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "852-857",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "796",
+     "as": "build"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "77",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "803-806",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "access": "write",
+   "name": "R8 mode register 2",
+   "aliases": [
+    "R#8",
+    "register 8"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "718-720"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "804-808"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "812-813"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "817-818"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "822-825"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "829-834"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "838-839"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "843-846"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 8 is mode register 2: MS, LP, TP, CB, VR, a 0 bit, SPD and BW, from bit 7 to bit 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "718-720",
+       "sha": "7265479ac50b6e9198d81c161fb1260390b51131e502e92ea372bc03e832a847"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "MS sets the color bus to input mode and enables the mouse when 1, and output mode without the mouse when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "804-808",
+       "sha": "61cb182bd589b56b1935792f54ec24e911a3fc13b9c457f969290ecf761638ff"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "LP enables the light pen when 1 and disables it when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "812-813",
+       "sha": "6448cd0b648f80c6dc867b5a45af2f1a51506ffbaa58835fda3e1bab4d693f72"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "TP sets the color of code 0 to the color of the palette.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "817-818",
+       "sha": "8633f860b4fdd8229552ff2749fbdc17598b3eb08c1cf51251b89c9cf0b521f2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "CB sets the color bus to input mode when 1 and output mode when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "822-825",
+       "sha": "e6aa199a40d222beab20f35e25b33bfa40d7ede2a36ac7e56808774ac2619975"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "VR selects the type of Video RAM: 64K by 1 or 64K by 4 bits when 1, 16K when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "829-834",
+       "sha": "4593155690f4c97d5bfc12892b7093ebfa3fd318264909dbab674a9efd6de55b"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "SPD disables the display of sprites when 1 and shows them when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "838-839",
+       "sha": "b0b984f1d7b53f1369021d82a8412344c9a3f11761c88096261cc29f421fd7ef"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "BW selects black and white in 32 tones when 1 and color when 0, which needs a composite encoder.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "843-846",
+       "sha": "072be10a500701df48319b6bbde335f7487f5d016edd76bee007585873c9cb20"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 8 sets the seven bits its line names: MS, LP, TP, CB, VR, SPD and BW.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "718-720",
+       "sha": "7265479ac50b6e9198d81c161fb1260390b51131e502e92ea372bc03e832a847"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "9"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "access": "write",
+   "name": "R9 mode register 3",
+   "aliases": [
+    "R#9",
+    "register 9"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "724-726"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "853-857"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "861-862"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "866-867"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "871-874"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "878-881"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "885-886"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "890-891"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "9"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 9 is mode register 3: LN, a 0 bit, S1, S0, IL, EO, *NT and DC, from bit 7 to bit 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "724-726",
+       "sha": "3ad0ef18ed05ff1088ac67729c979ea35e7e7483adaf473297a598441c214c23"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "LN sets the horizontal dot count to 212 when 1 and to 192 when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "853-857",
+       "sha": "d7e43740d03026917fad90370c73fc20168babdbdd9ffe692803178ed3d3a306"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "S1 and S0 select the simultaneous mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "861-862",
+       "sha": "a89e6b25c2c314ec86f49db35fad6f28cf3057c103421609a8299182c9d459d8"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "866-867",
+       "sha": "c40aa8e0a89c693bbb16a2b24ec76142145dfbebcc653ced37c696269997b252"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "IL selects interlace with complete NTSC timing when 1, and non-interlace when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "871-874",
+       "sha": "a9a26f151b95940f43c7d534515f8cbb87f7e45e0219f2410e983e370063a1d6"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "EO alternately displays two graphic screens by even and odd field when 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "878-881",
+       "sha": "24e01e664e5b7c800d63dd704695f7faae821a1e2f1198fd240bcbdeb75b466f"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "NT, drawn with a bar and for RGB output only, selects PAL with 313 lines when 1 and NTSC with 262 when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "885-886",
+       "sha": "b1f77b91266b0855ca326f71515f7c356f12f8f99662acba9163daf10b3b3db3"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "DC sets the DLCLK pin to input mode when 1 and output mode when 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "890-891",
+       "sha": "806ffc4fca5124fee048d5594fdbc36f016e6fe8d65c44eb775e8f777e268bcc"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 9 sets the seven bits its line names: LN, S1, S0, IL, EO, NT and DC.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "724-726",
+       "sha": "3ad0ef18ed05ff1088ac67729c979ea35e7e7483adaf473297a598441c214c23"
+      }
+     ]
+    },
+    {
+     "n": "801",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME recomputes the horizontal offset from R#18 whenever R#9 is written, coupling the two registers in one path.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "859-865",
+       "sha": "00ed40d536fe94ed5d8911ccf75344cf84351668200bef18e6e58e7ada811c21"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "859-865",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "access": "write",
+   "name": "R2 name table base",
+   "aliases": [
+    "R#2",
+    "register 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "917-919"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 2 is the pattern name table base address register: bit 7 is 0 and bits 6 to 0 are A16 to A10.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "917-919",
+       "sha": "18c31efc171d09a63c623b2af74f0e0777ce081c16f54fa7b5f8f128ad85d290"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 2 holds the high seven bits, A16 to A10, of the pattern name table base address.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "917-919",
+       "sha": "18c31efc171d09a63c623b2af74f0e0777ce081c16f54fa7b5f8f128ad85d290"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "access": "write",
+   "name": "R3 colour table base low",
+   "aliases": [
+    "R#3",
+    "register 3"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "923-925"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 3 is the low register of the color table base address: its eight bits are A13 to A6.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "923-925",
+       "sha": "1e2f279010682b1d297d98ba660163d5e46c116eb5093f14d94b407a42213d89"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 3 holds A13 to A6 of the color table base address.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "923-925",
+       "sha": "1e2f279010682b1d297d98ba660163d5e46c116eb5093f14d94b407a42213d89"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0A",
+   "access": "write",
+   "name": "R10 colour base high",
+   "aliases": [
+    "R#10",
+    "register 10"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "929-931"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 10 is the high register of the color table base address: bits 7 to 3 are 0 and bits 2 to 0 are A16 to A14.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "929-931",
+       "sha": "dd36ac477bdffeb152faff89c3d0871ff2435ce766f646f8ab390e1587bd1f71"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 10 holds A16 to A14 of the color table base address.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "929-931",
+       "sha": "dd36ac477bdffeb152faff89c3d0871ff2435ce766f646f8ab390e1587bd1f71"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "access": "write",
+   "name": "R4 pattern base",
+   "aliases": [
+    "R#4",
+    "register 4"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "935-937"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture draws register 4 with five 0 bits and then A16, A15 and A14 in bits 2 to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "935-937",
+       "sha": "59341ca7aecdb56d730e3e23e18c75ba01ba7c867584553f1cdc55247b55f88a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 4 holds the pattern generator table base address bits its line names, A16 to A14.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "935-937",
+       "sha": "59341ca7aecdb56d730e3e23e18c75ba01ba7c867584553f1cdc55247b55f88a"
+      }
+     ]
+    },
+    {
+     "n": "401",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME masks register 4 with 0x3f, keeping bits 5 to 0, so it keeps the three bits the capture draws as 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "828",
+       "sha": "4c04ce690e450c7aa8557f754089e2cbb40154d7d0b9fe0037ad2c57cb7440c7"
+      }
+     ],
+     "vs": "differs",
+     "row": "1"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "access": "write",
+   "name": "R5 sprite attr base low",
+   "aliases": [
+    "R#5",
+    "register 5"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "941-943"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 5 is the low register of the sprite attribute table base address: its eight bits are A14 to A7.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "941-943",
+       "sha": "9a2b324a83a421a24b85da02451272d40d104e12e74098745912fa9c1d1d9e09"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 5 holds A14 to A7 of the sprite attribute table base address.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "941-943",
+       "sha": "9a2b324a83a421a24b85da02451272d40d104e12e74098745912fa9c1d1d9e09"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x0B",
+   "access": "write",
+   "name": "R11 sprite attr high",
+   "aliases": [
+    "R#11",
+    "register 11"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "947-949"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 11 is the high register of the sprite attribute table base address: bits 7 to 2 are 0 and bits 1 and 0 are A16 and A15.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "947-949",
+       "sha": "073cf8123d2d869a9555e8500252c608c7e91383008d6e8f7cc202d4f346d236"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "Register 11 holds A16 and A15 of the sprite attribute table base address.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "947-949",
+       "sha": "073cf8123d2d869a9555e8500252c608c7e91383008d6e8f7cc202d4f346d236"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "access": "write",
+   "name": "R6 sprite pattern base",
+   "aliases": [
+    "R#6",
+    "register 6"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "953-955"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 6's line gives bits 7 and 6 as 0 and bits 5 to 0 as A16 to A11.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "953-955",
+       "sha": "c47d4f36c396fa4265245d210dfcab1dc60512b67cab674e3cab5c0aba0a33ed"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The capture titles register 6 the sprite attribute table base address register high.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "953-955",
+       "sha": "c47d4f36c396fa4265245d210dfcab1dc60512b67cab674e3cab5c0aba0a33ed"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 6 holds A16 to A11, the six address bits its line gives.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "953-955",
+       "sha": "c47d4f36c396fa4265245d210dfcab1dc60512b67cab674e3cab5c0aba0a33ed"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "access": "write",
+   "name": "R7 text and backdrop",
+   "aliases": [
+    "R#7",
+    "register 7"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "968-976"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 7 is the text color and backdrop color register: bits 7 to 4 are TC3 to TC0 and bits 3 to 0 are BD3 to BD0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "968-976",
+       "sha": "253ab93554a6713cec6e75d109d1e631aa46fc2714bf455ab9af07ecea703ee9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "TC3 to TC0 specify the text color in the TEXT 1 and TEXT 2 modes.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "973-974",
+       "sha": "0f149e9812d2393669059e2c55e71cb825365dc081fd5d4dc2737185879927a0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "BD3 to BD0 specify the backdrop color in every display mode.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "975-976",
+       "sha": "ebc072e03ba4f78be414319e35110734c417ba1de3ec4e0cf61d935cf0cb1265"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 7 sets the text color in its high four bits and the backdrop color in its low four bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "968-976",
+       "sha": "253ab93554a6713cec6e75d109d1e631aa46fc2714bf455ab9af07ecea703ee9"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x0C",
+   "access": "write",
+   "name": "R12 text and blink",
+   "aliases": [
+    "R#12",
+    "register 12"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "991-993"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "998-999"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1002-1003"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 12 is the text color and back color register: bits 7 to 4 are T23 to T20 and bits 3 to 0 are BC3 to BC0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "991-993",
+       "sha": "e8c4c427dd3436ddf1727193b2b6ba8ee776253e6de86e89d75a341ea07d2b9c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "T23 to T20 specify the color of part 1 of the pattern.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1002",
+       "sha": "3812f09857f74e76a7cf49e0a598b9b6003d53b626ee22e4b41a09f435abc043"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "BC3 to BC0 specify the color of part 0 of the pattern.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1003",
+       "sha": "cfd395d5f985f9463def7d33ded2950d93cb3a7cd906e863f500b2853fa28b3c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "In the TEXT 2 mode, where the attributes ask for blinking, the color of this register and the one of R#7 alternate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "998-999",
+       "sha": "8fbaa310f8954b594ba986648ea07346e828a5ccdca7a721a9f3c95874011116"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 12 sets the two pattern colors and, in TEXT 2 with blinking, the color shown alternately with R#7.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "991-993",
+       "sha": "e8c4c427dd3436ddf1727193b2b6ba8ee776253e6de86e89d75a341ea07d2b9c"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "998-999",
+       "sha": "8fbaa310f8954b594ba986648ea07346e828a5ccdca7a721a9f3c95874011116"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x0D",
+   "access": "write",
+   "name": "R13 blinking period",
+   "aliases": [
+    "R#13",
+    "register 13"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1014-1016"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1021-1024"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1027-1028"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 13 is the blinking period register: bits 7 to 4 are ON3 to ON0 and bits 3 to 0 are OF3 to OF0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1014-1016",
+       "sha": "a24ede2d716cb620b828690e58af49d444c865931c5a7cbc71bc53e6feadffb0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "In GRAPHIC 4 to GRAPHIC 7 the two pages alternate; this register sets the page the blinking starts on and is also used in TEXT 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1021-1024",
+       "sha": "c7375b3b1e78cc3074de56e666739053857cb72c9c5c04bea4cdae81849c860a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "ON3 to ON0 are the display time of the even page.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1027",
+       "sha": "f67f7100c3b96c38a107c536e9dce360fbfb57564cc6df2063884317b2bb67a7"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "OF3 to OF0 are the display time of the odd page.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1028",
+       "sha": "93ac9e05cf7829afa8dbbf58f5376053de8e8e970a3a086dd1afe85a289811a4"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 13 sets the display time of the even page and of the odd page.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1014-1016",
+       "sha": "a24ede2d716cb620b828690e58af49d444c865931c5a7cbc71bc53e6feadffb0"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1027-1028",
+       "sha": "3a0b247b1b69cddc2694f2d9c840c2cad95509a7af00c522942cc2c8b4197259"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x0E",
+   "access": "write",
+   "name": "R14 VRAM access base",
+   "aliases": [
+    "R#14",
+    "register 14"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1185-1187"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1192-1200"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 14 is the VRAM access base address register: bits 7 to 3 are 0 and bits 2 to 0 are A16 to A14.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1185-1187",
+       "sha": "362b87b1a04a616ee83ad3f547151582f23a73624f3042915377a57910e7d675"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "When the MSX-VIDEO and the VRAM are accessed, the high-order three bits of the address are set in this register.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1192-1194",
+       "sha": "ca5a21494527cfc3f7822f6cc2512214a42b4027ef150a8d784ed836f91b3b56"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "A carry from A13 increments the register, except in GRAPHIC 1, GRAPHIC 2, MULTICOLOR and TEXT 1 modes, where it is not incremented.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1197-1200",
+       "sha": "8e14d838f22d2dd305d7ad64e694145d33687f54ebcd61e5e8f576752d687848"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 14 sets the high bits of the address the VRAM access uses.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1185-1187",
+       "sha": "362b87b1a04a616ee83ad3f547151582f23a73624f3042915377a57910e7d675"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x0F",
+   "access": "write",
+   "name": "R15 status pointer",
+   "aliases": [
+    "R#15",
+    "register 15"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1211-1213"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1218-1219"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "15"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 15 is the status register pointer: bits 7 to 4 are 0 and bits 3 to 0 are S3 to S0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1211-1213",
+       "sha": "d64e518145c0eb8cd04dd68422548baa40f66e10bdb52414e24f5c2280358a50"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "A read of the status registers S#0 to S#9 answers the one this pointer names.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1218-1219",
+       "sha": "0b7d09341ea3c4375f42c6f82f4a457748b1e0e068c6ac243a653bd6ea7b1cc0"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 15 sets the number of the status register a read returns.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1211-1213",
+       "sha": "d64e518145c0eb8cd04dd68422548baa40f66e10bdb52414e24f5c2280358a50"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1218-1219",
+       "sha": "0b7d09341ea3c4375f42c6f82f4a457748b1e0e068c6ac243a653bd6ea7b1cc0"
+      }
+     ]
+    },
+    {
+     "n": "1501",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME drops a pending palette write pair when R#15 is written with a value it does not already hold.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "867-869",
+       "sha": "a6cccea0f5bfa1fd063c4b172b7e93d4b66ab8dd48e9520ed99a92bcb5faef0e"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "834-838",
+       "sha": "621e4c7810cc5c284b9e1392eecdab2e2dd48cadc7d48d7dd201ba44581336b8"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "517-528",
+       "sha": "7b8bc685c2d1228ad3e60628519c772f0aa3b93f83e1d7e8144273d6edbb4170"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x10",
+   "access": "write",
+   "name": "R16 palette address",
+   "aliases": [
+    "R#16",
+    "register 16"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1234-1236"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1241-1242"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 16 is the color palette address register: bits 7 to 4 are 0 and bits 3 to 0 are C3 to C0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1234-1236",
+       "sha": "f8350565f62d682adc9a41984cebac76653b58305b271e2c5dd1f4e60c7058aa"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "When setting a color palette, the number of the palette entry is set in this register.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1241-1242",
+       "sha": "98cec00d22b0f768eaf1bfddba2edb92b50fe9b66b5e026c0089a0a752fa7300"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 16 sets the palette entry number.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1234-1236",
+       "sha": "f8350565f62d682adc9a41984cebac76653b58305b271e2c5dd1f4e60c7058aa"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x11",
+   "access": "write",
+   "name": "R17 control pointer",
+   "aliases": [
+    "R#17",
+    "register 17"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1253-1255"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1260-1262"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1265-1266"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 17 is the control register pointer: bit 7 is AII, bit 6 is 0 and bits 5 to 0 are RS5 to RS0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1253-1255",
+       "sha": "8ca6db8fb7cabd2fdf3e1a65c30bf5786e90e9bd6a825d0ba3bbdc7010e29c82"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The pointer may be used to access another register, and the AII bit says whether the data is automatically incremented.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1260-1262",
+       "sha": "52db69dc2dd60411612a0442d264a31990528cda9f0887bac48ff5c30c1fa55e"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "AII = 1 disables the auto increment and AII = 0 enables it.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1265-1266",
+       "sha": "57aa6064c813f45d48309579111bb0ceca63e9c62bb406610c0ac4b71cabe089"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 17 sets the register number the indirect write uses and the auto increment bit.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1253-1255",
+       "sha": "8ca6db8fb7cabd2fdf3e1a65c30bf5786e90e9bd6a825d0ba3bbdc7010e29c82"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1260-1262",
+       "sha": "52db69dc2dd60411612a0442d264a31990528cda9f0887bac48ff5c30c1fa55e"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1265-1266",
+       "sha": "57aa6064c813f45d48309579111bb0ceca63e9c62bb406610c0ac4b71cabe089"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "4"
+    }
+   ]
+  },
+  {
+   "key": "0x12",
+   "access": "write",
+   "name": "R18 display adjust",
+   "aliases": [
+    "R#18",
+    "register 18"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1083-1085"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1090"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1093-1097"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "18"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 18 is the display adjust register: bits 7 to 4 are V3 to V0 and bits 3 to 0 are H3 to H0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1083-1085",
+       "sha": "c43ba4efbd22543c7b0adf0b277a0758b1bf54b1918873e550ddff0260d382c3"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The register adjusts the display position on the CRT.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1090",
+       "sha": "4228b8e0c55e0c266a51a2b796595c4c5b76245b7a9c3abcd64e3685b31e7f58"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "H runs from 7 down to 1 at the left, 0 at the center and 15 down to 8 at the right.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1093-1094",
+       "sha": "f08cba1c73374a17c2ba379189016c8eb7e84266ef803a21e61259ec07a1aebb"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "V runs from 8 up to 15 at the bottom, 0 at the center and 1 up to 7 at the top.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1096-1097",
+       "sha": "c80ab6831d50372d2126363aad0c6ba8f145bd7648e7e06f43fe5957dd6b50b3"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 18 sets the horizontal adjustment, H3 to H0, of the display position.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1083-1085",
+       "sha": "c43ba4efbd22543c7b0adf0b277a0758b1bf54b1918873e550ddff0260d382c3"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1093-1094",
+       "sha": "f08cba1c73374a17c2ba379189016c8eb7e84266ef803a21e61259ec07a1aebb"
+      }
+     ]
+    },
+    {
+     "n": "1801",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME takes the vertical adjustment from the high nibble of R#18 once per frame, not on the write, which reaches only the horizontal one.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "228",
+       "sha": "a7c2eb4151ab64904067fb4d9e21ae06202d94d231c33d15690e18ff86dd8f92"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "863",
+       "sha": "92a110f9d5f79a89d553bbfd3b87f3580f1cfd82c49dcbc7a794446b2f781645"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "859-865",
+     "as": "agrees",
+     "row": "5"
+    }
+   ]
+  },
+  {
+   "key": "0x13",
+   "access": "write",
+   "name": "R19 interrupt line",
+   "aliases": [
+    "R#19",
+    "register 19"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1157-1159"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1164-1166"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 19 is the interrupt line register: its eight bits are IL7 to IL0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1157-1159",
+       "sha": "5bc85a4b66e89ab69519145477d2b85657975e97c29796f2406df3bb55307169"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It sets the scanning line at which the MSX-VIDEO interrupts, once the interrupt is enabled.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1164-1166",
+       "sha": "37f94b7a8710770b2c238b91814056c0988ff09dd927a33ca6ba8e2ff8d4c587"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 19 sets the number of the scanning line that raises the interrupt.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1157-1159",
+       "sha": "5bc85a4b66e89ab69519145477d2b85657975e97c29796f2406df3bb55307169"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1164-1166",
+       "sha": "37f94b7a8710770b2c238b91814056c0988ff09dd927a33ca6ba8e2ff8d4c587"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x14",
+   "access": "write",
+   "name": "R20 colour burst 1",
+   "aliases": [
+    "R#20",
+    "register 20"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1039-1041"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1058-1064"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "20"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 20 is color burst register 1, whose eight bits are 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1039-1041",
+       "sha": "052a77916999f7ba0758b9dda8d532a62082b20042c5e9d005c4ce04623f00a4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The value is preset when power is applied; setting all three color burst registers to 0 erases the color burst of the composite output.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1058-1064",
+       "sha": "b08ccd040b4e6f385dbd56d03a91c725cd52aac1124a38aa2525856d24bd6436"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 20 sets color burst register 1.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1039-1041",
+       "sha": "052a77916999f7ba0758b9dda8d532a62082b20042c5e9d005c4ce04623f00a4"
+      }
+     ]
+    },
+    {
+     "n": "2001",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME logs that the color burst registers are not emulated, so a write to this one produces no signal.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "872-876",
+       "sha": "e5508cec3dd6d68e35ad7f635c861edaba2785791a0c778579071ad9011d993f"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x15",
+   "access": "write",
+   "name": "R21 colour burst 2",
+   "aliases": [
+    "R#21",
+    "register 21"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1045-1047"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "21"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 21 is color burst register 2, drawn with the value 00111111.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1045-1047",
+       "sha": "4ef5c7fd1da55873ac28588e5243b6dc918e344cece5c811e65f5444ba089284"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 21 sets color burst register 2.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1045-1047",
+       "sha": "4ef5c7fd1da55873ac28588e5243b6dc918e344cece5c811e65f5444ba089284"
+      }
+     ]
+    },
+    {
+     "n": "2101",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME logs that the color burst registers are not emulated, so a write to this one produces no signal.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "873-876",
+       "sha": "7edcfb5265993d06de408efa5d780692c1750b74ab1a204349e26d516ca05d03"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x16",
+   "access": "write",
+   "name": "R22 colour burst 3",
+   "aliases": [
+    "R#22",
+    "register 22"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1051-1053"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "22"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 22 is color burst register 3, drawn with the value 00000101.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1051-1053",
+       "sha": "db62fd9d75099714ab233560d1538e10cb77c643ffda3c031e216ae11c9937ad"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 22 sets color burst register 3.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1051-1053",
+       "sha": "db62fd9d75099714ab233560d1538e10cb77c643ffda3c031e216ae11c9937ad"
+      }
+     ]
+    },
+    {
+     "n": "2201",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME logs that the color burst registers are not emulated, so a write to this one produces no signal.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "874-876",
+       "sha": "3b0dee6f85bb8885a3c3e8c1a3b94d0f9201092cb5aba876fb8dc571d7c11e65"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x17",
+   "access": "write",
+   "name": "R23 display offset",
+   "aliases": [
+    "R#23",
+    "register 23"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1116-1118"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1123"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 23 is the display offset register: its eight bits are DO7 to DO0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1116-1118",
+       "sha": "9f55751de98763dbad557809fbfc51042d9b4fc960322906eff4ad674c51a584"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The register sets the line of the VRAM at which the display begins.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1123",
+       "sha": "a6afbda7a42ba25b880c3ace9227c2719db6e4634313230b7693c06dc7ce4286"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 23 sets the first line of the VRAM that the display shows.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1116-1118",
+       "sha": "9f55751de98763dbad557809fbfc51042d9b4fc960322906eff4ad674c51a584"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1123",
+       "sha": "a6afbda7a42ba25b880c3ace9227c2719db6e4634313230b7693c06dc7ce4286"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x20",
+   "access": "write",
+   "name": "R32 source X low",
+   "aliases": [
+    "R#32",
+    "register 32"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1280"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 32 is the source X low register; its eight bits are SX7 to SX0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1280",
+       "sha": "27e47e66151463f52f7c294e15318de97ec8a85da5addb9580f46ede81f8a841"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 32 sets the low eight bits of the source X coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1280",
+       "sha": "27e47e66151463f52f7c294e15318de97ec8a85da5addb9580f46ede81f8a841"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x21",
+   "access": "write",
+   "name": "R33 source X high",
+   "aliases": [
+    "R#33",
+    "register 33"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1282"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 33 is the source X high register: bits 7 to 1 are 0 and bit 0 is SX8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1282",
+       "sha": "b3dfc30db8e5cdb02efbc8bc8ff4fe80886e2d7ca57c101348dea35938bef1a4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 33 sets the ninth bit, SX8, of the source X coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1282",
+       "sha": "b3dfc30db8e5cdb02efbc8bc8ff4fe80886e2d7ca57c101348dea35938bef1a4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x22",
+   "access": "write",
+   "name": "R34 source Y low",
+   "aliases": [
+    "R#34",
+    "register 34"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1284"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 34 is the source Y low register; its eight bits are SY7 to SY0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1284",
+       "sha": "27184f07ac472fe50d7b5a699bae31a6fde854cc613d89d92ca40d1cd5986fd8"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 34 sets the low eight bits of the source Y coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1284",
+       "sha": "27184f07ac472fe50d7b5a699bae31a6fde854cc613d89d92ca40d1cd5986fd8"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x23",
+   "access": "write",
+   "name": "R35 source Y high",
+   "aliases": [
+    "R#35",
+    "register 35"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1286"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 35 is the source Y high register: bits 7 to 2 are 0 and bits 1 and 0 are SY9 and SY8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1286",
+       "sha": "e031cd9d0a5d5750b85bc3dd3391632b01ff19103bc62ae046b36aa8f576af03"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 35 sets the two high bits, SY9 and SY8, of the source Y coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1286",
+       "sha": "e031cd9d0a5d5750b85bc3dd3391632b01ff19103bc62ae046b36aa8f576af03"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x24",
+   "access": "write",
+   "name": "R36 destination X low",
+   "aliases": [
+    "R#36",
+    "register 36"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1289"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 36 is the destination X low register; its eight bits are DX7 to DX0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1289",
+       "sha": "108f796f55a7c41d6232615817bed2c5bacdc3b4598a384a8551de7aa7d782c4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 36 sets the low eight bits of the destination X coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1289",
+       "sha": "108f796f55a7c41d6232615817bed2c5bacdc3b4598a384a8551de7aa7d782c4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x25",
+   "access": "write",
+   "name": "R37 destination X high",
+   "aliases": [
+    "R#37",
+    "register 37"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1291"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 37 is the destination X high register: bits 7 to 1 are 0 and bit 0 is DX8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1291",
+       "sha": "627e101ef7d5f79459185355a7ff1546201c36d47bab1954419231adc8fadaf7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 37 sets the ninth bit, DX8, of the destination X coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1291",
+       "sha": "627e101ef7d5f79459185355a7ff1546201c36d47bab1954419231adc8fadaf7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x26",
+   "access": "write",
+   "name": "R38 destination Y low",
+   "aliases": [
+    "R#38",
+    "register 38"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1293"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 38 is the destination Y low register; its eight bits are DY7 to DY0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1293",
+       "sha": "233278330ad08749c1b8c18f7f81ae9c8ccb94f9a000e55dfc508df9c2d0a4a7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 38 sets the low eight bits of the destination Y coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1293",
+       "sha": "233278330ad08749c1b8c18f7f81ae9c8ccb94f9a000e55dfc508df9c2d0a4a7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x27",
+   "access": "write",
+   "name": "R39 destination Y high",
+   "aliases": [
+    "R#39",
+    "register 39"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1295"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 39 is the destination Y high register: bits 7 to 2 are 0 and bits 1 and 0 are DY9 and DY8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1295",
+       "sha": "2e74071efc551ab6c3938732398b7811f37a73f6b8861ecad59c12529d62ff6e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 39 sets the two high bits, DY9 and DY8, of the destination Y coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1295",
+       "sha": "2e74071efc551ab6c3938732398b7811f37a73f6b8861ecad59c12529d62ff6e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x28",
+   "access": "write",
+   "name": "R40 number of dots X low",
+   "aliases": [
+    "R#40",
+    "register 40"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1298"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 40 is the number of dots X low register; its eight bits are NX7 to NX0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1298",
+       "sha": "dc594c383b71e391c5ecd4da2aa93ddb846b716e029ebc6b58e3e72e3ec97752"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 40 sets the low eight bits of the number of dots on the X axis.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1298",
+       "sha": "dc594c383b71e391c5ecd4da2aa93ddb846b716e029ebc6b58e3e72e3ec97752"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x29",
+   "access": "write",
+   "name": "R41 dots X high",
+   "aliases": [
+    "R#41",
+    "register 41"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1300"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 41 is the number of dots X high register: bits 7 to 1 are 0 and bit 0 is NX8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1300",
+       "sha": "6934751240c9a376a6594f88a54869424c3cf6cdce5f6d32503895417c7cfc67"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 41 sets the ninth bit, NX8, of the number of dots on the X axis.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1300",
+       "sha": "6934751240c9a376a6594f88a54869424c3cf6cdce5f6d32503895417c7cfc67"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2A",
+   "access": "write",
+   "name": "R42 number of dots Y low",
+   "aliases": [
+    "R#42",
+    "register 42"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1302"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 42 is the number of dots Y low register; its eight bits are NY7 to NY0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1302",
+       "sha": "d37e77bdd293dfce3e918b47fe91854f66092735f25e29b8b52f434d0662348d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 42 sets the low eight bits of the number of dots on the Y axis.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1302",
+       "sha": "d37e77bdd293dfce3e918b47fe91854f66092735f25e29b8b52f434d0662348d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2B",
+   "access": "write",
+   "name": "R43 dots Y high",
+   "aliases": [
+    "R#43",
+    "register 43"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1304"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 43 is the number of dots Y high register: bits 7 to 2 are 0 and bits 1 and 0 are NY9 and NY8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1304",
+       "sha": "059351d4b3bd254ce0e45261e29343e0b1a8136489335089df8d380eeb795982"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 43 sets the two high bits, NY9 and NY8, of the number of dots on the Y axis.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1304",
+       "sha": "059351d4b3bd254ce0e45261e29343e0b1a8136489335089df8d380eeb795982"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2C",
+   "access": "write",
+   "name": "R44 command colour",
+   "aliases": [
+    "R#44",
+    "register 44"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1307"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "44"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 44 is the color register: bits 7 to 4 are CH3 to CH0 and bits 3 to 0 are CL3 to CL0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1307",
+       "sha": "6000eee4a0801290d0070901c8683b81ad8c21189a46cb2b7afb2511e88190ec"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 44 sets the color register, bits CH3 to CH0 and CL3 to CL0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1307",
+       "sha": "6000eee4a0801290d0070901c8683b81ad8c21189a46cb2b7afb2511e88190ec"
+      }
+     ]
+    },
+    {
+     "n": "4401",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME passes the value to its command unit, which keeps it as its own CL, and the VRAM to CPU command reads it back.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "892-894",
+       "sha": "5727726fb3fed4ec02c051f4da3e8ea8b0d160311e82602ff921d9bc5d4ac082"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2905-2907",
+       "sha": "1d5f552d13a2e1fc61fec023d06d5c0117a7209ec7f8d219842ed25880c42178"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2913-2917",
+       "sha": "bf3afc36151f8342f1b0ec9e39d7442caf1a50d3f251b8485d04d07446848e23"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "3045",
+       "sha": "ea6a6d2dea404c57e3cc2a793ed85ab1a382173f9711cbaf682299386611cd9c"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2D",
+   "access": "write",
+   "name": "R45 command argument",
+   "aliases": [
+    "R#45",
+    "register 45"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1309"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 45 is the argument register: bit 7 is 0 and bits 6 to 0 are MXC, MXD, MXS, DIY, DIX, EQ and MAJ.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1309",
+       "sha": "6c12fd88b1295437f16950dd2e500d58801601608f73bb5555e107c176332fb0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 45 sets the argument register: MXC, MXD, MXS, DIY, DIX, EQ and MAJ.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1309",
+       "sha": "6c12fd88b1295437f16950dd2e500d58801601608f73bb5555e107c176332fb0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x2E",
+   "access": "write",
+   "name": "R46 command",
+   "aliases": [
+    "R#46",
+    "register 46"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1311"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::register_write",
+     "case": [
+      "46"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Register 46 is the command register: bits 7 to 4 are CM3 to CM0 and bits 3 to 0 are LO3 to LO0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1311",
+       "sha": "9692f3c4118ab80cc0ef4bac2623b7f0060ea53716744747d083c54119b2034a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "A write to register 46 sets the command register: CM3 to CM0 and LO3 to LO0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1311",
+       "sha": "9692f3c4118ab80cc0ef4bac2623b7f0060ea53716744747d083c54119b2034a"
+      }
+     ]
+    },
+    {
+     "n": "4601",
+     "on": "write",
+     "of": "mame",
+     "text": "MAME takes bits 7 to 4 as the command and bits 3 to 0 as the logical operation, and does nothing outside GRAPHIC 4 to GRAPHIC 7.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "896-898",
+       "sha": "496b0effe2ce51b3810763ffcb9973460a1272f878a33fca3fae9def80772d31"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2964-2969",
+       "sha": "cee1ddeeafe4f6e8487aa8681035e1b6802cd8c78c510927d9611fa0ae328dba"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "3046",
+       "sha": "34ec8a11cd39a98c15e5de17f8fac88539c2483edccc9d24515379750c606318"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "77-81",
+       "sha": "11aea283d026856fd2d9321fce932b2c47c2865d512a7bbeb79a98b32bec2830"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "826-832",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "838",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "844",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "849",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "900-904",
+     "as": "agrees",
+     "row": "2"
+    }
+   ]
+  },
+  {
+   "key": "0x00",
+   "access": "read",
+   "name": "S0 status register 0",
+   "aliases": [
+    "S#0",
+    "status register 0"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1328"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1330-1331"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1333-1335"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1337-1338"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1340-1341"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 0 holds F in bit 7, 5S in bit 6, C in bit 5 and the fifth sprite number in bits 4 to 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1328",
+       "sha": "2e41de604aaa3d3bead812c5519c8799a4e0bf1be43c2fee31f489eb7c0fde87"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "F is the vertical scanning interrupt flag, and it is reset when S#0 is read.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1330-1331",
+       "sha": "f7e8f0e7feb51b30f94aaffa683dcccb70d92df7ed8f0d1ec45fc127dbe06bff"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "5S reports that five sprites, or nine in G3 to G7, are aligned on the first horizontal line.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1333-1335",
+       "sha": "c89576cad93f3e0a12ed419bf728a640e6c2d0eec5c390f2c6adaedab8b39ed4"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "C reports that two sprites have collided.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1337-1338",
+       "sha": "0a4093f85674dbe229c4c4cc4883c0649a3990abe5f4a00155c9db7944c94fdb"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Bits 4 to 0 hold the number of the fifth, or ninth, sprite.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1340-1341",
+       "sha": "1d708f264ae0a80dc3a911d46d59c0f5b6ce571f3577ce0ce6d1d6575dc82f33"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#0 returns the four fields and resets the F flag.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1328",
+       "sha": "2e41de604aaa3d3bead812c5519c8799a4e0bf1be43c2fee31f489eb7c0fde87"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1330-1331",
+       "sha": "f7e8f0e7feb51b30f94aaffa683dcccb70d92df7ed8f0d1ec45fc127dbe06bff"
+      }
+     ]
+    },
+    {
+     "n": "1101",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME raises F at the vertical blanking and sets 5S and the sprite number in its sprite pass.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "189",
+       "sha": "127437a274c6b5d021be72e13fbbbf0f5d656316162233d9020628f63b39a649"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "1588",
+       "sha": "d075b734f01646757d619943c1d295025ce7e5c620fc4ab308ce9b0e5d4a947a"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "1711",
+       "sha": "d075b734f01646757d619943c1d295025ce7e5c620fc4ab308ce9b0e5d4a947a"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1102",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME clears bits 6 and 5 of S#0, the fifth sprite and collision flags, as well as bit 7 when the register is read.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "455-458",
+       "sha": "899afe92ce55d7414f9f0571a19b704ae79185317a9e119a15d3d56bacd8ea4e"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "455-458",
+     "as": "agrees",
+     "row": "6"
+    }
+   ]
+  },
+  {
+   "key": "0x01",
+   "access": "read",
+   "name": "S1 status register 1",
+   "aliases": [
+    "S#1",
+    "status register 1"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1345"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1347-1350"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1352-1354"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1356-1358"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1360-1362"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1364-1366"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1368-1371"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "1"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 1 holds FL, LPS, the identification number, FH, and, with a mouse, the two mouse switches.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1345",
+       "sha": "b00b578bd44ec5af707ec16c27bf786941b17d965ebe070c327e38fd5280b263"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1352-1354",
+       "sha": "68e9d1a31a4f3adec646fa0f68f9cbee7490d92b2bbc71b188d7cda292708a66"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1360-1362",
+       "sha": "e4607c543cad8d4cd0fa6930d64f4d16468f114bc09c418a6aa36cfa1b018cef"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "FL is the light pen flag; it and IE2 must both be set for an interrupt, and a read of S#1 resets it.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1347-1350",
+       "sha": "486e01181ce1bfad92498b6b58f7c0ccb3cc366d0cd94048d8f5763b9ccd947b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "With a mouse, bit 7 reports its second switch, and a read of S#1 does not reset it.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1352-1354",
+       "sha": "68e9d1a31a4f3adec646fa0f68f9cbee7490d92b2bbc71b188d7cda292708a66"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1345",
+       "sha": "b00b578bd44ec5af707ec16c27bf786941b17d965ebe070c327e38fd5280b263"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "LPS reports that the light pen switch was pressed and is not reset by a read.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1356-1358",
+       "sha": "9233a9f87902d92fbf2d403f4067e593d7592275e9b798b42bdb712bedb50765"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "With a mouse, bit 6 reports its first switch, and a read of S#1 does not reset it.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1360-1362",
+       "sha": "e4607c543cad8d4cd0fa6930d64f4d16468f114bc09c418a6aa36cfa1b018cef"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1345",
+       "sha": "b00b578bd44ec5af707ec16c27bf786941b17d965ebe070c327e38fd5280b263"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "The identification number names the chip; the transcription's editor's note gives 0 for the V9938, 1 for the V9948 and 2 for the V9958.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1364-1366",
+       "sha": "4c506f971668cdc0feb0180ef4826d5ebd7f69cccfe3940774225c45b0bd3734"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "FH is the horizontal scanning interrupt flag of the line set in R#19, enabled by IE1 and reset when S#1 is read.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1368-1371",
+       "sha": "4316d04337b0e43ff56f12a4b835de7aa901f63be55959d87ae81223d988224a"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#1 returns the light pen or mouse flag, the identification number and FH, and resets FL and FH.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1345",
+       "sha": "b00b578bd44ec5af707ec16c27bf786941b17d965ebe070c327e38fd5280b263"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1347-1350",
+       "sha": "486e01181ce1bfad92498b6b58f7c0ccb3cc366d0cd94048d8f5763b9ccd947b"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1368-1371",
+       "sha": "4316d04337b0e43ff56f12a4b835de7aa901f63be55959d87ae81223d988224a"
+      }
+     ]
+    },
+    {
+     "n": "1103",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME clears only FH when S#1 is read and leaves FL as it was, where the book resets both flags.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "459-465",
+       "sha": "82ac5f0a8533144d4feec2a231039c527d51b59f68d61da811c17d3fcdc6bd2e"
+      }
+     ],
+     "vs": "differs",
+     "row": "8"
+    },
+    {
+     "n": "1101",
+     "on": "read",
+     "of": "mame",
+     "text": "While the mouse mode of R#8 is set, MAME ORs the two mouse buttons into bits 7 and 6 of S#1.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "459-465",
+       "sha": "82ac5f0a8533144d4feec2a231039c527d51b59f68d61da811c17d3fcdc6bd2e"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1102",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME raises FH at the horizontal interrupt line, takes the two mouse switches from its button state, and sets the identification bits at reset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "195",
+       "sha": "cda12ed4cb7961ca33aafa834e661bf831e2ce24ff749ee3d38b7225e44d2cd4"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "302",
+       "sha": "98797bb911ca4e5b5a02d9326aa25c5e7d479aeeffad97165383810e909180ae"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "690",
+       "sha": "86e04e4110c9aea57a81b2707cf3b35a8df7e10494b28bc4c8babbcb72cc45ba"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x02",
+   "access": "read",
+   "name": "S2 status register 2",
+   "aliases": [
+    "S#2",
+    "status register 2"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1375"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1377-1380"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1387-1388"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1390-1391"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1393-1395"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1397-1399"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1401-1402"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "2"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 2 holds TR, VR, HR, BD, two 1 bits, EO and CE, from bit 7 to bit 0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1375",
+       "sha": "e36290129e86a2ee2a6812d40f25f8f15027de3abc2beb8609ccec7e095ffc18"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "TR is the transfer ready flag, which the CPU checks while it transfers data.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1377-1380",
+       "sha": "b6311f3780a1379eb4f2ec597cd99229d7ec66ed07a666df17ccfcc2078dd141"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "VR is set while the vertical scanning is in progress.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1387-1388",
+       "sha": "29f6975599e303a29f3c33826cdd5d0f6a3851edd52e538c73e11d631477629c"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "HR is set while the horizontal scanning is in progress.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1390-1391",
+       "sha": "8200ae84ed9653fae846bf8cc639aa4fd6dd9d9662472ac94bfb862dc81c8f86"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "BD reports whether the search command detected the boundary color.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1393-1395",
+       "sha": "19f14edbc77a42de137825e35749a63be494f0ea26945c9449757aa94f98a296"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "EO is 0 in the first field and 1 in the second.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1397-1399",
+       "sha": "304e3f821c9db94b72ade127846f9866e49b19a1ab6a1eb586173f99f75df733"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "is",
+     "of": "doc",
+     "text": "CE reports that a command is being executed.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1401-1402",
+       "sha": "8da63f1ce24dffbe312c9183f8425bc86bbc0c74431eb3244ea132ca885501dd"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#2 returns the transfer ready flag, the scanning flags, the boundary and field flags and the command flag.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1375",
+       "sha": "e36290129e86a2ee2a6812d40f25f8f15027de3abc2beb8609ccec7e095ffc18"
+      }
+     ]
+    },
+    {
+     "n": "1201",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME fakes the horizontal scanning flag with a random bit on every read of S#2, and its own comment calls the earlier attempt nonsensical.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "469-477",
+       "sha": "6fcd0f54449d85db89ad397c56eed436848893e199840eaea93e2e60079bed75"
+      }
+     ],
+     "vs": "differs",
+     "row": "4"
+    },
+    {
+     "n": "1206",
+     "on": "bit 4",
+     "of": "mame",
+     "text": "MAME raises the BD bit of S#2 when its search command meets the border color, and clears it when the search passes it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2404-2406",
+       "sha": "e24d39012f8f5e818cd6077504becfc9321f6220593e7f0d56f9fefb9fdeb959"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1205",
+     "on": "bit 6",
+     "of": "mame",
+     "text": "MAME sets bit 6 of S#2, the vertical scanning flag, from one scanline of the frame to another.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "182-189",
+       "sha": "a43fe7acb391b2b09eaeb092a32cebd657698e79e7756eb38502b700d08a05a4"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1207",
+     "on": "bit 7",
+     "of": "mame",
+     "text": "MAME sets bit 7 of S#2 while a command has work left and clears it on a CPU transfer, the opposite of a transfer ready flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2641-2644",
+       "sha": "5b39fa90e4008b355f40873c74bd264e9c65eeef96ac0bfb03a9f514a7b33e2a"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2676",
+       "sha": "f113110385db2c588a813a172a4a3fab1f1a6e26342855b78d4499b4999d32c5"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2879",
+       "sha": "f113110385db2c588a813a172a4a3fab1f1a6e26342855b78d4499b4999d32c5"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2905",
+       "sha": "64715a2d2da442086d5343396a484a9c55147afca646ffcc84dce263a965a8eb"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2915",
+       "sha": "64715a2d2da442086d5343396a484a9c55147afca646ffcc84dce263a965a8eb"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    },
+    {
+     "n": "1202",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME clears bit 7 of S#2 when a command fetches or stores a value, and at reset.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2905",
+       "sha": "64715a2d2da442086d5343396a484a9c55147afca646ffcc84dce263a965a8eb"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2915",
+       "sha": "64715a2d2da442086d5343396a484a9c55147afca646ffcc84dce263a965a8eb"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "689",
+       "sha": "99b77bf6c19434de851960132d7043b02b25388c74b95d9a2114d27d4f9c8c78"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1203",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME's drawing commands clear bit 0 of S#2, the command flag, as they finish.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2554",
+       "sha": "5334c1e311daf593321b06145486dcd4db8b8c8f95591770afa8a4e90a5e3d94"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2610",
+       "sha": "5334c1e311daf593321b06145486dcd4db8b8c8f95591770afa8a4e90a5e3d94"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2732",
+       "sha": "5334c1e311daf593321b06145486dcd4db8b8c8f95591770afa8a4e90a5e3d94"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2787",
+       "sha": "5334c1e311daf593321b06145486dcd4db8b8c8f95591770afa8a4e90a5e3d94"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2847",
+       "sha": "5334c1e311daf593321b06145486dcd4db8b8c8f95591770afa8a4e90a5e3d94"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1204",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME clears bit 0 of S#2 when a command is aborted or the mode changes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2982",
+       "sha": "5334c1e311daf593321b06145486dcd4db8b8c8f95591770afa8a4e90a5e3d94"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "1897",
+       "sha": "4d67c4b8dd5cb1480ca241f92f065c0537b940ced0df3ae06ce1f9db89c66e21"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1208",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME toggles bit 1 of S#2, the display field flag, at the vertical blanking.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2075",
+       "sha": "ec5900c90bd1054fd135cb69be74f81cb78182d09f4cbad9af23d8c6059630a5"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "476-479",
+     "as": "agrees",
+     "row": "8"
+    }
+   ]
+  },
+  {
+   "key": "0x03",
+   "access": "read",
+   "name": "S3 column register low",
+   "aliases": [
+    "S#3",
+    "status register 3"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1407-1408"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1417-1419"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "3"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 3 is the low column register, whose eight bits are X7 to X0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1407-1408",
+       "sha": "cab2ec7857161c82a75f6d22ae71077c884e2b41824878185166a0247c6e4c40"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "S#3 to S#6 give the collision location of the sprites, the light pen position and the mouse movement.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1417-1419",
+       "sha": "00802862eab7f1e2202f6143d782f04d4297e9947a3e57cda4ccbbfe1e7f2073"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#3 returns the low eight bits of the column the collision, light pen or mouse reports.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1407-1408",
+       "sha": "cab2ec7857161c82a75f6d22ae71077c884e2b41824878185166a0247c6e4c40"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1417-1419",
+       "sha": "00802862eab7f1e2202f6143d782f04d4297e9947a3e57cda4ccbbfe1e7f2073"
+      }
+     ]
+    },
+    {
+     "n": "1301",
+     "on": "read",
+     "of": "mame",
+     "text": "While the mouse mode of R#8 is set, MAME returns the horizontal mouse delta from S#3 and clears it, not the stored register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "480-488",
+       "sha": "25044a2aa11cd136505fe1779199803af9a3866450106f3a0eb315d6d93343f9"
+      }
+     ],
+     "vs": "differs",
+     "row": "3"
+    },
+    {
+     "n": "1302",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME adds each color bus count to the horizontal mouse delta and clamps the sum to 127 either way.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "279-285",
+       "sha": "3837c3955498dff9a70dea5d1e90209b6890c663e1423f10a482fdfbda7c7cd7"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1303",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME's own TODO says S#3 to S#6 do not yet store the sprite collision, and its reset clears S#3, so it holds only that.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "706",
+       "sha": "2d9a3793d5aec0880cd61a7a324f14a85b8a79391ad33c4b09aaf0ce46c94de8"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "688",
+       "sha": "c37929d32af04af331419a96646fb9b0d82044aad34df6d533013ccfdfd0e430"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x04",
+   "access": "read",
+   "name": "S4 column register high",
+   "aliases": [
+    "S#4",
+    "status register 4"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1409"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "default"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "707"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 4 is the high column register: bits 7 to 1 are 1 and bit 0 is X8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1409",
+       "sha": "7bca343478c61a49c18a95c5bab093eee345e530ed0760c62ace9484f9af003b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The last bit of S#4 carries X8, the ninth bit of the column.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1409",
+       "sha": "7bca343478c61a49c18a95c5bab093eee345e530ed0760c62ace9484f9af003b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#4 returns X8 above seven 1 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1409",
+       "sha": "7bca343478c61a49c18a95c5bab093eee345e530ed0760c62ace9484f9af003b"
+      }
+     ]
+    },
+    {
+     "n": "1401",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME's own TODO says S#3 to S#6 do not yet store the sprite collision, so X8 is never set and reads the 0 of the reset value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "706",
+       "sha": "2d9a3793d5aec0880cd61a7a324f14a85b8a79391ad33c4b09aaf0ce46c94de8"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "707",
+       "sha": "d5fe0268756d26a3f90f25df74ee86b79462d706ff9471489592df946b025637"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "502-504",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "707",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x05",
+   "access": "read",
+   "name": "S5 row register low",
+   "aliases": [
+    "S#5",
+    "status register 5"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1411"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "5"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 5 is the low row register, whose eight bits are Y7 to Y0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1411",
+       "sha": "fb2a1f5e4db9384c61f68f83267f68e0e82b4e85f573f4ac4711b218136dfa52"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#5 returns the row register low, Y7 to Y0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1411",
+       "sha": "fb2a1f5e4db9384c61f68f83267f68e0e82b4e85f573f4ac4711b218136dfa52"
+      }
+     ]
+    },
+    {
+     "n": "1501",
+     "on": "read",
+     "of": "mame",
+     "text": "While the mouse mode of R#8 is set, MAME returns the vertical mouse delta from S#5 and clears it, not the stored register.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "489-497",
+       "sha": "2b1c8f06eb7ecfca98cd2509197f3f07edfe2a5c7fc14ca190bdb1974485dc34"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    },
+    {
+     "n": "1502",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME adds each color bus count to the vertical mouse delta and clamps the sum to 127 either way.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "289-295",
+       "sha": "584f8a3e538ff05e1593f715a6b958bba64d57f7eb0cea65baa67752f507ed85"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1503",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME's own TODO says S#3 to S#6 do not yet store the sprite collision, and its reset clears S#5, so it holds only that.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "706",
+       "sha": "2d9a3793d5aec0880cd61a7a324f14a85b8a79391ad33c4b09aaf0ce46c94de8"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "688",
+       "sha": "c37929d32af04af331419a96646fb9b0d82044aad34df6d533013ccfdfd0e430"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    }
+   ]
+  },
+  {
+   "key": "0x06",
+   "access": "read",
+   "name": "S6 row register high",
+   "aliases": [
+    "S#6",
+    "status register 6"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1413"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "default"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "708"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 6 is the high row register: bits 7 to 2 are 1, bit 1 is EO and bit 0 is Y8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1413",
+       "sha": "ba8a0ede7ffa84568892155b423003b6533f3b31141abdb3a81ad11c2d706b27"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 0 carries Y8 and bit 1 is EO, above six 1 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1413",
+       "sha": "ba8a0ede7ffa84568892155b423003b6533f3b31141abdb3a81ad11c2d706b27"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#6 returns EO and Y8 above six 1 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1413",
+       "sha": "ba8a0ede7ffa84568892155b423003b6533f3b31141abdb3a81ad11c2d706b27"
+      }
+     ]
+    },
+    {
+     "n": "1601",
+     "on": "is",
+     "of": "mame",
+     "text": "MAME's own TODO says S#3 to S#6 do not yet store the sprite collision, so Y8 is never set and reads the 0 of the reset value.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "706",
+       "sha": "2d9a3793d5aec0880cd61a7a324f14a85b8a79391ad33c4b09aaf0ce46c94de8"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "708",
+       "sha": "1f307e2b781e2b18324ec04cfb05072921754844a3fc8917c327efcd79d6633c"
+      }
+     ],
+     "vs": "extra"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "502-504",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "708",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x07",
+   "access": "read",
+   "name": "S7 colour register",
+   "aliases": [
+    "S#7",
+    "status register 7"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1424"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1428-1429"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "7"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 7 is the color register, whose eight bits are C7 to C0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1424",
+       "sha": "e9f7c81e494831581f6d1eddea6b65ce11d2bc43cbbdc134138b41d4c2ba2892"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It holds the VRAM data of the POINT and VRAM to CPU commands.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1428-1429",
+       "sha": "763152e24eb3492790230ece3567ae51bfa89162ba088bd8ac28e990298b7f5a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#7 returns the VRAM data the last POINT or VRAM to CPU command fetched.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1424",
+       "sha": "e9f7c81e494831581f6d1eddea6b65ce11d2bc43cbbdc134138b41d4c2ba2892"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1428-1429",
+       "sha": "763152e24eb3492790230ece3567ae51bfa89162ba088bd8ac28e990298b7f5a"
+      }
+     ]
+    },
+    {
+     "n": "1701",
+     "on": "read",
+     "of": "mame",
+     "text": "MAME also runs the pending command on the read and writes the value it returns into R#44, the command's own color.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "498-501",
+       "sha": "f0026e103b2ff1b491114ecda5da3b1bec89d784595f942ee9faf0208aa89a8e"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2913-2917",
+       "sha": "bf3afc36151f8342f1b0ec9e39d7442caf1a50d3f251b8485d04d07446848e23"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "1702",
+     "on": "when",
+     "of": "mame",
+     "text": "MAME writes S#7 from every command engine and from a write to R#44, not only on the POINT and VRAM to CPU commands the book names.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2906",
+       "sha": "8a2ec75c3759c0f93a00b9c4e990138d729cfd45b863dd3ead4b3f584ba90a52"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2972",
+       "sha": "9e5f52318fde3f41d5a0bd99c64edad145f50868d1df426e4367e8141808adfe"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2642",
+       "sha": "8ce7770650739603efee4d1ab4628b75e4dbd8a65ef2f37b7e4e1f67a8aca719"
+      },
+      {
+       "ref": "mame:src/devices/video/v9938.cpp",
+       "lines": "2673",
+       "sha": "dadbb4fe96aa7d7d2cb63c744e79fdac323fb669c7d860403c443aa5009a11fe"
+      }
+     ],
+     "vs": "differs",
+     "row": "2"
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "498-501",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x08",
+   "access": "read",
+   "name": "S8 border X register low",
+   "aliases": [
+    "S#8",
+    "status register 8"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1434-1435"
+    },
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1440-1441"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "default"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "2424"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 8 is the low border X register, whose eight bits are BX7 to BX0.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1434-1435",
+       "sha": "73b08ccc1fc6fd29bef8595a868bf8143d3884d4c76759ba96bf12841de03aa9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "When the search command detects the border color, the X coordinate is set in S#8 and S#9.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1440-1441",
+       "sha": "540a951edecfcc09ee7dedc9ca601602f351714be0af8382e2fbadeb34ae69f7"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#8 returns the low eight bits of the X coordinate where the search command found the border color.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1434-1435",
+       "sha": "73b08ccc1fc6fd29bef8595a868bf8143d3884d4c76759ba96bf12841de03aa9"
+      },
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1440-1441",
+       "sha": "540a951edecfcc09ee7dedc9ca601602f351714be0af8382e2fbadeb34ae69f7"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "502-504",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "2424",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  },
+  {
+   "key": "0x09",
+   "access": "read",
+   "name": "S9 border X high",
+   "aliases": [
+    "S#9",
+    "status register 9"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:V9938.raw.txt",
+     "lines": "1436-1437"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "function": "v99x8_device::status_r",
+     "case": [
+      "default"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "2425"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "Status register 9 is the high border X register: bits 7 to 1 are 1 and bit 0 is BX8.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1436-1437",
+       "sha": "883634cc97f8060aaa3c2c8958a88a45c4db043a4f890c7c440a3f72a4de7a2a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit 0 carries BX8, the ninth bit of the border X coordinate.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1436-1437",
+       "sha": "883634cc97f8060aaa3c2c8958a88a45c4db043a4f890c7c440a3f72a4de7a2a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "doc",
+     "text": "Reading S#9 returns the ninth bit of the border X coordinate, BX8, above seven 1 bits.",
+     "quotes": [
+      {
+       "ref": "datasheet:V9938.raw.txt",
+       "lines": "1436-1437",
+       "sha": "883634cc97f8060aaa3c2c8958a88a45c4db043a4f890c7c440a3f72a4de7a2a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "445-451",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "453",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "502-504",
+     "as": "agrees",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/video/v9938.cpp",
+     "lines": "2425",
+     "as": "agrees",
+     "row": "3"
+    }
+   ]
+  }
+ ]
+}

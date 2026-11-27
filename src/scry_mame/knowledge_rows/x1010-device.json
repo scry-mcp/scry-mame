@@ -1,0 +1,244 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "x1010-device",
+ "title": "The Seta X1-010 sound chip as a device",
+ "kind": "device",
+ "scope": "x1010",
+ "covers": "the Seta X1-010 as a device as MAME's source defines it; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of x1_010.cpp names the chip and its gate array and cites no document, only its authors."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search for the part name found no page of Seta or Allumer, its makers, holding a manual."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "No Seta folder (HTTP 404) under components, and no Seta or Allumer name in the components listing."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search for X1-010 with Seta or Allumer found a Furnace tracker release and a tracker module, no manual."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com returned a search page for X1-010 with no result list and no document link."
+  }
+ ],
+ "engine": [
+  "stream_alloc",
+  "set_sample_rate",
+  "update"
+ ],
+ "entries": [
+  {
+   "key": "x1010",
+   "name": "Seta X1-010 sound chip",
+   "aliases": [
+    "X1-010"
+   ],
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::device_start"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::device_clock_changed"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::rom_bank_pre_change"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::enable_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::word_r"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.cpp",
+     "function": "x1_010_device::word_w"
+    },
+    {
+     "ref": "mame:src/devices/sound/x1_010.h",
+     "lines": "15-21"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The X1-010 is a 16-voice sound generator: each channel takes its waveform from RAM, 128 bytes of 8-bit signed data, or samples 8-bit signed PCM.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "15-17",
+       "sha": "f2695ec38c0294ccbce1bbcf36a8734d214fc50504ed9ed9a9c7de3561488b84"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "It is a Seta custom sound chip in an 80-pin PQFP, a custom programmed Mitsubishi M60016 gate array of 3608 gates.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "11-13",
+       "sha": "5e036082538cf0a94d0b8d34fc0aaeec9f55a7773688e85b257f4c567cd23daa"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME has no reset: the class overrides device_start and device_clock_changed and no device_reset, and device_start zeroes the register area and each channel's offsets once.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "111-115",
+       "sha": "18096b89ac5e156526069e81558bc1dba0b2bd902bd5c363063d29e28d5f5c10"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "122-123",
+       "sha": "c01973e7d759bc4ee42e2052a7f07049640222f321363a92f91f4ae585049dbb"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.h",
+       "lines": "24-26",
+       "sha": "7cf293c717fd532ec6da9c77d93f61b1a85934ff98540ee34b5bca410c553433"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The output rate is the clock divided by 512, and is set again when the clock changes.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "108-109",
+       "sha": "19cf325a0c119c5e8bbea1641acfaa4d913dad0e33098a868e86959dcdd3c1db"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "141-144",
+       "sha": "4af428ab9b00d4b189385b48437b2e5e431c933fdd10197cd95ab25b3e1699d9"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The sound stream has no inputs and two outputs.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "120",
+       "sha": "23dbf9601cc4ae8b5eb9068d7fdb1a7723dabe86f4f64ce0ba1b4340a0c2adb4"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A change of the ROM bank brings the sound stream up to date first.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "152",
+       "sha": "54a7f31f3408720d2f3d08d7caba83715f3f8e7a944b8413fab3ba01ea1910a1"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "154",
+       "sha": "48354aa610673f513dcaecec9b3ac500531bc608b6049698da7d77a5d11a2933"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "enable_w stores a sound enable flag; the test that would silence the output on it is commented out.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "160",
+       "sha": "11ff1c9edb5eb78d419cc7dee5884af99bfda4fd5959718d38ae516899eaaebf"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "211",
+       "sha": "dc52ff6b999e0adac97f728e5fca9ef53704819db2c8ae44cb8caa5df9db1d1a"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A 16-bit write keeps the high byte in a side buffer and the low byte in the register area; a read gives both back.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "191-194",
+       "sha": "a0e364c64a3606940fe0a828e0c0d4a7d49681dd4bf6b35e6868e7063d08dd98"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "199-200",
+       "sha": "afe8d4cc1a2a09c56438a9e0c73ec3f29c85e6c5818bc22ca06bb9b039f4b878"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "place",
+     "of": "mame",
+     "vs": "place",
+     "text": "MAME reaches the chip by read and write on 8-bit buses, word_r and word_w on 16-bit buses, and enable_w for the enable flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/x1_010.h",
+       "lines": "15-21",
+       "sha": "b5b68ef9f31f1f3f52f755f084f66bb033180d44d3fc208e9e97ed633dc50e70"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "163",
+       "sha": "64febdf8f9f8f710c143ac436b3f5de1da33d7bfd33f9de33dc6d7e2b0672333"
+      },
+      {
+       "ref": "mame:src/devices/sound/x1_010.cpp",
+       "lines": "186",
+       "sha": "0d2303a2cb487074054057bd806b568f5d3f948273298dbc02150f4e6aed0138"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

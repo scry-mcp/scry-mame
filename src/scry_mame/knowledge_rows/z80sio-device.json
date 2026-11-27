@@ -1,0 +1,336 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "z80sio-device",
+ "title": "Z80 SIO serial controller as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "the Zilog Z80 SIO as a chip: its overview and features, and what a reset does to a channel",
+ "source": "official",
+ "documents": [
+  {
+   "name": "UM0081.raw.txt",
+   "variant": "Z80 SIO"
+  }
+ ],
+ "official": {
+  "UM0081.raw.txt": [
+   "7701-7733",
+   "7853-7856"
+  ]
+ },
+ "closed": [],
+ "engine": [
+  "clear_interrupt",
+  "reset_ext_status",
+  "reset_interrupts",
+  "update_wait_ready"
+ ],
+ "entries": [
+  {
+   "key": "z80sio",
+   "name": "Z80 SIO",
+   "aliases": [],
+   "regions": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7701-7733"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7853-7856"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_channel::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "function": "z80sio_device::device_reset"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The Z80 SIO is a dual-channel multi-function serial peripheral, a serial-to-parallel and parallel-to-serial converter and controller, configurable by system software.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7702-7707",
+       "sha": "b7916d4ff3ecb6237a3a237caf82649719432e09ea7efad8e6ae07728004caae"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "It handles asynchronous and synchronous byte-oriented protocols such as IBM Bisync, and bit-oriented protocols such as HDLC and IBM SDLC.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7708-7712",
+       "sha": "d513af2bc3245289000d51591c10d5e8a64a7fb2a46760abdf914c61ff08e056"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "It can generate and check CRC codes in any synchronous mode, and both channels have modem controls that can serve as general-purpose I/O.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7713-7717",
+       "sha": "3785bcbb9e844b2484894d6d1c2dccfab72993786ee2e17aae6406285f4b7e27"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Features: two independent full-duplex channels, receiver data registers quadruply buffered and transmitter doubly buffered.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7718",
+       "sha": "d88dd8363c93124a118f354662cf0c7e4b7dbb0b4d638c91ec52450a5d11d084"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7727",
+       "sha": "e3bf07490ed4ca42bcd5aa4d70fdb5d0d90552b6831bda7982c1453b43d38da6"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7732-7733",
+       "sha": "510b681a457d914ec1eb281093c93b3b720efafe991adce4930e150388dffc36"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "Features: CMOS and NMOS versions, 40-pin DIP and 44-pin PLCC/QFP packages, single 5 V supply and single-phase clock, TTL-compatible inputs and outputs.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7719-7722",
+       "sha": "b28da6519b5f1f264b3103dffc9d4bd2f8a3642421dbc1c3e022ef24cde320d0"
+      },
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7726",
+       "sha": "1516083cf5f81f0b096d65394dc076f538225342d3abf6edfc3246445ac57634"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Data rates in synchronous or isosynchronous modes are 0 to 800K, 1.2M and 2.5M bits per second at 4, 6 and 10 MHz system clock.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7728-7731",
+       "sha": "314f5d212aa3950448f02762e3cb4197e9cd49e3d37587097d9624503a553c0c"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "reset",
+     "of": "doc",
+     "text": "A Low RESET disables transmitters; the captured line also names an item before them, printed '/RESET', which the capture does not settle.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7853-7854",
+       "sha": "caf2164a45f383be10ce2f633732c6118af0c2a2bbb7ae441c569b5e910228a2"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "reset",
+     "of": "doc",
+     "text": "A Low RESET forces TxDA and TxDB marking.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7854",
+       "sha": "1bce12b85c46747bf6f7e357f7eed4fcd7e89aa3aeafe9c28607d2e36d815e0b"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "reset",
+     "of": "doc",
+     "text": "A Low RESET forces the modem controls High.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7854-7855",
+       "sha": "1e94699e70f592826d0bda72a3f9d94b1154e2cc2c6b62f5efe436a16594a234"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "reset",
+     "of": "doc",
+     "text": "A Low RESET disables all interrupts.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7855",
+       "sha": "817ce78ea0e6a950543a824d73c3122eb7ae23920ebce1aa66687492a58ba0fe"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "on": "is",
+     "of": "doc",
+     "text": "The control registers must be rewritten after the Z80 SIO is reset and before data is transmitted or received.",
+     "quotes": [
+      {
+       "ref": "datasheet:UM0081.raw.txt",
+       "lines": "7855-7856",
+       "sha": "f776cd116aaed5691477e91ae8235def91e376c2146b1e20647f72c292525ff7"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "on": "reset",
+     "of": "mame",
+     "text": "On a channel reset MAME also clears its receive FIFO, receive and transmit counters and bit state, and the transmit flags.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1114-1119",
+       "sha": "bde0987db0822a4c797f0fd8ad42920ca2ea134c1e95a6994c9c43d3030e9804"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1131-1135",
+       "sha": "223bd549fc91f5ba55cd73d425b4bce2ef94a503c72d3c2544af6d3e5846b67d"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1138",
+       "sha": "9ee1e2b1e5b05dc8a4ca1cf4303b81f374c86de3650e4a32635a79b4676d14b5"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "13",
+     "on": "reset",
+     "of": "mame",
+     "text": "On a channel reset MAME also clears the Wait/Ready enable bit in WR1 and updates the Wait/Ready output.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1141-1142",
+       "sha": "5628b4682c61537131adef98b9f68c63e2b6cbe510841a690696e2f1af7fb177"
+      }
+     ],
+     "vs": "extra"
+    },
+    {
+     "n": "14",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On a channel reset MAME also clears the receive enable bit in WR3.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/z80sio.cpp",
+       "lines": "1125",
+       "sha": "5b7462cead65686ef836907750df2ec7f025d17d7d365f9a7af4f71c45d26102"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7701",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:UM0081.raw.txt",
+     "lines": "7723-7725",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1128",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1136-1137",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1145-1146",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1149-1154",
+     "as": "unfollowed",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1153",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1120",
+     "as": "unseen",
+     "reason": "reset of the status register image, which the RR0 and RR1 entries describe bit by bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1121",
+     "as": "unseen",
+     "reason": "reset of the status register image, which the RR0 and RR1 entries describe bit by bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1122",
+     "as": "unseen",
+     "reason": "reset of the status register image, which the RR0 and RR1 entries describe bit by bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1129",
+     "as": "unseen",
+     "reason": "reset of the status register image, which the RR0 and RR1 entries describe bit by bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/z80sio.cpp",
+     "lines": "1130",
+     "as": "unseen",
+     "reason": "reset of the status register image, which the RR0 and RR1 entries describe bit by bit"
+    }
+   ]
+  }
+ ]
+}

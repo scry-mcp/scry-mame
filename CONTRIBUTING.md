@@ -115,9 +115,15 @@ that calls each tool once, with every reply checked.
 
 ```sh
 uv run python docs/reference/tour/tour.py --rompath <the folder of gridlee.zip> --display 1
+uv run python tests/knowledge_example.py /tmp/knowledge_example.json
 uv run python -m scry_core.reference scry_mame.server:REFERENCE --write \
-    --examples docs/reference/tour/TRANSCRIPT.md demos/*/TRANSCRIPT.md
+    --examples /tmp/knowledge_example.json docs/reference/tour/TRANSCRIPT.md demos/*/TRANSCRIPT.md
 ```
+
+- The order of `--examples` decides which call serves a tool the others also call: the first
+  one wins. `knowledge_find` is asked by the record `tests/knowledge_example.py` writes, so
+  that record goes first; later in the list, the tour's own call to it would serve instead and
+  the example would not be the reply the knowledge tests compare.
 
 - A run where every step passed copies its transcript to `docs/reference/tour/TRANSCRIPT.md`.
   A second run gives the same file.

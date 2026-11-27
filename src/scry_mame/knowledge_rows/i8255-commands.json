@@ -1,0 +1,768 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "i8255-commands",
+ "title": "The 8255 PPI, its commands",
+ "kind": "command",
+ "scope": "i8255",
+ "covers": "The two kinds of control word the 8255 takes: the mode set and the port C bit set/reset",
+ "source": "official",
+ "documents": [
+  {
+   "name": "82C55A.raw.txt",
+   "variant": "82C55A"
+  }
+ ],
+ "official": {
+  "82C55A.raw.txt": [
+   "158-163",
+   "176-182",
+   "203-211",
+   "215-229",
+   "231-232",
+   "252-273",
+   "437-442",
+   "457-467",
+   "500-504"
+  ]
+ },
+ "engine": [
+  "m_out_pa_cb",
+  "m_out_pb_cb",
+  "m_out_pc_cb",
+  "m_tri_pa_cb",
+  "m_tri_pb_cb",
+  "m_tri_pc_cb"
+ ],
+ "handlers": [
+  {
+   "ref": "mame:src/devices/machine/i8255.cpp",
+   "function": "i8255_device::write",
+   "case": [
+    "CONTROL"
+   ],
+   "value": "data"
+  }
+ ],
+ "entries": [
+  {
+   "key": "0x80..0xFF",
+   "name": "mode set",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "158-163"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "176-182"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "231-232"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "252-273"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "437-442"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::set_mode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::device_reset"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The 8255 has three basic modes of operation selected by software: mode 0 basic input/output, mode 1 strobed input/output and mode 2 bi-directional bus.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "158-163",
+       "sha": "4b782d594f97871c45ec9adb1adc5fc572d5b0f65575e0fc32385ab4b462c821"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The modes of port A and port B can be defined separately, port C is divided into two portions as their definitions require, and modes may be combined.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "176-178",
+       "sha": "81dc905ccebf07d9cfc8a7a932b5d9200ef185cad3a9b03b4908ec0923aa0876"
+      },
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "181-182",
+       "sha": "5a8c9e2987c03ef4b74ec015852d5d5be16f1cd19dbcad7a6d8e52d1bae5029a"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "All of the output registers, including the status flip-flops, are reset whenever the mode is changed.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "178-180",
+       "sha": "efb3a85c0cf764daf65e8e400f7608f200413a9b32fa5504a03ea8ceb79e81b8"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "write",
+     "of": "doc",
+     "text": "All mask flip-flops are automatically reset during mode selection and device reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "231-232",
+       "sha": "387a9528331bd122621d39f4f649321d99c5d8630278ae825ff1f616d70a61a2"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "In mode 0 the mode word bits D4, D3, D1 and D0 set port A, port C upper, port B and port C lower as input (1) or output (0).",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "252-262",
+       "sha": "717ba8d1e1fa9f65915bd63670d88fc12fdb8f5c6612ef17ac9f9182f3a066e0"
+      },
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "263-273",
+       "sha": "6473e651ccbb87d08f8a881a159e94880e0e6e19e76f85b43e7526bef7d19817"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "In any combination of modes some or all port C lines are used for control or status; the remaining bits are inputs or outputs as the Set Mode command defines.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "437-442",
+       "sha": "749d525602fc060bec707134fce86b304b5abf6ddeae14401a273e5329fc3b01"
+      }
+     ]
+    },
+    {
+     "n": "107",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "3",
+     "text": "A mode set clears IBF and INTE flags, sets OBF to one and, unless m_dont_clear_output_latches is set, clears the output latches; port A as an output also gets IBF set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "584-591",
+       "sha": "bf84f5f028a06321d03a6b027f9e3e329e6901421cb7804247c1aa79bcbd5bfd"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "593-596",
+       "sha": "faed48dfdd092d33271bf7f9c934fc30734e97ce232e5d4615ead37ece79a1de"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "612-617",
+       "sha": "98fd8449c3042b58c770330566230177cd79379d4593d4d57a949683f7150b39"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "629-631",
+       "sha": "1b72962d14d46f4974562cf67de745723bfb20b613e60b48f5c0ecb0e8e34e7f"
+      }
+     ]
+    },
+    {
+     "n": "108",
+     "on": "write",
+     "of": "mame",
+     "vs": "differs",
+     "row": "5",
+     "text": "MAME stores the mode word, direction bits included, in m_control; m_force_portb_in sets its port B input bit and m_force_portc_out clears its port C input bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "572",
+       "sha": "b7540a86cbecaaf91111b1ff4f89da2f99554faf54629f4665702cce6a0d08ab"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "574-581",
+       "sha": "97c30f8b9113d6bf5c9718af406f169927314fc65a61cc66cf0b47382d8c507e"
+      },
+      {
+       "ref": "mame:src/devices/machine/i8255.cpp",
+       "lines": "778",
+       "sha": "5bbcaab587cc47e8926e504e6f87dd0c7f58be400be66b8efc3af3fa9d5cd5d1"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "743",
+     "as": "parent",
+     "owner": "i8255:register:0x03:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "774",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "781",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "785",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "589-591",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "617",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "267",
+     "as": "agrees",
+     "row": "4"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "619",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "624",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "599",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "605",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "606",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "608",
+     "as": "log"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "609",
+     "as": "log"
+    }
+   ]
+  },
+  {
+   "key": "0x00..0x7F",
+   "name": "port C bit set/reset",
+   "regions": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "203-211"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "215-229"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "457-467"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "500-504"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::set_pc_bit"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::set_inte"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::set_inte1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "function": "i8255_device::set_inte2"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "write",
+     "of": "doc",
+     "text": "Any of the eight bits of port C can be set or reset with a single output instruction.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "203-207",
+       "sha": "1d7d8a703bb6786fdbc59aa1c8c8ec4e45bbf0290c474a2a44c03ed70b25e89c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "doc",
+     "text": "When port C is status/control for port A or B, its bits can be set or reset as if they were data output ports.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "208-211",
+       "sha": "99ce8d2fadcf7ede21dc1a67c3bedb15ab3c03fb845b0c7cd9ddaf7cb81d372b"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "doc",
+     "text": "The interrupt request signals of mode 1 and mode 2 are inhibited or enabled by setting or resetting the associated INTE flip-flop with the port C bit set/reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "215-222",
+       "sha": "b2e1e7949ad1ef9067df1fde6a6529401291b3a9491ee5d8105f345978fb3fae"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "Bit set/reset lets the programmer allow or disallow one I/O device to interrupt the CPU without affecting any other device in the interrupt structure.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "223-226",
+       "sha": "8f565062671141da75d88b8c8033b7074bb756ce9bc0d9d39a6ba456cb130c8e"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "write",
+     "of": "doc",
+     "text": "Bit set sets the INTE flip-flop to enable interrupts; bit reset resets it to disable them.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "227-229",
+       "sha": "16da93afcd20defa720cb12526fa97fee573ce4428dad663097d20f761c10201"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "write",
+     "of": "doc",
+     "text": "A port C line programmed as an output, INTR, IBF and OBF included, can be written by the command, or an interrupt enable flag set or reset.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "457-460",
+       "sha": "c871efa890a3b4b05ee788110eb4b061a17beb85a3a234c56ec824de0ea1263f"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "write",
+     "of": "doc",
+     "text": "Port C lines programmed as inputs, ACK and STB included, are not affected; writing their bit positions changes the group A and B interrupt enable flags.",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "460-467",
+       "sha": "041ab233799bb20cfcb94216dd89ba8d565610eb0d32489127be3740fe2a29f8"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "write",
+     "of": "doc",
+     "text": "INTE B is PC2, the pin of ACKB (output mode 1) or STBB (input mode 1).",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "501",
+       "sha": "8cad3b787851e0ef770098de7a7d926ac911037ea09f4718f970f5cbabd5472d"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "on": "write",
+     "of": "doc",
+     "text": "INTE A2 is PC4, the pin of STBA (input mode 1 or mode 2).",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "502",
+       "sha": "750412b03538e6c22e5bbaa86fe3a93ea4d134d39452b9ea7727de342cbe6a1e"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "on": "write",
+     "of": "doc",
+     "text": "INTE A1 is PC6, the pin of ACKA (output mode 1 or mode 2).",
+     "quotes": [
+      {
+       "ref": "datasheet:82C55A.raw.txt",
+       "lines": "503",
+       "sha": "5c9fa44a7c1f083a547c14b8a5635d77f9c055f36bbec22c04d463b2ae513d1d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "500",
+     "as": "layout"
+    },
+    {
+     "ref": "datasheet:82C55A.raw.txt",
+     "lines": "504",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "743",
+     "as": "parent",
+     "owner": "i8255:register:0x03:write"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "774",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "781",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "785",
+     "as": "decode"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "787",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "640-641",
+     "as": "agrees",
+     "row": "1"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "650-653",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "660-663",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "671-676",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "685-693",
+     "as": "unfollowed",
+     "row": "2"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "650-653",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "660-663",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "671-676",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "685-693",
+     "as": "unfollowed",
+     "row": "3"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "650-653",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "660-663",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "671-676",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "685-693",
+     "as": "unfollowed",
+     "row": "5"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "650-653",
+     "as": "unfollowed",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "660-663",
+     "as": "unfollowed",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "671-676",
+     "as": "unfollowed",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "685-693",
+     "as": "unfollowed",
+     "row": "6"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "650-653",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "660-663",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "671-676",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "685-693",
+     "as": "unfollowed",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "643",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "645",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "646",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "648",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "657",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "658",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "666",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "668",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "669",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "678",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "681",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "683",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "687",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "690",
+     "as": "structure"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "692",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "123",
+     "as": "agrees",
+     "row": "8"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "661",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "672",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "123",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "143",
+     "as": "agrees",
+     "row": "9"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "651",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "674",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "123",
+     "as": "agrees",
+     "row": "10"
+    },
+    {
+     "ref": "mame:src/devices/machine/i8255.cpp",
+     "lines": "133",
+     "as": "agrees",
+     "row": "10"
+    }
+   ]
+  }
+ ]
+}

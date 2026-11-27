@@ -1,0 +1,203 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "m6809-vectors",
+ "title": "Vectors of the 6809",
+ "kind": "vector",
+ "scope": "m6809",
+ "covers": "FIXTURE of a test: a few vectors of the 6809, each with its slot",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "maker",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "archive-org",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  },
+  {
+   "where": "index",
+   "gave": "Nothing: this dictionary is a fixture of a test."
+  }
+ ],
+ "entries": [
+  {
+   "key": "0xFFF2",
+   "name": "SWI3",
+   "address": 65522,
+   "length": 2,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "SWI3 is a vector of the 6809.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "10-10"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 2 bytes at 0xFFF2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "11-11"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xFFF8",
+   "name": "IRQ",
+   "address": 65528,
+   "length": 2,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "IRQ is a vector of the 6809.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "12-12"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 2 bytes at 0xFFF8.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "13-13"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xFFFA",
+   "name": "SWI",
+   "address": 65530,
+   "length": 2,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "SWI is a vector of the 6809.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "14-14"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 2 bytes at 0xFFFA.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "15-15"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xFFFC",
+   "name": "NMI",
+   "address": 65532,
+   "length": 2,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "NMI is a vector of the 6809.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "30-30"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 2 bytes at 0xFFFC.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "31-31"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "0xFFFE",
+   "name": "reset",
+   "address": 65534,
+   "length": 2,
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "reset is a vector of the 6809.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "16-16"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "place",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Its slot is 2 bytes at 0xFFFE.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/cpu/m6809/m6809.cpp",
+       "lines": "17-17"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2235 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "aica",
+ "title": "The Sega/Yamaha AICA register map",
+ "kind": "register",
+ "scope": "aica",
+ "covers": "the AICA registers as MAME's device handles them: the slot words that change derived state, the global control, timer, interrupt and DMA words, and the DSP banks; no official document was found",
+ "source": "emulator",
+ "searched": [
+  {
+   "where": "mame-header",
+   "gave": "The header of aica.cpp names the part as Sega/Yamaha 315-6232, earlier 315-6119, and cites no document."
+  },
+  {
+   "where": "maker",
+   "gave": "A web search gave Sega's Dreamcast Hardware Specification Outline, a block description with no register model, and no Yamaha AICA manual."
+  },
+  {
+   "where": "bitsavers",
+   "gave": "The components listing has no Sega folder, and the Yamaha folder holds no AICA document."
+  },
+  {
+   "where": "archive-org",
+   "gave": "A search found Sega's Dreamcast Hardware Specification Outline (Rev.0819), whose AICA chapter gives no register-level model, and game manuals only."
+  },
+  {
+   "where": "index",
+   "gave": "datasheetarchive.com answered 315-6232 with unrelated connectors and fuses, and no AICA document."
+  }
+ ],
+ "engine": [
+  "adjust",
+  "from_ticks",
+  "m_irq_cb",
+  "m_main_irq_cb",
+  "popmessage",
+  "logerror"
+ ],
+ "entries": [
+  {
+   "key": "0x00",
+   "name": "slot key on/off",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateSlotReg",
+     "case": [
+      "0"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Word 0 holds KEYONEX in bit 15, KEYONB in bit 14, SSCTL in bit 10, LPCTL in bit 9, PCMS in bits 8-7, and address bits 22-16 in bits 6-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "55-61",
+       "sha": "cadade0c220242e339363f2f5ab87fc466c66dc4f019e14a22f2676c04c24b34"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word; with bit 15 set it starts released slots holding bit 14 and releases slots without it, then clears bit 15.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "864-868",
+       "sha": "4ef211b75867807922a6a7eacebed39d9921ebc40c5fc9e56a19fa1b8aed96fa"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "558-568",
+       "sha": "dbd68c61ca50cbe6fd59f2b1e927f971940f8291d22319a4851569a2eaa229ce"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "578-586",
+       "sha": "0ba021b4955d708b7f5affd29754ed7e6b992faf0288599897f632ae9c049570"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "555",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "569",
+     "as": "build"
+    }
+   ]
+  },
+  {
+   "key": "0x18",
+   "name": "slot octave/freq",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateSlotReg",
+     "case": [
+      "0x18"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Slot word 0x18 holds the octave in bits 14-11 and the frequency number in bits 9-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "78-79",
+       "sha": "a98b1d819e13c9fc4b0d603bb7a1e8c32a8bc3a52c76106c5f5b799e7980377f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and recomputes the slot's pitch step from the octave and the frequency number.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "864-868",
+       "sha": "4ef211b75867807922a6a7eacebed39d9921ebc40c5fc9e56a19fa1b8aed96fa"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "588-591",
+       "sha": "2dd25feb639aafda82f1939eeeea3f179d64fc1adf9e8223336a1e54a3957b18"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "349-357",
+       "sha": "ccbdd6a4f44a7e25b9be606c22447cce4f713987ec988993c364cc888e83ab0f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "555",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x14",
+   "name": "slot rates and level",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateSlotReg",
+     "case": [
+      "0x14"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Slot word 0x14 holds the release rate in bits 4-0, the decay level in bits 9-5, the key rate scaling in bits 13-10 and the loop-start link in bit 14.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "71-74",
+       "sha": "8fc78a91746e52d67626db33fa3f8ca36903a3f1619dd3bcbb9780d00c6e9ed5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and recomputes the envelope's release rate and decay level from those fields.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "864-868",
+       "sha": "4ef211b75867807922a6a7eacebed39d9921ebc40c5fc9e56a19fa1b8aed96fa"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "592-596",
+       "sha": "88b3432c3e5936e6c883ac90a3a7116e17d68136e2eca05bc6f9f48d9ef5079e"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "555",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x1C",
+   "name": "slot LFO parameters",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateSlotReg",
+     "case": [
+      "0x1c"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Word 0x1C holds LFORE in bit 15, the LFO frequency in bits 14-10, the phase waveform and depth in bits 9-5, and the amplitude pair in bits 4-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "81-86",
+       "sha": "616a0ec3c5f5e44b62a0ff382a5051bd83537d35e235eb0db605109e84b032f7"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and recomputes the LFO steps whose depth field is not zero.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "864-868",
+       "sha": "4ef211b75867807922a6a7eacebed39d9921ebc40c5fc9e56a19fa1b8aed96fa"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "597-600",
+       "sha": "ef7cdae9008ddff83eba4cb9ff2ea6aaf186bfe844883f9924eb75c1336bacc8"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "361-367",
+       "sha": "f54ef2d9afd872c0a0bebf0ad302ea83755ca3b913d6a4ef7c7aaabad7adf18b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "555",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x24",
+   "name": "slot send level and pan",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateSlotReg",
+     "case": [
+      "0x24"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Slot word 0x24 holds the direct send level in bits 11-8 and the direct pan in bits 4-0, read as 0 when mono is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "91-92",
+       "sha": "67efc017187017a3f2fe605f3517741ee85671d6c3da43961e4d8b6fa6494ba2"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word; the slot handler changes nothing, and the mixer reads the level and pan when it sounds the slot.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "864-868",
+       "sha": "4ef211b75867807922a6a7eacebed39d9921ebc40c5fc9e56a19fa1b8aed96fa"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "601-603",
+       "sha": "d331010bf7f969a10ac7332417f21a3f7518c7b04a2f8e7feb3fc67684ebb32f"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1255-1258",
+       "sha": "68622b49950a3e12aaf853a9b8fcb9635306c489160345f994c1c071a53769bd"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "555",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2804",
+   "name": "DSP ring buffer",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x4"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x04 holds the ring-buffer size in bits 14-13, one of four sizes in kwords, and the ring-buffer pointer in bits 11-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "123-124",
+       "sha": "01ffeeb9210a4755f3011292dfede21b82f1567c08c8d55498377a5dae077e93"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "613-616",
+       "sha": "6f849e0a0af4ca2afb16a15f409d857a254c22f9a5969b6ffcc7bf94b4a37ef9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and sets the DSP ring buffer to 8, 16, 32 or 64 kwords from bits 14-13, its pointer from bits 11-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "611-617",
+       "sha": "ca3f4cb5e85b7ee0227e44ca61f128a70e282e89a5b2007cc3ff7167b5293467"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2808",
+   "name": "MIDI input",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x8"
+     ]
+    },
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateRegR",
+     "case": [
+      "8"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x08 is the MIDI input register; the handler takes the word's low byte as a received byte.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "618-621",
+       "sha": "186b5c598abc03ebc4f7305907a550484a255b650ab371fa1da3ede81c4adb67"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write queues the word's low byte in a sixteen-byte stack, advancing the write index modulo sixteen.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "618-621",
+       "sha": "186b5c598abc03ebc4f7305907a550484a255b650ab371fa1da3ede81c4adb67"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1521-1525",
+       "sha": "6fa5ec65f11e868d96d6ae128bc44ecf2fdeaeed5dc437a39bf2865b88f7afb1"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the stack byte at the read index in bits 7-0, cancels the sound IRQ, and advances the index when the stack is not empty.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "794-801",
+       "sha": "de61daa776ed50180381ae043e1227533907b7effd239263e22abe0e1aff33e6"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "802-807",
+       "sha": "98a3ef1f1d0d22904ec3ce5d41ca02d089d7c60fb1e678ebb4a17b7b13dc1fc0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    },
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "792",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2812",
+   "name": "reserved offsets",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x12"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offsets 0x12 to 0x17 have no write handler of their own: the update switch only breaks for them.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "628-634",
+       "sha": "f550697ea3065ad96e44847d7a77ac2720bbcb375dceae60a6ba45a598a31da5"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word at its offset; the update handler changes nothing else.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "628-634",
+       "sha": "f550697ea3065ad96e44847d7a77ac2720bbcb375dceae60a6ba45a598a31da5"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2880",
+   "name": "DMA dest address high",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x80"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x80 supplies bits 22-16 of the DMA destination address from its bits 9-15; offset 0x84 supplies the low bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "636-640",
+       "sha": "c66647331b920b9a92bf9ceaec5a3ada80d8c686b7f32f22e862ddfd657e0dbf"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "642-645",
+       "sha": "33a837bea1e31d638d768cb32fa440680bfeca08e619258f7c9a8bd73e47147f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and replaces bits 22-16 of the DMA destination address from bits 9-15, keeping its low bits.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "636-640",
+       "sha": "c66647331b920b9a92bf9ceaec5a3ada80d8c686b7f32f22e862ddfd657e0dbf"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2884",
+   "name": "DMA dest address low",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x84"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x84 supplies bits 15-2 of the DMA destination address; its bits 1-0 are ignored.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "642-645",
+       "sha": "33a837bea1e31d638d768cb32fa440680bfeca08e619258f7c9a8bd73e47147f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and replaces bits 15-2 of the DMA destination address, keeping bits 22-16.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "642-645",
+       "sha": "33a837bea1e31d638d768cb32fa440680bfeca08e619258f7c9a8bd73e47147f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2888",
+   "name": "DMA source and gate",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x88"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x88 holds the DMA source address in bits 14-2 and the DMA gate in bit 15.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "647-651",
+       "sha": "81f1e2599feef2461800948a0a4ac3826094eebad9bc0f31a5bae6586874dc90"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word, sets the DMA source address from bits 14-2 and the gate from bit 15.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "647-651",
+       "sha": "81f1e2599feef2461800948a0a4ac3826094eebad9bc0f31a5bae6586874dc90"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x288C",
+   "name": "DMA length and execute",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x8c"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x8C holds the DMA length in bits 14-2, the direction in bit 15 and the execute bit 0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "653-659",
+       "sha": "f99223fdbc9cd9a4796368e51f7667a74d192db03f6ca0b8602baf1348d20dba"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and, when bit 0 is set, runs the DMA transfer immediately.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "653-659",
+       "sha": "f99223fdbc9cd9a4796368e51f7667a74d192db03f6ca0b8602baf1348d20dba"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "With the direction set and the gate bit set, the transfer writes zeros to two bytes per step, then clears bit 0 and sets pending bit 4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1326-1336",
+       "sha": "0f2527f7044c2a010386c803d2da062a8883db57aad20a6de152d827b6311f25"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1377-1381",
+       "sha": "49bc579c7a8825cc516cd44db0e3623bda5b9849e677be5eebe28397982e8a4b"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2890",
+   "name": "timer A",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x90"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x90 holds timer A's prescaler in bits 10-8 as a power of two and its count in bits 7-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "661-671",
+       "sha": "58fd8a415cfe986f4f01164e8be63d373fe8bc10291e3ee55bc0a0a8899218d9"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and, with an IRQ handler bound, sets timer A's period from the prescaler and count; a count of 0xFF starts none.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "661-671",
+       "sha": "58fd8a415cfe986f4f01164e8be63d373fe8bc10291e3ee55bc0a0a8899218d9"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "672-678",
+       "sha": "8016e54824a5750305ea0363e41716e95b405b6579e293def0384dfb9f6bec10"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On expiry the counter becomes 0xFFFF, pending bit 6 is set and the count's high byte is written to bits 7-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "222-233",
+       "sha": "a01fbc7c958c5947cc92f5cf59564cd65b82eae86ed1e740b7b747ba52c1914a"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2894",
+   "name": "timer B",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x94"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x94 holds timer B's prescaler in bits 10-8 as a power of two and its count in bits 7-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "680-690",
+       "sha": "3035b221156997cc172afdf8e690ed093b4b401376531551a6eca6095a301c6a"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and, with an IRQ handler bound, sets timer B's period from the prescaler and count; a count of 0xFF starts none.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "680-690",
+       "sha": "3035b221156997cc172afdf8e690ed093b4b401376531551a6eca6095a301c6a"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "691-697",
+       "sha": "3e02b85224eb4d059409baf2dca4fdf6d98819ba6348c69a722805578af6a32c"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On expiry the counter becomes 0xFFFF, pending bit 7 is set and the count's high byte is written to bits 7-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "235-245",
+       "sha": "9c70ff69f27e08313add796a81a4364381c246d2fcdd9eeb44c651dedea6de49"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2898",
+   "name": "timer C",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x98"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x98 holds timer C's prescaler in bits 10-8 as a power of two and its count in bits 7-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "699-709",
+       "sha": "fd155e55180aa663e05986e9b87b376dce9a61d856380d3f4700227833a725b4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and, with an IRQ handler bound, sets timer C's period from the prescaler and count; a count of 0xFF starts none.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "699-709",
+       "sha": "fd155e55180aa663e05986e9b87b376dce9a61d856380d3f4700227833a725b4"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "710-716",
+       "sha": "832791a20a5623d6025a85f7f477562b922c7faf0b31afd3d1b0f506e265c537"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "On expiry the counter becomes 0xFFFF, pending bit 8 is set and the count's high byte is written to bits 7-0.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "247-257",
+       "sha": "c5f6bcf7f6b03f29553d27ed55b0ecebca700d2a17bf67a5034ba513a23a3ab0"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x289C",
+   "name": "SCI interrupt enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0x9c"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x9C is the SCI interrupt enable mask; bits 6-8 enable the timer interrupts, and the MIDI stack raises its own.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "182-186",
+       "sha": "c8ef44e12cd2bc6b9f7a63074fedfc0b32f6e4f41933af8accd0a9d0ce0ee162"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "188-196",
+       "sha": "c249277070a74404d9e43750a81e7c6bdeec8cffbeb9f9d784b96c3a5dc5237e"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "197-203",
+       "sha": "9d884c735a7842f705692affe6b5434fa968083283ffbaa84b6e08eee2ffe2a2"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "204-210",
+       "sha": "044047e177a4a9930b6a99fcbfdeb26fe57c94c7568dbc6d155795a5ad908c28"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "179-180",
+       "sha": "09af68c972521e7ae5c972cf65c8dd76828003261a482f9167d6c25ce3878d5b"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word and logs a request for help when any of bits 0, 4, 5, 9 or 10 is set.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "719-723",
+       "sha": "ce84bf0016e8751d7a6f2dd388b797f56ae80b4111e5e2e0d790779c1978e130"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x28A4",
+   "name": "SCI interrupt reset",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0xa4"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0xA4 is the SCI interrupt reset register: a 1 in a bit clears that source's pending interrupt.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "725-735",
+       "sha": "12dde66a3318e921323f36860904ea695bcf0bd521a112f405a40b435abab84f"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write, with an IRQ handler bound, clears the pending bits it sets, then sets again the bits of expired timers.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "725-735",
+       "sha": "12dde66a3318e921323f36860904ea695bcf0bd521a112f405a40b435abab84f"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "736-746",
+       "sha": "2e0ad64142d479b19eacefe6d41ce865601abe21c3ec7abf995f2566f4f30128"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x28A8",
+   "name": "SCI interrupt levels",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0xa8"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offsets 0xA8, 0xAC and 0xB0 are the three SCI level registers: each source's level takes one bit from each, in order.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "134-136",
+       "sha": "e23cad695a376da455a5bedb35041bb92e62cb0d7f9e8999cd10890850d61cfd"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "153-163",
+       "sha": "e83594ad8e3abd7191c28aa2cab89b89b0d4d029cca1ed3cedbe7371e6281f5c"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write to any of the three recomputes the levels of timer A, timers B and C, and MIDI, when an IRQ handler is bound.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "749-758",
+       "sha": "2178738d05e2f1cebd1131fbec5f09d7bc7a039347d95fbb472671fc57450f80"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "759-761",
+       "sha": "8629cfb7bcac13fc5ebb3413ca06093184b8bdf4d5cbad5fc6d7f59c0b7d6a90"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x28B4",
+   "name": "SH-4 IRQ enable",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0xb4"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0xB4 is the main SH-4 interrupt enable mask; a write with any of bits 0-4 or 6-10 set logs a request for help.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "763-769",
+       "sha": "2a02335e3e733fa96d47f013b3d28368cbc6f6ddd7e6e9f64b6a241da28a15a4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word as the main enable mask and recomputes the SH-4 interrupt line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "763-769",
+       "sha": "2a02335e3e733fa96d47f013b3d28368cbc6f6ddd7e6e9f64b6a241da28a15a4"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The line is raised when the pending and enable masks intersect and lowered when they do not.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "213-220",
+       "sha": "a67a88757400ffcdb790cbab416c48160138a1300642cb1fc256475cb438091d"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x28B8",
+   "name": "SH-4 IRQ pending set",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0xb8"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0xB8 is the main interrupt pending register: a write with bit 5 set sets pending bit 5, and a read returns the mask.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "771-776",
+       "sha": "f38090905d1ecf2aaee9f0911ed83673f95d3a6f2a009f13521266e3be633e12"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "852-855",
+       "sha": "71d6e6d83387c4b8f9e53608245eb942c18d0f7cbbb1da5e262d785b62e1d387"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write whose bit 5 is set sets pending bit 5, then recomputes the SH-4 interrupt line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "771-776",
+       "sha": "f38090905d1ecf2aaee9f0911ed83673f95d3a6f2a009f13521266e3be633e12"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x28BC",
+   "name": "SH-4 IRQ reset",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateReg",
+     "case": [
+      "0xbc"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0xBC is the main interrupt reset: a write clears from the pending mask every bit it sets.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "778-782",
+       "sha": "a364597c06c02280518c6e4c2086c5f3c73e7606eb8e6fda16a6c5ec584ac4f4"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write clears those bits from the pending mask and recomputes the SH-4 interrupt line.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "880-884",
+       "sha": "89b6f5ccf34497e8e17e80f35e4c75d3c8ea7f728b55dc0d6d9eb6c6853adc94"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "778-782",
+       "sha": "a364597c06c02280518c6e4c2086c5f3c73e7606eb8e6fda16a6c5ec584ac4f4"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "609",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2810",
+   "name": "envelope monitor",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateRegR",
+     "case": [
+      "0x10"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x10 is a slot monitor: the MSLC field of register 0x0C, bits 13-8, picks the slot, and AFSEL in bit 14 picks the view.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "131-132",
+       "sha": "442ee57984b9f062471506e09a34e8e4b5fdd6563f667f959a1e5fe98ff99100"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "810-814",
+       "sha": "5f2a12708714c0ecc377de3acc19e7487fae42471a42d311b41378a71696386e"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Read with AFSEL clear, it returns the loop flag in bit 15, the envelope phase in bits 14-13 and the inverted volume in bits 12-3, and clears the flag.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "810-820",
+       "sha": "29414a621f4f8dd6db4a49f2fa3020485b41dca73c32a2c20ee7cccd531a9a68"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "821-828",
+       "sha": "e9eebc292cf221037b718a6625a41ad792057036de060ff10aeb3c4cbf04d6c6"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Read with AFSEL set, it returns only bit 15; a TODO asks whether the envelope should be monitored too.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "829-835",
+       "sha": "547fe9ef94874ead2d2d055d8df84c035c181a294293d8a834b33ad70e4b39ae"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "792",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2814",
+   "name": "slot current address",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "function": "aica_device::UpdateRegR",
+     "case": [
+      "0x14"
+     ]
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "Offset 0x14 is the current-address monitor of the slot named by MSLC, register 0x0C bits 13-8.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "132",
+       "sha": "914c2a4038a1813e95f70011f86f67eac26d5ca2dbb09cc0d4001394303b7090"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "839-840",
+       "sha": "63782c3e8c3ef22da0b3fbc974e1d9f3f129d999ece536f93e1491459ebd30ee"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the slot's play address with its twelve fraction bits dropped, whatever the sample format.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "839-849",
+       "sha": "2561dec7fd83d5fe1258c4cfd1d280e55d163344ca5369dd1959ee761dec7b7d"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "35",
+       "sha": "502f640604e8bc40367d72d6494928aaf6d3bd09eb9fe2e7d1918bbae27d336f"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "792",
+     "as": "key"
+    }
+   ]
+  },
+  {
+   "key": "0x2000",
+   "name": "effect send and pan",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "870-877"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x2000 to 0x2044 are the effect table: each word holds the send level in bits 11-8 and the pan in bits 4-0, by slot index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "94-95",
+       "sha": "bdb9a29ae74ea807211918cd1680d4a3f1d04463733eb876c87339438393ba1c"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "870-877",
+       "sha": "64ea4635ad7e50230d978e10559220bc1863b90c1570f396f4cca5690ba91f12"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "862",
+       "sha": "7d2bb98998b9821ca351340850121feecedd4932039097148063b0f21fe3d748"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word at index (addr&0x7F)>>2 up to 0x2044; a write above it is ignored.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "870-877",
+       "sha": "64ea4635ad7e50230d978e10559220bc1863b90c1570f396f4cca5690ba91f12"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "when",
+     "of": "mame",
+     "vs": "extra",
+     "text": "The mixer applies the table's send level and pan to the DSP's sixteen effect returns and to the two external inputs.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1267-1275",
+       "sha": "57a7dfd225a636fdbbf924340770b77db4a7300a163ab315933721dc925ef7ff"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1278-1286",
+       "sha": "f2e29e83353bc5c77afa774003884321975b5b2122b7724a7df2813bac36294f"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x2D00",
+   "name": "IRQ level",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "887-891"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x2D00 is the interrupt level register: a write stores it with a warning, and a read returns it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "887-891",
+       "sha": "a6016a319b2cc81ca83301c8d37f26fb32632de491c49ed65cc438d46d64c018"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "988-991",
+       "sha": "113963ed4572b4873be6bd77d489f7afacb454dee88fb905801092d870625409"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the level and logs a warning.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "887-891",
+       "sha": "a6016a319b2cc81ca83301c8d37f26fb32632de491c49ed65cc438d46d64c018"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the stored level.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "988-991",
+       "sha": "113963ed4572b4873be6bd77d489f7afacb454dee88fb905801092d870625409"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x2D04",
+   "name": "IRQ request",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "892-905"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x2D04 holds the interrupt request word; a read returns it.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "892-901",
+       "sha": "cc1b38c75dc6cd499ab0f36de6252bc9a87833c98680cd229a188e57dfac3e92"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "992-996",
+       "sha": "8aa03abefa22d4f3493b68382742ab4ce002fa3fcef72fbe55f265b5fbdfa139"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word, clears the sound IRQ when bit 0 is set, and logs a warning for bit 8 or any other bit.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "892-901",
+       "sha": "cc1b38c75dc6cd499ab0f36de6252bc9a87833c98680cd229a188e57dfac3e92"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "902-905",
+       "sha": "0e5db9a19e4c379867d43d0ef507ab51c168ed31113116b139900b317285802d"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x3000",
+   "name": "DSP coefficients",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "910-911"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x3000 to 0x31FF are the DSP coefficient RAM, 256 words at index (addr-0x3000)/2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "910-911",
+       "sha": "32ca1d77734e9930497c3299d88a2406ae477d768084a68c2486dbaa0e830dcb"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "878",
+       "sha": "42ee07624ff5da735500921f3f9a47306e23fb899c707c7b365b3c8f87f4b363"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word in the coefficient array at that index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "910-911",
+       "sha": "32ca1d77734e9930497c3299d88a2406ae477d768084a68c2486dbaa0e830dcb"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the word held at that index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1000-1001",
+       "sha": "bdd1d6f95170dacbcfe40f0c7ec092ba2c87a28cf005c48383385d8859bc192d"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x3200",
+   "name": "DSP MAD addresses",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "912-913"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x3200 to 0x32FF are the DSP MAD offset table, 128 words at index (addr-0x3200)/2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "912-913",
+       "sha": "f8d141526299827f2af2f8fdbb43ea5aa1098d63189f1a73d48fe28701787898"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "910",
+       "sha": "db19494f91e53cfc30a08b5cf402ed747e0e3849a520428316627dbe626397cb"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word in the offset table at that index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "912-913",
+       "sha": "f8d141526299827f2af2f8fdbb43ea5aa1098d63189f1a73d48fe28701787898"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the word held at that index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1002-1003",
+       "sha": "be20b78f220b9ce7a4cc32d5050f50edef9563e0c43298b4e10476f5d790320c"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x3400",
+   "name": "DSP program memory",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "921-929"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x3400 to 0x3BFF are the DSP microprogram, 1024 words at index (addr-0x3400)/2.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "921-929",
+       "sha": "e8194581af342101e296c7a258a0222e5fd7b05b8be47bb331f3930889d02d40"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "914",
+       "sha": "37792501ba1ad48831a5eae1203ca4a1c6f756825ba0c794b9d43483e9b82e7d"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word; a write to 0x3BFE, the last word, also starts the DSP.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "921-929",
+       "sha": "e8194581af342101e296c7a258a0222e5fd7b05b8be47bb331f3930889d02d40"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the stored word.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1008-1009",
+       "sha": "f37b4a6a93eb6601bfb97a1dbdfdb726ae2e07bbb7cad1c52d4a4ec89c80faf5"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x4000",
+   "name": "DSP TEMP registers",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "934-939"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x4000 to 0x43FF are the 128 DSP TEMP registers, 32-bit, at index (addr>>3)&0x7F; bit 2 picks the low or high half.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "934-939",
+       "sha": "6e8db7fe7fd928d28acf58ab2d37f49ee50dea86cb9f80e217facd993b5dad7d"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "930",
+       "sha": "bfe636bab071ba4895ec0159a5586f694482f86a646ef422f5147e323dd74370"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write replaces one 16-bit half of the register its address picks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "934-939",
+       "sha": "6e8db7fe7fd928d28acf58ab2d37f49ee50dea86cb9f80e217facd993b5dad7d"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the half its address picks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1014-1019",
+       "sha": "d87690ca9d1d04389d1fc2481c675b75aee6eaa7b1c99fa72a44aff78c66f8d7"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x4400",
+   "name": "DSP MEMS registers",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "941-947"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x4400 to 0x44FF are the 32 DSP MEMS registers, 32-bit, at index (addr>>3)&0x1F; bit 2 picks the low or high half.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "941-947",
+       "sha": "2dc2b7cc273f4292d7609c7955148f70ee73b56e0647f48d102310ccfe3c85ae"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "934",
+       "sha": "537282782758b4504df4c60e6d48fc9fcaf4f27956ce58505cbc9e8a826e32d0"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write replaces one 16-bit half of the register its address picks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "941-947",
+       "sha": "2dc2b7cc273f4292d7609c7955148f70ee73b56e0647f48d102310ccfe3c85ae"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the half its address picks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1021-1026",
+       "sha": "adc38b3ae46e9f8cb0b3bdf7d1a2eff1370ae1bb6d2e07c44e70e75f2f9898e0"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x4500",
+   "name": "DSP MIXS registers",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "948-954"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x4500 to 0x457F are the 16 DSP MIXS registers, 32-bit, at index (addr>>3)&0xF; bit 2 picks the low or high half.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "948-954",
+       "sha": "61cf229b58094241a53f493f8db6f6c39fb73906298c71bd5e6bb42f3df92f98"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "941",
+       "sha": "cfa49038c22c37ca51f750a5b034c1c22edaa59bc72e8dd0c4a7be2943daf2ed"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write replaces one 16-bit half of the register its address picks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "948-954",
+       "sha": "61cf229b58094241a53f493f8db6f6c39fb73906298c71bd5e6bb42f3df92f98"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the half its address picks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1028-1033",
+       "sha": "0d71be1a9ce12c831bdf96157e91c0be41b5f1a2e1aa14889f7bfcf6c2e1031c"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x4580",
+   "name": "DSP effect returns",
+   "access": "write",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "955-956"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x4580 to 0x45BF are the sixteen effect return registers, one per four bytes at (addr-0x4580)/4.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "955-956",
+       "sha": "883f364b868b4f38aa6595afeba87f65b3f4b1a4b2cc2f2bbe110f19daac6154"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "948",
+       "sha": "9ab635dca0b2adce9b3ab7b0fb1a4ce43909605dd120bc9c6ae415c7dbdbbeeb"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write stores the word in the effect return register its address picks.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "955-956",
+       "sha": "883f364b868b4f38aa6595afeba87f65b3f4b1a4b2cc2f2bbe110f19daac6154"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read returns the word held at that index.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1035-1036",
+       "sha": "514d7707d2ab22cf5510d1fb47a41baf78da189dd39b693218958d5b07261358"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  },
+  {
+   "key": "0x45C0",
+   "name": "DSP external inputs",
+   "access": "read",
+   "regions": [
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "957-959"
+    },
+    {
+     "ref": "mame:src/devices/sound/aica.cpp",
+     "lines": "1037-1038"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "0x45C0 is the base of the DSP's two external audio inputs, 16-bit signed.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aicadsp.h",
+       "lines": "33",
+       "sha": "3cbb216e34e40eb159c5f717f57b1d26b9dfc377d29d5eed3953182c7f9e44ab"
+      },
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1037-1038",
+       "sha": "e60d43946072d841373ab40c81513b2d6d8437fba8915a5b79b4887e030d83ec"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "read",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A read indexes EXTS by (addr-0x45C0)/2 below 0x45C8, so 0x45C4 and 0x45C6 read past the two-word array.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "1037-1038",
+       "sha": "e60d43946072d841373ab40c81513b2d6d8437fba8915a5b79b4887e030d83ec"
+      },
+      {
+       "ref": "mame:src/devices/sound/aicadsp.h",
+       "lines": "33",
+       "sha": "3cbb216e34e40eb159c5f717f57b1d26b9dfc377d29d5eed3953182c7f9e44ab"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "write",
+     "of": "mame",
+     "vs": "extra",
+     "text": "A write is not stored: the write path is commented out.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/sound/aica.cpp",
+       "lines": "955-959",
+       "sha": "3787266d5cf7ac96785b311118e7c3bac82e60e30905eb0f4704ef3cdbe6541b"
+      }
+     ]
+    }
+   ],
+   "closed": []
+  }
+ ]
+}

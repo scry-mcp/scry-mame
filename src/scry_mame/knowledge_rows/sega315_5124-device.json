@@ -1,0 +1,228 @@
+{
+ "format": "scry-knowledge/2",
+ "dictionary": "sega315_5124-device",
+ "title": "Sega 315-5124 VDP as a chip",
+ "kind": "device",
+ "scope": "chip",
+ "covers": "The Sega 315-5124 video display processor of the Mark III and Master System as a chip: what it is, what it holds, its power-on state, and what MAME does for them",
+ "source": "official",
+ "documents": [
+  {
+   "name": "SegaMk3-SRM.raw.txt",
+   "variant": "mark3"
+  }
+ ],
+ "official": {
+  "SegaMk3-SRM.raw.txt": [
+   "162-170",
+   "183-192",
+   "606"
+  ]
+ },
+ "engine": [
+  "set_display_settings",
+  "sega315_5124_palette",
+  "SEGAPSG",
+  "add_route"
+ ],
+ "entries": [
+  {
+   "key": "sega315_5124",
+   "name": "Sega 315-5124 SMS1 VDP",
+   "aliases": [
+    "VDP",
+    "SMS VDP"
+   ],
+   "regions": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "162-170"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "183-192"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "606"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::device_reset"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "function": "sega315_5124_device::device_add_mconfig"
+    }
+   ],
+   "rows": [
+    {
+     "n": "1",
+     "on": "is",
+     "of": "doc",
+     "text": "The Mark III VDP is a Sega designed custom video controller chip whose architecture resembles an enhanced TMS9918A.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "163-164",
+       "sha": "cb040986dc4374b05cc85fe9386ebfad5250ecd6bff6dce1ee8c9e1fbe16aa27"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "on": "is",
+     "of": "doc",
+     "text": "The VDP screen is 256 pixels horizontal by 192 vertical, and a pixel is one of sixteen colors chosen from a palette of 64.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "165-166",
+       "sha": "f81d9c518b5702933958526dedf0a938667992dcf370be8d7cdaa2f2efa40e84"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "on": "is",
+     "of": "doc",
+     "text": "16 Kilobytes of video RAM are attached directly to the VDP chip and do not appear in the Z80 memory space; the Z80 reads and writes them through VDP registers.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "167-169",
+       "sha": "61446c49bcccae2aeb4e83227af874a872c672bc3118b5f1c85e2b83b765fb0b"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "on": "is",
+     "of": "doc",
+     "text": "The VDP implements two independent graphic systems, a background system and a sprite system.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "170",
+       "sha": "109d95daaeba02c95364d8ee56540eb2182806c12791e8c974473acf740502ef"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "on": "is",
+     "of": "doc",
+     "text": "Each pixel of a character pattern holds 4 bits, so a choice of sixteen colors is available for each pixel.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "184-186",
+       "sha": "5d7100decfa397cefd9863e8acb7f8215200e10298556a651b6e0e5fce407522"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "on": "is",
+     "of": "doc",
+     "text": "The sixteen colors are stored in a Color RAM inside the VDP chip, organized as 32 six-bit values with two bits each of red, green and blue.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "187-189",
+       "sha": "37b84c81f2673386bb6ad96c0ac9d3a32fdc72d94032b7c085f4ea57be90d73f"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "on": "is",
+     "of": "doc",
+     "text": "Other VDP control bits select the 16 value color table from either the first half or the second half of the Color RAM.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "190-192",
+       "sha": "299e2ebfed7e5db91c0a95fa76001ea7b3d86357522ebcbaa88464322d0f8694"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "on": "reset",
+     "of": "doc",
+     "text": "The VDP registers are initialized at power on.",
+     "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "606",
+       "sha": "d19c69ed346006c416ef62b30f352eee6287b2518083bc2a162af32f9903c411"
+      }
+     ]
+    },
+    {
+     "n": "101",
+     "on": "reset",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's reset also clears the status flags, the interrupt and pending-write state, the address, the data buffer, the counters, the palette and the Color RAM, then recomputes the display settings.",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2058-2069",
+       "sha": "1d956f003cb48c788183964016cf5d43791b39f44efd36257972f2dca8794559"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2070-2079",
+       "sha": "0c4f8d4ec0d1ab0f738d04d868a21a0e97f78f083ed18b86691becf019d9a8b5"
+      },
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2081-2086",
+       "sha": "85e7871bcde19b44ce99a9b1aa6318285443cfe62e10e2dc0c243e88e8d0d75c"
+      }
+     ]
+    },
+    {
+     "n": "102",
+     "on": "is",
+     "of": "mame",
+     "vs": "extra",
+     "text": "MAME's device configuration adds a palette lookup and a SEGAPSG device, m_snsnd, clocked by DERIVED_CLOCK(1, 3).",
+     "quotes": [
+      {
+       "ref": "mame:src/devices/video/315_5124.cpp",
+       "lines": "2095-2097",
+       "sha": "c5a9b784f3e3d532188bf110b5e75348f5abec2e59f79a02e3cc38a758cc6570"
+      }
+     ]
+    }
+   ],
+   "closed": [
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "162",
+     "as": "key"
+    },
+    {
+     "ref": "datasheet:SegaMk3-SRM.raw.txt",
+     "lines": "183",
+     "as": "layout"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2053",
+     "as": "agrees",
+     "row": "7"
+    },
+    {
+     "ref": "mame:src/devices/video/315_5124.cpp",
+     "lines": "2055-2056",
+     "as": "agrees",
+     "row": "7"
+    }
+   ]
+  }
+ ]
+}
