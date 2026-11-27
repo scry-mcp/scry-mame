@@ -681,7 +681,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 2, at address 0x008, is Bus Error, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 2 reads 2 2 8 008 SD Bus Error.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -1134,7 +1134,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 3, at address 0x00C, is Address Error, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 3 reads 3 3 12 00C SD Address Error.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -1567,7 +1567,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 4, at address 0x010, is Illegal Instruction, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 4 reads 4 4 16 010 SD Illegal Instruction.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -1834,7 +1834,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 5, at address 0x014, is Zero Divide, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 5 reads 5 5 20 014 SD Zero Divide.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -2038,7 +2038,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 6, at address 0x018, is CHK Instruction, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 6 reads 6 6 24 018 SD CHK Instruction.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -2137,7 +2137,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 7, at address 0x01C, is TRAPV Instruction, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 7 reads 7 7 28 01C SD TRAPV Instruction.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -2447,7 +2447,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 8, at address 0x020, is Privilege Violation, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 8 reads 8 8 32 020 SD Privilege Violation.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -2859,7 +2859,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 9, at address 0x024, is Trace, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 9 reads 9 9 36 024 SD Trace.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3106,7 +3106,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 10, at address 0x028, is Line 1010 Emulator, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 10 reads A 10 40 028 SD Line 1010 Emulator.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3227,7 +3227,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 11, at address 0x02C, is Line 1111 Emulator, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 11 reads B 11 44 02C SD Line 1111 Emulator.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3343,7 +3343,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 25, at address 0x064, is Level 1 Interrupt Autovector, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 25 reads 19 25 100 064 SD Level 1 Interrupt Autovector.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3440,7 +3440,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 26, at address 0x068, is Level 2 Interrupt Autovector, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 26 reads 1A 26 104 068 SD Level 2 Interrupt Autovector.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3511,7 +3511,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 27, at address 0x06C, is Level 3 Interrupt Autovector, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 27 reads 1B 27 108 06C SD Level 3 Interrupt Autovector.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3582,7 +3582,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 28, at address 0x070, is Level 4 Interrupt Autovector, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 28 reads 1C 28 112 070 SD Level 4 Interrupt Autovector.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3653,7 +3653,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 29, at address 0x074, is Level 5 Interrupt Autovector, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 29 reads 1D 29 116 074 SD Level 5 Interrupt Autovector.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3724,7 +3724,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 30, at address 0x078, is Level 6 Interrupt Autovector, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 30 reads 1E 30 120 078 SD Level 6 Interrupt Autovector.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3795,7 +3795,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vector 31, at address 0x07C, is Level 7 Interrupt Autovector, with SD in the Space column.",
+     "text": "Table 6-2's row for vector 31 reads 1F 31 124 07C SD Level 7 Interrupt Autovector.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",
@@ -3937,7 +3937,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Vectors 32 to 47, from address 0x080, are the TRAP instruction vectors, with SD in the Space column.",
+     "text": "Table 6-2's row for vectors 32 to 47 reads 20-2F 32-47 128 080 SD TRAP Instruction Vectors.",
      "quotes": [
       {
        "ref": "datasheet:MC68000UM.raw.txt",

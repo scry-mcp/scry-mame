@@ -980,8 +980,8 @@
      "quotes": [
       {
        "ref": "datasheet:HD44780.raw.txt",
-       "lines": "2002",
-       "sha": "45b20bb41cfb5b80df8588988b5818d578ba8e5c3fff5cdc05770d748291d776"
+       "lines": "1992-2002",
+       "sha": "8c30c3686135b6cd2b12f477dceb54f7de1883642139bf6dab6926b250aec246"
       }
      ]
     },
@@ -1025,8 +1025,8 @@
      "quotes": [
       {
        "ref": "datasheet:HD44780.raw.txt",
-       "lines": "2001",
-       "sha": "42c77287ac36eafeb82f87fbf4554e52541d7ad97548886c11811a10fcae3b79"
+       "lines": "1992-2001",
+       "sha": "6455ee20eae65b81b996136ec06c127424b4d8adb2ef05a04c1c59c5647fcb98"
       }
      ]
     }

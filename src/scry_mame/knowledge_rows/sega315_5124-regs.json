@@ -789,6 +789,11 @@
      "quotes": [
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "523",
        "sha": "29d9ffd5b4262907aa4e4a28dcc6e5b020bbfa216294eecd1e2349163fa334ab"
       }
@@ -800,6 +805,11 @@
      "of": "doc",
      "text": "An R2 value of $FD puts the screen map base address at $3000.",
      "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "524",
@@ -815,6 +825,11 @@
      "quotes": [
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "525",
        "sha": "49264f66d9e60c56a0c72beeeacdfc7dd5ad87a622678aaa2fba0aa56c191814"
       }
@@ -826,6 +841,11 @@
      "of": "doc",
      "text": "An R2 value of $F9 puts the screen map base address at $2000.",
      "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "526",
@@ -841,6 +861,11 @@
      "quotes": [
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "527",
        "sha": "4e18ac8a8d8690d26239c2068c1c873126c9fdf6bc86df3fc9226e05abcd5b8d"
       }
@@ -852,6 +877,11 @@
      "of": "doc",
      "text": "An R2 value of $F5 puts the screen map base address at $1000.",
      "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "528",
@@ -867,6 +897,11 @@
      "quotes": [
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "529",
        "sha": "7ae90a3e1bae631f456e9d1539ed3ad79f5f4a5abc8e7aef19347d9e653b52cb"
       }
@@ -878,6 +913,11 @@
      "of": "doc",
      "text": "An R2 value of $F1 puts the screen map base address at $0000.",
      "quotes": [
+      {
+       "ref": "datasheet:SegaMk3-SRM.raw.txt",
+       "lines": "519-520",
+       "sha": "e9a5128fb01f50468eba179a181bf8f0e264e41f9bdcab8c0e38da404185dadd"
+      },
       {
        "ref": "datasheet:SegaMk3-SRM.raw.txt",
        "lines": "530",

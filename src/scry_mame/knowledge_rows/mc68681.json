@@ -2155,7 +2155,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 0 0 1 1 gives Receiver Buffer A (RBA) in its read column and Transmitter Buffer A (TBA) in its write column.",
+          "text": "Table row 0 0 1 1 lists Receiver Buffer A (RBA) and Transmitter Buffer A (TBA).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -2597,7 +2597,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 1 0 1 1 gives Receiver Buffer B (RBB) in its read column and Transmitter Buffer B (TBB) in its write column.",
+          "text": "Table row 1 0 1 1 lists Receiver Buffer B (RBB) and Transmitter Buffer B (TBB).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -3280,7 +3280,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 1 0 0 1 gives Status Register B (SRB) in its read column and Clock-Select Register B (CSRB) in its write column.",
+          "text": "Table row 1 0 0 1 lists Status Register B (SRB) and Clock-Select Register B (CSRB).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -3355,7 +3355,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 1 0 1 0 gives Do Not Access in its read column and Command Register B (CRB) in its write column.",
+          "text": "Table row 1 0 1 0 lists Do Not Access* and Command Register B (CRB).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -3368,7 +3368,7 @@
           "n": "2",
           "on": "read",
           "of": "doc",
-          "text": "The read column of table row 1 0 1 0 is marked Do Not Access.",
+          "text": "Table row 1 0 1 0 begins with Do Not Access*.",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -3785,7 +3785,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 0 1 0 0 gives the Input Port Change Register (IPCR) in its read column and the Auxiliary Control Register (ACR) in its write column.",
+          "text": "Table row 0 1 0 0 lists Input Port Change Register (lPCR) and Auxiliary Control Register (ACR).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -4564,7 +4564,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 0 1 0 1 gives the Interrupt Status Register (ISR) in its read column and the Interrupt Mask Register (IMR) in its write column.",
+          "text": "Table row 0 1 0 1 lists Interrupt Status Register (lSR) and Interrupt Mask Register (lMR).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -5298,7 +5298,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 0 1 1 0 gives the current MSB of the counter (CUR) in counter mode on read, and the Counter/Timer Upper Register (CTUR) on write.",
+          "text": "Table row 0 1 1 0 lists Current MSB of Counter (CUR) and Counter/Timer Upper Register (CTUR).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -5376,7 +5376,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 0 1 1 1 gives the current LSB of the counter (CLR) in counter mode on read, and the Counter/Timer Lower Register (CTLR) on write.",
+          "text": "Table row 0 1 1 1 lists Current LSB of Counter (CLR) and Counter/Timer Lower Register (CTLR).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -5698,7 +5698,7 @@
           "n": "1",
           "on": "is",
           "of": "doc",
-          "text": "Table row 1 1 0 0 gives the Interrupt-Vector Register (IVR) in both its read and write columns.",
+          "text": "Table row 1 1 0 0 lists the Interrupt-Vector Register (lVR) twice.",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
@@ -5711,7 +5711,7 @@
           "n": "2",
           "on": "write",
           "of": "doc",
-          "text": "A write at table row 1 1 0 0 stores the Interrupt-Vector Register (IVR).",
+          "text": "Table row 1 1 0 0's second entry is the Interrupt-Vector Register (lVR).",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",

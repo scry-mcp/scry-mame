@@ -112,8 +112,13 @@
      "quotes": [
       {
        "ref": "datasheet:YM2610.raw.txt",
-       "lines": "620",
-       "sha": "efbba84aebedc444445699da0fdc73032f36435832d8c52abc7ba2da4b78c529"
+       "lines": "620-622",
+       "sha": "ece2da86ecdc49ca50c221c604f3c063c53ef6b2c1859b0d3825a06e624dc35b"
+      },
+      {
+       "ref": "datasheet:YM2610.raw.txt",
+       "lines": "624-625",
+       "sha": "895878bf2b552054c675058b7f42dfccb196ce829692160328f445838b0f5a22"
       }
      ]
     },

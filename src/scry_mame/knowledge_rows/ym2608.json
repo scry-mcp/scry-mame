@@ -19,7 +19,8 @@
    "653-904",
    "907-918",
    "931-1168",
-   "1240-1395"
+   "1240-1395",
+   "152-169"
   ]
  },
  "closed": [
@@ -2718,7 +2719,7 @@
      "n": "2",
      "on": "is",
      "of": "doc",
-     "text": "Bits D7 to D2 of $25 are marked / in the capture's table.",
+     "text": "The capture's table row for $25 reads $25 / / / / / / P1 P0.",
      "quotes": [
       {
        "ref": "datasheet:YM2608.raw.txt",
@@ -6484,6 +6485,10 @@
     {
      "ref": "mame:3rdparty/ymfm/src/ymfm_ssg.h",
      "lines": "119"
+    },
+    {
+     "ref": "datasheet:YM2608.raw.txt",
+     "lines": "152-169"
     }
    ],
    "rows": [
@@ -6491,12 +6496,17 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The bus control columns read 0 0 1 0 1 for the data below.",
+     "text": "The bus control columns !CS, !RD, !WR, A1 and A0 read 0 0 1 0 1.",
      "quotes": [
       {
        "ref": "datasheet:YM2608.raw.txt",
-       "lines": "170",
-       "sha": "fc8ffa0a0278bdebe5c8f2c903f448d72346251d43e6adbf360bf50f44e96b3c"
+       "lines": "152-163",
+       "sha": "67e8225391578eae94fa5645cb0f3ceacf19f8902840410e18064764ad343e84"
+      },
+      {
+       "ref": "datasheet:YM2608.raw.txt",
+       "lines": "164-170",
+       "sha": "7bad017bb209fd4625334f34aac80499e8be2ebce8c18ccb77593e31336f02c5"
       }
      ]
     },

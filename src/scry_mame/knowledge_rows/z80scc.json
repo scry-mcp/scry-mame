@@ -3083,8 +3083,8 @@
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",
-       "lines": "7263",
-       "sha": "8d774e336d5c05ce8c98409aaf56365e9bff2b5e097e43042751013d5949a9a1"
+       "lines": "7263-7264",
+       "sha": "66118334639ac6884a048082b4528cb96beb052b5b5490c2091ad3ccd1a6c3b0"
       }
      ]
     },
@@ -4229,7 +4229,7 @@
      "n": "15",
      "on": "write",
      "of": "mame",
-     "text": "MAME logs the /TRxC pin direction and output source and drives no such pin.",
+     "text": "MAME logs the /TRxC pin direction at src/devices/machine/z80scc.cpp:2141 and 2134 and drives no such pin.",
      "quotes": [
       {
        "ref": "mame:src/devices/machine/z80scc.cpp",
@@ -4244,7 +4244,7 @@
      "n": "16",
      "on": "write",
      "of": "mame",
-     "text": "MAME logs the /TRxC output source and drives no such pin.",
+     "text": "MAME logs the /TRxC output source at src/devices/machine/z80scc.cpp:2134 and drives no such pin.",
      "quotes": [
       {
        "ref": "mame:src/devices/machine/z80scc.cpp",

@@ -538,9 +538,9 @@
      "n": "111",
      "on": "read",
      "of": "mame",
-     "vs": "absent",
+     "vs": "differs",
      "row": "3",
-     "text": "Nothing in the status read holds off status updates; it captures the status, clears the SYNDET bit and returns the captured status.",
+     "text": "The status read does not hold off updates: it clears SYNDET through update_syndet(false) at src/devices/machine/i8251.cpp:774 and logs the status at 771.",
      "quotes": [
       {
        "ref": "mame:src/devices/machine/i8251.cpp",

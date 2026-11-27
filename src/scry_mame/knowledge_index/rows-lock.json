@@ -5082,25 +5082,6 @@
       "by": "slice mame-e2-sound-10 reader"
      }
     }
-   },
-   "mame": {
-    "seal": "3d33cd4c2596abe6901e49188b7fe56afa08f338e40db2273cc2d9a411f9a185",
-    "by": "slice mame-e2-sound-10 reader",
-    "writer": "slice mame-e2-sound-10 writer",
-    "rows": {
-     "23": {
-      "digest": "b06de9bf3989fb9a941917ed0a918be1f703a3ed464da3fd36b32581166b1d15",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "24": {
-      "digest": "47b89a1e83da23172acc5fb5c9a8e522fbd2ccb758bb7c010860b18106eec537",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "25": {
-      "digest": "181e966f55d4372d5238418ae02beb8d6a7933d04661e7d871da7a293c31583f",
-      "by": "slice mame-e2-sound-10 reader"
-     }
-    }
    }
   },
   "es5506:register:0x10..0x1F:write": {
@@ -5162,29 +5143,6 @@
       "by": "slice mame-e2-sound-10 reader"
      }
     }
-   },
-   "mame": {
-    "seal": "adc02ccb7a174a8ce23cfec909a009d29c8bcb080bdfdd27d8bf6523a6bc4ed6",
-    "by": "slice mame-e2-sound-10 reader",
-    "writer": "slice mame-e2-sound-10 writer",
-    "rows": {
-     "14": {
-      "digest": "38735b1cbd2144c950f4f4c5129a8e6325b5570c4dd402ead7f2a90c91896b8d",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "15": {
-      "digest": "41b0d90d7e2d9f53f7656ee64ad2b1a0f89e204b62cc1713c2309a24a17052ab",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "16": {
-      "digest": "25f330acef040488f9a0ae4496c4b20752d3d573713112a54f3bd7df9508f6fb",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "17": {
-      "digest": "7fee75181412572473178b3486530065587eabc664cf42b17780827516b6333f",
-      "by": "slice mame-e2-sound-10 reader"
-     }
-    }
    }
   },
   "es5506:register:0x20..0x2F:write": {
@@ -5235,25 +5193,6 @@
      },
      "9": {
       "digest": "37b6782f856d7c055fedb84918bfb9d7da0c4f0511c1d4f03b94ac0f5bf3b005",
-      "by": "slice mame-e2-sound-10 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "2b1aabb96a9f0c39b3b3c69d7491f8dfb8db077dc83e14394566e88a71c8ac4c",
-    "by": "slice mame-e2-sound-10 reader",
-    "writer": "slice mame-e2-sound-10 writer",
-    "rows": {
-     "12": {
-      "digest": "04b53d5532b79d3de705ea3d77007a41286475543f8b1ca23c193ad515f1a9d9",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "13": {
-      "digest": "fda93901df392c78db40e604bed5b538841f2eaa17c3358619b94bce574d6f5b",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "14": {
-      "digest": "fb18e65b62ce35565c10d96d16d0a9522805f87b9b3c14d863e40a4652a06853",
       "by": "slice mame-e2-sound-10 reader"
      }
     }
@@ -5322,21 +5261,6 @@
       "by": "slice mame-e2-sound-10 reader"
      }
     }
-   },
-   "mame": {
-    "seal": "02369d51d0a8feff973f4bf432d21bd989b5cd827494d397b14b496d2480c061",
-    "by": "slice mame-e2-sound-10 reader",
-    "writer": "slice mame-e2-sound-10 writer",
-    "rows": {
-     "15": {
-      "digest": "8fa91ace2bc7facffa3a0e5dfb36be0301195b7f968345273415d63e11504bda",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "16": {
-      "digest": "dc509983114f1386aaf2ea41ca6cadeceb67357bc10de0a610216b05789047e5",
-      "by": "slice mame-e2-sound-10 reader"
-     }
-    }
    }
   },
   "es5506:register:0x40..0x4F:write": {
@@ -5387,21 +5311,6 @@
      },
      "9": {
       "digest": "57753846a0059300f7ca85223f4149f5b4bb8b8a501684cb92727b6d01f85a11",
-      "by": "slice mame-e2-sound-10 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "2fcd5aafe6de79a137525075cd3c328882cae8db02d3b6025454a4b653f4bd2f",
-    "by": "slice mame-e2-sound-10 reader",
-    "writer": "slice mame-e2-sound-10 writer",
-    "rows": {
-     "12": {
-      "digest": "dce60140c440de6b5e030dcec6aba3983cf549545a4be55c83cd0f5e52d70d66",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "13": {
-      "digest": "00260d6ac604fd6959ca080b998aa42321a2579530c25f6bdaa0de0eeae03864",
       "by": "slice mame-e2-sound-10 reader"
      }
     }
@@ -5463,21 +5372,6 @@
      },
      "9": {
       "digest": "1e18395591952d47479c8467e1f2823aaa8b4e5175d405f3a6f43451e4380044",
-      "by": "slice mame-e2-sound-10 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "cc7c3e0740b23b69b25aabb107f240789c40280e75b7f104b873fe33609e9587",
-    "by": "slice mame-e2-sound-10 reader",
-    "writer": "slice mame-e2-sound-10 writer",
-    "rows": {
-     "14": {
-      "digest": "ab83c9b73d48ad9abee7d2f36ee68693cca54d2244561dd9968fe225973d751c",
-      "by": "slice mame-e2-sound-10 reader"
-     },
-     "15": {
-      "digest": "45f71a43479512c5d21c064a3e0723443d6e64bbb69421b1ee151f9de0ae51c2",
       "by": "slice mame-e2-sound-10 reader"
      }
     }
@@ -5911,53 +5805,6 @@
    }
   },
   "hd44780:command:0x20..0x3F": {
-   "doc": {
-    "seal": "737f3433a3ab3f7ec5536b81d847e924780dde04f58824607dfeea14a0220cdc",
-    "by": "slice mame-e2-video-01 reader",
-    "writer": "slice mame-e2-video-01 writer",
-    "rows": {
-     "1": {
-      "digest": "79881bd086855dff9fffb1cc221455a6e3a2ef311a424fe4df95aca8159b18f6",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "10": {
-      "digest": "25d276ec3c02d8b1f8c2b31100f8a749ba6a8a8c8ef0080b0441f6fa684bc4b3",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "2": {
-      "digest": "179eae79b77689534602e6ec0ddb940b052cc1985e32f208c0162f057bf6865a",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "3": {
-      "digest": "24b20192aaacd31f437279f46ca508c267a5bd8a89c89fd1c3e9717a0987cfc7",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "4": {
-      "digest": "f59d397e67afdcecfc36dfef890d0f304be004d43c202fbf896b1343fac7e64a",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "5": {
-      "digest": "c4e5f693f3dbb45188a0ddc6379f0ad30127258d5020bd9e130346db2e984bef",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "6": {
-      "digest": "c66168d4cd37e3b50fd56b3623d935b0e092574672661c11efdbb117d6b69f6d",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "7": {
-      "digest": "bc3f943c2807260687a5f29777b1f597803d15e6197ea81c87076711b7792fcd",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "8": {
-      "digest": "7fb74de1aefbe40c4ff886d89f6d6453f920f5dd6f74d5ff311c0e1b556a5235",
-      "by": "slice mame-e2-video-01 reader"
-     },
-     "9": {
-      "digest": "bd787036bc8f2e64cf0bb9a50f8ebeee3c26ac2645aa40e3c626d38dda06af06",
-      "by": "slice mame-e2-video-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "a85c15b303f6d99af8b4fb71fb78590055f3b4b94ea57005fadfd9a8d30e672e",
     "by": "slice mame-e2-video-01 reader",
@@ -6403,33 +6250,6 @@
       "by": "slice mame-sup1-01 reader"
      }
     }
-   },
-   "mame": {
-    "seal": "e7b54fabb1b58fb515b823dfc3884474161ef1e9e2bc8db05b5de5334c46de23",
-    "by": "slice mame-sup1-01 reader",
-    "writer": "slice mame-sup1-01 writer",
-    "rows": {
-     "111": {
-      "digest": "0696293d2378c4b255fe67babc7c9e731d18b0ca5d71c7c812f0cbf25e5cf152",
-      "by": "slice mame-sup1-01 reader"
-     },
-     "112": {
-      "digest": "1d823e9c46a41560f1d195b0e631ec6b54f2e5832f70f381cbe6cbafcb395439",
-      "by": "slice mame-sup1-01 reader"
-     },
-     "113": {
-      "digest": "4c88e0fe62df2f90bb6e150be71ecc9b355b5180c2433b884c1b9fae586e05f4",
-      "by": "slice mame-sup1-01 reader"
-     },
-     "114": {
-      "digest": "53a1c5213db4377698f04258724476a7e76ee1cc0ff0ddefe817a3d5e50b0006",
-      "by": "slice mame-sup1-01 reader"
-     },
-     "115": {
-      "digest": "8c8b4da8dc81a57c3e9c75fc610bd85c5b25207fdc65fc07fe1284aed4a890a6",
-      "by": "slice mame-sup1-01 reader"
-     }
-    }
    }
   },
   "i8251:register:0x01:write": {
@@ -6631,21 +6451,6 @@
    }
   },
   "i8255:register:0x00:write": {
-   "doc": {
-    "seal": "b7ef84704b3d73f93cfad6d8a284b45fbee65b9b5d1bcb91af4998eca84626ad",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-01 writer",
-    "rows": {
-     "1": {
-      "digest": "df32f24939222907f9730a50d53a68435b5b3066fe00999ded6f00807414f854",
-      "by": "P0 unsealed reader"
-     },
-     "2": {
-      "digest": "b63ef4a818f70adad83d053aa55f59a873402bf17bd47cb72b3ce322805a2817",
-      "by": "P0 unsealed reader"
-     }
-    }
-   },
    "mame": {
     "seal": "3e730b1e0e2a70242abdb1287ac12cc2074dd16726424e975413fdc6174ec64e",
     "by": "P0 unsealed reader",
@@ -6691,21 +6496,6 @@
    }
   },
   "i8255:register:0x01:write": {
-   "doc": {
-    "seal": "d2d87affe569007abb1a26b76c7e02b27545850b4a1b5e8da732895219235598",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-01 writer",
-    "rows": {
-     "1": {
-      "digest": "d2d777ee163e13771ae932b99a5cd7922dc360b2e68be978d1cfe508434899b4",
-      "by": "P0 unsealed reader"
-     },
-     "2": {
-      "digest": "2b646f23a6ba86811c10a6d77da3780e2538a1f95a37cf3f8ac4b4cffc27ec21",
-      "by": "P0 unsealed reader"
-     }
-    }
-   },
    "mame": {
     "seal": "56336cc346475ff8c9a92aba1b1a2a326299f5821dc5886884bef39c32a92616",
     "by": "P0 unsealed reader",
@@ -7677,21 +7467,6 @@
    }
   },
   "m68000:vector:10": {
-   "doc": {
-    "seal": "66ac45ebaf3bb91a4f231df56a27ce90dd54cc1405725296935618cdf9394006",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "0a3491f0c9d49f2aba7d82cfd4ec5d760767dff34bd216ec58efe8a76d6ca6d1",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "237dc81371d17b9b858da7cce485f2e86901f849bc7cf944f9ffbde6397b9900",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "a856bbf186c92e3fc43d6231a4e356fb5d6efae08711ffd079ad07470c2d0dad",
     "by": "slice mame-cpu-01 reader",
@@ -7705,21 +7480,6 @@
    }
   },
   "m68000:vector:11": {
-   "doc": {
-    "seal": "764b8997301f566fe37f7ece731136ee73d6f92c523a4bdcac9725a457df6dcf",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "54bf90b6199275052816d9c3b0ed5f252a982c153a0cc2767530eb7c9b470f43",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "7ff032e9a0e22840113622e85ac95e6d0fc9afba3b46eb0a74b66dec374c7aa4",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "5e8a46a0c6a856c457d33700bb088d8565bd65f2572d62c8de920c14419a2367",
     "by": "slice mame-cpu-01 reader",
@@ -7737,45 +7497,6 @@
    }
   },
   "m68000:vector:2": {
-   "doc": {
-    "seal": "8a495632682f2af5304b2a650da7a88f4706bbd072c0a20edf9bd39b10d4c95b",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "2cc856ccb660aedaf42ab8e03593e108767f69c371d88c8aa4df402186ee573f",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "85d176a5f8815eaeda8555f6c8d4c0f356afa6bda44019e58632d69bf2be7e6a",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "335c2e159e64e6cce23e16f09ea2e20bedc99abf1c4c2f786941597df4293935",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "4": {
-      "digest": "8c93376387a75f56e21ba7c9aa281dcd07ef418ec6dd00786bf6358dbd9b840c",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "5": {
-      "digest": "0134be306dae4c66dcd595b4158d1f3034bc1f4b610796994b544b6931cefc11",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "6": {
-      "digest": "808db644d1276241e0cb79baff3acdde0806aba0b4eebbfe238963dc88d5035d",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "7": {
-      "digest": "d28031f021d0beab628d1093b4a491097fa5cf126c49732c25317ba7ec020450",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "8": {
-      "digest": "b5263d5bcf58c1abbf234740de31c573f87cbf54a1b5b6efaf2c9c494e33a440",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "a0a4e708a4834e4698b34ced90b5069a2a3169b594b6493af0efb0cb350ff450",
     "by": "slice mame-cpu-01 reader",
@@ -7789,21 +7510,6 @@
    }
   },
   "m68000:vector:25": {
-   "doc": {
-    "seal": "e1cc616fcedb1d63eb84f8580385e42f0a2e0d8a59697fa0faf5ee7552724b2e",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "7af2e21d54b3fadd5b947f8c2910e8d9f25bd34523936de765939bcb13e0a669",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "1a4dca9cc24935aa45786ca181407c1a07e50a4e7ec1629056f9a313b766864f",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "94786aa035a2d089cbd9e70ba596dbd1dc7c141ffb98a0ea9551d633b7d8bb23",
     "by": "slice mame-cpu-01 reader",
@@ -7817,17 +7523,6 @@
    }
   },
   "m68000:vector:26": {
-   "doc": {
-    "seal": "b155e7199a289203e1f98585c12836a45e484ffe1cdbecf21505ef162fc2161e",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "e800e31f61921972f34fc802b0ff27c8770e9d44d2c5eeb00996d1494c11f06d",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "da5fa0084a54b1b5e526b3693b8cf34c290c7e8008a91fe6f7e08872845f712a",
     "by": "slice mame-cpu-01 reader",
@@ -7841,17 +7536,6 @@
    }
   },
   "m68000:vector:27": {
-   "doc": {
-    "seal": "9320dc935af383b2c2f8066e6466e27f45b2c2a8c7893517f8a88fe7139597f7",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "ccc6dfa5aa1ef5939b6cca7234e0d8d7a38731a152f124cdd262d459cad8562c",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "a641efdae1621cc8a889312dc92c194eacdaeb4877e22eac0e351a9f7fe5972a",
     "by": "slice mame-cpu-01 reader",
@@ -7865,17 +7549,6 @@
    }
   },
   "m68000:vector:28": {
-   "doc": {
-    "seal": "319dfb5ee4b98ff36a51b90f8d4f7844aeb52aa06e78b3b6956e17cbe6ca5a79",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "b4f895935011d601df3af61a5e3be3322f9b1bd0263b66e849c9195806f90304",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "61cb329e62e08aa3ca21df96d99c32e6fc8986571544b5018d2451b77543f249",
     "by": "slice mame-cpu-01 reader",
@@ -7889,17 +7562,6 @@
    }
   },
   "m68000:vector:29": {
-   "doc": {
-    "seal": "c3582bb1bdbdda3e5f0c47e7cc5514311945d1ddc3c4d06247fcb0d7bf09fd34",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "f6113168e4d10d01b98682d868dae87b43755d4fe3c2978c7e301e4513274f83",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "cddde20de4a07cd710667883017fa19dd2dca635fea2c5303672d976551c2189",
     "by": "slice mame-cpu-01 reader",
@@ -7913,49 +7575,6 @@
    }
   },
   "m68000:vector:3": {
-   "doc": {
-    "seal": "50dac23e5977aa23c9b092edb8f0602b3f73f86e8a9f497d678cfa7ef67a6788",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "389ed612ae74c634a8eeea364c110f97b642c2ee594ede1220b65014305d89c3",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "09c82a6b9a789c306c5b4528cc72439d8f2d804a1f5a8bc160f9fe22998aff53",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "8fe7f52cc6a330556be4c3c09fb60345931d3982252ab489b0b4a90624fe5817",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "4": {
-      "digest": "7f76df44a598baaa4313ee454b631d1890bbf4fc94bcaadb9f4a17c4db81da06",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "5": {
-      "digest": "7a075f90cbc02c6a664dd829dd288b034cdbf5b3ce38a5237715e78b60492dfa",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "6": {
-      "digest": "38916d5cb0c8ed95fe670601ca2283071a170f62ea5d547b8a399c7f74cf3de2",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "7": {
-      "digest": "02231b2ecd388a2cbd5ad8232e1b2c93f9d238863abacda8b14428264d673606",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "8": {
-      "digest": "ea31b50d5a4caad515645ad2aca49ad42c3f73f4434253b72a063c20f1d1b2fb",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "9": {
-      "digest": "c0b71f05576924a07735349b11766a56ca0ff9b9b982ea063f8057f1c641b3c2",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "d6b8c8547d2f107302824d68c7ed2323990fa66ec883bcb4a88cff52858796e8",
     "by": "slice mame-cpu-01 reader",
@@ -7969,17 +7588,6 @@
    }
   },
   "m68000:vector:30": {
-   "doc": {
-    "seal": "7c001637a64faebdce2fec05196f28d79b6ae13a778c76aae08fee3dce82d40d",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "e49dfeac7f2ac792ffc09d898d0b562f9b899aa399388a1bab678dcaec56c58a",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "efa62c8c5dbafeb49929b61d346f0094b0e487992fb0db3afe0372f71e094446",
     "by": "slice mame-cpu-01 reader",
@@ -7993,17 +7601,6 @@
    }
   },
   "m68000:vector:31": {
-   "doc": {
-    "seal": "a0a2fd25c0a0db49a6b0d700d96ff8c5b24c44c699a9794d1fbe051d51124048",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "fb6166a1d2db50c35d4417a1ee52e7b3d1dd3bc10da58f8f8e12157962fdc9b7",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "9f54a2f15f3ab71e5fe2cceb6baaae1c9872d88becb2696a48223d9538706e89",
     "by": "slice mame-cpu-01 reader",
@@ -8017,41 +7614,6 @@
    }
   },
   "m68000:vector:32": {
-   "doc": {
-    "seal": "7cbc60a3b07c60d1a3ff412debb4f718eaf0f220f514653d56aab12d9592ffaf",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "833686b13fa5899d654b713b9bbf79227292d616b81fdf1e361728ac004a3115",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "0b486b8249d58a9f00770c13f85dfa068112443961ca65b64805a47b64070f19",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "c778686d6ba0685f42d7d0c7ab427cc28ccbf5ff0731c9762cbd57b366236624",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "4": {
-      "digest": "a16f6fb47f2f27105fcd1842abe87c9d6bf2af797620397f75aadb09a982d2b6",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "5": {
-      "digest": "2ec7dfd85fe4233d5c07540cd313a7e71615c198652fca0e7a908b6bca12c3b7",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "6": {
-      "digest": "9ea3ac2ba32871afafa79a88e0c9b28c3616e6de932f52cc3f12c8f6ee8eb795",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "7": {
-      "digest": "05fd20496545b3ed0be6923e4b5014c3f680cb4363c3d65607d51182f1b0b4af",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "f40a0bb19f63edea92cb054487b8d95a9a35404cd40cafded4db8d1a95e7f663",
     "by": "slice mame-cpu-01 reader",
@@ -8226,33 +7788,6 @@
    }
   },
   "m68000:vector:4": {
-   "doc": {
-    "seal": "39299123a9eeeb0f15624df6e4b650fba5cf2577f4d5aabe2420876239bc523b",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "2bbc58151385753e68955fb53b06b0649f4e0b1de7a32a7fae2101b6828870c1",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "ffec0c797d42535b05ccf9b9425678ac66e708b508ff4e7036957ac43b10eff3",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "d284ad7e98a680392d8d08f02625adee9844a8b888cc79e0d82a5c46b1045fdd",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "4": {
-      "digest": "1b06fb4d0b87749ae80131d48dfea700f2768b79c97d0bfd3d14fd4cdf7e2783",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "5": {
-      "digest": "3f0fdbbcf69e257cab4015345bf823763ab5ff68045bcd9dc1952dcb055cd216",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "d8f6c743b6cd91a98c9fea416b1de90e09fbf3250e9994cfaf5658a42b7ba92b",
     "by": "slice mame-cpu-01 reader",
@@ -8450,25 +7985,6 @@
    }
   },
   "m68000:vector:5": {
-   "doc": {
-    "seal": "4715846efdefff4bcdf423e376462bbe823218602864b07ebe215b1c3769f598",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "d0d716820e55902501cbb9f9863fa5459a30d2e8702adf121ccde870939de054",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "46160d6a8073ae5a245ec67ac87d55063d4f4c24edf3a5f001d1803e6a4bdfb7",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "7249ed464f27a2dda6c40d5a35557b6073d30db509a4ad691309bd3dee7008d7",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "4f17695bffc1c1d3c744865f90dbd64591a4efdbcffcbd687245de813989501c",
     "by": "slice mame-cpu-01 reader",
@@ -8486,17 +8002,6 @@
    }
   },
   "m68000:vector:6": {
-   "doc": {
-    "seal": "3a8e3057810181d2e691d1c06c2d55b22df89195538042605db243423448822a",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "7fe7fb2817a43ef4df98aff3669ce26a16105bf374f71cc2c672ae246ab9117b",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "33260f6586e7ab2d195d6fbfdb95cf802b81faa7a7760970e479898b0ec978e2",
     "by": "slice mame-cpu-01 reader",
@@ -8510,25 +8015,6 @@
    }
   },
   "m68000:vector:7": {
-   "doc": {
-    "seal": "be78a3a63a440da940623d1b255791604de1aaa3c0eca875194e62decbcbd5dd",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "a9148c0d612c6dd142262acf4deca0d4b99b86c8c6996f431897c4c1f2bd4e24",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "08f363e8e1fa42a6332aa61917179e4927992ea5f8b07f2fbaddaae530d2c5ef",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "8407de968d731b3809a2b9d319bc2f8766d1cf013e516b31f183ec8c0056160a",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "dc32e6b6d6584d37325e29c83c13dfed211b34aa84ffff56263eff1ec6d12384",
     "by": "slice mame-cpu-01 reader",
@@ -8542,45 +8028,6 @@
    }
   },
   "m68000:vector:8": {
-   "doc": {
-    "seal": "b87ae9795a0645266aa0f087abc5145825e52349a2caa1732652f5e0cd6d4368",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "e70f96d9c1c5c8bc9f225dba4ef755d6b78a66b1efb22c204bf88de9e9a6cfab",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "0f59a16e3476a4834bdff01272e1134bb6c20646f37545a35f8042eed06f9a28",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "fbaaa643aefebb9eae49eccaaf087c1a21293a94280aa9645e1ae9ce4c61ca26",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "4": {
-      "digest": "933cbec60c49ac1d40a11debaa363f6eba95f351f908d411ba291ba906b5120a",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "5": {
-      "digest": "ca9dc08fd0a3448735e5271940ee2412e19074a0665a8007549a0fe832580a79",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "6": {
-      "digest": "cdb537ac83598d6f3890af41e70ce1b3a9d961e7dea7efede2c8a04a01a16903",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "7": {
-      "digest": "2423bd6d18eae08277b3159fc318171c162bef80324352d39f01047cb0ab8523",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "8": {
-      "digest": "39d27a01f962c5678565d31b1d23c95d1e365ce95ad6b06b3a21ceda70fea8e8",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "520577d75f68fd662ccd55acdfd726c6941517be6cd8c485c1dff5a0e94ab583",
     "by": "slice mame-cpu-01 reader",
@@ -8598,37 +8045,6 @@
    }
   },
   "m68000:vector:9": {
-   "doc": {
-    "seal": "b3c9c438a67ba7fc2c7849ce6f20fbc5a8cb11610812859303d9b29a4a66ccc3",
-    "by": "slice mame-cpu-01 reader",
-    "writer": "slice mame-cpu-01 writer",
-    "rows": {
-     "1": {
-      "digest": "9fe3688ad2a2b07294c28813cdba33d09865eddfb522764dffdb98ca3a9963de",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "2": {
-      "digest": "3a338d61318646ee2eef1181ffef949d4d49b91de0890dc379b7b06cd352e99c",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "3": {
-      "digest": "57a858214019489ebbf41281c26be18eb2caede26c349739e25a735d9f71bc6c",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "4": {
-      "digest": "57067d3bff6bc85dd4ffe41f96197a5c6f9a66a2c16de028f383277d02ffec47",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "5": {
-      "digest": "fa747096482ff6274ba1ff038e7a6bc2aa4be41018e53e9e59b178ad0caf2430",
-      "by": "slice mame-cpu-01 reader"
-     },
-     "6": {
-      "digest": "4e81391b7f900b856def1584c847dbb656d72d9a022ffc58a597e50a7e7b6104",
-      "by": "slice mame-cpu-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "5b067b4d47b6c5fed8fe183c9e778fdad93168c90c26ff17f76fd44ee084f5e8",
     "by": "slice mame-cpu-01 reader",
@@ -9973,21 +9389,6 @@
    }
   },
   "mc68681:register:0x03:read": {
-   "doc": {
-    "seal": "7dffd813ecf03b7eaa8386b8bfc7344ad5d53b3a385914fc8a21956e8d65ab6c",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "ec9db5d8683e69dab4c6264285844dba2657c23708b6c6197ca64f315f111806",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "2": {
-      "digest": "4ed8040212f9cb69a9185e051188834d035668d346ea9f94151aa9acc86d17ba",
-      "by": "slice mame-sup1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "2b84a65fa28c3b81cf56ee436bfc63a3017c01d94d2e20326044cd1c4642cee4",
     "by": "slice mame-sup1-03 reader",
@@ -10045,37 +9446,6 @@
    }
   },
   "mc68681:register:0x04:read": {
-   "doc": {
-    "seal": "48bc87b24ebfeff88f06c261a0f3143e89addab1d4d62d61cb145c90fe7082e6",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "08b75e2f8a04e19d84f6bdc47cb0e59d6041b8eb84012959bd1f847799131e79",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "2": {
-      "digest": "f84a19a81cb0c539447be368fbabc391b2acece90bba4052a5152413a5be61fc",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "3": {
-      "digest": "585db5899ec7d82ae8ecc7ab09bab92cb3b640eedddec20510127de29f3ac311",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "4": {
-      "digest": "0e495abbb94de516168e8ca436d5eab35b6f46864d20e5a6a5da59b23615a906",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "5": {
-      "digest": "1e1e530d03004fba45433eb8bfd7148792dc1d23a76fd5f8222c4a395f4e7bc4",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "6": {
-      "digest": "fa3cff9b917afa14501ae8db0bd8fd48121e878afa13cc3a7667b2bd8981c2eb",
-      "by": "slice mame-sup1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "0db761bae19dd6ece5d5c1008c8db4d8811b533915bbb7e57a6e58a4bee01366",
     "by": "slice mame-sup1-03 reader",
@@ -10169,85 +9539,6 @@
    }
   },
   "mc68681:register:0x05:read": {
-   "doc": {
-    "seal": "67f9d0a7d97b31d92e55a72a6e6a5837bccfefe1d0148b0592bd8e70f7df88ac",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "4dab552f91ef7747bf0514c3f3c52d266be95453ea6d89b8eef615a00469bf4d",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "10": {
-      "digest": "793430420e0f651d20822fa28fb3df5a80e30aeba5412756a600b8b00b549990",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "11": {
-      "digest": "d3c5e6dfa7973c1c221cc7693352c34d9e3aca1a48348ad6807bc169f442d78f",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "12": {
-      "digest": "6e46b171ab0a6c5ef1cbf37a80e9751ab6b2628bf5ec2ec8ae98e96c6aa0275c",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "13": {
-      "digest": "a4bbb92f1a97c2bd4f37ea511b61f75bda76640e11b7df0b28fce8b27b3a0de7",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "14": {
-      "digest": "786c53e205a64a41a9ab4cf2e4e0acb6dfe377d95479f2ef24d1e66146adbd0e",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "15": {
-      "digest": "fada22b970c72378f7c9a62721b82d9181bc9b8e7f17fc9db3f2ce9bcf4a7a19",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "16": {
-      "digest": "1366ff04ac5976a83717bb2384b4a07a8b3f05b999e46ef25dedb3bc84fc8e3d",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "17": {
-      "digest": "a09a0fbc5a16e8aabaca67ea41a252a5c4d63ade262ed220eac589d641e420dd",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "18": {
-      "digest": "86ae7c1a542a1737dd18359f2f8ea6a1dc24e2b3707f0a10e1baabfedd125c5e",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "2": {
-      "digest": "f968614ee1c51f0089132e0b8c0ae727e8c30e4ddc9894eb9b7bce48f32410f9",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "3": {
-      "digest": "cf21b1c8b5b4429f28141b105546b5fc764a14fa88c971043e04d03dcfd6b6dc",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "4": {
-      "digest": "8eb95b2edfefd18818abf922db3865f838d263997876a9ac9ffae559a8b8711b",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "5": {
-      "digest": "952c5766f16dc3ce3c3b0fb79dd346bfa7b75fc0b37d95071af5a6161b346009",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "6": {
-      "digest": "1ef0a6cb37931e4b7d0c0d8d9129c5262fe28de0279f8ce293732f16453db53e",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "7": {
-      "digest": "9b17a24b072d461d466c362707bf55f1b3be0cfbae4e96788daffc1f5832bbac",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "8": {
-      "digest": "5812c83c11a15b14656db72fded0939fc18fb613ae04c86e0dce27289a553a70",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "9": {
-      "digest": "bd210491fb54e9c7fc57c67737086d133a1a20641db210e4a45de7c6c56ab251",
-      "by": "slice mame-sup1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "dadf208f7882f7a919f0c7074f0c40eb1132995815f0b609087986c35cf93ec9",
     "by": "slice mame-sup1-03 reader",
@@ -10283,21 +9574,6 @@
    }
   },
   "mc68681:register:0x06:read": {
-   "doc": {
-    "seal": "36731ce84c3d58d79b501bfeb0b4acc0ff52ae2ea0efc112f064a1f484091d3e",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "571497860d8130f21cc6cf3e93287230906f6c47d80e14939d30d4b8c9c36cf1",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "2": {
-      "digest": "9c5f84694571a1070a094c9450ef55ab9c7a1b7b973ebbc9418d322a56c04a23",
-      "by": "slice mame-sup1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "7745c82ff4ee230f5aa24ae5d433491665dc381bf9bc39919761cd7f31ca64ff",
     "by": "slice mame-sup1-03 reader",
@@ -10329,25 +9605,6 @@
    }
   },
   "mc68681:register:0x07:read": {
-   "doc": {
-    "seal": "f694cff850aaf400702b5e6645c062b6aa77ab18168677e3fd7a60135572f915",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "f4124d15a928d57ccaa4fc2b0724d18309dd9186441eedc63288f06d91d16e18",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "2": {
-      "digest": "1eeecca8807f1578e59d6a70c7855a26da092f74958efa760f39057a5005a572",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "3": {
-      "digest": "a7c927385b659c0be0aaa022565d514470c1a255b2545d7e75a7992d689eaefd",
-      "by": "slice mame-sup1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "85eba21a1abf7b8046fed76ed102e9dbb51aa6dd0b314576ba053a4d8c2f97b0",
     "by": "slice mame-sup1-03 reader",
@@ -10453,21 +9710,6 @@
    }
   },
   "mc68681:register:0x09:read": {
-   "doc": {
-    "seal": "0a9be478349fe52a20c0676ed0021cb3be7afda9018eb5f9afef9d33825ad88b",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "e6fed83e22743763cdbb109bc3d3e1188055e1d7fad3eed05fbaa3d282c1b846",
-      "by": "slice mame-sup1-03 reader"
-     },
-     "2": {
-      "digest": "1fc230f22543642d233c98bb2e288f71ea89eec5948cd884e94bcc2f7111f8d1",
-      "by": "slice mame-sup1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "b01d2dc77a0cbd11ccb210c7314ca99c29dd3c1daf1e0c3b59a5d8f00236340e",
     "by": "slice mame-sup1-03 reader",
@@ -10522,34 +9764,6 @@
      },
      "103": {
       "digest": "d59344670c82231ba7bdbeb796a1a0fedf07877a6ffb083f0669073644b7f4d4",
-      "by": "P0 unsealed reader"
-     }
-    }
-   }
-  },
-  "mc68681:register:0x0A:read": {
-   "doc": {
-    "seal": "743e8ee03a0a2f7827bc79beeeae45ab244977995d39974ff66a62e501d4d0c8",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "617f25893b5ea130a97a4fefa748b78609a80b962d63df5bf7b9a3690d347b9a",
-      "by": "P0 unsealed reader"
-     },
-     "2": {
-      "digest": "dbcf8deb12dc01f8f47210670e4d5b423b8870e7fa9187275c40ac23510a006d",
-      "by": "P0 unsealed reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "80c9b1367164458efed7ae115a0b11410c0536278862709e18e1429450d3ec5d",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "101": {
-      "digest": "962c114108726568d830e5ee4865af8586417e927249b124cec69744ee71b72f",
       "by": "P0 unsealed reader"
      }
     }
@@ -10619,33 +9833,6 @@
    }
   },
   "mc68681:register:0x0B:write": {
-   "doc": {
-    "seal": "a143bff473bc250fa23ca9dac19a8b9c6f658c0663c9419dace09802626bf3e4",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "d1ec8ec875fb5e49779c82782efa8cd94995c11794ff0fb5323c8096570feaa6",
-      "by": "P0 unsealed reader"
-     },
-     "2": {
-      "digest": "82c5f5cebfd8f11091be4b1a987fb2bc6e484f220fc09d50d6e7ef45eb6bd101",
-      "by": "P0 unsealed reader"
-     },
-     "3": {
-      "digest": "34031180b868b140817c6edbf55ac85582bd51a147f6887c9d9cfd6a33d71f36",
-      "by": "P0 unsealed reader"
-     },
-     "4": {
-      "digest": "74d8bc3aca9aa96d3d3b742945825a02085899c3c2e06241a1051935965e2647",
-      "by": "P0 unsealed reader"
-     },
-     "5": {
-      "digest": "9f9bbb00dfb2a665ae1e81d03c3a7120e850112c4cc91a6324b92ce20b81f5d8",
-      "by": "P0 unsealed reader"
-     }
-    }
-   },
    "mame": {
     "seal": "8f7c20f65132af3e09ecce02d1fe0aeac4c1ccf3d8bdb6f8c9d76f30fc34441a",
     "by": "P0 unsealed reader",
@@ -10687,29 +9874,6 @@
       "by": "slice mame-sup1-03 reader"
      }
     }
-   }
-  },
-  "mc68681:register:0x0C:write": {
-   "doc": {
-    "seal": "a0507b83d184bcf5cd7357163dfa60056a41388debd2036976efc06ac93a3620",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "44c84dbd6eba43dfb4079d07b11f922c1bf278288661e97112ab90d86a862029",
-      "by": "P0 unsealed reader"
-     },
-     "2": {
-      "digest": "68c4c01d2526051460e831435c6e5573fe35e66c66b656770fc028c20eee9a79",
-      "by": "P0 unsealed reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "7185e2ab8b73c89eed86ec6235b930e27aa1031ffae895de9b5dc318708254a2",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
-    "rows": {}
    }
   },
   "mc68681:register:0x0D:read": {
@@ -13131,33 +12295,6 @@
       "by": "slice mame-e2-sound-01 reader"
      }
     }
-   },
-   "mame": {
-    "seal": "3337159bb31c8c66bef106cf735d9b072508fd09b867e5f842a875113b753a48",
-    "by": "slice mame-e2-sound-01 reader",
-    "writer": "slice mame-e2-sound-01 writer",
-    "rows": {
-     "10": {
-      "digest": "a56656d5f6da19d5519325e12718b09db367d14b102630f1f0541f2a09dcdf3b",
-      "by": "slice mame-e2-sound-01 reader"
-     },
-     "11": {
-      "digest": "abd1c338d898359806b4fa5e8e8f4850d50fa71215e9bf87619b091fe71c1d8a",
-      "by": "slice mame-e2-sound-01 reader"
-     },
-     "7": {
-      "digest": "b7b6509082727df936662100cf7c4720a8d3960aaf47dedb6a49012a6b0dc58b",
-      "by": "slice mame-e2-sound-01 reader"
-     },
-     "8": {
-      "digest": "b4511c14288a82d6f5a70b75954fc988dd9bc3268efbc762d3be00ee73b15aec",
-      "by": "slice mame-e2-sound-01 reader"
-     },
-     "9": {
-      "digest": "ac2f3e30264af5e91a5c9147844171de15d982e83d31974f264a18d90236691e",
-      "by": "slice mame-e2-sound-01 reader"
-     }
-    }
    }
   },
   "pokey:register:0x0D:read": {
@@ -15424,82 +14561,6 @@
     }
    }
   },
-  "sega315_5124:register:0x102": {
-   "doc": {
-    "seal": "1f3a1b107d5c8bdd6f723366285151b1e720820014e6f5e2dcf24988e7869a08",
-    "by": "slice mame-vid-01 reader",
-    "writer": "slice mame-vid-01 writer",
-    "rows": {
-     "1": {
-      "digest": "71ade3bc4d71742db66498666fbc8189b8df5624dc4540494d818424cd6b7792",
-      "by": "slice mame-vid-01 reader"
-     },
-     "10": {
-      "digest": "09bc23c7da1da2cc392c344dbc59978fa23cd292850aeffa532898f5c0c6e8f8",
-      "by": "slice mame-vid-01 reader"
-     },
-     "11": {
-      "digest": "14bf4c1528e4f22f5bca6a74ff9f3d67de29b1d8754590c370d923e929146b19",
-      "by": "slice mame-vid-01 reader"
-     },
-     "12": {
-      "digest": "209330634575f69241029ba55f93c85b62c599d1ad944e7c818121ba3fd78c22",
-      "by": "slice mame-vid-01 reader"
-     },
-     "2": {
-      "digest": "6b5149f121df2475ad80e0cb9346689daeaacd73fce1b2aab856cfb7bb5362de",
-      "by": "slice mame-vid-01 reader"
-     },
-     "3": {
-      "digest": "e4cbe6610d63246009008457ac41511cac1ebd54decf395048a8b06c9111397f",
-      "by": "slice mame-vid-01 reader"
-     },
-     "4": {
-      "digest": "6933e9c76564ab3026dad1aa33cad1ef99664cd4bc76776d3dd7c0d9ccbbbf31",
-      "by": "slice mame-vid-01 reader"
-     },
-     "5": {
-      "digest": "9a473da32f151d73d0238bbe23e0adcb56d25b32ea9404c1b41f760194485183",
-      "by": "slice mame-vid-01 reader"
-     },
-     "6": {
-      "digest": "6cfe9dab0e6e42b62e34c8ad9cd0c01a0c064196d1de8f012120e14bf7b895cd",
-      "by": "slice mame-vid-01 reader"
-     },
-     "7": {
-      "digest": "73543828c5fc4f7703e09e1036f5c8a17c597d24526a834e3f32a5d73659df4c",
-      "by": "slice mame-vid-01 reader"
-     },
-     "8": {
-      "digest": "f1acf3493fe7913310550e382931ffdf9a1b5335e71faf2263f3a9e4102a8354",
-      "by": "slice mame-vid-01 reader"
-     },
-     "9": {
-      "digest": "cc9ee7b6891eb8789d1d171403e318f7a5f579e52e067ffc7f255db60b4f7686",
-      "by": "slice mame-vid-01 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "1dad863c5fbec90c1a4dcbcf9f434e872a2a48f99081813ce4750f7d857e86d4",
-    "by": "slice mame-vid-01 reader",
-    "writer": "slice mame-vid-01 writer",
-    "rows": {
-     "101": {
-      "digest": "c9ca07b7f340597d099e2a031bd533f0309c10507a5c68493703d0879cea922c",
-      "by": "slice mame-vid-01 reader"
-     },
-     "102": {
-      "digest": "a9e25511272bd0ad7806b6b60a58e2137224d9c47984bbaaf16de6a163a7b685",
-      "by": "slice mame-vid-01 reader"
-     },
-     "103": {
-      "digest": "e6f217e714b7bc3b73eeb898e89d9ced651b6d2398298e591f37d12f3d91a150",
-      "by": "slice mame-vid-01 reader"
-     }
-    }
-   }
-  },
   "sega315_5124:register:0x103": {
    "doc": {
     "seal": "35e957112dcb3b5629dfdf3daf25564f801a7cf04ef907f0d858e530340c409e",
@@ -17161,89 +16222,6 @@
    }
   },
   "tms9928a:register:0x00:read": {
-   "doc": {
-    "seal": "92c3f0b853186f4faa42db60016929979e4e77d872706aa30597fc51bb3ab621",
-    "by": "slice mame-e2-video-03 reader",
-    "writer": "slice mame-e2-video-03 writer",
-    "rows": {
-     "1": {
-      "digest": "e13272d977e7859f052fb21861bfaeab99d908541756af8a81641e97be0bcd9b",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "10": {
-      "digest": "c68e0a4631a70d96b452a27c9fb014a43bab343fac762292f7a8840626f0392c",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "11": {
-      "digest": "d850047ab4462c21298929f2d8de486d06e5c1c54e755a1546096cd29b10783c",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "12": {
-      "digest": "20f9d425e67ad2f51e03b7354d0f9c8a1682eaebd450cb3c6b0f28bc12afd8a3",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "13": {
-      "digest": "20e345e9b40266ff21177b8cdc03b56629b951d4ce3df84ff84717015d325a79",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "14": {
-      "digest": "d9b66efbe4be60b5e3c13598a3bd29ddcc036a426e894b5cb7312feed961cd9e",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "15": {
-      "digest": "a7d5533460bf4653aa7f368f0f985a59788a6ac38b3df6c0cb7256b15d5237b4",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "16": {
-      "digest": "09423839bb5d72e3ef1223ba224699906a47dece1c8c1f31c1ad3f829cfa5539",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "17": {
-      "digest": "091208bd3cf4c486bbdc5932f62a42fa39a320e8ae0e82d3417f1f66b76ecbf9",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "18": {
-      "digest": "62559e4e684449fe07b604197257fd87cef43d7db1b498eef6d77743b7cf5ae4",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "19": {
-      "digest": "7c95172d1b18eb0639e2d3da344c307131bb375cda1b2554b7615f5b2de10aa0",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "2": {
-      "digest": "61b1577f5a1165c79e11b5c3c277dda5eb2c386beb102eb79f5bb54a02ac6ba5",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "3": {
-      "digest": "e12da3e3f9268bdfbeeaf0bb6c9e6adb37247bf2f5057a61e526581a118d9d40",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "4": {
-      "digest": "17d5218c2f2d10fdc0cf590264ad7c7742a1f91d11b26471cb6cfd40cbccadac",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "5": {
-      "digest": "848fbb6acae0ddd419a4253a18e49b612f2ddd10a0fc3d7ce88339339935ec9b",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "6": {
-      "digest": "6419d3d1fc66194a12cf143c6ee50033e1579e7effe652413d4421159da01cc4",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "7": {
-      "digest": "7115d95959898db6831e64ee5486ad3029a81aeb75c29dce4e76b23ba4a0cac0",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "8": {
-      "digest": "e82fb0638bf330741eeafeb8d87c59d0daffa994c9da64edfc22344cb6bee123",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "9": {
-      "digest": "b5b293f979601221fa8494ef305aa469848b7ed9b7e0faa7f916e1ff21f82e80",
-      "by": "slice mame-e2-video-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "41facb248bf31dd0e8058d241c91e6dbaade5d6d21a1303580298d461bb97ae2",
     "by": "slice mame-e2-video-03 reader",
@@ -17283,99 +16261,9 @@
       "by": "slice mame-e2-video-03 reader"
      }
     }
-   },
-   "mame": {
-    "seal": "5c0962a6b4566c5cb4c5795429037dba99f4d21ccc5665a2b99a0e1c0e8d06d9",
-    "by": "slice mame-e2-video-03 reader",
-    "writer": "slice mame-e2-video-03 writer",
-    "rows": {
-     "101": {
-      "digest": "7a1f4e6932c02a121a925502fcdb56a5d04c04548a8813429e5e816cf383037a",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "102": {
-      "digest": "a6f142dcab3657d1ed06a43a89af405c90b7cc5dc7c9fa79c6b1177069df3321",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "103": {
-      "digest": "59978f51c9f45c714f687063b04e09ed8db265cdd2f3d122561cba268bd1a704",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "104": {
-      "digest": "a74a8cd3316fa6baf7588d6fc4c5f14b229762d1b008e07293aca92c0705ffda",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "105": {
-      "digest": "ab313c9ce347c3840392fed1640d6c12a7c4e3a8e1b72d517149d2f036e6dce2",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "106": {
-      "digest": "4283575adbbbf61bde9c00655ab5fad76a11267130bace0f0dd0917c46013fa5",
-      "by": "slice mame-e2-video-03 reader"
-     }
-    }
    }
   },
   "tms9928a:register:0x01:write": {
-   "doc": {
-    "seal": "06d66b3ae6cb0822e81b325ad0b73fd1272f855a72157c8440c9f50a1742c9e7",
-    "by": "slice mame-e2-video-03 reader",
-    "writer": "slice mame-e2-video-03 writer",
-    "rows": {
-     "1": {
-      "digest": "9c429bc3911bc30530739e8e996cd90bbacb5500ea26206e18377adc02950002",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "10": {
-      "digest": "c57b5d425498e410a05e2ddd65fc5d6d6d7167d36691df823a19dc1c9fae42cf",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "11": {
-      "digest": "1b138251aecae711ff42fbabafa511dc17bd7cc2c4670ef9c1e7349e50d4b2c6",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "12": {
-      "digest": "a908918da10c919f53157e89f6ac19b9d276e41a73bc415616759f791ae22420",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "13": {
-      "digest": "fe28a5284975694a31a0385f219c976e632f941a5e0c96b37a37c5080f41a529",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "2": {
-      "digest": "bc53eb84698548301349bd875c31b7df6db07146f456e7fbceb0bce0b4e91d90",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "3": {
-      "digest": "5c6b6072f6a9fd941f6c030de5c38cd3d0bb5416f4a4b1afc012fa7f542781d3",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "4": {
-      "digest": "fb959aaac9c21c03a2a6f86cca9330024fd29b412c8ea7cd429144f8aa53df8b",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "5": {
-      "digest": "4e7e3db90bcaf2aae145ac819e7ab44ea3223932e7d583eb606693a6f55f924e",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "6": {
-      "digest": "929ac5ef896559a2b4e5ecded0b00cd91c8429b81547f3d0407468e5bbd9e12b",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "7": {
-      "digest": "c2a6c470f62e281df17fd1e7df40d6f37f981ddc6e74d3a064368d96295114c0",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "8": {
-      "digest": "f5c4210c3bb794bd73e8fd0f3c3050ad1a70910d3b67b6d5e31c684e289e43a0",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "9": {
-      "digest": "d01887f5da95afa8e9c712ab22d4a96320826969a47d8e9da8f80f60247bf96b",
-      "by": "slice mame-e2-video-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "2726e99d8ae23553f78df9ec7be8fc570fd703422d27a3441f62329f88741da7",
     "by": "slice mame-e2-video-03 reader",
@@ -17401,25 +16289,6 @@
    }
   },
   "tms9928a:register:0x02:write": {
-   "doc": {
-    "seal": "1ece0e302966560e8b01e50b72a0047ee84b39412fc1600c612af450c6265078",
-    "by": "slice mame-e2-video-03 reader",
-    "writer": "slice mame-e2-video-03 writer",
-    "rows": {
-     "1": {
-      "digest": "a2e9fcc126decfa1ff2bde5b6d8883af7d5fa48f9f9ffc3dbbe8c7684befc748",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "2": {
-      "digest": "a6818b6b91359c371ae192e4e4df7aceea08cdfb5e094a9c14b9e65223a769e5",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "3": {
-      "digest": "f30e1e67d2e261b1aab1a376a91c3df37f4a9a03415e4117593cb12b6c1e5b49",
-      "by": "slice mame-e2-video-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "f3fa11c4818445957f1881885bde2b16fc95342ad8b57c4108d41304d46e9741",
     "by": "slice mame-e2-video-03 reader",
@@ -17530,21 +16399,6 @@
    }
   },
   "tms9928a:register:0x07:write": {
-   "doc": {
-    "seal": "01cea7137d9c4f0a0c9b78d8fc220c3f590b9038c0877f2d896b983e4b32a4a3",
-    "by": "slice mame-e2-video-03 reader",
-    "writer": "slice mame-e2-video-03 writer",
-    "rows": {
-     "1": {
-      "digest": "560de3c7a2eef08f7ed819efc60057bf8a57d58a7491ef9f5548c8d02ebe7d08",
-      "by": "slice mame-e2-video-03 reader"
-     },
-     "2": {
-      "digest": "0776e48b44fb9a784d998b855773215f7aad2a12e1745250725fa81839cc7aef",
-      "by": "slice mame-e2-video-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "4c6483118e5f808588e70e722b69cf159323020cf86db80c030cc193d9878d3a",
     "by": "slice mame-e2-video-03 reader",
@@ -17677,54 +16531,6 @@
     "rows": {
      "10": {
       "digest": "29fc3480a3330ac70036b21d61191c3691083e4a3203ba43060f31d613e3dac9",
-      "by": "slice mame-sup2-01 reader"
-     }
-    }
-   }
-  },
-  "upd1990a:command:0x03": {
-   "doc": {
-    "seal": "23f9f4461c3e502c4ded472033f0c3a169ec144bef9bf62894600390530b22b3",
-    "by": "slice mame-sup2-01 reader",
-    "writer": "slice mame-sup2-01 writer",
-    "rows": {
-     "1": {
-      "digest": "9a9c52cdbf1d06d855dce0f1b428b851b2e642932df80bb3dda77c6788080c96",
-      "by": "slice mame-sup2-01 reader"
-     },
-     "2": {
-      "digest": "0b76ffad02afbe3df3d1ecca74520314b5e59865da27d2e33f0ec388eeca4827",
-      "by": "slice mame-sup2-01 reader"
-     },
-     "3": {
-      "digest": "fe8782cda5c257bfc0346fe5f07e54b4d5dde9d739c40e598ef87489c20558a8",
-      "by": "slice mame-sup2-01 reader"
-     },
-     "4": {
-      "digest": "6161e2e8b3d7410517896cf44539c53af949ac3b9ef2e41a23f24a097f81de6d",
-      "by": "slice mame-sup2-01 reader"
-     },
-     "5": {
-      "digest": "f40ebc86cc33efbb1d7fd3bd7a30ca62036771a0c823a27386de9254761ba380",
-      "by": "slice mame-sup2-01 reader"
-     },
-     "7": {
-      "digest": "149e3be905aad9b8e113a663fb5b66a3304dd48fa49df5f8eb6528ceca8b2293",
-      "by": "slice mame-sup2-01 reader"
-     },
-     "8": {
-      "digest": "d644099b40acc113fd567ac2aad58a808ba994f8adba5f7b0b34b877ad0356e3",
-      "by": "slice mame-sup2-01 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "f29b047965926bfcd8127acb58c48c888f5ddd10b40a3878642a6d1b7353d55c",
-    "by": "slice mame-sup2-01 reader",
-    "writer": "slice mame-sup2-01 writer",
-    "rows": {
-     "6": {
-      "digest": "663eccb942d2c274fa081aede25305e937ba697bde896f3b139ac2b5a3679acf",
       "by": "slice mame-sup2-01 reader"
      }
     }
@@ -19549,38 +18355,6 @@
     "rows": {}
    }
   },
-  "v9938:register:0x04:read": {
-   "doc": {
-    "seal": "28146d0a35b8abea3681f15e5923d8a8a9148d6a014be795c6449c4f766bf6c1",
-    "by": "slice mame-e2-video-04 reader",
-    "writer": "slice mame-e2-video-04 writer",
-    "rows": {
-     "1": {
-      "digest": "da42623ba65656d631346fd4ddea5b382c6f0d689c6114ab51de8021b2bddfa9",
-      "by": "slice mame-e2-video-04 reader"
-     },
-     "2": {
-      "digest": "25675d1066467df5d7c54b92221729e4bcfcd267165e5542618b75095f91156f",
-      "by": "slice mame-e2-video-04 reader"
-     },
-     "3": {
-      "digest": "3dc046aed4dadcf1a726005dd1063efc95631655bcc90d768524f4ee601fad08",
-      "by": "slice mame-e2-video-04 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "38eae8716d3ddd9dec4f2ccd73746d3797f537f61bc525e85c7bb1f99b52afc1",
-    "by": "slice mame-e2-video-04 reader",
-    "writer": "slice mame-e2-video-04 writer",
-    "rows": {
-     "1401": {
-      "digest": "1d14475240757b22dfb0bda25e8699bf053857241ddeecad938512b67dcae325",
-      "by": "slice mame-e2-video-04 reader"
-     }
-    }
-   }
-  },
   "v9938:register:0x04:write": {
    "doc": {
     "seal": "896b9cf0c2b2b5bb2b168bf2dadf467d51f4b75e4b6ae70effe210c0f0375d94",
@@ -19666,38 +18440,6 @@
     "by": "slice mame-e2-video-04 reader",
     "writer": "slice mame-e2-video-04 writer",
     "rows": {}
-   }
-  },
-  "v9938:register:0x06:read": {
-   "doc": {
-    "seal": "ee66e9a6aedef49f7f38c08abb09115f86a45a6a23fbc01dd09a16b7fc76f9d9",
-    "by": "slice mame-e2-video-04 reader",
-    "writer": "slice mame-e2-video-04 writer",
-    "rows": {
-     "1": {
-      "digest": "57ed102b502b18395b6859db3dede3d10e511ffcbc6d1b1f3fe2764125c8108d",
-      "by": "slice mame-e2-video-04 reader"
-     },
-     "2": {
-      "digest": "2ec283a96021855683be75e08d9efd80d9d99168051dad6fca10a49f4e2e1a2e",
-      "by": "slice mame-e2-video-04 reader"
-     },
-     "3": {
-      "digest": "fa6830536338ceb3b17c4331ab33d503e318f3a8989ef09f31a53ee4ae5ccbad",
-      "by": "slice mame-e2-video-04 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "5366728706f2a9eb30952576e2755902347e61ff8325f800a3371ca741564a58",
-    "by": "slice mame-e2-video-04 reader",
-    "writer": "slice mame-e2-video-04 writer",
-    "rows": {
-     "1601": {
-      "digest": "9f59a530cd4b132826b698c4b3cf5656b5b8f8f13c8ce06a1638e6997f57e990",
-      "by": "slice mame-e2-video-04 reader"
-     }
-    }
    }
   },
   "v9938:register:0x06:write": {
@@ -21212,21 +19954,6 @@
    }
   },
   "ym2151:register:0x11": {
-   "doc": {
-    "seal": "3933725b932c2dec24fa2cd0529ff733812e22797aff4108ea5bbdf18aecc097",
-    "by": "slice mame-snd2-01 reader",
-    "writer": "slice mame-snd2-01 writer",
-    "rows": {
-     "1": {
-      "digest": "736acf1a6a4bc22f61c190e16e11af7a43decf6eeffd7df486c1c197bd88616c",
-      "by": "slice mame-snd2-01 reader"
-     },
-     "2": {
-      "digest": "e196521d07929658729f596f13a26e7d545a3e7125e511e91632e12239c734b4",
-      "by": "slice mame-snd2-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "4d926aa0eca2ead6279c5e28dfe87b60b860c43ea3cfa194523c0bc115bf443a",
     "by": "slice mame-snd2-01 reader",
@@ -21734,82 +20461,6 @@
     }
    }
   },
-  "ym2203:register:0x06": {
-   "doc": {
-    "seal": "4156ee8b40b6b824e6e02986d1c0af547fd08941c92bcff86b7256cde8165ebc",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "be1fef0eb518c0a486a3526c39f505a28c213afbc13a233ba6fcc82bc11622e3",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "e6f2f82ab9a10ef9e6087f96a48f56f561acda504c4ad9245650f4451a01b3b9",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "3": {
-      "digest": "5dc818ce0c237b98b21f9cd9f5cede2821fe1f635162ce0421ceb5f2942554aa",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "4": {
-      "digest": "53e06343e85c441f535a17a5b8ca0290947017755c505b460261adc848e878ec",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "7366b72d4d8038c7d7b1a3d961c04bf046c1260161bd0d8d717635503910125a",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "5": {
-      "digest": "1775783a1b91d7750f464293f7d70287679a40f026275cdd0763ac1f8b2451c2",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   }
-  },
-  "ym2203:register:0x07": {
-   "doc": {
-    "seal": "23a354e51d68f31bd8ae43458b88644a195c3a08d26cb276d399b9c2a993edea",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "790ad5184ad55513835e2f1de31ab48e3b30b4e724ad185e00188d578d4e1455",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "2ec3074f5b4b89f03571c320a87e882fad41348a8e96d62a56f010c08829eb06",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "3": {
-      "digest": "e5f333bbae5a629c71032315c197ff1e65b49a33ae17b3d793f8e1a2e8a25460",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "4": {
-      "digest": "a9868d6b3e4ce4f67799498cd8e1d2bb909269bbf3ac6bec5ef1e909f53dd6e3",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "7caaffdb0966e3ff870b20085c948139d2896305e2c600019b6cb369952c5813",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "5": {
-      "digest": "7e4f7aa37ac3e33de5d20e1b55a9d6884ccd5510562efbe4a947f40b11130c87",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "6": {
-      "digest": "55f80192ad23a44111479eb219b06c7bbf0a05f484a85c1abb16aa67849fedfe",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   }
-  },
   "ym2203:register:0x08..0x0A": {
    "doc": {
     "seal": "8b152a055946d7ec8097fca958240ffc4af2ad9689fdc860e4a1647751f641e2",
@@ -21841,114 +20492,6 @@
     "rows": {
      "5": {
       "digest": "b1394025b84bfc7dff48c4e8bdf5438a53d8e018255bda192a05c109c142d32e",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   }
-  },
-  "ym2203:register:0x0B": {
-   "doc": {
-    "seal": "9be469199b70f01d6332b8e6d854f37c0c8f1297942282d76536024197a34706",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "e429fb4a79197555e2a9ed10a7d2ab98df5566e43fa42a90c3af10e2969ed17e",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "8978f513ddb6ef1129782c86dfdc0d0245e1c82e9504de4f2343cc3d1ef2d99b",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "3": {
-      "digest": "ffc3750a4bf8c08037b97636f02eb1c16192afb24475083e489889646d42c66c",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "4": {
-      "digest": "7803723aca53ea64bf02cd3e390b03e17cea0455eed8bff3e881c6c256c7c903",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "9eb71d3b0ce6fe5948b16b1037bc451907511d9a789f5e50e624a7f7900b7119",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "5": {
-      "digest": "ee8bc8374ffffbfa9d815d9655e32077ad7c30c6914da0d02a79f740019b45a3",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   }
-  },
-  "ym2203:register:0x0C": {
-   "doc": {
-    "seal": "41b953bbdceb78156a87455104faf88ab337c4ca738458cf7660a136ecb5f0c0",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "af177a6f2ca822cca44ad1aef6e46598f4f87d6f1cadf31078f299b39e37068a",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "feb7c570f72085fdfdbb4fd7fd2b8b5acd88b282c430dc3686e537c0aeb90aa8",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "3": {
-      "digest": "4b6bc375d855eaa8b4974f1c9f7974c376862983c453c23bdfbe5fbbe4bde27c",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "73509a50dd1fa5d7583332c1434fe528c3aa40e79ef469388fc873e85f8e6f61",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "4": {
-      "digest": "ee8bc8374ffffbfa9d815d9655e32077ad7c30c6914da0d02a79f740019b45a3",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   }
-  },
-  "ym2203:register:0x0D": {
-   "doc": {
-    "seal": "05c9b716291d22f70c1ac2e572c4cb465e394970eea60f99e0a5f25d5701a96a",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "c382e892011085ecfff893a6bf4fd950be3f8cf9406f58eed8994d52f95b8976",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "b41227fbbf6cf4e0f37f029c86bbcd25ec4f1f65e23aecabbff12d83651abfe8",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "3": {
-      "digest": "c5d087997ed2fe7e2679bf8acf98b3bae3ce4eecccf07787c8c98a7a916b5e6e",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "4": {
-      "digest": "a8d6a821d2add027c20fecab4b4597e6376581c27b0596063b8c029f1721a9da",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "c16e17ffa08b407035c02fe94ede2966662eb8a791536fd23b210523aaea077c",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "5": {
-      "digest": "b6250b5804121e2ff18d37e0ff6e488a2687e18615b50540b6f117d2cd474ee6",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "6": {
-      "digest": "b6cb66556802e00b182a417b91e14cae06df76208b3ebc75c7756bd490469c48",
       "by": "slice mame-snd2-02 reader"
      }
     }
@@ -22018,25 +20561,6 @@
    }
   },
   "ym2203:register:0x24": {
-   "doc": {
-    "seal": "938b97fca714cef003e7d454e3ac148ab99058a48ef77749f1ab125601d56e90",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "41aa7906110b5c5c5cfe76e8e24c49863a837624da21064f558bc32a0c10d2f4",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "8df040dc1b5bcf2765ec681f5590df7f043087c940f3cc65563a99768685dddb",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "3": {
-      "digest": "e38b240ac9841c3975f8adf4cbb9cf1d1fb87f8515a3ad360e01410fe3d838a3",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "7179d67974f9284640373e516d6aa42a2942fdaae6c12ea5fd8348a77c7ea18f",
     "by": "slice mame-snd2-02 reader",
@@ -22182,25 +20706,6 @@
    }
   },
   "ym2203:register:0x2D": {
-   "doc": {
-    "seal": "7960dbe236256a66d2e7e74bb936c83234d6b93eb744d22dbae3fb31745c546d",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "d72eb35ee0a7a59e64245cdffbce07bb7e2d3d8903cf50235e1e5e4c903cae42",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "00f2900b0f718d6943c9e04fd51a0c4e0c5683d9064c7dbc40f87a394fa3e788",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "3": {
-      "digest": "e423a79029eeacf038618a5076404808997029f366f13529332fe70cd4400e4d",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "b7bab04e7da6a1111188b94cfa98c9cf72be1076c94f85aed4e5f90f755de410",
     "by": "slice mame-snd2-02 reader",
@@ -22214,21 +20719,6 @@
    }
   },
   "ym2203:register:0x2E": {
-   "doc": {
-    "seal": "26e785c0392f4b543a3b5d1fb2191a72c7aea8f789b6ffa006ddac5191c69a35",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "8c96f5bb804c1a757f443949f8ac3c6a6f60b204f5cdfb38d6ffa55357c86b82",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "f91aae8090217e2f09a2196f26dc51ed6c7fc26cc3c42963c98af964ec4dfaa6",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "f9bd35270b292eb641b362666670a5593c7999debcb4d5b1b0dc7b3f75aaf2ec",
     "by": "slice mame-snd2-02 reader",
@@ -22242,21 +20732,6 @@
    }
   },
   "ym2203:register:0x2F": {
-   "doc": {
-    "seal": "614b053dea0614e7ace1fb7c59d5b2560f6f89ca7071a667afacfcb77e16caed",
-    "by": "slice mame-snd2-02 reader",
-    "writer": "slice mame-snd2-02 writer",
-    "rows": {
-     "1": {
-      "digest": "b575fd3bcb491fde6ca94a279828eb7c334dbe65fcbc1b496eb0b51e40120a06",
-      "by": "slice mame-snd2-02 reader"
-     },
-     "2": {
-      "digest": "13c242deba8ba07a2ae592f5a468f8770a916a3c0d9ea455de2b9e2cde96d011",
-      "by": "slice mame-snd2-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "24886dace8cfe5843d185c20e3b6fea0de2e2e66edcab7e7bdb8e339f00e1fb0",
     "by": "slice mame-snd2-02 reader",
@@ -22676,42 +21151,6 @@
      },
      "5": {
       "digest": "26b477b0a23178b4a0f9332c72ee40ecf5b05e313a1e5b1e443721f12a197ed5",
-      "by": "slice mame-snd2-03 reader"
-     }
-    }
-   }
-  },
-  "ym2203:register:0xB0..0xB3": {
-   "doc": {
-    "seal": "53d3e94ac91997711b7eef5fe653f5bdebd798537fdabb1d137f8de6727d1d00",
-    "by": "slice mame-snd2-03 reader",
-    "writer": "slice mame-snd2-03 writer",
-    "rows": {
-     "1": {
-      "digest": "4813a9c6535b876258282d134bbba59e94ec19fcc9ba85a1e10761b2f4ec3cdf",
-      "by": "slice mame-snd2-03 reader"
-     },
-     "2": {
-      "digest": "7827d951dbbe01f6d5d54064fde2716f6a81711a991b21ff5ec6db9651e7d541",
-      "by": "slice mame-snd2-03 reader"
-     },
-     "3": {
-      "digest": "314438a4e45f302f8790df5a60a73fb9f2919ce78cb8d6794b9feb84e71a1870",
-      "by": "slice mame-snd2-03 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "0a3f29fccc140b93034eec6de63e511f528409410f227257360f76affa13a550",
-    "by": "slice mame-snd2-03 reader",
-    "writer": "slice mame-snd2-03 writer",
-    "rows": {
-     "4": {
-      "digest": "0d551a998a6307d85b88c4197b0772325757ef1a18d635a4acea3ed9d6440691",
-      "by": "slice mame-snd2-03 reader"
-     },
-     "5": {
-      "digest": "d7b3ecd052a20464afab81450209f7ffb569b994278991d1fcdaad933ba9d616",
       "by": "slice mame-snd2-03 reader"
      }
     }
@@ -24063,21 +22502,6 @@
    }
   },
   "ym2608:register:0x25": {
-   "doc": {
-    "seal": "6565e3b742785912d2f02b1c17994f04ee0e477e3542bd8e23770b85bf28fac4",
-    "by": "slice mame-snd3-01 reader",
-    "writer": "slice mame-snd3-01 writer",
-    "rows": {
-     "1": {
-      "digest": "f56fe24db02a7a254d8e00b668c745c5084e91a51a68f80be0d899608c2e5a6d",
-      "by": "slice mame-snd3-01 reader"
-     },
-     "2": {
-      "digest": "593894cdb108b44c6a24c931567cdc1c385743f5fe9b51e393de173cfc400c59",
-      "by": "slice mame-snd3-01 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "aec1c0c51fb081cea978e3cdcb7c8c94bdf1065adaacef030452c47136ad8d07",
     "by": "slice mame-snd3-01 reader",
@@ -24880,25 +23304,6 @@
    }
   },
   "ym2608:register:0xFF": {
-   "doc": {
-    "seal": "4faee171d30930c32e539f2b8939aa5e1060d14788be9f09c3ced8e0421e05e1",
-    "by": "slice mame-snd3-02 reader",
-    "writer": "slice mame-snd3-02 writer",
-    "rows": {
-     "1": {
-      "digest": "65ec6dde8bf41fd6ab72170d194ec397c3e8b086ff27c16bc47edeb706beda35",
-      "by": "slice mame-snd3-02 reader"
-     },
-     "2": {
-      "digest": "ea94e0d90705e2d093e3ee71cb4b93f302dcf6e08fc25650d28f7303a141146f",
-      "by": "slice mame-snd3-02 reader"
-     },
-     "3": {
-      "digest": "ec86a4af38142e5011132170add1340e3805df750a481b59ca543b432712d308",
-      "by": "slice mame-snd3-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "c229017b2dd4b47e3a27c1bb6d8535cc7c8140229055c6407a87ae5a0d9d5559",
     "by": "slice mame-snd3-02 reader",
@@ -24909,45 +23314,6 @@
       "by": "slice mame-snd3-02 reader"
      }
     }
-   }
-  },
-  "ym2610:register:0x00..0x05": {
-   "doc": {
-    "seal": "273495ffc13a3574c96de965c3802c680f55e87211e912a66b46e5546e37352a",
-    "by": "slice mame-snd3-03 reader",
-    "writer": "slice mame-snd3-03 writer",
-    "rows": {
-     "1": {
-      "digest": "48a1e3e5e2f15788f1efda7f20f9f7d280b22645267ede56ad158c76d96201fe",
-      "by": "slice mame-snd3-03 reader"
-     },
-     "2": {
-      "digest": "155f8142f277385094cff2357caf10a30f15189e7f8e390ddd386de29d47f50b",
-      "by": "slice mame-snd3-03 reader"
-     },
-     "3": {
-      "digest": "70d0bae4c161ccffd434e6c5c5d3d3ad986c566efb78e65149c31b0c317e6337",
-      "by": "slice mame-snd3-03 reader"
-     },
-     "4": {
-      "digest": "e67b1613c9cca781a941e5a36d9971ce86b68a22f9ce29057427f3815d8a5b34",
-      "by": "slice mame-snd3-03 reader"
-     },
-     "5": {
-      "digest": "9794b966c9a57ce6ca5506caa667fe701c05cecaa7670168122cff72d505c026",
-      "by": "slice mame-snd3-03 reader"
-     },
-     "6": {
-      "digest": "e8a033386fb4767773039943b1a599984783af296b3ff1171c84a7c44b4594ef",
-      "by": "slice mame-snd3-03 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "9e5982f2e12fc4a96cffbd5dfd97357287b8bc403e05bc942d2dae48fda99d38",
-    "by": "slice mame-snd3-03 reader",
-    "writer": "slice mame-snd3-03 writer",
-    "rows": {}
    }
   },
   "ym2610:register:0x06": {
@@ -27453,25 +25819,6 @@
    }
   },
   "ym3526:register:0x01": {
-   "doc": {
-    "seal": "449c755b0b5f175b55ef42de7d833a46299c4b48d97acb4bb018186d1df98ce5",
-    "by": "slice mame-snd1-02 reader",
-    "writer": "slice mame-snd1-02 writer",
-    "rows": {
-     "1": {
-      "digest": "476624c74f75ee33c7ae6ab5930332adae361c1efd298fa75d28fdbb277c42cd",
-      "by": "slice mame-snd1-02 reader"
-     },
-     "2": {
-      "digest": "9f632a6356c43353e216bf700870f76e738c5f04f5db853614df5b8ef1730c6d",
-      "by": "slice mame-snd1-02 reader"
-     },
-     "3": {
-      "digest": "ab60b7b8862781aeaf796e07ce55f4c9d0ca226643ca63d562c8727275a29045",
-      "by": "slice mame-snd1-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "bc6b4f2a8bfc93f524fe387f35bc9f48658fe34bf6e10567aea5b1bcb1163a2d",
     "by": "slice mame-snd1-02 reader",
@@ -27485,21 +25832,6 @@
    }
   },
   "ym3526:register:0x02": {
-   "doc": {
-    "seal": "5edcb49cb65ede5f37ff2a81b62689915eb4dc93343cd7574477ae3a0bd03e3f",
-    "by": "slice mame-snd1-02 reader",
-    "writer": "slice mame-snd1-02 writer",
-    "rows": {
-     "1": {
-      "digest": "4872acb1a1edc5c513aa2b0c8abecbab52dc6b066227eeaeed9ec17fa492f3dc",
-      "by": "slice mame-snd1-02 reader"
-     },
-     "2": {
-      "digest": "5c0d06776aaa782db1325526ef983fd17cdb440df9b1c753eb4dfdc57146be50",
-      "by": "slice mame-snd1-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "c3dd04d7a38eb6ddde9ec49958bc49c8a28a46cd2c53b8ef668a7d3e61ba2b64",
     "by": "slice mame-snd1-02 reader",
@@ -27513,21 +25845,6 @@
    }
   },
   "ym3526:register:0x03": {
-   "doc": {
-    "seal": "45cf735ca6e4c1263c3977de9d2bd51ad9a57a6dec993c6c2c497d010e6b40c0",
-    "by": "slice mame-snd1-02 reader",
-    "writer": "slice mame-snd1-02 writer",
-    "rows": {
-     "1": {
-      "digest": "c1de45ecd0e4455cd2405bdbfdf8b1d288083060c2b2812fbebe7de7be1e3c5a",
-      "by": "slice mame-snd1-02 reader"
-     },
-     "2": {
-      "digest": "7134c936ad89c59844c0210a4479833b66461f35900099c6c712c5b505395a29",
-      "by": "slice mame-snd1-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "2250c63b1571b58c8b98bcfe00c9c32c04e24f476c7ad153fc78f243c9c7e5d1",
     "by": "slice mame-snd1-02 reader",
@@ -27541,25 +25858,6 @@
    }
   },
   "ym3526:register:0x04": {
-   "doc": {
-    "seal": "3befd29fb59b2e2ab99c86c1e773321c768d5d82147c2fa1b0ef3297e590b1b0",
-    "by": "slice mame-snd1-02 reader",
-    "writer": "slice mame-snd1-02 writer",
-    "rows": {
-     "1": {
-      "digest": "90aebdab138c7e98d493b35b037bee03386e38d46e66635a9098a932abf0d2ed",
-      "by": "slice mame-snd1-02 reader"
-     },
-     "2": {
-      "digest": "f78868dd1514c308c35cf01fc434db57f4d6d5cdee203629dda98466d74aabd5",
-      "by": "slice mame-snd1-02 reader"
-     },
-     "3": {
-      "digest": "9f1ea4da274caa846af27087b434f34780797b96bf6b36ceac4d00a5ad2bdfa4",
-      "by": "slice mame-snd1-02 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "14f8a88918c25368ebc944087ff5d2192bdc3d8fce14b95904989fc172e0da9b",
     "by": "slice mame-snd1-02 reader",
@@ -27589,25 +25887,6 @@
    }
   },
   "ym3526:register:0x08": {
-   "doc": {
-    "seal": "77495e31184f4fefa2ae3f2405c430a0fc0d7be48e7a34192209ae889ba9f262",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "0f17b48c33baa413f3ae3e88ea64be1939d2ee20acd14721f2b5acf95165fd3f",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "1787e9e9fd6667353ba657ada7757d73d06270a7b0eb7ed1c7b2e41c713f7622",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "0ddceb7463612bc241075643f9f95a0d948ecbbfbf916974f2a80138ce3ebd48",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "4301a3811f1a02d1a47fa63d589d4c87bcfdeaf62a47a48f7e57fff336e71449",
     "by": "slice mame-snd1-03 reader",
@@ -27625,37 +25904,6 @@
    }
   },
   "ym3526:register:0x20..0x35": {
-   "doc": {
-    "seal": "8d9e505022d267d3346700e8a3029aa522b1fc864ef7ca9d102d77ab4a7ff60a",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "be536a2034aeb24353f43b87cb0c0cb64429f80a37c6522aa02ce2bac14fc341",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "9248dbf6d9b8c10fc01d19b8d64862fac1fc559efbbf2b4be88facda78918a84",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "120d4571fe2a4dbca259d342084cb1893535cb6db2429547af7bd4b1a6f94b48",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "4": {
-      "digest": "e961d63e17a73b8f2c3c9f8ef3ecde66f607ac4e3c224e10b4c959209f91337c",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "5": {
-      "digest": "30f5e52f6ebe63bedb308807bc83e697d135bd62b202d04b5cf40710fb7cf14d",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "6": {
-      "digest": "7365e49f743082b737b32c3cdca8237aef35b8737085a989223ded0ffb584cb5",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "b1a242f1da5b2cda784bfe62f6670123e43fd076d9459c70a9da6c520a8e0460",
     "by": "slice mame-snd1-03 reader",
@@ -27669,25 +25917,6 @@
    }
   },
   "ym3526:register:0x40..0x55": {
-   "doc": {
-    "seal": "9b43da1657c41f03ce1164bbbfdefe8171d11c50c31c983b862dabb79b2afd2d",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "49eb5c5f5a7f16742e94e2eb02a76e70c5bc951b53d210e9290727dd6ffc4db5",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "a5dab89d0245767cd1cb5a3c7e8edd7f803c8b3e0308a386ed65ed5d460dd3ec",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "e463d577ecd093fc6866c482ab074220e315a11f0d398fc4c33ab3babdedf437",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "f2a93e5b7b5fd1c8c1c1935fdedf3d7342448c309711603aefdd5dacee1f8397",
     "by": "slice mame-snd1-03 reader",
@@ -27701,25 +25930,6 @@
    }
   },
   "ym3526:register:0x60..0x75": {
-   "doc": {
-    "seal": "e19f9dfa41f316ec535a913c6c1647bde27ffdc6b1707488ffdce837dfb2a74b",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "2c12849b2dc99b6cb490c8ee1f21e25d7a21bf487c25c2e7357f9b1e509fedc8",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "3244a34fe6d4d03bc4641e81567f815c8d131ce57ac85919ff23d0834d90ad16",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "d3a284aefdbad5e15cc6cf9c8165e79ac29594a69c9dd22465d93275a2167be0",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "049d1a6e882f7ec2c9d1f0e622c352ac84e877869368b34ccfa9f3b3d525a1bc",
     "by": "slice mame-snd1-03 reader",
@@ -27728,25 +25938,6 @@
    }
   },
   "ym3526:register:0x80..0x95": {
-   "doc": {
-    "seal": "66def37dd87acebdde219234cfee89f977dfcf23296874099170445f38e475c2",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "d5aba64c9c36500cf3d56a97b4f67716fd161d4b3b65942c22da1e9bfbd7aef5",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "917f0d45ddcfc1b7b6f4b6a341206db7097713535a272a0a75b14a0a928650db",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "daed8f28e836b894b6c0406683c273f1d6da97ffdf61d23cc2ed917d0463d0c9",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "57735bc7414abbab0755839531573a9f1b60fdaa70548ae422642807eedc7e8a",
     "by": "slice mame-snd1-03 reader",
@@ -27760,21 +25951,6 @@
    }
   },
   "ym3526:register:0xA0..0xA8": {
-   "doc": {
-    "seal": "5ea8d33a4b7b11241713dd601607426d54ce76c38128b7d5ccb0eeaa49a24531",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "d7d0b948b2cf4277593699fe5018d2190ecd728af8078d8928b95ce68db2ac71",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "477afb76ad0ba0b49b945e65e2f2ac9c47380f07ba2cb412a3623f466b7e6b17",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "50ea480e181b548d35e0f921e118ba6f75560b05d5e6f93018319a1b338cb057",
     "by": "slice mame-snd1-03 reader",
@@ -27792,29 +25968,6 @@
    }
   },
   "ym3526:register:0xB0..0xB8": {
-   "doc": {
-    "seal": "558980e3dece9761bdf96a5e1d0a8237071515e67e2549a496248842d8e8f1f4",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "69044236bf50875b03ecb4dcb5d458b18b4803adf9300b3df8e8caa1d9793776",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "ac035a29e92d933e5d35b1c3d24ba6f7141642120a961749eec0b0acfcfe74f3",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "cb6029913557e82ff2b3aee51cbbd69d8ee7eb3f248a7391dc1ba14b2ffc6d13",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "4": {
-      "digest": "d1bc13e63fb2604062375d1203d221651bc9f06df328ec03f69665af8ef66b57",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "20339c3c3e74105dc16dbca7334499ec0a8391eb66649e354e50011e47049a70",
     "by": "slice mame-snd1-03 reader",
@@ -27823,41 +25976,6 @@
    }
   },
   "ym3526:register:0xBD": {
-   "doc": {
-    "seal": "f810920dd70880ac9377e0933c88a46f64124f9b44dd9c65e80f23363fd2a6d1",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "d7b55779a6dbd869a99850c9af811f87fb01efbd8176fb0824bb5d787438fdc3",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "5746aa149a4f1fc39ab36fdc9f573d8063bf99fb57260eacb35412ebe0e58640",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "ae8dd0cb09af6e0d7cc77d12924880d96a01a76c368372a25d47ac97c8450a15",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "4": {
-      "digest": "c4e98c74abccf330a3259d84844f926ccebec4526f2712af83bae701de65df79",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "5": {
-      "digest": "6a9906ec7d102faf744d95fb07193746efbdff61de1d72e4ecc3cbc1041723ed",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "6": {
-      "digest": "19453fe8f9b4af28ff73a3c54c9838352bd38d7ebec15bdc5c49f92d16b3ba7e",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "7": {
-      "digest": "fd907c8c9d3ee5f87467b750b4c39f5e554cd73bf19922cf2dc663c3933ada4d",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "9a2cfc7bf91721c162b2692eb58bde0f80cec1884561287eed359aa5260e44df",
     "by": "slice mame-snd1-03 reader",
@@ -27866,25 +25984,6 @@
    }
   },
   "ym3526:register:0xC0..0xC8": {
-   "doc": {
-    "seal": "7ded7bffc803764822406382b2119eaf14016df0539ee6436a2cff7f45a0caaf",
-    "by": "slice mame-snd1-03 reader",
-    "writer": "slice mame-snd1-03 writer",
-    "rows": {
-     "1": {
-      "digest": "795e558035bde9a3131d11acbf2780e78bb234869db304d080dfafaa74f64c93",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "2": {
-      "digest": "7a3ffaa63b93ae272765be97b0d660d1ba76ce91134166e3d23d2f077952a066",
-      "by": "slice mame-snd1-03 reader"
-     },
-     "3": {
-      "digest": "c70afe244942b51f68873b1554f88f6838f08645dc477415e92b7f1ec2244d80",
-      "by": "slice mame-snd1-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "2f26903f19b9d0c652746a5fccd9b863dda53eefec3952759ff2fbbcfc47987c",
     "by": "slice mame-snd1-03 reader",
@@ -29597,109 +27696,6 @@
    }
   },
   "z80scc:register:0x09:write": {
-   "doc": {
-    "seal": "67bc6b3a11ddef659b6c3c19a2ebffe37a3aa92c1f8f36834f3e70ef6e70a880",
-    "by": "slice mame-sup2-03 reader",
-    "writer": "slice mame-sup2-03 writer",
-    "rows": {
-     "1": {
-      "digest": "32355e3e9232961d787df0f464979dd7e92f524edc05d7b0bd92b0fb7cdd2872",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "10": {
-      "digest": "a7bcda89e1dccdbdf8cc7fb4d6b5430ecb3948ca5e83c199d73b184bff11a5ec",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "11": {
-      "digest": "542b8b9c01a395e96ca9ff837d64a62ba87e8eb10a400aa7aed94461fba5b5cd",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "12": {
-      "digest": "5daaa264539d14178ccdab94a7b95297847d0a83eed2ff5be2d39664fb66c527",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "13": {
-      "digest": "7da4baf9dc959e834b3447f65e8c339e05dc3415c6aef4c989a4727679170ac0",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "14": {
-      "digest": "7ba9881c57243f7819f573b02b8d56892798d2e517c5eb670839b481027d31de",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "15": {
-      "digest": "e5941450ca2062b083d153e4f699272eaf449cfb5880df550281ea151bc89816",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "16": {
-      "digest": "f8d7dd59bfb61839fdbf2a3972e8eb993b93139987cd6a0adb8e917c6d5f7709",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "17": {
-      "digest": "02dd73fe634716e50af8a956fb08934470094f25b5570b00bb747d1d6c22c318",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "18": {
-      "digest": "30fd23b494a1175f2ce95a70845ba23534a32f08b82a65da741900fa7afbb537",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "19": {
-      "digest": "ba1569e4baef8c9a7b22ae2491d52dc49805e0aee412af960703454bf9824443",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "2": {
-      "digest": "dac0da47dd68098fb998d5fb6c7125c099ce7a2c641c106665db9deac1bc0126",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "20": {
-      "digest": "e25a1bcf38eb63f58237d210bf825f05d5ac1e050d3a7befacfa78d58d0c75b3",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "21": {
-      "digest": "c40be8eefb58ae856fdeadf6a998334b39515737e0e8f20cbcba4bdb19181b38",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "22": {
-      "digest": "6f8bac8f261d108fd98ebcdd4df96ebf7e6a57c7d6750cbe16a30eef042670da",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "23": {
-      "digest": "c873c0089ebbee67e347b46a8fe19d66978f0dce535c28e19f5d6ba3330e74f3",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "24": {
-      "digest": "37450c8d58cd31a865d3e2f2f12c77614bd5e9e410c0978fab920722fb0a1838",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "3": {
-      "digest": "982494c8e22bab52cb7ff13cf06ced69fb2d0d77da18bc74c808a7fa2232a71d",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "4": {
-      "digest": "37003723ad0f3b2fc0ece844f644b59de1608812da0ea3899c227f0d7f4af4fa",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "5": {
-      "digest": "3fdf463794b1264c4a48ad2f6622b2f8e117bf38a778fdb02e5f25d174232784",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "6": {
-      "digest": "42a5d33db732de7ebcb684aa8eedc995090b19b16d0a0ab24abedb6a4e291bca",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "7": {
-      "digest": "4a9d7e4679fd578c0deea53fe64a9d608f00c45388640ba27168644e596d2b81",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "8": {
-      "digest": "e00a666e590183137ff46a2e3a8edb177db655887aed4c3a601636b90ca0a273",
-      "by": "slice mame-sup2-03 reader"
-     },
-     "9": {
-      "digest": "ba11fbe90b0646515c972cff140f32779cdb9a5bbf89acdb45786f295764f720",
-      "by": "slice mame-sup2-03 reader"
-     }
-    }
-   },
    "mame": {
     "seal": "3c1330cd875e05fd7c1d211c1d010879b077dcac50ae6cfd20379ceb02091553",
     "by": "slice mame-sup2-03 reader",
@@ -29971,29 +27967,6 @@
      },
      "9": {
       "digest": "ccf888e352401f798c7945df69655dad35f6041fac17f384c9fb7f916b5dd228",
-      "by": "slice mame-sup2-04 reader"
-     }
-    }
-   },
-   "mame": {
-    "seal": "79172731fd25a6a5e0e2876ec1ebee2c5e65044a30da796dd3186efe3152f2a1",
-    "by": "slice mame-sup2-04 reader",
-    "writer": "slice mame-sup2-04 writer",
-    "rows": {
-     "13": {
-      "digest": "ea5bf12cb78513f825c5de29b33fa33a1500db6188b1d68fcf3a567f0ff8583a",
-      "by": "slice mame-sup2-04 reader"
-     },
-     "14": {
-      "digest": "677ae8832c4d88ef05de8e41de761062358f8ad698ffcf11b97a821497eb49f2",
-      "by": "slice mame-sup2-04 reader"
-     },
-     "15": {
-      "digest": "2ec7ddad5de200ea2f14809368a1704451ae63e7e50545b4b0eb4f809a31ecff",
-      "by": "slice mame-sup2-04 reader"
-     },
-     "16": {
-      "digest": "a03fd97fa14b297963941d5e9d3d4732e49ddceaded75afe841c2870312066b4",
       "by": "slice mame-sup2-04 reader"
      }
     }
@@ -32439,6 +30412,2802 @@
      "4": {
       "digest": "3429c963fbf7e959a63bc41e569b58e708bd937e8bdec0b2efb3758479f9b171",
       "by": "slice mame-snd3-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "es5506:register:0x00..0x0F:write",
+   "part": "mame",
+   "rows": [
+    "24",
+    "25"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "3d33cd4c2596abe6901e49188b7fe56afa08f338e40db2273cc2d9a411f9a185",
+    "by": "slice mame-e2-sound-10 reader",
+    "writer": "slice mame-e2-sound-10 writer",
+    "rows": {
+     "23": {
+      "digest": "b06de9bf3989fb9a941917ed0a918be1f703a3ed464da3fd36b32581166b1d15",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "24": {
+      "digest": "47b89a1e83da23172acc5fb5c9a8e522fbd2ccb758bb7c010860b18106eec537",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "25": {
+      "digest": "181e966f55d4372d5238418ae02beb8d6a7933d04661e7d871da7a293c31583f",
+      "by": "slice mame-e2-sound-10 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "es5506:register:0x10..0x1F:write",
+   "part": "mame",
+   "rows": [
+    "16",
+    "17"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "adc02ccb7a174a8ce23cfec909a009d29c8bcb080bdfdd27d8bf6523a6bc4ed6",
+    "by": "slice mame-e2-sound-10 reader",
+    "writer": "slice mame-e2-sound-10 writer",
+    "rows": {
+     "14": {
+      "digest": "38735b1cbd2144c950f4f4c5129a8e6325b5570c4dd402ead7f2a90c91896b8d",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "15": {
+      "digest": "41b0d90d7e2d9f53f7656ee64ad2b1a0f89e204b62cc1713c2309a24a17052ab",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "16": {
+      "digest": "25f330acef040488f9a0ae4496c4b20752d3d573713112a54f3bd7df9508f6fb",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "17": {
+      "digest": "7fee75181412572473178b3486530065587eabc664cf42b17780827516b6333f",
+      "by": "slice mame-e2-sound-10 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "es5506:register:0x20..0x2F:write",
+   "part": "mame",
+   "rows": [
+    "13",
+    "14"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "2b1aabb96a9f0c39b3b3c69d7491f8dfb8db077dc83e14394566e88a71c8ac4c",
+    "by": "slice mame-e2-sound-10 reader",
+    "writer": "slice mame-e2-sound-10 writer",
+    "rows": {
+     "12": {
+      "digest": "04b53d5532b79d3de705ea3d77007a41286475543f8b1ca23c193ad515f1a9d9",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "13": {
+      "digest": "fda93901df392c78db40e604bed5b538841f2eaa17c3358619b94bce574d6f5b",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "14": {
+      "digest": "fb18e65b62ce35565c10d96d16d0a9522805f87b9b3c14d863e40a4652a06853",
+      "by": "slice mame-e2-sound-10 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "es5506:register:0x30..0x3F:write",
+   "part": "mame",
+   "rows": [
+    "15",
+    "16"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "02369d51d0a8feff973f4bf432d21bd989b5cd827494d397b14b496d2480c061",
+    "by": "slice mame-e2-sound-10 reader",
+    "writer": "slice mame-e2-sound-10 writer",
+    "rows": {
+     "15": {
+      "digest": "8fa91ace2bc7facffa3a0e5dfb36be0301195b7f968345273415d63e11504bda",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "16": {
+      "digest": "dc509983114f1386aaf2ea41ca6cadeceb67357bc10de0a610216b05789047e5",
+      "by": "slice mame-e2-sound-10 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "es5506:register:0x40..0x4F:write",
+   "part": "mame",
+   "rows": [
+    "12",
+    "13"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "2fcd5aafe6de79a137525075cd3c328882cae8db02d3b6025454a4b653f4bd2f",
+    "by": "slice mame-e2-sound-10 reader",
+    "writer": "slice mame-e2-sound-10 writer",
+    "rows": {
+     "12": {
+      "digest": "dce60140c440de6b5e030dcec6aba3983cf549545a4be55c83cd0f5e52d70d66",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "13": {
+      "digest": "00260d6ac604fd6959ca080b998aa42321a2579530c25f6bdaa0de0eeae03864",
+      "by": "slice mame-e2-sound-10 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "es5506:register:0x50..0x5F:write",
+   "part": "mame",
+   "rows": [
+    "14",
+    "15"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "cc7c3e0740b23b69b25aabb107f240789c40280e75b7f104b873fe33609e9587",
+    "by": "slice mame-e2-sound-10 reader",
+    "writer": "slice mame-e2-sound-10 writer",
+    "rows": {
+     "14": {
+      "digest": "ab83c9b73d48ad9abee7d2f36ee68693cca54d2244561dd9968fe225973d751c",
+      "by": "slice mame-e2-sound-10 reader"
+     },
+     "15": {
+      "digest": "45f71a43479512c5d21c064a3e0723443d6e64bbb69421b1ee151f9de0ae51c2",
+      "by": "slice mame-e2-sound-10 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "hd44780:command:0x20..0x3F",
+   "part": "doc",
+   "rows": [
+    "10",
+    "8"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "737f3433a3ab3f7ec5536b81d847e924780dde04f58824607dfeea14a0220cdc",
+    "by": "slice mame-e2-video-01 reader",
+    "writer": "slice mame-e2-video-01 writer",
+    "rows": {
+     "1": {
+      "digest": "79881bd086855dff9fffb1cc221455a6e3a2ef311a424fe4df95aca8159b18f6",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "10": {
+      "digest": "25d276ec3c02d8b1f8c2b31100f8a749ba6a8a8c8ef0080b0441f6fa684bc4b3",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "2": {
+      "digest": "179eae79b77689534602e6ec0ddb940b052cc1985e32f208c0162f057bf6865a",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "3": {
+      "digest": "24b20192aaacd31f437279f46ca508c267a5bd8a89c89fd1c3e9717a0987cfc7",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "4": {
+      "digest": "f59d397e67afdcecfc36dfef890d0f304be004d43c202fbf896b1343fac7e64a",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "5": {
+      "digest": "c4e5f693f3dbb45188a0ddc6379f0ad30127258d5020bd9e130346db2e984bef",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "6": {
+      "digest": "c66168d4cd37e3b50fd56b3623d935b0e092574672661c11efdbb117d6b69f6d",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "7": {
+      "digest": "bc3f943c2807260687a5f29777b1f597803d15e6197ea81c87076711b7792fcd",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "8": {
+      "digest": "7fb74de1aefbe40c4ff886d89f6d6453f920f5dd6f74d5ff311c0e1b556a5235",
+      "by": "slice mame-e2-video-01 reader"
+     },
+     "9": {
+      "digest": "bd787036bc8f2e64cf0bb9a50f8ebeee3c26ac2645aa40e3c626d38dda06af06",
+      "by": "slice mame-e2-video-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "i8251:register:0x01:read",
+   "part": "mame",
+   "rows": [
+    "111"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "e7b54fabb1b58fb515b823dfc3884474161ef1e9e2bc8db05b5de5334c46de23",
+    "by": "slice mame-sup1-01 reader",
+    "writer": "slice mame-sup1-01 writer",
+    "rows": {
+     "111": {
+      "digest": "0696293d2378c4b255fe67babc7c9e731d18b0ca5d71c7c812f0cbf25e5cf152",
+      "by": "slice mame-sup1-01 reader"
+     },
+     "112": {
+      "digest": "1d823e9c46a41560f1d195b0e631ec6b54f2e5832f70f381cbe6cbafcb395439",
+      "by": "slice mame-sup1-01 reader"
+     },
+     "113": {
+      "digest": "4c88e0fe62df2f90bb6e150be71ecc9b355b5180c2433b884c1b9fae586e05f4",
+      "by": "slice mame-sup1-01 reader"
+     },
+     "114": {
+      "digest": "53a1c5213db4377698f04258724476a7e76ee1cc0ff0ddefe817a3d5e50b0006",
+      "by": "slice mame-sup1-01 reader"
+     },
+     "115": {
+      "digest": "8c8b4da8dc81a57c3e9c75fc610bd85c5b25207fdc65fc07fe1284aed4a890a6",
+      "by": "slice mame-sup1-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "i8255:register:0x00:write",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "b7ef84704b3d73f93cfad6d8a284b45fbee65b9b5d1bcb91af4998eca84626ad",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-01 writer",
+    "rows": {
+     "1": {
+      "digest": "df32f24939222907f9730a50d53a68435b5b3066fe00999ded6f00807414f854",
+      "by": "P0 unsealed reader"
+     },
+     "2": {
+      "digest": "b63ef4a818f70adad83d053aa55f59a873402bf17bd47cb72b3ce322805a2817",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "i8255:register:0x01:write",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "d2d87affe569007abb1a26b76c7e02b27545850b4a1b5e8da732895219235598",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-01 writer",
+    "rows": {
+     "1": {
+      "digest": "d2d777ee163e13771ae932b99a5cd7922dc360b2e68be978d1cfe508434899b4",
+      "by": "P0 unsealed reader"
+     },
+     "2": {
+      "digest": "2b646f23a6ba86811c10a6d77da3780e2538a1f95a37cf3f8ac4b4cffc27ec21",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:2",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "8a495632682f2af5304b2a650da7a88f4706bbd072c0a20edf9bd39b10d4c95b",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "2cc856ccb660aedaf42ab8e03593e108767f69c371d88c8aa4df402186ee573f",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "85d176a5f8815eaeda8555f6c8d4c0f356afa6bda44019e58632d69bf2be7e6a",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "335c2e159e64e6cce23e16f09ea2e20bedc99abf1c4c2f786941597df4293935",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "4": {
+      "digest": "8c93376387a75f56e21ba7c9aa281dcd07ef418ec6dd00786bf6358dbd9b840c",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "5": {
+      "digest": "0134be306dae4c66dcd595b4158d1f3034bc1f4b610796994b544b6931cefc11",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "6": {
+      "digest": "808db644d1276241e0cb79baff3acdde0806aba0b4eebbfe238963dc88d5035d",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "7": {
+      "digest": "d28031f021d0beab628d1093b4a491097fa5cf126c49732c25317ba7ec020450",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "8": {
+      "digest": "b5263d5bcf58c1abbf234740de31c573f87cbf54a1b5b6efaf2c9c494e33a440",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:3",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "50dac23e5977aa23c9b092edb8f0602b3f73f86e8a9f497d678cfa7ef67a6788",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "389ed612ae74c634a8eeea364c110f97b642c2ee594ede1220b65014305d89c3",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "09c82a6b9a789c306c5b4528cc72439d8f2d804a1f5a8bc160f9fe22998aff53",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "8fe7f52cc6a330556be4c3c09fb60345931d3982252ab489b0b4a90624fe5817",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "4": {
+      "digest": "7f76df44a598baaa4313ee454b631d1890bbf4fc94bcaadb9f4a17c4db81da06",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "5": {
+      "digest": "7a075f90cbc02c6a664dd829dd288b034cdbf5b3ce38a5237715e78b60492dfa",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "6": {
+      "digest": "38916d5cb0c8ed95fe670601ca2283071a170f62ea5d547b8a399c7f74cf3de2",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "7": {
+      "digest": "02231b2ecd388a2cbd5ad8232e1b2c93f9d238863abacda8b14428264d673606",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "8": {
+      "digest": "ea31b50d5a4caad515645ad2aca49ad42c3f73f4434253b72a063c20f1d1b2fb",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "9": {
+      "digest": "c0b71f05576924a07735349b11766a56ca0ff9b9b982ea063f8057f1c641b3c2",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:4",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "39299123a9eeeb0f15624df6e4b650fba5cf2577f4d5aabe2420876239bc523b",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "2bbc58151385753e68955fb53b06b0649f4e0b1de7a32a7fae2101b6828870c1",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "ffec0c797d42535b05ccf9b9425678ac66e708b508ff4e7036957ac43b10eff3",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "d284ad7e98a680392d8d08f02625adee9844a8b888cc79e0d82a5c46b1045fdd",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "4": {
+      "digest": "1b06fb4d0b87749ae80131d48dfea700f2768b79c97d0bfd3d14fd4cdf7e2783",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "5": {
+      "digest": "3f0fdbbcf69e257cab4015345bf823763ab5ff68045bcd9dc1952dcb055cd216",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:5",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "4715846efdefff4bcdf423e376462bbe823218602864b07ebe215b1c3769f598",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "d0d716820e55902501cbb9f9863fa5459a30d2e8702adf121ccde870939de054",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "46160d6a8073ae5a245ec67ac87d55063d4f4c24edf3a5f001d1803e6a4bdfb7",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "7249ed464f27a2dda6c40d5a35557b6073d30db509a4ad691309bd3dee7008d7",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:6",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "3a8e3057810181d2e691d1c06c2d55b22df89195538042605db243423448822a",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "7fe7fb2817a43ef4df98aff3669ce26a16105bf374f71cc2c672ae246ab9117b",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:7",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "be78a3a63a440da940623d1b255791604de1aaa3c0eca875194e62decbcbd5dd",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "a9148c0d612c6dd142262acf4deca0d4b99b86c8c6996f431897c4c1f2bd4e24",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "08f363e8e1fa42a6332aa61917179e4927992ea5f8b07f2fbaddaae530d2c5ef",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "8407de968d731b3809a2b9d319bc2f8766d1cf013e516b31f183ec8c0056160a",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:8",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "b87ae9795a0645266aa0f087abc5145825e52349a2caa1732652f5e0cd6d4368",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "e70f96d9c1c5c8bc9f225dba4ef755d6b78a66b1efb22c204bf88de9e9a6cfab",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "0f59a16e3476a4834bdff01272e1134bb6c20646f37545a35f8042eed06f9a28",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "fbaaa643aefebb9eae49eccaaf087c1a21293a94280aa9645e1ae9ce4c61ca26",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "4": {
+      "digest": "933cbec60c49ac1d40a11debaa363f6eba95f351f908d411ba291ba906b5120a",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "5": {
+      "digest": "ca9dc08fd0a3448735e5271940ee2412e19074a0665a8007549a0fe832580a79",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "6": {
+      "digest": "cdb537ac83598d6f3890af41e70ce1b3a9d961e7dea7efede2c8a04a01a16903",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "7": {
+      "digest": "2423bd6d18eae08277b3159fc318171c162bef80324352d39f01047cb0ab8523",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "8": {
+      "digest": "39d27a01f962c5678565d31b1d23c95d1e365ce95ad6b06b3a21ceda70fea8e8",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:9",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "b3c9c438a67ba7fc2c7849ce6f20fbc5a8cb11610812859303d9b29a4a66ccc3",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "9fe3688ad2a2b07294c28813cdba33d09865eddfb522764dffdb98ca3a9963de",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "3a338d61318646ee2eef1181ffef949d4d49b91de0890dc379b7b06cd352e99c",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "57a858214019489ebbf41281c26be18eb2caede26c349739e25a735d9f71bc6c",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "4": {
+      "digest": "57067d3bff6bc85dd4ffe41f96197a5c6f9a66a2c16de028f383277d02ffec47",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "5": {
+      "digest": "fa747096482ff6274ba1ff038e7a6bc2aa4be41018e53e9e59b178ad0caf2430",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "6": {
+      "digest": "4e81391b7f900b856def1584c847dbb656d72d9a022ffc58a597e50a7e7b6104",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:10",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "66ac45ebaf3bb91a4f231df56a27ce90dd54cc1405725296935618cdf9394006",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "0a3491f0c9d49f2aba7d82cfd4ec5d760767dff34bd216ec58efe8a76d6ca6d1",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "237dc81371d17b9b858da7cce485f2e86901f849bc7cf944f9ffbde6397b9900",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:11",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "764b8997301f566fe37f7ece731136ee73d6f92c523a4bdcac9725a457df6dcf",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "54bf90b6199275052816d9c3b0ed5f252a982c153a0cc2767530eb7c9b470f43",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "7ff032e9a0e22840113622e85ac95e6d0fc9afba3b46eb0a74b66dec374c7aa4",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:25",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "e1cc616fcedb1d63eb84f8580385e42f0a2e0d8a59697fa0faf5ee7552724b2e",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "7af2e21d54b3fadd5b947f8c2910e8d9f25bd34523936de765939bcb13e0a669",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "1a4dca9cc24935aa45786ca181407c1a07e50a4e7ec1629056f9a313b766864f",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:26",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "b155e7199a289203e1f98585c12836a45e484ffe1cdbecf21505ef162fc2161e",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "e800e31f61921972f34fc802b0ff27c8770e9d44d2c5eeb00996d1494c11f06d",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:27",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "9320dc935af383b2c2f8066e6466e27f45b2c2a8c7893517f8a88fe7139597f7",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "ccc6dfa5aa1ef5939b6cca7234e0d8d7a38731a152f124cdd262d459cad8562c",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:28",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "319dfb5ee4b98ff36a51b90f8d4f7844aeb52aa06e78b3b6956e17cbe6ca5a79",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "b4f895935011d601df3af61a5e3be3322f9b1bd0263b66e849c9195806f90304",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:29",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "c3582bb1bdbdda3e5f0c47e7cc5514311945d1ddc3c4d06247fcb0d7bf09fd34",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "f6113168e4d10d01b98682d868dae87b43755d4fe3c2978c7e301e4513274f83",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:30",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "7c001637a64faebdce2fec05196f28d79b6ae13a778c76aae08fee3dce82d40d",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "e49dfeac7f2ac792ffc09d898d0b562f9b899aa399388a1bab678dcaec56c58a",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:31",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "a0a2fd25c0a0db49a6b0d700d96ff8c5b24c44c699a9794d1fbe051d51124048",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "fb6166a1d2db50c35d4417a1ee52e7b3d1dd3bc10da58f8f8e12157962fdc9b7",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "m68000:vector:32",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "7cbc60a3b07c60d1a3ff412debb4f718eaf0f220f514653d56aab12d9592ffaf",
+    "by": "slice mame-cpu-01 reader",
+    "writer": "slice mame-cpu-01 writer",
+    "rows": {
+     "1": {
+      "digest": "833686b13fa5899d654b713b9bbf79227292d616b81fdf1e361728ac004a3115",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "2": {
+      "digest": "0b486b8249d58a9f00770c13f85dfa068112443961ca65b64805a47b64070f19",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "3": {
+      "digest": "c778686d6ba0685f42d7d0c7ab427cc28ccbf5ff0731c9762cbd57b366236624",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "4": {
+      "digest": "a16f6fb47f2f27105fcd1842abe87c9d6bf2af797620397f75aadb09a982d2b6",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "5": {
+      "digest": "2ec7dfd85fe4233d5c07540cd313a7e71615c198652fca0e7a908b6bca12c3b7",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "6": {
+      "digest": "9ea3ac2ba32871afafa79a88e0c9b28c3616e6de932f52cc3f12c8f6ee8eb795",
+      "by": "slice mame-cpu-01 reader"
+     },
+     "7": {
+      "digest": "05fd20496545b3ed0be6923e4b5014c3f680cb4363c3d65607d51182f1b0b4af",
+      "by": "slice mame-cpu-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x03:read",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "7dffd813ecf03b7eaa8386b8bfc7344ad5d53b3a385914fc8a21956e8d65ab6c",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "ec9db5d8683e69dab4c6264285844dba2657c23708b6c6197ca64f315f111806",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "4ed8040212f9cb69a9185e051188834d035668d346ea9f94151aa9acc86d17ba",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0B:write",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "a143bff473bc250fa23ca9dac19a8b9c6f658c0663c9419dace09802626bf3e4",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "d1ec8ec875fb5e49779c82782efa8cd94995c11794ff0fb5323c8096570feaa6",
+      "by": "P0 unsealed reader"
+     },
+     "2": {
+      "digest": "82c5f5cebfd8f11091be4b1a987fb2bc6e484f220fc09d50d6e7ef45eb6bd101",
+      "by": "P0 unsealed reader"
+     },
+     "3": {
+      "digest": "34031180b868b140817c6edbf55ac85582bd51a147f6887c9d9cfd6a33d71f36",
+      "by": "P0 unsealed reader"
+     },
+     "4": {
+      "digest": "74d8bc3aca9aa96d3d3b742945825a02085899c3c2e06241a1051935965e2647",
+      "by": "P0 unsealed reader"
+     },
+     "5": {
+      "digest": "9f9bbb00dfb2a665ae1e81d03c3a7120e850112c4cc91a6324b92ce20b81f5d8",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x09:read",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "0a9be478349fe52a20c0676ed0021cb3be7afda9018eb5f9afef9d33825ad88b",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "e6fed83e22743763cdbb109bc3d3e1188055e1d7fad3eed05fbaa3d282c1b846",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "1fc230f22543642d233c98bb2e288f71ea89eec5948cd884e94bcc2f7111f8d1",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0A:read",
+   "part": "doc",
+   "rows": [
+    "1",
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "743e8ee03a0a2f7827bc79beeeae45ab244977995d39974ff66a62e501d4d0c8",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "617f25893b5ea130a97a4fefa748b78609a80b962d63df5bf7b9a3690d347b9a",
+      "by": "P0 unsealed reader"
+     },
+     "2": {
+      "digest": "dbcf8deb12dc01f8f47210670e4d5b423b8870e7fa9187275c40ac23510a006d",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0A:read",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "80c9b1367164458efed7ae115a0b11410c0536278862709e18e1429450d3ec5d",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "101": {
+      "digest": "962c114108726568d830e5ee4865af8586417e927249b124cec69744ee71b72f",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x04:read",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "48bc87b24ebfeff88f06c261a0f3143e89addab1d4d62d61cb145c90fe7082e6",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "08b75e2f8a04e19d84f6bdc47cb0e59d6041b8eb84012959bd1f847799131e79",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "f84a19a81cb0c539447be368fbabc391b2acece90bba4052a5152413a5be61fc",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "3": {
+      "digest": "585db5899ec7d82ae8ecc7ab09bab92cb3b640eedddec20510127de29f3ac311",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "4": {
+      "digest": "0e495abbb94de516168e8ca436d5eab35b6f46864d20e5a6a5da59b23615a906",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "5": {
+      "digest": "1e1e530d03004fba45433eb8bfd7148792dc1d23a76fd5f8222c4a395f4e7bc4",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "6": {
+      "digest": "fa3cff9b917afa14501ae8db0bd8fd48121e878afa13cc3a7667b2bd8981c2eb",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x05:read",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "67f9d0a7d97b31d92e55a72a6e6a5837bccfefe1d0148b0592bd8e70f7df88ac",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "4dab552f91ef7747bf0514c3f3c52d266be95453ea6d89b8eef615a00469bf4d",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "10": {
+      "digest": "793430420e0f651d20822fa28fb3df5a80e30aeba5412756a600b8b00b549990",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "11": {
+      "digest": "d3c5e6dfa7973c1c221cc7693352c34d9e3aca1a48348ad6807bc169f442d78f",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "12": {
+      "digest": "6e46b171ab0a6c5ef1cbf37a80e9751ab6b2628bf5ec2ec8ae98e96c6aa0275c",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "13": {
+      "digest": "a4bbb92f1a97c2bd4f37ea511b61f75bda76640e11b7df0b28fce8b27b3a0de7",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "14": {
+      "digest": "786c53e205a64a41a9ab4cf2e4e0acb6dfe377d95479f2ef24d1e66146adbd0e",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "15": {
+      "digest": "fada22b970c72378f7c9a62721b82d9181bc9b8e7f17fc9db3f2ce9bcf4a7a19",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "16": {
+      "digest": "1366ff04ac5976a83717bb2384b4a07a8b3f05b999e46ef25dedb3bc84fc8e3d",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "17": {
+      "digest": "a09a0fbc5a16e8aabaca67ea41a252a5c4d63ade262ed220eac589d641e420dd",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "18": {
+      "digest": "86ae7c1a542a1737dd18359f2f8ea6a1dc24e2b3707f0a10e1baabfedd125c5e",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "f968614ee1c51f0089132e0b8c0ae727e8c30e4ddc9894eb9b7bce48f32410f9",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "3": {
+      "digest": "cf21b1c8b5b4429f28141b105546b5fc764a14fa88c971043e04d03dcfd6b6dc",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "4": {
+      "digest": "8eb95b2edfefd18818abf922db3865f838d263997876a9ac9ffae559a8b8711b",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "5": {
+      "digest": "952c5766f16dc3ce3c3b0fb79dd346bfa7b75fc0b37d95071af5a6161b346009",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "6": {
+      "digest": "1ef0a6cb37931e4b7d0c0d8d9129c5262fe28de0279f8ce293732f16453db53e",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "7": {
+      "digest": "9b17a24b072d461d466c362707bf55f1b3be0cfbae4e96788daffc1f5832bbac",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "8": {
+      "digest": "5812c83c11a15b14656db72fded0939fc18fb613ae04c86e0dce27289a553a70",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "9": {
+      "digest": "bd210491fb54e9c7fc57c67737086d133a1a20641db210e4a45de7c6c56ab251",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x06:read",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "36731ce84c3d58d79b501bfeb0b4acc0ff52ae2ea0efc112f064a1f484091d3e",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "571497860d8130f21cc6cf3e93287230906f6c47d80e14939d30d4b8c9c36cf1",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "9c5f84694571a1070a094c9450ef55ab9c7a1b7b973ebbc9418d322a56c04a23",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x07:read",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "f694cff850aaf400702b5e6645c062b6aa77ab18168677e3fd7a60135572f915",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "f4124d15a928d57ccaa4fc2b0724d18309dd9186441eedc63288f06d91d16e18",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "1eeecca8807f1578e59d6a70c7855a26da092f74958efa760f39057a5005a572",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "3": {
+      "digest": "a7c927385b659c0be0aaa022565d514470c1a255b2545d7e75a7992d689eaefd",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0C:write",
+   "part": "doc",
+   "rows": [
+    "1",
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "a0507b83d184bcf5cd7357163dfa60056a41388debd2036976efc06ac93a3620",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "44c84dbd6eba43dfb4079d07b11f922c1bf278288661e97112ab90d86a862029",
+      "by": "P0 unsealed reader"
+     },
+     "2": {
+      "digest": "68c4c01d2526051460e831435c6e5573fe35e66c66b656770fc028c20eee9a79",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0C:write",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "7185e2ab8b73c89eed86ec6235b930e27aa1031ffae895de9b5dc318708254a2",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {}
+   }
+  },
+  {
+   "id": "pokey:register:0x0B:write",
+   "part": "mame",
+   "rows": [
+    "8"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "3337159bb31c8c66bef106cf735d9b072508fd09b867e5f842a875113b753a48",
+    "by": "slice mame-e2-sound-01 reader",
+    "writer": "slice mame-e2-sound-01 writer",
+    "rows": {
+     "10": {
+      "digest": "a56656d5f6da19d5519325e12718b09db367d14b102630f1f0541f2a09dcdf3b",
+      "by": "slice mame-e2-sound-01 reader"
+     },
+     "11": {
+      "digest": "abd1c338d898359806b4fa5e8e8f4850d50fa71215e9bf87619b091fe71c1d8a",
+      "by": "slice mame-e2-sound-01 reader"
+     },
+     "7": {
+      "digest": "b7b6509082727df936662100cf7c4720a8d3960aaf47dedb6a49012a6b0dc58b",
+      "by": "slice mame-e2-sound-01 reader"
+     },
+     "8": {
+      "digest": "b4511c14288a82d6f5a70b75954fc988dd9bc3268efbc762d3be00ee73b15aec",
+      "by": "slice mame-e2-sound-01 reader"
+     },
+     "9": {
+      "digest": "ac2f3e30264af5e91a5c9147844171de15d982e83d31974f264a18d90236691e",
+      "by": "slice mame-e2-sound-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "sega315_5124:register:0x102",
+   "part": "doc",
+   "rows": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "1f3a1b107d5c8bdd6f723366285151b1e720820014e6f5e2dcf24988e7869a08",
+    "by": "slice mame-vid-01 reader",
+    "writer": "slice mame-vid-01 writer",
+    "rows": {
+     "1": {
+      "digest": "71ade3bc4d71742db66498666fbc8189b8df5624dc4540494d818424cd6b7792",
+      "by": "slice mame-vid-01 reader"
+     },
+     "10": {
+      "digest": "09bc23c7da1da2cc392c344dbc59978fa23cd292850aeffa532898f5c0c6e8f8",
+      "by": "slice mame-vid-01 reader"
+     },
+     "11": {
+      "digest": "14bf4c1528e4f22f5bca6a74ff9f3d67de29b1d8754590c370d923e929146b19",
+      "by": "slice mame-vid-01 reader"
+     },
+     "12": {
+      "digest": "209330634575f69241029ba55f93c85b62c599d1ad944e7c818121ba3fd78c22",
+      "by": "slice mame-vid-01 reader"
+     },
+     "2": {
+      "digest": "6b5149f121df2475ad80e0cb9346689daeaacd73fce1b2aab856cfb7bb5362de",
+      "by": "slice mame-vid-01 reader"
+     },
+     "3": {
+      "digest": "e4cbe6610d63246009008457ac41511cac1ebd54decf395048a8b06c9111397f",
+      "by": "slice mame-vid-01 reader"
+     },
+     "4": {
+      "digest": "6933e9c76564ab3026dad1aa33cad1ef99664cd4bc76776d3dd7c0d9ccbbbf31",
+      "by": "slice mame-vid-01 reader"
+     },
+     "5": {
+      "digest": "9a473da32f151d73d0238bbe23e0adcb56d25b32ea9404c1b41f760194485183",
+      "by": "slice mame-vid-01 reader"
+     },
+     "6": {
+      "digest": "6cfe9dab0e6e42b62e34c8ad9cd0c01a0c064196d1de8f012120e14bf7b895cd",
+      "by": "slice mame-vid-01 reader"
+     },
+     "7": {
+      "digest": "73543828c5fc4f7703e09e1036f5c8a17c597d24526a834e3f32a5d73659df4c",
+      "by": "slice mame-vid-01 reader"
+     },
+     "8": {
+      "digest": "f1acf3493fe7913310550e382931ffdf9a1b5335e71faf2263f3a9e4102a8354",
+      "by": "slice mame-vid-01 reader"
+     },
+     "9": {
+      "digest": "cc9ee7b6891eb8789d1d171403e318f7a5f579e52e067ffc7f255db60b4f7686",
+      "by": "slice mame-vid-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "sega315_5124:register:0x102",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "1dad863c5fbec90c1a4dcbcf9f434e872a2a48f99081813ce4750f7d857e86d4",
+    "by": "slice mame-vid-01 reader",
+    "writer": "slice mame-vid-01 writer",
+    "rows": {
+     "101": {
+      "digest": "c9ca07b7f340597d099e2a031bd533f0309c10507a5c68493703d0879cea922c",
+      "by": "slice mame-vid-01 reader"
+     },
+     "102": {
+      "digest": "a9e25511272bd0ad7806b6b60a58e2137224d9c47984bbaaf16de6a163a7b685",
+      "by": "slice mame-vid-01 reader"
+     },
+     "103": {
+      "digest": "e6f217e714b7bc3b73eeb898e89d9ced651b6d2398298e591f37d12f3d91a150",
+      "by": "slice mame-vid-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "tms9928a:register:0x00:write",
+   "part": "mame",
+   "rows": [
+    "106"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "5c0962a6b4566c5cb4c5795429037dba99f4d21ccc5665a2b99a0e1c0e8d06d9",
+    "by": "slice mame-e2-video-03 reader",
+    "writer": "slice mame-e2-video-03 writer",
+    "rows": {
+     "101": {
+      "digest": "7a1f4e6932c02a121a925502fcdb56a5d04c04548a8813429e5e816cf383037a",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "102": {
+      "digest": "a6f142dcab3657d1ed06a43a89af405c90b7cc5dc7c9fa79c6b1177069df3321",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "103": {
+      "digest": "59978f51c9f45c714f687063b04e09ed8db265cdd2f3d122561cba268bd1a704",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "104": {
+      "digest": "a74a8cd3316fa6baf7588d6fc4c5f14b229762d1b008e07293aca92c0705ffda",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "105": {
+      "digest": "ab313c9ce347c3840392fed1640d6c12a7c4e3a8e1b72d517149d2f036e6dce2",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "106": {
+      "digest": "4283575adbbbf61bde9c00655ab5fad76a11267130bace0f0dd0917c46013fa5",
+      "by": "slice mame-e2-video-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "tms9928a:register:0x01:write",
+   "part": "doc",
+   "rows": [
+    "13"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "06d66b3ae6cb0822e81b325ad0b73fd1272f855a72157c8440c9f50a1742c9e7",
+    "by": "slice mame-e2-video-03 reader",
+    "writer": "slice mame-e2-video-03 writer",
+    "rows": {
+     "1": {
+      "digest": "9c429bc3911bc30530739e8e996cd90bbacb5500ea26206e18377adc02950002",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "10": {
+      "digest": "c57b5d425498e410a05e2ddd65fc5d6d6d7167d36691df823a19dc1c9fae42cf",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "11": {
+      "digest": "1b138251aecae711ff42fbabafa511dc17bd7cc2c4670ef9c1e7349e50d4b2c6",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "12": {
+      "digest": "a908918da10c919f53157e89f6ac19b9d276e41a73bc415616759f791ae22420",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "13": {
+      "digest": "fe28a5284975694a31a0385f219c976e632f941a5e0c96b37a37c5080f41a529",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "2": {
+      "digest": "bc53eb84698548301349bd875c31b7df6db07146f456e7fbceb0bce0b4e91d90",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "3": {
+      "digest": "5c6b6072f6a9fd941f6c030de5c38cd3d0bb5416f4a4b1afc012fa7f542781d3",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "4": {
+      "digest": "fb959aaac9c21c03a2a6f86cca9330024fd29b412c8ea7cd429144f8aa53df8b",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "5": {
+      "digest": "4e7e3db90bcaf2aae145ac819e7ab44ea3223932e7d583eb606693a6f55f924e",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "6": {
+      "digest": "929ac5ef896559a2b4e5ecded0b00cd91c8429b81547f3d0407468e5bbd9e12b",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "7": {
+      "digest": "c2a6c470f62e281df17fd1e7df40d6f37f981ddc6e74d3a064368d96295114c0",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "8": {
+      "digest": "f5c4210c3bb794bd73e8fd0f3c3050ad1a70910d3b67b6d5e31c684e289e43a0",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "9": {
+      "digest": "d01887f5da95afa8e9c712ab22d4a96320826969a47d8e9da8f80f60247bf96b",
+      "by": "slice mame-e2-video-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "tms9928a:register:0x02:write",
+   "part": "doc",
+   "rows": [
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "1ece0e302966560e8b01e50b72a0047ee84b39412fc1600c612af450c6265078",
+    "by": "slice mame-e2-video-03 reader",
+    "writer": "slice mame-e2-video-03 writer",
+    "rows": {
+     "1": {
+      "digest": "a2e9fcc126decfa1ff2bde5b6d8883af7d5fa48f9f9ffc3dbbe8c7684befc748",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "2": {
+      "digest": "a6818b6b91359c371ae192e4e4df7aceea08cdfb5e094a9c14b9e65223a769e5",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "3": {
+      "digest": "f30e1e67d2e261b1aab1a376a91c3df37f4a9a03415e4117593cb12b6c1e5b49",
+      "by": "slice mame-e2-video-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "tms9928a:register:0x07:write",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "01cea7137d9c4f0a0c9b78d8fc220c3f590b9038c0877f2d896b983e4b32a4a3",
+    "by": "slice mame-e2-video-03 reader",
+    "writer": "slice mame-e2-video-03 writer",
+    "rows": {
+     "1": {
+      "digest": "560de3c7a2eef08f7ed819efc60057bf8a57d58a7491ef9f5548c8d02ebe7d08",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "2": {
+      "digest": "0776e48b44fb9a784d998b855773215f7aad2a12e1745250725fa81839cc7aef",
+      "by": "slice mame-e2-video-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "tms9928a:register:0x00:read",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "92c3f0b853186f4faa42db60016929979e4e77d872706aa30597fc51bb3ab621",
+    "by": "slice mame-e2-video-03 reader",
+    "writer": "slice mame-e2-video-03 writer",
+    "rows": {
+     "1": {
+      "digest": "e13272d977e7859f052fb21861bfaeab99d908541756af8a81641e97be0bcd9b",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "10": {
+      "digest": "c68e0a4631a70d96b452a27c9fb014a43bab343fac762292f7a8840626f0392c",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "11": {
+      "digest": "d850047ab4462c21298929f2d8de486d06e5c1c54e755a1546096cd29b10783c",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "12": {
+      "digest": "20f9d425e67ad2f51e03b7354d0f9c8a1682eaebd450cb3c6b0f28bc12afd8a3",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "13": {
+      "digest": "20e345e9b40266ff21177b8cdc03b56629b951d4ce3df84ff84717015d325a79",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "14": {
+      "digest": "d9b66efbe4be60b5e3c13598a3bd29ddcc036a426e894b5cb7312feed961cd9e",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "15": {
+      "digest": "a7d5533460bf4653aa7f368f0f985a59788a6ac38b3df6c0cb7256b15d5237b4",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "16": {
+      "digest": "09423839bb5d72e3ef1223ba224699906a47dece1c8c1f31c1ad3f829cfa5539",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "17": {
+      "digest": "091208bd3cf4c486bbdc5932f62a42fa39a320e8ae0e82d3417f1f66b76ecbf9",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "18": {
+      "digest": "62559e4e684449fe07b604197257fd87cef43d7db1b498eef6d77743b7cf5ae4",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "19": {
+      "digest": "7c95172d1b18eb0639e2d3da344c307131bb375cda1b2554b7615f5b2de10aa0",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "2": {
+      "digest": "61b1577f5a1165c79e11b5c3c277dda5eb2c386beb102eb79f5bb54a02ac6ba5",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "3": {
+      "digest": "e12da3e3f9268bdfbeeaf0bb6c9e6adb37247bf2f5057a61e526581a118d9d40",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "4": {
+      "digest": "17d5218c2f2d10fdc0cf590264ad7c7742a1f91d11b26471cb6cfd40cbccadac",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "5": {
+      "digest": "848fbb6acae0ddd419a4253a18e49b612f2ddd10a0fc3d7ce88339339935ec9b",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "6": {
+      "digest": "6419d3d1fc66194a12cf143c6ee50033e1579e7effe652413d4421159da01cc4",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "7": {
+      "digest": "7115d95959898db6831e64ee5486ad3029a81aeb75c29dce4e76b23ba4a0cac0",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "8": {
+      "digest": "e82fb0638bf330741eeafeb8d87c59d0daffa994c9da64edfc22344cb6bee123",
+      "by": "slice mame-e2-video-03 reader"
+     },
+     "9": {
+      "digest": "b5b293f979601221fa8494ef305aa469848b7ed9b7e0faa7f916e1ff21f82e80",
+      "by": "slice mame-e2-video-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "upd1990a:command:0x03",
+   "part": "doc",
+   "rows": [
+    "7"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "23f9f4461c3e502c4ded472033f0c3a169ec144bef9bf62894600390530b22b3",
+    "by": "slice mame-sup2-01 reader",
+    "writer": "slice mame-sup2-01 writer",
+    "rows": {
+     "1": {
+      "digest": "9a9c52cdbf1d06d855dce0f1b428b851b2e642932df80bb3dda77c6788080c96",
+      "by": "slice mame-sup2-01 reader"
+     },
+     "2": {
+      "digest": "0b76ffad02afbe3df3d1ecca74520314b5e59865da27d2e33f0ec388eeca4827",
+      "by": "slice mame-sup2-01 reader"
+     },
+     "3": {
+      "digest": "fe8782cda5c257bfc0346fe5f07e54b4d5dde9d739c40e598ef87489c20558a8",
+      "by": "slice mame-sup2-01 reader"
+     },
+     "4": {
+      "digest": "6161e2e8b3d7410517896cf44539c53af949ac3b9ef2e41a23f24a097f81de6d",
+      "by": "slice mame-sup2-01 reader"
+     },
+     "5": {
+      "digest": "f40ebc86cc33efbb1d7fd3bd7a30ca62036771a0c823a27386de9254761ba380",
+      "by": "slice mame-sup2-01 reader"
+     },
+     "7": {
+      "digest": "149e3be905aad9b8e113a663fb5b66a3304dd48fa49df5f8eb6528ceca8b2293",
+      "by": "slice mame-sup2-01 reader"
+     },
+     "8": {
+      "digest": "d644099b40acc113fd567ac2aad58a808ba994f8adba5f7b0b34b877ad0356e3",
+      "by": "slice mame-sup2-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "upd1990a:command:0x03",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "f29b047965926bfcd8127acb58c48c888f5ddd10b40a3878642a6d1b7353d55c",
+    "by": "slice mame-sup2-01 reader",
+    "writer": "slice mame-sup2-01 writer",
+    "rows": {
+     "6": {
+      "digest": "663eccb942d2c274fa081aede25305e937ba697bde896f3b139ac2b5a3679acf",
+      "by": "slice mame-sup2-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "v9938:register:0x04:read",
+   "part": "doc",
+   "rows": [
+    "2",
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "28146d0a35b8abea3681f15e5923d8a8a9148d6a014be795c6449c4f766bf6c1",
+    "by": "slice mame-e2-video-04 reader",
+    "writer": "slice mame-e2-video-04 writer",
+    "rows": {
+     "1": {
+      "digest": "da42623ba65656d631346fd4ddea5b382c6f0d689c6114ab51de8021b2bddfa9",
+      "by": "slice mame-e2-video-04 reader"
+     },
+     "2": {
+      "digest": "25675d1066467df5d7c54b92221729e4bcfcd267165e5542618b75095f91156f",
+      "by": "slice mame-e2-video-04 reader"
+     },
+     "3": {
+      "digest": "3dc046aed4dadcf1a726005dd1063efc95631655bcc90d768524f4ee601fad08",
+      "by": "slice mame-e2-video-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "v9938:register:0x04:read",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "38eae8716d3ddd9dec4f2ccd73746d3797f537f61bc525e85c7bb1f99b52afc1",
+    "by": "slice mame-e2-video-04 reader",
+    "writer": "slice mame-e2-video-04 writer",
+    "rows": {
+     "1401": {
+      "digest": "1d14475240757b22dfb0bda25e8699bf053857241ddeecad938512b67dcae325",
+      "by": "slice mame-e2-video-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "v9938:register:0x06:read",
+   "part": "doc",
+   "rows": [
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "ee66e9a6aedef49f7f38c08abb09115f86a45a6a23fbc01dd09a16b7fc76f9d9",
+    "by": "slice mame-e2-video-04 reader",
+    "writer": "slice mame-e2-video-04 writer",
+    "rows": {
+     "1": {
+      "digest": "57ed102b502b18395b6859db3dede3d10e511ffcbc6d1b1f3fe2764125c8108d",
+      "by": "slice mame-e2-video-04 reader"
+     },
+     "2": {
+      "digest": "2ec283a96021855683be75e08d9efd80d9d99168051dad6fca10a49f4e2e1a2e",
+      "by": "slice mame-e2-video-04 reader"
+     },
+     "3": {
+      "digest": "fa6830536338ceb3b17c4331ab33d503e318f3a8989ef09f31a53ee4ae5ccbad",
+      "by": "slice mame-e2-video-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "v9938:register:0x06:read",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "5366728706f2a9eb30952576e2755902347e61ff8325f800a3371ca741564a58",
+    "by": "slice mame-e2-video-04 reader",
+    "writer": "slice mame-e2-video-04 writer",
+    "rows": {
+     "1601": {
+      "digest": "9f59a530cd4b132826b698c4b3cf5656b5b8f8f13c8ce06a1638e6997f57e990",
+      "by": "slice mame-e2-video-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2151:register:0x11",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "3933725b932c2dec24fa2cd0529ff733812e22797aff4108ea5bbdf18aecc097",
+    "by": "slice mame-snd2-01 reader",
+    "writer": "slice mame-snd2-01 writer",
+    "rows": {
+     "1": {
+      "digest": "736acf1a6a4bc22f61c190e16e11af7a43decf6eeffd7df486c1c197bd88616c",
+      "by": "slice mame-snd2-01 reader"
+     },
+     "2": {
+      "digest": "e196521d07929658729f596f13a26e7d545a3e7125e511e91632e12239c734b4",
+      "by": "slice mame-snd2-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x06",
+   "part": "doc",
+   "rows": [
+    "2",
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "4156ee8b40b6b824e6e02986d1c0af547fd08941c92bcff86b7256cde8165ebc",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "be1fef0eb518c0a486a3526c39f505a28c213afbc13a233ba6fcc82bc11622e3",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "e6f2f82ab9a10ef9e6087f96a48f56f561acda504c4ad9245650f4451a01b3b9",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "3": {
+      "digest": "5dc818ce0c237b98b21f9cd9f5cede2821fe1f635162ce0421ceb5f2942554aa",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "4": {
+      "digest": "53e06343e85c441f535a17a5b8ca0290947017755c505b460261adc848e878ec",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x06",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "7366b72d4d8038c7d7b1a3d961c04bf046c1260161bd0d8d717635503910125a",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "5": {
+      "digest": "1775783a1b91d7750f464293f7d70287679a40f026275cdd0763ac1f8b2451c2",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x07",
+   "part": "doc",
+   "rows": [
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "23a354e51d68f31bd8ae43458b88644a195c3a08d26cb276d399b9c2a993edea",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "790ad5184ad55513835e2f1de31ab48e3b30b4e724ad185e00188d578d4e1455",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "2ec3074f5b4b89f03571c320a87e882fad41348a8e96d62a56f010c08829eb06",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "3": {
+      "digest": "e5f333bbae5a629c71032315c197ff1e65b49a33ae17b3d793f8e1a2e8a25460",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "4": {
+      "digest": "a9868d6b3e4ce4f67799498cd8e1d2bb909269bbf3ac6bec5ef1e909f53dd6e3",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x07",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "7caaffdb0966e3ff870b20085c948139d2896305e2c600019b6cb369952c5813",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "5": {
+      "digest": "7e4f7aa37ac3e33de5d20e1b55a9d6884ccd5510562efbe4a947f40b11130c87",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "6": {
+      "digest": "55f80192ad23a44111479eb219b06c7bbf0a05f484a85c1abb16aa67849fedfe",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x0B",
+   "part": "doc",
+   "rows": [
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "9be469199b70f01d6332b8e6d854f37c0c8f1297942282d76536024197a34706",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "e429fb4a79197555e2a9ed10a7d2ab98df5566e43fa42a90c3af10e2969ed17e",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "8978f513ddb6ef1129782c86dfdc0d0245e1c82e9504de4f2343cc3d1ef2d99b",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "3": {
+      "digest": "ffc3750a4bf8c08037b97636f02eb1c16192afb24475083e489889646d42c66c",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "4": {
+      "digest": "7803723aca53ea64bf02cd3e390b03e17cea0455eed8bff3e881c6c256c7c903",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x0B",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "9eb71d3b0ce6fe5948b16b1037bc451907511d9a789f5e50e624a7f7900b7119",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "5": {
+      "digest": "ee8bc8374ffffbfa9d815d9655e32077ad7c30c6914da0d02a79f740019b45a3",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x0C",
+   "part": "doc",
+   "rows": [
+    "1",
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "41b953bbdceb78156a87455104faf88ab337c4ca738458cf7660a136ecb5f0c0",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "af177a6f2ca822cca44ad1aef6e46598f4f87d6f1cadf31078f299b39e37068a",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "feb7c570f72085fdfdbb4fd7fd2b8b5acd88b282c430dc3686e537c0aeb90aa8",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "3": {
+      "digest": "4b6bc375d855eaa8b4974f1c9f7974c376862983c453c23bdfbe5fbbe4bde27c",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x0C",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "73509a50dd1fa5d7583332c1434fe528c3aa40e79ef469388fc873e85f8e6f61",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "4": {
+      "digest": "ee8bc8374ffffbfa9d815d9655e32077ad7c30c6914da0d02a79f740019b45a3",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x0D",
+   "part": "doc",
+   "rows": [
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "05c9b716291d22f70c1ac2e572c4cb465e394970eea60f99e0a5f25d5701a96a",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "c382e892011085ecfff893a6bf4fd950be3f8cf9406f58eed8994d52f95b8976",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "b41227fbbf6cf4e0f37f029c86bbcd25ec4f1f65e23aecabbff12d83651abfe8",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "3": {
+      "digest": "c5d087997ed2fe7e2679bf8acf98b3bae3ce4eecccf07787c8c98a7a916b5e6e",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "4": {
+      "digest": "a8d6a821d2add027c20fecab4b4597e6376581c27b0596063b8c029f1721a9da",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x0D",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "c16e17ffa08b407035c02fe94ede2966662eb8a791536fd23b210523aaea077c",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "5": {
+      "digest": "b6250b5804121e2ff18d37e0ff6e488a2687e18615b50540b6f117d2cd474ee6",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "6": {
+      "digest": "b6cb66556802e00b182a417b91e14cae06df76208b3ebc75c7756bd490469c48",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x24",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "938b97fca714cef003e7d454e3ac148ab99058a48ef77749f1ab125601d56e90",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "41aa7906110b5c5c5cfe76e8e24c49863a837624da21064f558bc32a0c10d2f4",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "8df040dc1b5bcf2765ec681f5590df7f043087c940f3cc65563a99768685dddb",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "3": {
+      "digest": "e38b240ac9841c3975f8adf4cbb9cf1d1fb87f8515a3ad360e01410fe3d838a3",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x2D",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "7960dbe236256a66d2e7e74bb936c83234d6b93eb744d22dbae3fb31745c546d",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "d72eb35ee0a7a59e64245cdffbce07bb7e2d3d8903cf50235e1e5e4c903cae42",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "00f2900b0f718d6943c9e04fd51a0c4e0c5683d9064c7dbc40f87a394fa3e788",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "3": {
+      "digest": "e423a79029eeacf038618a5076404808997029f366f13529332fe70cd4400e4d",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x2E",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "26e785c0392f4b543a3b5d1fb2191a72c7aea8f789b6ffa006ddac5191c69a35",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "8c96f5bb804c1a757f443949f8ac3c6a6f60b204f5cdfb38d6ffa55357c86b82",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "f91aae8090217e2f09a2196f26dc51ed6c7fc26cc3c42963c98af964ec4dfaa6",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0x2F",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "614b053dea0614e7ace1fb7c59d5b2560f6f89ca7071a667afacfcb77e16caed",
+    "by": "slice mame-snd2-02 reader",
+    "writer": "slice mame-snd2-02 writer",
+    "rows": {
+     "1": {
+      "digest": "b575fd3bcb491fde6ca94a279828eb7c334dbe65fcbc1b496eb0b51e40120a06",
+      "by": "slice mame-snd2-02 reader"
+     },
+     "2": {
+      "digest": "13c242deba8ba07a2ae592f5a468f8770a916a3c0d9ea455de2b9e2cde96d011",
+      "by": "slice mame-snd2-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0xB0..0xB3",
+   "part": "doc",
+   "rows": [
+    "3"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "53d3e94ac91997711b7eef5fe653f5bdebd798537fdabb1d137f8de6727d1d00",
+    "by": "slice mame-snd2-03 reader",
+    "writer": "slice mame-snd2-03 writer",
+    "rows": {
+     "1": {
+      "digest": "4813a9c6535b876258282d134bbba59e94ec19fcc9ba85a1e10761b2f4ec3cdf",
+      "by": "slice mame-snd2-03 reader"
+     },
+     "2": {
+      "digest": "7827d951dbbe01f6d5d54064fde2716f6a81711a991b21ff5ec6db9651e7d541",
+      "by": "slice mame-snd2-03 reader"
+     },
+     "3": {
+      "digest": "314438a4e45f302f8790df5a60a73fb9f2919ce78cb8d6794b9feb84e71a1870",
+      "by": "slice mame-snd2-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2203:register:0xB0..0xB3",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "0a3f29fccc140b93034eec6de63e511f528409410f227257360f76affa13a550",
+    "by": "slice mame-snd2-03 reader",
+    "writer": "slice mame-snd2-03 writer",
+    "rows": {
+     "4": {
+      "digest": "0d551a998a6307d85b88c4197b0772325757ef1a18d635a4acea3ed9d6440691",
+      "by": "slice mame-snd2-03 reader"
+     },
+     "5": {
+      "digest": "d7b3ecd052a20464afab81450209f7ffb569b994278991d1fcdaad933ba9d616",
+      "by": "slice mame-snd2-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2608:register:0x25",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "6565e3b742785912d2f02b1c17994f04ee0e477e3542bd8e23770b85bf28fac4",
+    "by": "slice mame-snd3-01 reader",
+    "writer": "slice mame-snd3-01 writer",
+    "rows": {
+     "1": {
+      "digest": "f56fe24db02a7a254d8e00b668c745c5084e91a51a68f80be0d899608c2e5a6d",
+      "by": "slice mame-snd3-01 reader"
+     },
+     "2": {
+      "digest": "593894cdb108b44c6a24c931567cdc1c385743f5fe9b51e393de173cfc400c59",
+      "by": "slice mame-snd3-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2608:register:0xFF",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "4faee171d30930c32e539f2b8939aa5e1060d14788be9f09c3ced8e0421e05e1",
+    "by": "slice mame-snd3-02 reader",
+    "writer": "slice mame-snd3-02 writer",
+    "rows": {
+     "1": {
+      "digest": "65ec6dde8bf41fd6ab72170d194ec397c3e8b086ff27c16bc47edeb706beda35",
+      "by": "slice mame-snd3-02 reader"
+     },
+     "2": {
+      "digest": "ea94e0d90705e2d093e3ee71cb4b93f302dcf6e08fc25650d28f7303a141146f",
+      "by": "slice mame-snd3-02 reader"
+     },
+     "3": {
+      "digest": "ec86a4af38142e5011132170add1340e3805df750a481b59ca543b432712d308",
+      "by": "slice mame-snd3-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2610:register:0x00..0x05",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "273495ffc13a3574c96de965c3802c680f55e87211e912a66b46e5546e37352a",
+    "by": "slice mame-snd3-03 reader",
+    "writer": "slice mame-snd3-03 writer",
+    "rows": {
+     "1": {
+      "digest": "48a1e3e5e2f15788f1efda7f20f9f7d280b22645267ede56ad158c76d96201fe",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "2": {
+      "digest": "155f8142f277385094cff2357caf10a30f15189e7f8e390ddd386de29d47f50b",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "3": {
+      "digest": "70d0bae4c161ccffd434e6c5c5d3d3ad986c566efb78e65149c31b0c317e6337",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "4": {
+      "digest": "e67b1613c9cca781a941e5a36d9971ce86b68a22f9ce29057427f3815d8a5b34",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "5": {
+      "digest": "9794b966c9a57ce6ca5506caa667fe701c05cecaa7670168122cff72d505c026",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "6": {
+      "digest": "e8a033386fb4767773039943b1a599984783af296b3ff1171c84a7c44b4594ef",
+      "by": "slice mame-snd3-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2610:register:0x00..0x05",
+   "part": "mame",
+   "rows": [],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "9e5982f2e12fc4a96cffbd5dfd97357287b8bc403e05bc942d2dae48fda99d38",
+    "by": "slice mame-snd3-03 reader",
+    "writer": "slice mame-snd3-03 writer",
+    "rows": {}
+   }
+  },
+  {
+   "id": "ym3526:register:0x01",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "449c755b0b5f175b55ef42de7d833a46299c4b48d97acb4bb018186d1df98ce5",
+    "by": "slice mame-snd1-02 reader",
+    "writer": "slice mame-snd1-02 writer",
+    "rows": {
+     "1": {
+      "digest": "476624c74f75ee33c7ae6ab5930332adae361c1efd298fa75d28fdbb277c42cd",
+      "by": "slice mame-snd1-02 reader"
+     },
+     "2": {
+      "digest": "9f632a6356c43353e216bf700870f76e738c5f04f5db853614df5b8ef1730c6d",
+      "by": "slice mame-snd1-02 reader"
+     },
+     "3": {
+      "digest": "ab60b7b8862781aeaf796e07ce55f4c9d0ca226643ca63d562c8727275a29045",
+      "by": "slice mame-snd1-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x02",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "5edcb49cb65ede5f37ff2a81b62689915eb4dc93343cd7574477ae3a0bd03e3f",
+    "by": "slice mame-snd1-02 reader",
+    "writer": "slice mame-snd1-02 writer",
+    "rows": {
+     "1": {
+      "digest": "4872acb1a1edc5c513aa2b0c8abecbab52dc6b066227eeaeed9ec17fa492f3dc",
+      "by": "slice mame-snd1-02 reader"
+     },
+     "2": {
+      "digest": "5c0d06776aaa782db1325526ef983fd17cdb440df9b1c753eb4dfdc57146be50",
+      "by": "slice mame-snd1-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x03",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "45cf735ca6e4c1263c3977de9d2bd51ad9a57a6dec993c6c2c497d010e6b40c0",
+    "by": "slice mame-snd1-02 reader",
+    "writer": "slice mame-snd1-02 writer",
+    "rows": {
+     "1": {
+      "digest": "c1de45ecd0e4455cd2405bdbfdf8b1d288083060c2b2812fbebe7de7be1e3c5a",
+      "by": "slice mame-snd1-02 reader"
+     },
+     "2": {
+      "digest": "7134c936ad89c59844c0210a4479833b66461f35900099c6c712c5b505395a29",
+      "by": "slice mame-snd1-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x04",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "3befd29fb59b2e2ab99c86c1e773321c768d5d82147c2fa1b0ef3297e590b1b0",
+    "by": "slice mame-snd1-02 reader",
+    "writer": "slice mame-snd1-02 writer",
+    "rows": {
+     "1": {
+      "digest": "90aebdab138c7e98d493b35b037bee03386e38d46e66635a9098a932abf0d2ed",
+      "by": "slice mame-snd1-02 reader"
+     },
+     "2": {
+      "digest": "f78868dd1514c308c35cf01fc434db57f4d6d5cdee203629dda98466d74aabd5",
+      "by": "slice mame-snd1-02 reader"
+     },
+     "3": {
+      "digest": "9f1ea4da274caa846af27087b434f34780797b96bf6b36ceac4d00a5ad2bdfa4",
+      "by": "slice mame-snd1-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x08",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "77495e31184f4fefa2ae3f2405c430a0fc0d7be48e7a34192209ae889ba9f262",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "0f17b48c33baa413f3ae3e88ea64be1939d2ee20acd14721f2b5acf95165fd3f",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "1787e9e9fd6667353ba657ada7757d73d06270a7b0eb7ed1c7b2e41c713f7622",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "0ddceb7463612bc241075643f9f95a0d948ecbbfbf916974f2a80138ce3ebd48",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0xBD",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "f810920dd70880ac9377e0933c88a46f64124f9b44dd9c65e80f23363fd2a6d1",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "d7b55779a6dbd869a99850c9af811f87fb01efbd8176fb0824bb5d787438fdc3",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "5746aa149a4f1fc39ab36fdc9f573d8063bf99fb57260eacb35412ebe0e58640",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "ae8dd0cb09af6e0d7cc77d12924880d96a01a76c368372a25d47ac97c8450a15",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "4": {
+      "digest": "c4e98c74abccf330a3259d84844f926ccebec4526f2712af83bae701de65df79",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "5": {
+      "digest": "6a9906ec7d102faf744d95fb07193746efbdff61de1d72e4ecc3cbc1041723ed",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "6": {
+      "digest": "19453fe8f9b4af28ff73a3c54c9838352bd38d7ebec15bdc5c49f92d16b3ba7e",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "7": {
+      "digest": "fd907c8c9d3ee5f87467b750b4c39f5e554cd73bf19922cf2dc663c3933ada4d",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0xA0..0xA8",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "5ea8d33a4b7b11241713dd601607426d54ce76c38128b7d5ccb0eeaa49a24531",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "d7d0b948b2cf4277593699fe5018d2190ecd728af8078d8928b95ce68db2ac71",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "477afb76ad0ba0b49b945e65e2f2ac9c47380f07ba2cb412a3623f466b7e6b17",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0xB0..0xB8",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "558980e3dece9761bdf96a5e1d0a8237071515e67e2549a496248842d8e8f1f4",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "69044236bf50875b03ecb4dcb5d458b18b4803adf9300b3df8e8caa1d9793776",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "ac035a29e92d933e5d35b1c3d24ba6f7141642120a961749eec0b0acfcfe74f3",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "cb6029913557e82ff2b3aee51cbbd69d8ee7eb3f248a7391dc1ba14b2ffc6d13",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "4": {
+      "digest": "d1bc13e63fb2604062375d1203d221651bc9f06df328ec03f69665af8ef66b57",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0xC0..0xC8",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "7ded7bffc803764822406382b2119eaf14016df0539ee6436a2cff7f45a0caaf",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "795e558035bde9a3131d11acbf2780e78bb234869db304d080dfafaa74f64c93",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "7a3ffaa63b93ae272765be97b0d660d1ba76ce91134166e3d23d2f077952a066",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "c70afe244942b51f68873b1554f88f6838f08645dc477415e92b7f1ec2244d80",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x20..0x35",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "8d9e505022d267d3346700e8a3029aa522b1fc864ef7ca9d102d77ab4a7ff60a",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "be536a2034aeb24353f43b87cb0c0cb64429f80a37c6522aa02ce2bac14fc341",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "9248dbf6d9b8c10fc01d19b8d64862fac1fc559efbbf2b4be88facda78918a84",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "120d4571fe2a4dbca259d342084cb1893535cb6db2429547af7bd4b1a6f94b48",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "4": {
+      "digest": "e961d63e17a73b8f2c3c9f8ef3ecde66f607ac4e3c224e10b4c959209f91337c",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "5": {
+      "digest": "30f5e52f6ebe63bedb308807bc83e697d135bd62b202d04b5cf40710fb7cf14d",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "6": {
+      "digest": "7365e49f743082b737b32c3cdca8237aef35b8737085a989223ded0ffb584cb5",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x40..0x55",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "9b43da1657c41f03ce1164bbbfdefe8171d11c50c31c983b862dabb79b2afd2d",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "49eb5c5f5a7f16742e94e2eb02a76e70c5bc951b53d210e9290727dd6ffc4db5",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "a5dab89d0245767cd1cb5a3c7e8edd7f803c8b3e0308a386ed65ed5d460dd3ec",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "e463d577ecd093fc6866c482ab074220e315a11f0d398fc4c33ab3babdedf437",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x60..0x75",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "e19f9dfa41f316ec535a913c6c1647bde27ffdc6b1707488ffdce837dfb2a74b",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "2c12849b2dc99b6cb490c8ee1f21e25d7a21bf487c25c2e7357f9b1e509fedc8",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "3244a34fe6d4d03bc4641e81567f815c8d131ce57ac85919ff23d0834d90ad16",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "d3a284aefdbad5e15cc6cf9c8165e79ac29594a69c9dd22465d93275a2167be0",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym3526:register:0x80..0x95",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "66def37dd87acebdde219234cfee89f977dfcf23296874099170445f38e475c2",
+    "by": "slice mame-snd1-03 reader",
+    "writer": "slice mame-snd1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "d5aba64c9c36500cf3d56a97b4f67716fd161d4b3b65942c22da1e9bfbd7aef5",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "2": {
+      "digest": "917f0d45ddcfc1b7b6f4b6a341206db7097713535a272a0a75b14a0a928650db",
+      "by": "slice mame-snd1-03 reader"
+     },
+     "3": {
+      "digest": "daed8f28e836b894b6c0406683c273f1d6da97ffdf61d23cc2ed917d0463d0c9",
+      "by": "slice mame-snd1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x09:write",
+   "part": "doc",
+   "rows": [
+    "24"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's narrow-quote repair, text or quote rewritten to the lines the source supports",
+   "was": {
+    "seal": "67bc6b3a11ddef659b6c3c19a2ebffe37a3aa92c1f8f36834f3e70ef6e70a880",
+    "by": "slice mame-sup2-03 reader",
+    "writer": "slice mame-sup2-03 writer",
+    "rows": {
+     "1": {
+      "digest": "32355e3e9232961d787df0f464979dd7e92f524edc05d7b0bd92b0fb7cdd2872",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "10": {
+      "digest": "a7bcda89e1dccdbdf8cc7fb4d6b5430ecb3948ca5e83c199d73b184bff11a5ec",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "11": {
+      "digest": "542b8b9c01a395e96ca9ff837d64a62ba87e8eb10a400aa7aed94461fba5b5cd",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "12": {
+      "digest": "5daaa264539d14178ccdab94a7b95297847d0a83eed2ff5be2d39664fb66c527",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "13": {
+      "digest": "7da4baf9dc959e834b3447f65e8c339e05dc3415c6aef4c989a4727679170ac0",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "14": {
+      "digest": "7ba9881c57243f7819f573b02b8d56892798d2e517c5eb670839b481027d31de",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "15": {
+      "digest": "e5941450ca2062b083d153e4f699272eaf449cfb5880df550281ea151bc89816",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "16": {
+      "digest": "f8d7dd59bfb61839fdbf2a3972e8eb993b93139987cd6a0adb8e917c6d5f7709",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "17": {
+      "digest": "02dd73fe634716e50af8a956fb08934470094f25b5570b00bb747d1d6c22c318",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "18": {
+      "digest": "30fd23b494a1175f2ce95a70845ba23534a32f08b82a65da741900fa7afbb537",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "19": {
+      "digest": "ba1569e4baef8c9a7b22ae2491d52dc49805e0aee412af960703454bf9824443",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "2": {
+      "digest": "dac0da47dd68098fb998d5fb6c7125c099ce7a2c641c106665db9deac1bc0126",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "20": {
+      "digest": "e25a1bcf38eb63f58237d210bf825f05d5ac1e050d3a7befacfa78d58d0c75b3",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "21": {
+      "digest": "c40be8eefb58ae856fdeadf6a998334b39515737e0e8f20cbcba4bdb19181b38",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "22": {
+      "digest": "6f8bac8f261d108fd98ebcdd4df96ebf7e6a57c7d6750cbe16a30eef042670da",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "23": {
+      "digest": "c873c0089ebbee67e347b46a8fe19d66978f0dce535c28e19f5d6ba3330e74f3",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "24": {
+      "digest": "37450c8d58cd31a865d3e2f2f12c77614bd5e9e410c0978fab920722fb0a1838",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "3": {
+      "digest": "982494c8e22bab52cb7ff13cf06ced69fb2d0d77da18bc74c808a7fa2232a71d",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "4": {
+      "digest": "37003723ad0f3b2fc0ece844f644b59de1608812da0ea3899c227f0d7f4af4fa",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "5": {
+      "digest": "3fdf463794b1264c4a48ad2f6622b2f8e117bf38a778fdb02e5f25d174232784",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "6": {
+      "digest": "42a5d33db732de7ebcb684aa8eedc995090b19b16d0a0ab24abedb6a4e291bca",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "7": {
+      "digest": "4a9d7e4679fd578c0deea53fe64a9d608f00c45388640ba27168644e596d2b81",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "8": {
+      "digest": "e00a666e590183137ff46a2e3a8edb177db655887aed4c3a601636b90ca0a273",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "9": {
+      "digest": "ba11fbe90b0646515c972cff140f32779cdb9a5bbf89acdb45786f295764f720",
+      "by": "slice mame-sup2-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x0B:write",
+   "part": "mame",
+   "rows": [
+    "15",
+    "16"
+   ],
+   "by": "w2-mame",
+   "why": "W2: the reader's absent/log repair, or the doc rows this part judges were rewritten",
+   "was": {
+    "seal": "79172731fd25a6a5e0e2876ec1ebee2c5e65044a30da796dd3186efe3152f2a1",
+    "by": "slice mame-sup2-04 reader",
+    "writer": "slice mame-sup2-04 writer",
+    "rows": {
+     "13": {
+      "digest": "ea5bf12cb78513f825c5de29b33fa33a1500db6188b1d68fcf3a567f0ff8583a",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "14": {
+      "digest": "677ae8832c4d88ef05de8e41de761062358f8ad698ffcf11b97a821497eb49f2",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "15": {
+      "digest": "2ec7ddad5de200ea2f14809368a1704451ae63e7e50545b4b0eb4f809a31ecff",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "16": {
+      "digest": "a03fd97fa14b297963941d5e9d3d4732e49ddceaded75afe841c2870312066b4",
+      "by": "slice mame-sup2-04 reader"
      }
     }
    }

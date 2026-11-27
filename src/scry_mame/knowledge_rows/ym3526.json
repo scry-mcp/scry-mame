@@ -110,7 +110,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments register 01 as LSI TEST DATA.",
+     "text": "The capture's line for register 01 reads LSI TEST DATA.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -242,7 +242,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments register 02 as TIMER 1 DATA.",
+     "text": "The capture's line for register 02 reads TIMER 1 DATA.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -356,7 +356,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments register 03 as TIMER 2 DATA.",
+     "text": "The capture's line for register 03 reads TIMER 2 DATA.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -474,7 +474,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments register 04 as IRQ RESET/TIMER CONTROL.",
+     "text": "The capture's line for register 04 reads IRQ RESET/TIMER CONTROL.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -730,7 +730,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments register 08 as CSM speech synthesis mode/Note Select.",
+     "text": "The capture's line for register 08 reads CSM speech synthesis mode/Note Select.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -906,7 +906,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments register BD as DEPTH (AM/VIB) and RHYTHM (BD, SD, TOM, TC, HH); the capture garbles the separators.",
+     "text": "The capture's line for register BD reads DEPTH (AM/VIB) and RHYTHM (BD, SD, TOM, TC, HH); the separators are garbled.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -1118,7 +1118,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map shows registers A0 to A8 as a field labelled F Number (L).",
+     "text": "The capture's line for registers A0 to A8 reads F Number (L).",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -1262,7 +1262,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments registers A0 to B8 as KON/BLOCK/F-Number.",
+     "text": "The capture's line for registers B0 to B8 reads KON/BLOCK/F-Number.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -1413,7 +1413,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments registers C0 to C8 as FEEDBACK/CONNECTION.",
+     "text": "The capture's line for registers C0 to C8 reads FEEDBACK/CONNECTION.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -1563,7 +1563,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments registers 20 to 35 as AM/VIB/EG-TYPE/KSR/MULTIPLE.",
+     "text": "The capture's line for registers 20 to 35 reads AM/VIB/EG - TYPE/KSR/MULTIPLE.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -1777,7 +1777,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments registers 40 to 55 as KSL/TOTAL LEVEL.",
+     "text": "The capture's line for registers 40 to 55 reads KSL/TOTAL LEVEL.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -1911,7 +1911,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments registers 60 to 75 as ATTACK RATE/DECAY RATE.",
+     "text": "The capture's line for registers 60 to 75 reads ATTACK RATE/DECAY RATE.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",
@@ -2031,7 +2031,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The register map comments registers 80 to 95 as SUSTAIN RATE/RELEASE RATE.",
+     "text": "The capture's line for registers 80 to 95 reads SUSTAIN RATE/RELEASE RATE.",
      "quotes": [
       {
        "ref": "datasheet:YM3526.raw.txt",

@@ -1095,7 +1095,7 @@
      "of": "mame",
      "vs": "absent",
      "row": "22",
-     "text": "A write to channel 0's left register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 0's left register stores nothing: the case calls LOG(\"Channel 0 left test write\") at src/devices/sound/es5506.cpp:1267 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -1110,7 +1110,7 @@
      "of": "mame",
      "vs": "absent",
      "row": "22",
-     "text": "A write to channel 0's right register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 0's right register stores nothing: the case calls LOG(\"Channel 0 right test write\") at src/devices/sound/es5506.cpp:1271 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -1488,7 +1488,7 @@
      "n": "16",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 1's left register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 1's left register stores nothing: the case calls LOG(\"Channel 1 left test write\") at src/devices/sound/es5506.cpp:1275 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -1503,7 +1503,7 @@
      "n": "17",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 1's right register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 1's right register stores nothing: the case calls LOG(\"Channel 1 right test write\") at src/devices/sound/es5506.cpp:1279 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -1790,7 +1790,7 @@
      "n": "13",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 2's left register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 2's left register stores nothing: the case calls LOG(\"Channel 2 left test write\") at src/devices/sound/es5506.cpp:1283 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -1805,7 +1805,7 @@
      "n": "14",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 2's right register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 2's right register stores nothing: the case calls LOG(\"Channel 2 right test write\") at src/devices/sound/es5506.cpp:1287 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -2128,7 +2128,7 @@
      "n": "15",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 3's left register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 3's left register stores nothing: the case calls LOG(\"Channel 3 left test write\") at src/devices/sound/es5506.cpp:1291 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -2143,7 +2143,7 @@
      "n": "16",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 3's right register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 3's right register stores nothing: the case calls LOG(\"Channel 3 right test write\") at src/devices/sound/es5506.cpp:1295 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -2418,7 +2418,7 @@
      "n": "12",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 4's left register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 4's left register stores nothing: the case calls LOG(\"Channel 4 left test write\") at src/devices/sound/es5506.cpp:1299 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -2433,7 +2433,7 @@
      "n": "13",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 4's right register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 4's right register stores nothing: the case calls LOG(\"Channel 4 right test write\") at src/devices/sound/es5506.cpp:1303 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -2743,7 +2743,7 @@
      "n": "14",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 5's left register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 5's left register stores nothing: the case calls LOG(\"Channel 5 left test write\") at src/devices/sound/es5506.cpp:1307 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",
@@ -2758,7 +2758,7 @@
      "n": "15",
      "on": "write",
      "of": "mame",
-     "text": "A write to channel 5's right register stores nothing: the case logs the value and returns.",
+     "text": "A write to channel 5's right register stores nothing: the case calls LOG(\"Channel 5 right test write\") at src/devices/sound/es5506.cpp:1311 and returns.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/es5506.cpp",

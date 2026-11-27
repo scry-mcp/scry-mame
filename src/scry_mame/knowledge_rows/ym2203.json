@@ -267,8 +267,13 @@
      "n": "2",
      "on": "is",
      "of": "doc",
-     "text": "The comment column names register 06 Noise Period.",
+     "text": "The capture's comment for register 06 is Noise Period.",
      "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "347",
+       "sha": "aacd834b5cdc64a329e27649143406dd068306542988dfc250d6184745894849"
+      },
       {
        "ref": "datasheet:YM2203.raw.txt",
        "lines": "385",
@@ -280,7 +285,7 @@
      "n": "3",
      "on": "write",
      "of": "doc",
-     "text": "Address 06 is listed in the address column of the READ I WRITE DATA table, whose heading is quoted at 0x00..0x05.",
+     "text": "The capture's table lists address 06.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -476,7 +481,7 @@
      "n": "3",
      "on": "write",
      "of": "doc",
-     "text": "Address 07 is listed in the address column of the READ I WRITE DATA table, whose heading is quoted at 0x00..0x05.",
+     "text": "The capture's table lists address 07.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -868,7 +873,7 @@
      "n": "3",
      "on": "write",
      "of": "doc",
-     "text": "Address 0B is listed in the address column of the READ I WRITE DATA table, whose heading is quoted at 0x00..0x05.",
+     "text": "The capture's table lists address 0B.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -1023,8 +1028,13 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The table labels register 0C Coarse Tune.",
+     "text": "The capture's table labels register 0C Coarse Tune.",
      "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "353",
+       "sha": "5f751e08c9cb40a3e239a4d4b7762296d3b238b71285276adb7ca0376297ef5c"
+      },
       {
        "ref": "datasheet:YM2203.raw.txt",
        "lines": "377",
@@ -1036,7 +1046,7 @@
      "n": "2",
      "on": "write",
      "of": "doc",
-     "text": "Address 0C is listed in the address column of the READ I WRITE DATA table, whose heading is quoted at 0x00..0x05.",
+     "text": "The capture's table lists address 0C.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -1238,7 +1248,7 @@
      "n": "3",
      "on": "write",
      "of": "doc",
-     "text": "Address 0D is listed in the address column of the READ I WRITE DATA table, whose heading is quoted at 0x00..0x05.",
+     "text": "The capture's table lists address 0D.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -1786,6 +1796,11 @@
      "of": "doc",
      "text": "The comment for register 24 is most significant bits of TIMER-A, its leading figure, read B in the capture, being doubtful.",
      "quotes": [
+      {
+       "ref": "datasheet:YM2203.raw.txt",
+       "lines": "250",
+       "sha": "c2356069e9d1e79ca924378153cfbbfb4d4416b1f99d41a2940bfdb66c5319db"
+      },
       {
        "ref": "datasheet:YM2203.raw.txt",
        "lines": "312",
@@ -2577,7 +2592,7 @@
      "n": "2",
      "on": "is",
      "of": "doc",
-     "text": "Address 2D is listed in the address column of the WRITE DATA table (heading at 0x21).",
+     "text": "The capture's table lists address 2D.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -2696,7 +2711,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Address 2E is listed in the address column of the WRITE DATA table (heading at 0x21).",
+     "text": "The capture's table lists address 2E.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -2820,7 +2835,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "Address 2F is listed in the address column of the WRITE DATA table (heading at 0x21).",
+     "text": "The capture's table lists address 2F.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",
@@ -4714,7 +4729,7 @@
      "n": "3",
      "on": "write",
      "of": "doc",
-     "text": "The last comment of the table is Self-Feedback / Connection; the capture line also carries the text YM2203.",
+     "text": "The capture's line reads Self-Feedback / Connection and then YM2203.",
      "quotes": [
       {
        "ref": "datasheet:YM2203.raw.txt",

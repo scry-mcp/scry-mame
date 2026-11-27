@@ -837,7 +837,7 @@
           "n": "2",
           "on": "is",
           "of": "doc",
-          "text": "CLKA2 is named in the Timer A diagram, where the capture garbles it to CLKA?.",
+          "text": "The Timer A diagram's last label is garbled in the capture to CLKA?.",
           "quotes": [
             {
               "ref": "datasheet:YM2151.raw.txt",

@@ -1519,13 +1519,18 @@
      "n": "8",
      "on": "write",
      "of": "mame",
-     "vs": "absent",
-     "text": "Nothing in MAME models the capacitor dump transistors the document turns off at the start and on again at 228.",
+     "vs": "differs",
+     "text": "MAME logs the pot command, resets m_ALLPOT and m_pot_counter, and writes m_POTx at src/devices/sound/pokey.cpp:1282-1307.",
      "quotes": [
       {
        "ref": "mame:src/devices/sound/pokey.cpp",
-       "lines": "1281-1310",
-       "sha": "6812e8d669bb647b47ef7be9659f9f9d18dfcb43f4c364ddb472658bbb9e7b82"
+       "lines": "1282-1293",
+       "sha": "2825ce7355bc6da41f7ae44c4f550ad06d1f9bc7210af5688baa0d479e4fff18"
+      },
+      {
+       "ref": "mame:src/devices/sound/pokey.cpp",
+       "lines": "1303-1307",
+       "sha": "e9333ed13d03a00c533e286dc5939abec3d9484ffc51be237544d219e70d6ab4"
       }
      ],
      "row": "4"

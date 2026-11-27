@@ -5081,7 +5081,7 @@
      "n": "2",
      "on": "is",
      "of": "doc",
-     "text": "Bit 0 carries X8, the ninth bit of the column S#3 reports.",
+     "text": "The last bit of S#4 carries X8, the ninth bit of the column.",
      "quotes": [
       {
        "ref": "datasheet:V9938.raw.txt",
@@ -5094,7 +5094,7 @@
      "n": "3",
      "on": "read",
      "of": "doc",
-     "text": "Reading S#4 returns the ninth bit of the column, X8, above seven 1 bits.",
+     "text": "Reading S#4 returns X8 above seven 1 bits.",
      "quotes": [
       {
        "ref": "datasheet:V9938.raw.txt",
@@ -5314,7 +5314,7 @@
      "n": "3",
      "on": "read",
      "of": "doc",
-     "text": "Reading S#6 returns the ninth row bit, Y8, and the field flag above six 1 bits.",
+     "text": "Reading S#6 returns EO and Y8 above six 1 bits.",
      "quotes": [
       {
        "ref": "datasheet:V9938.raw.txt",

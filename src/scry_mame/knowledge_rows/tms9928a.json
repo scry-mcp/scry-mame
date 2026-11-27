@@ -273,7 +273,7 @@
      "on": "is",
      "of": "mame",
      "vs": "extra",
-     "text": "MAME numbers a register's bits from the least significant end: 0x02 is the document's BIT 6 and 0x01 its BIT 7.",
+     "text": "MAME reads register 0's two control bits from the least significant end: 0x02 is M3, the document's BIT 6, and 0x01 the external VDP bit, BIT 7.",
      "quotes": [
       {
        "ref": "mame:src/devices/video/tms9928a.cpp",
@@ -282,8 +282,8 @@
       },
       {
        "ref": "mame:src/devices/video/tms9928a.cpp",
-       "lines": "241",
-       "sha": "0d23526ba2efaf39a8ae55060aa32b58d6fd36fa867137adf70520933bfd6be6"
+       "lines": "272",
+       "sha": "b01043656bccaacf6d498b50623374f59f9c551ae43e79f99b1513a787285291"
       }
      ]
     }
@@ -538,7 +538,7 @@
      "n": "13",
      "on": "is",
      "of": "doc",
-     "text": "Figure 2-3 draws register 1 as 4/16K, BLANK, IE, M1, M2, a 0, size and MAG, left to right.",
+     "text": "The capture's line for register 1 reads 4/16K PBLANKE 1E M1 M2 0 size | MAG.",
      "quotes": [
       {
        "ref": "datasheet:TMS9918.raw.txt",
@@ -799,7 +799,7 @@
      "n": "3",
      "on": "is",
      "of": "doc",
-     "text": "Figure 2-3 draws register 2 with four leading 0 bits and the name table base in the low four.",
+     "text": "The capture's line for register 2 reads 0 0 0 NAME TABLE BASE ADDRESS.",
      "quotes": [
       {
        "ref": "datasheet:TMS9918.raw.txt",
@@ -1349,7 +1349,7 @@
      "n": "2",
      "on": "is",
      "of": "doc",
-     "text": "Figure 2-3 draws register 7 as the text colour for colour 1 above the text colour for colour 0 and the backdrop colour.",
+     "text": "The capture's line for register 7 reads TEXT COLOR TEXT COLORG/BACKDROP COLOR.",
      "quotes": [
       {
        "ref": "datasheet:TMS9918.raw.txt",
@@ -1480,7 +1480,7 @@
      "n": "2",
      "on": "is",
      "of": "doc",
-     "text": "Figure 2-3 puts F, 5S and C in the three most significant bits and the fifth sprite number below them.",
+     "text": "The capture's status-register line reads F 5S c FIFTH SPRITE NUMBER.",
      "quotes": [
       {
        "ref": "datasheet:TMS9918.raw.txt",

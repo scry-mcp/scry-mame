@@ -241,7 +241,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The table of output operations (writes) lists A1 A0 = 0 0 as data bus to port A.",
+     "text": "The capture's row for port A reads 0 0 1 0 0 Data Bus - Port A.",
      "quotes": [
       {
        "ref": "datasheet:82C55A.raw.txt",
@@ -499,7 +499,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "The table of output operations (writes) lists port B at A1 A0 = 0 1.",
+     "text": "The capture's row for port B reads 0 1 1 0 0 Data Bus - Port B.",
      "quotes": [
       {
        "ref": "datasheet:82C55A.raw.txt",
