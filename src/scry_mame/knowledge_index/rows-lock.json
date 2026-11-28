@@ -10557,17 +10557,17 @@
   },
   "mc68681:register:0x0A:write": {
    "doc": {
-    "seal": "77dddc2f4e41a29844948df13534ab6a17173c41ee638e74762344ce09a4455e",
-    "by": "W1-BASE closing reader mame 01",
-    "writer": "W1-BASE writer",
+    "seal": "08688d9343016cb9456b1f8af2e5a32f538e5becc53a8f8f9173ad8422284d3a",
+    "by": "W1-FIX-AUDIT reader mame",
+    "writer": "W1-FIX-AUDIT writer",
     "rows": {
      "1": {
       "digest": "a4179c239e57f45596b1c634bc1ef6a226247e436c1201020b12fc66a1019f82",
       "by": "slice mame-sup1-03 reader"
      },
      "2": {
-      "digest": "de2e08ee5cd1cb39be0250b5562375e49d5af6e75acb4375c8f62078e8a2f6d2",
-      "by": "W1-BASE closing reader mame 01"
+      "digest": "a26c0c5731c20f417d8f2e1a66fd4630f8da9c1649bfb2d4ec4fad857b7bd39d",
+      "by": "W1-FIX-AUDIT reader mame"
      },
      "3": {
       "digest": "956915cfaeec67bd0f7f389f0746134404cc54a999d3ace054afa40a1ae13740",
@@ -10584,9 +10584,9 @@
     }
    },
    "mame": {
-    "seal": "e870c92ddc664448638a378fb81e075ec4a591036ad0c04182276dc3a352138d",
-    "by": "W1-BASE closing reader mame 01",
-    "writer": "W1-BASE writer",
+    "seal": "2425b61ede861cef41fb66289ecb86bb5f7c5bb499f70ce6a48b5a8c7c778408",
+    "by": "W1-FIX-AUDIT reader mame",
+    "writer": "W1-FIX-AUDIT writer",
     "rows": {}
    }
   },
@@ -36119,6 +36119,55 @@
       "by": "slice mame-sup1-04 reader"
      }
     }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0A:write",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "W1-FIX-AUDIT writer",
+   "why": "the row dropped the non-conflicting condition its quote carries",
+   "was": {
+    "seal": "77dddc2f4e41a29844948df13534ab6a17173c41ee638e74762344ce09a4455e",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
+    "rows": {
+     "1": {
+      "digest": "a4179c239e57f45596b1c634bc1ef6a226247e436c1201020b12fc66a1019f82",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "de2e08ee5cd1cb39be0250b5562375e49d5af6e75acb4375c8f62078e8a2f6d2",
+      "by": "W1-BASE closing reader mame 01"
+     },
+     "3": {
+      "digest": "956915cfaeec67bd0f7f389f0746134404cc54a999d3ace054afa40a1ae13740",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "4": {
+      "digest": "aa2c5b208b51f961e923cb6ef455c088847d53424dea010222550d175057102f",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "5": {
+      "digest": "4598332a2fa214ac186ccf8ed20537686cb6d3cd14d58d122acc8e54571efe4a",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0A:write",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-FIX-AUDIT writer",
+   "why": "its judgement covers the rewritten doc row 2",
+   "was": {
+    "seal": "e870c92ddc664448638a378fb81e075ec4a591036ad0c04182276dc3a352138d",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
+    "rows": {}
    }
   }
  ]

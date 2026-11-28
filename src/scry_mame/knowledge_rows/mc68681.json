@@ -2754,7 +2754,7 @@
           "n": "2",
           "on": "write",
           "of": "doc",
-          "text": "Multiple commands can be specified in a single write to CRB.",
+          "text": "Multiple commands can be specified in a single write to CRB as long as the commands are non-conflicting.",
           "quotes": [
             {
               "ref": "datasheet:MC68681.raw.txt",
