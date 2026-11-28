@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Pins scry-core 0.124.0: `stop`'s instruction declares the fields a platform that decodes the
+  instruction itself answers (`note_live`, `bytes_from`, `code_bits`, `flow`), a `knowledge_find`
+  refusal declares `kinds`, and an `image_compare` refusal declares `series`.
 - Pins scry-core 0.123.2: a `knowledge_find` refusal that suggests nearby references answers
   `nearest` as the entries it declares, never as text a client has to parse.
 - Pins scry-core 0.123.0: `start` and `status` answer `overlay` with the two layers this drawer
