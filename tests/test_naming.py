@@ -333,6 +333,14 @@ def test_what_an_instruction_states_outright_is_named(cpu: str, text: str,
     assert found is not None and found.text == expected and not found.live
 
 
+def test_a_vector_the_base_holds_is_named_by_the_key_it_holds_it_under() -> None:
+    """A base of rows places no entry at an address yet, so a vector is reached by its key: the
+    slot's address on the 6809, which is what `swi` states. No fixture stands in for the base
+    here, because this is what the served one answers."""
+    found = notes.note(naming.base(), "m6809", line_notes.operands("m6809", "swi"), names_on=True)
+    assert found is not None and found.text == "SWI (0xFFFA)"
+
+
 @pytest.mark.parametrize(("cpu", "text"), [
     ("m6809", "lda     #$FFF8"), ("m6809", "inc     <$B2"), ("m6809", "ldx     $0400"),
     ("m6809", "bvc     $FFFC"), ("m6809", "lbsr    $FFFC"), ("m6809", "lda     $FFF8,X"),

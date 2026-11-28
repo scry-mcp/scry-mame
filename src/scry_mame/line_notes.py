@@ -1,6 +1,6 @@
 """The note a disassembled line carries from the base, apart from a person's comments. Only what
-the instruction states outright is named, and every operand is looked up as the address of the
-vector it names; a register's value is never guessed."""
+the instruction states outright is named, as the key the base holds it under; a register's value
+is never guessed."""
 
 from __future__ import annotations
 
@@ -27,8 +27,10 @@ _VECTORS_V30 = {"brkv": 4, "chkind": 5}
 _WIDTH = 4
 
 
-def _vector_address(number: int) -> notes.Operand:
-    return notes.Operand("address", number * _WIDTH)
+def _vector(number: int, slot: int) -> list[notes.Operand]:
+    """A vector an instruction states: its number, which the 68000 and V30 key it by, and its
+    slot, which the 6809 and the z80 do."""
+    return [notes.Operand("interrupt", number), notes.Operand("address", slot)]
 
 
 def operands(cpu_type: str | None, text: str) -> list[notes.Operand]:
@@ -37,18 +39,25 @@ def operands(cpu_type: str | None, text: str) -> list[notes.Operand]:
     mnemonic = words[0].lower().split(".")[0] if words else ""
     if cpu_type == "m68000":
         if (trap := _TRAP_68K.match(text.strip())) is not None:
-            return [_vector_address(32 + int(trap.group(1), 16))]
+            number = 32 + int(trap.group(1), 16)
+            return _vector(number, number * _WIDTH)
         if mnemonic in _VECTORS_68K:
-            return [_vector_address(_VECTORS_68K[mnemonic])]
+            number = _VECTORS_68K[mnemonic]
+            return _vector(number, number * _WIDTH)
         return [notes.Operand("address", int(m.group(1), 16))
                 for m in _ABSOLUTE_68K.finditer(text)]
     if cpu_type == "v30":
         if (brk := _BRK_V30.match(text.strip())) is not None:
-            return [_vector_address(int(brk.group(1), 16))]
-        return [_vector_address(_VECTORS_V30[mnemonic])] if mnemonic in _VECTORS_V30 else []
+            number = int(brk.group(1), 16)
+            return _vector(number, number * _WIDTH)
+        if mnemonic in _VECTORS_V30:
+            number = _VECTORS_V30[mnemonic]
+            return _vector(number, number * _WIDTH)
+        return []
     if cpu_type in ("m6809", "mc6809", "mc6809e"):
         if mnemonic in _VECTOR_6809:
-            return [notes.Operand("address", _VECTOR_6809[mnemonic])]
+            slot = _VECTOR_6809[mnemonic]
+            return _vector(slot, slot)
         if _BRANCH_6809.match(mnemonic):
             return []
         return [notes.Operand("address", int(m.group(1), 16))
