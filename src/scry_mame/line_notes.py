@@ -56,24 +56,24 @@ def operands(cpu_type: str | None, text: str) -> list[notes.Operand]:
     return []
 
 
-def note(text: str, cpu: str | None) -> str | None:
+def note(text: str, cpu: str | None) -> notes.Note | None:
     """The base's note for the instruction `text` of `cpu`, or None when it names nothing."""
     kind = cpus.cpu_type(cpu)
     scope = naming.MAMENAMER.scope(cpu)
     if scope is None:
         return None
-    found = notes.note(naming.base(), scope, operands(kind, text), names_on=STATE.names)
-    return None if found is None else found.text
+    return notes.note(naming.base(), scope, operands(kind, text), names_on=STATE.names)
 
 
 def of_listing(lines: list[str], on: str | None) -> list[dict[str, Any]]:
-    """`{line, note}` for each listing line the base names an operand of."""
+    """`{line, note}` for each listing line the base names an operand of, and `live` where a
+    register named it."""
     out: list[dict[str, Any]] = []
     for i, line in enumerate(lines):
         at = read.LISTED_AT.match(line)
         text = read.stop_instruction(line, int(at.group(1), 16) if at else 0, on)["text"]
         if (named := note(text, on)) is not None:
-            out.append({"line": i, "note": named})
+            out.append({"line": i, "note": named.text, **({"live": True} if named.live else {})})
     return out
 
 
@@ -89,5 +89,5 @@ def on_disassembly(reply: dict[str, Any]) -> dict[str, Any]:
 def on_instruction(row: dict[str, Any], cpu: str | None) -> dict[str, Any]:
     """The stop's `instruction`, with its `note` when the base names what it states."""
     if (named := note(row["text"], cpu)) is not None:
-        row["note"] = named
+        row["note"] = named.text
     return row

@@ -394,6 +394,72 @@ def test_disassemble_answers_line_notes_only_for_the_lines_the_base_names(
     assert line_notes.on_disassembly(dict(refused)) == refused
 
 
+@pytest.mark.usefixtures("every_entry")
+def test_a_line_note_is_a_line_a_note_and_live_when_a_register_named_it(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """The shape both servers answer: `line` and `note`, `live` when a register named the note,
+    and no entry id. MAME names only what an instruction states outright, so its own notes are
+    never live; the flag is the core's, carried as the other server carries it."""
+    board(monkeypatch)
+    lines = ["000560: 4E40           trap    #$0"]
+    stated = line_notes.of_listing(lines, ":maincpu")
+    assert [set(entry) for entry in stated] == [{"line", "note"}]
+    monkeypatch.setattr(line_notes, "note", lambda text, cpu: notes.Note("y_w (0x1)", True))
+    assert line_notes.of_listing(lines, ":maincpu") == [
+        {"line": 0, "note": "y_w (0x1)", "live": True}]
+
+
+@pytest.mark.usefixtures("every_entry")
+def test_a_stops_note_is_whole_and_a_trace_answers_the_stops_instruction(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """A stop's `instruction` carries its `note` and nothing of a live flag, and `trace` answers
+    that same instruction: one note shape across the three calls, with no id and no cut."""
+    from typing import get_type_hints
+
+    from scry_mame import read, replies
+
+    board(monkeypatch)
+    row = line_notes.on_instruction(
+        read.stop_instruction("000560: 4E40           trap    #$0", 0x560, ":maincpu"),
+        ":maincpu")
+    assert row["note"] == "TRAP #0 (0x80)"
+    assert not {"live", "note_live", "id"} & set(row)
+    stopped = get_type_hints(replies.StopReply)["instruction"]
+    assert get_type_hints(replies.TraceReply)["instruction"] is stopped
+
+
+def _strings(value: Any) -> list[str]:
+    """Every string `value` holds, its keys included."""
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, dict):
+        return [text for key, item in value.items() for text in [key, *_strings(item)]]
+    if isinstance(value, list | tuple):
+        return [text for item in value for text in _strings(item)]
+    return []
+
+
+@pytest.mark.usefixtures("every_entry")
+def test_no_reply_cuts_the_bases_text(monkeypatch: pytest.MonkeyPatch) -> None:
+    """No `…` on a row, a note or a description, and a cut list says how many it holds."""
+    base = naming.base()
+    held = next((whole for whole in map(base.whole, base.entries()) if "rows_total" in whole),
+                None)
+    assert held is not None, "no entry answered with rows cut: this case examines nothing"
+    shown = s.knowledge_find(id=held["id"])
+    assert shown["status"] == "ok", shown
+    rows = shown["entries"][0]
+    assert (len(rows["rows"]) < rows["rows_total"] == held["rows_total"]), rows
+    cut = s.knowledge_find(text="the", limit=1)
+    assert cut["truncated"] is True and cut["entries_total"] > len(cut["entries"]), cut
+    board(monkeypatch)
+    listing = line_notes.on_disassembly(
+        {"cpu": ":maincpu", "lines": ["000560: 4E40           trap    #$0"]})
+    texts = [*_strings(shown), *_strings(cut), *_strings(listing)]
+    assert len(texts) > 20, "the replies carried almost no text, so this case examined nothing"
+    assert [text for text in texts if "…" in text] == []
+
+
 def test_a_stopped_machine_says_what_its_layers_lose() -> None:
     from scry_core import overlay
     reply = presence.overlay_reply(overlay.Overlay())
