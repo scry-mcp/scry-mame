@@ -5301,7 +5301,7 @@
     {
      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
      "lines": "228-230",
-     "as": "decode"
+     "as": "structure"
     },
     {
      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
@@ -5718,7 +5718,7 @@
     {
      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",
      "lines": "228-230",
-     "as": "decode"
+     "as": "structure"
     },
     {
      "ref": "mame:3rdparty/ymfm/src/ymfm_adpcm.cpp",

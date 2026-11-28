@@ -369,7 +369,7 @@
           "n": "2",
           "on": "write",
           "of": "doc",
-          "text": "The LFO oscillation frequency is set with 8 bits, tabulated in a figure the capture does not carry.",
+          "text": "The LFO oscillation frequency is set with 8 bits, as indicated in Figure 2.16.",
           "quotes": [
             {
               "ref": "datasheet:YM2151.raw.txt",
@@ -388,6 +388,11 @@
               "ref": "mame:3rdparty/ymfm/src/ymfm_opm.cpp",
               "lines": "198-199",
               "sha": "75f7a4a7cce7673fc17906e6e6d2e128b190c8384b04342faf418b758db3aed8"
+            },
+            {
+              "ref": "mame:3rdparty/ymfm/src/ymfm_opm.h",
+              "lines": "188",
+              "sha": "74907ceb9344b86eef975638abace1766ed5c64b52875d238e89364a6e9d3610"
             }
           ],
           "vs": "extra"

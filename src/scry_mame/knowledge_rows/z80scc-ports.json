@@ -71,7 +71,7 @@
      "n": "2",
      "on": "read",
      "of": "doc",
-     "text": "When the Z85X30 is selected, /RD low indicates a read operation.",
+     "text": "When the Z85X30 is selected, /RD enables its bus drivers.",
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",
@@ -605,7 +605,7 @@
      "n": "4",
      "on": "is",
      "of": "doc",
-     "text": "If the state of the pointer bits is unknown, they may be reset to 0 by a read cycle.",
+     "text": "If the state of the pointer bits is unknown, a read cycle with the D//C pin held Low resets them to 0.",
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",
@@ -1300,7 +1300,7 @@
      "n": "4",
      "on": "read",
      "of": "mame",
-     "text": "m1_r returns z80daisy_irq_ack(), which returns channel B's RR2 vector when an interrupt is pending and otherwise the CPU's default vector.",
+     "text": "m1_r returns z80daisy_irq_ack(): channel B's RR2 vector for a pending interrupt unless WR9 D1 selects autovector, and the CPU's default vector otherwise.",
      "quotes": [
       {
        "ref": "mame:src/devices/machine/z80scc.cpp",
@@ -1321,6 +1321,11 @@
        "ref": "mame:src/devices/machine/z80scc.cpp",
        "lines": "621-624",
        "sha": "35599c8b1e018406cd36f0876673e63c10e5c596d7d295442782b8e97d81335a"
+      },
+      {
+       "ref": "mame:src/devices/machine/z80scc.cpp",
+       "lines": "606-608",
+       "sha": "e02ebcacf2987d8961525f6e082447111065cc94000f3ccf2c7cc31e57b1e842"
       }
      ],
      "vs": "differs",

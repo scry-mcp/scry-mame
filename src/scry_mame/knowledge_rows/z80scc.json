@@ -2768,7 +2768,7 @@
      "n": "2",
      "on": "write",
      "of": "doc",
-     "text": "Only one WR9 exists in the SCC, and it is written from either channel.",
+     "text": "Only one WR9 exists in the SCC, and it is accessed from either channel.",
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",
@@ -5108,7 +5108,7 @@
      "n": "12",
      "on": "write",
      "of": "doc",
-     "text": "WR15 stores D3, the /OCO Interrupt Enable, the scan's spelling of DCD: a change of state on the /OCO pin causes an External/Status interrupt.",
+     "text": "WR15 stores D3, the /OCO Interrupt Enable: if set, a change of state on the /OCO pin causes an External/Status interrupt.",
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",

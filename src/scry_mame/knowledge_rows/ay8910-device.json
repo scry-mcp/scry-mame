@@ -942,7 +942,7 @@
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",
      "lines": "1374",
-     "as": "decode"
+     "as": "structure"
     },
     {
      "ref": "mame:src/devices/sound/ay8910.cpp",

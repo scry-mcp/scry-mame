@@ -7959,7 +7959,7 @@
      "n": "4",
      "on": "is",
      "of": "doc",
-     "text": "DELTA-N = (fsample/55.5kHz) times a power of two the capture prints as 216, whose exponent is doubtful; DELTA-N=9447 at fsample=8kHz.",
+     "text": "DELTA-N = (fsample/55.5kHz) times the capture's 216, whose exponent is doubtful; DELTA-N=9447 at fsample=8kHz.",
      "quotes": [
       {
        "ref": "datasheet:YM2608.raw.txt",

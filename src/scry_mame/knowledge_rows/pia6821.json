@@ -1199,7 +1199,7 @@
     {
      "ref": "mame:src/devices/machine/6821pia.cpp",
      "lines": "260",
-     "as": "decode"
+     "as": "structure"
     },
     {
      "ref": "mame:src/devices/machine/6821pia.cpp",
