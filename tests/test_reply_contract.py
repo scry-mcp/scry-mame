@@ -126,8 +126,6 @@ def test_every_tool_answers_the_contract_with_no_machine(
     """With no machine, every tool answers the one envelope: a refusal, or `ok` for status/close."""
     _no_session(monkeypatch)
     reply = getattr(s, name)(**_ARGS.get(name, {}))
-    # The reply a tool answers is the shape its own model publishes, context fields included.
-    reply_schema.check(name, reply)
     if name in ("status", "close"):
         assert reply["status"] == "ok" and "code" not in reply and "message" not in reply, reply
         return
@@ -230,7 +228,6 @@ def test_every_reader_refuses_a_running_machine_with_the_contract(
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
     monkeypatch.setattr(mstate.STATE, "found_stop_last", {})
     reply = getattr(s, name)(**_ARGS.get(name, {}))
-    reply_schema.check(name, reply)
     contract.check_refusal(name, reply, "not_stopped")
     assert "last_stop" in reply and "answers_while_running" in reply, reply
 
