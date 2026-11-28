@@ -312,17 +312,17 @@ def test_a_device_is_asked_by_its_tag_in_either_spelling_and_answers_the_same(
 
 
 @pytest.mark.parametrize(("cpu", "text", "expected"), [
-    ("m68000", "trap    #$0", "TRAP #0 (0x80)"),
-    ("m68000", "trap    #$f", "TRAP #15 (0xBC)"),
-    ("m68000", "chk.w   D1, D0", "CHK (0x18)"),
-    ("m68000", "trapv", "TRAPV (0x1C)"),
+    ("m68000", "trap    #$0", "TRAP #0 (0x20)"),
+    ("m68000", "trap    #$f", "TRAP #15 (0x2F)"),
+    ("m68000", "chk.w   D1, D0", "CHK (0x06)"),
+    ("m68000", "trapv", "TRAPV (0x07)"),
     ("m68000", "move.l  $8.l, D0", "bus error (0x08)"),
     ("m6809", "swi", "SWI (0xFFFA)"),
     ("m6809", "swi3", "SWI3 (0xFFF2)"),
     ("m6809", "ldx     $FFF8", "IRQ (0xFFF8)"),
     ("m6809", "stu     $FFFF", "reset+0x1 (0xFFFF)"),
-    ("v30", "brkv", "overflow (0x10)"),
-    ("v30", "chkind  bw, [ix]", "bound check (0x14)"),
+    ("v30", "brkv", "overflow (0x04)"),
+    ("v30", "chkind  bw, [ix]", "bound check (0x05)"),
 ])
 @pytest.mark.usefixtures("every_entry")
 def test_what_an_instruction_states_outright_is_named(cpu: str, text: str,
@@ -333,12 +333,20 @@ def test_what_an_instruction_states_outright_is_named(cpu: str, text: str,
     assert found is not None and found.text == expected and not found.live
 
 
-def test_a_vector_the_base_holds_is_named_by_the_key_it_holds_it_under() -> None:
-    """A base of rows places no entry at an address yet, so a vector is reached by its key: the
-    slot's address on the 6809, which is what `swi` states. No fixture stands in for the base
-    here, because this is what the served one answers."""
-    found = notes.note(naming.base(), "m6809", line_notes.operands("m6809", "swi"), names_on=True)
-    assert found is not None and found.text == "SWI (0xFFFA)"
+@pytest.mark.parametrize(("cpu", "text", "expected"), [
+    ("m6809", "swi", "SWI (0xFFFA)"),
+    ("m68000", "trap    #$0", "TRAP #0 (0x20)"),
+    ("v30", "brkv", "overflow (0x04)"),
+])
+def test_a_vector_the_base_holds_is_named_by_the_key_it_holds_it_under(
+        cpu: str, text: str, expected: str) -> None:
+    """A base of rows places no entry at an address, so a vector is reached by its key: the
+    slot's address on the 6809, which is what `swi` states, and the number on the 68000 and the
+    V30. No fixture stands in for the base here, because this is what the served one answers."""
+    scope = naming.MAMENAMER.scope_of_type(cpu)
+    assert scope is not None
+    found = notes.note(naming.base(), scope, line_notes.operands(cpu, text), names_on=True)
+    assert found is not None and found.text == expected and not found.live
 
 
 @pytest.mark.parametrize(("cpu", "text"), [
@@ -362,10 +370,10 @@ def test_a_listing_line_carries_its_note_apart_from_a_persons_comment(
     lines = ["000560: 4E40           trap    #$0 // a person's words",
              "000562: 3039 0020 0000 move.w  $200000.l, D0"]
     from scry_mame import read
-    assert line_notes.of_listing(lines, ":maincpu") == [{"line": 0, "note": "TRAP #0 (0x80)"}]
+    assert line_notes.of_listing(lines, ":maincpu") == [{"line": 0, "note": "TRAP #0 (0x20)"}]
     row = line_notes.on_instruction(read.stop_instruction(lines[0], 0x560, ":maincpu"),
                                     ":maincpu")
-    assert row["note"] == "TRAP #0 (0x80)" and row["comment"] == "a person's words"
+    assert row["note"] == "TRAP #0 (0x20)" and row["comment"] == "a person's words"
     assert cpus.cpu_type(":maincpu") == "m68000"
 
 
@@ -394,7 +402,7 @@ def test_disassemble_answers_line_notes_only_for_the_lines_the_base_names(
     monkeypatch.setattr(cpus, "chosen", lambda _ses, cpu: cpu or ":maincpu")
     reply = line_notes.on_disassembly(
         read.disassemble(Untouchable(), tmp_path, "0x560", 8))  # type: ignore[arg-type]
-    assert reply["line_notes"] == [{"line": 0, "note": "TRAP #0 (0x80)"}]
+    assert reply["line_notes"] == [{"line": 0, "note": "TRAP #0 (0x20)"}]
     monkeypatch.setattr(read, "dasm_lines", lambda *_, **__: lines[1:])
     assert "line_notes" not in line_notes.on_disassembly(
         read.disassemble(Untouchable(), tmp_path, "0x562", 4))  # type: ignore[arg-type]
@@ -430,7 +438,7 @@ def test_a_stops_note_is_whole_and_a_trace_answers_the_stops_instruction(
     row = line_notes.on_instruction(
         read.stop_instruction("000560: 4E40           trap    #$0", 0x560, ":maincpu"),
         ":maincpu")
-    assert row["note"] == "TRAP #0 (0x80)"
+    assert row["note"] == "TRAP #0 (0x20)"
     assert not {"live", "note_live", "id"} & set(row)
     stopped = get_type_hints(replies.StopReply)["instruction"]
     assert get_type_hints(replies.TraceReply)["instruction"] is stopped
@@ -594,10 +602,10 @@ def test_a_stops_instruction_and_the_disassemble_tool_carry_the_note(
     trap = "000560: 4E40           trap    #$0"
     monkeypatch.setattr(read, "dasm_lines", lambda *_, **__: [trap, "000562: 4E71  nop"])
     seen = running.survey(ses, tmp_path)  # type: ignore[arg-type]
-    assert seen["instruction"]["note"] == "TRAP #0 (0x80)"
+    assert seen["instruction"]["note"] == "TRAP #0 (0x20)"
     monkeypatch.setattr(s, "stopped", lambda _what: (ses, tmp_path))
     monkeypatch.setattr(cpus, "chosen", lambda _ses, cpu: cpu or ":maincpu")
     monkeypatch.setattr(read, "flows", lambda *_, **__: {"flow": ["call"], "flow_source": "x"})
     monkeypatch.setattr(read, "dasm_lines", lambda *_, **__: [trap])
     said = s.disassemble(ref="0x560", length=4)
-    assert said["line_notes"] == [{"line": 0, "note": "TRAP #0 (0x80)"}]
+    assert said["line_notes"] == [{"line": 0, "note": "TRAP #0 (0x20)"}]
