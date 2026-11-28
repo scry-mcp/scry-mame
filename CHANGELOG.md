@@ -11,6 +11,12 @@ What a client of the server notices.
   `nearest` as the entries it declares, never as text a client has to parse.
 - Pins scry-core 0.123.0: `start` and `status` answer `overlay` with the two layers this drawer
   draws, the edge and the recording mark, and a demo's timeline is version 3.
+- The family `Names` is now `Symbols`, and the knowledge base has a family of its own,
+  `Knowledge`: `symbols_find` and `knowledge_find` file there in the roster, the `instructions`
+  and the reference's pages.
+- The `instructions` say what the knowledge base is and when to call `knowledge_find`: the
+  machine's documents row by row, the entry whole with its rows and the lines each was read at,
+  and that no text is cut. Call it before asserting what a number is or what the hardware does.
 
 - A caption wider than the window is cut and marked with `..`, never scrolled: a line that moves
   cannot be read while the machine runs.

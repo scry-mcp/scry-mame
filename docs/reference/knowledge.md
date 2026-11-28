@@ -214,14 +214,14 @@ One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 d
 - `id` (string, default `""`): An entry's id, as another reply cites it, such as `z80:vector:0x66`. Answers that entry whole.
 - `kind` (one of `""`, `"vector"`, `"call"`, `"error"`, `"port"`, `"irq"`, `"memory"`, `"input"`, `"device"`, `"register"`, `"command"`, default `""`): What the number is: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`, `device`, `register` or `command`. Left empty, every kind.
 - `key` (string, default `""`): The number as a reply prints it, or a range such as `0x3C0..0x3CF`; for an `input`, `:IN1/Coin 1`.
-- `text` (string, default `""`): Words looked for in names, aliases, descriptions and behaviour. A word ending in `*` matches by prefix.
+- `text` (string, default `""`): Words looked for in an entry's name, its aliases and the text of its rows. A word ending in `*` matches by prefix.
 - `device` (string, default `""`): A chip's key, or a tag of the running machine such as `:ymsnd`: everything that belongs to it.
 - `scope` (string, default `""`): A cpu or a chip: `z80`, `mc6845`. Left empty, the session's cpus and chips; with no session, all.
 - `limit` (integer, default `10`): How many entries are listed: 1 to 50. Left out, 10.
 
 ### What comes back
 
-- `entries`: Rows with `id`, `kind`, `key`, `name`; one match, or an `id`, answers whole with `description`, `behaviour` and `sources`. A machine's own row has `live: true`.
+- `entries`: Rows with `id`, `kind`, `key`, `name`; one match, or an `id`, answers whole, with its `rows` (each row's `text` and `cites`) and its `sources`. A machine's own row has `live: true`.
 - `entries_total`: How many entries matched.
 - `truncated`: `true` when more matched than `entries` lists.
 - `examined`: How many entries were searched, so a zero says what it is a zero of.

@@ -4,7 +4,9 @@ This page is for a rule that several tools share. It holds the list of tools, th
 
 Each tool has its own entry, with arguments, reply and example, on its family's page under `docs/reference/`; a family is a group of tools. To install, see the [README](README.md).
 
-Each example is a call of the example session, one session on Gridlee (a free ROM from mamedev.org), kept whole in [`docs/reference/tour/TRANSCRIPT.md`](docs/reference/tour/TRANSCRIPT.md). The three tools Gridlee cannot exercise (`cpu_focus`, `palette_log`, `gfx_blit_source`) show a test program's reply instead.
+Each example is a call of the example session, one session on Gridlee (a free ROM from mamedev.org), kept whole in [`docs/reference/tour/TRANSCRIPT.md`](docs/reference/tour/TRANSCRIPT.md).
+
+The three tools Gridlee cannot exercise (`cpu_focus`, `palette_log`, `gfx_blit_source`) show a test program's reply instead, and `knowledge_find` answers from the base's dictionaries without a session. `scan`'s call and reply are the Gridlee demo's own run.
 
 A path in an example that starts with `./` stands for the folder of your clone, and `$TMPDIR` for your temporary folder. Write the whole path in your own call: a relative one is refused.
 
@@ -239,7 +241,7 @@ The program is either stopped at the debugger or running, and most tools need it
 
 **While it runs, a tool that reads the machine refuses** `not_stopped`, with `last_stop` and `answers_while_running`. A value read off a moving machine belongs to no moment. These answer:
 
-- every tool of Machine, Names, Breakpoints, Timeline, Files, Sequences and Project;
+- every tool of Machine, Symbols, Knowledge, Breakpoints, Timeline, Files, Sequences and Project;
 - `status`, `window`, `close`, `stop`, `comment_list`, `throttle`, `state_list`, `snapshot`, `captures`;
 - `comment_write(method="save")`, `scan(method="clear")`, `screen_map_write` with `load` or `save`, and `registers(from_last_stop=True)`.
 
