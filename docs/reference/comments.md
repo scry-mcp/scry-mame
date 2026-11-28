@@ -315,7 +315,8 @@ running machine. Reply: `path`, `comments_total`, `dropped_comments`, `dropped_t
 `comments_total`, `declarations`, `note`.
 
 `add`, `delete` and `load` need the machine stopped. Refused: an argument the method
-does not take, a misshapen `ref` or `text`, an unknown `ref` (`unknown_ref`), a `save`
+does not take, a misshapen `ref` or `text`, a bare hex `ref` naming no symbol or a
+`delete` `ref` matching no comment (`unknown_ref`), a `save`
 `dest` that is the declaration store's file (compared without regard to case, on any
 volume), an unwritable store (`host_failed`, `held_in_memory`).
 

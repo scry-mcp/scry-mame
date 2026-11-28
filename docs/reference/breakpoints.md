@@ -276,7 +276,7 @@ visible one.
 
 Refused: a `seg:off`; a `condition` the console refuses or too long (`command_chars`); an
 unknown cpu (`unknown_ref`); an address another declaration holds; one ref under the other
-role; a control past the 10 temps.
+role or another condition; a control past the 10 temps.
 
 Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr` (once
 `ref` resolves), `entry` (once armed).
@@ -507,7 +507,7 @@ Declare a registerpoint: the machine stops when `condition` comes true, wherever
 program ("who puts this value in this register"). Stored, re-armed at `start`.
 
 `condition`: console grammar, bare numbers hex (`d1==0x7fff`); compares, never assigns.
-`cpu`: only the visible one; another is refused naming `cpu_focus`.
+`cpu`: only the visible one; another is refused naming `cpu_focus` (`needs_call`).
 
 Refused: a condition the console refuses (`bad_argument`) or too long (`command_chars`,
 `limit_chars`); one equal to another registerpoint's (`ambiguous_ref`); a debugger with no
@@ -717,7 +717,7 @@ The second call's:
 - `installed`: `false` for a `count` or `capture` just sent: MAME installs it when its console next reads a line, and `pending` stays `true` until then.
 - `values_from`: `bus` when the address does not read back what is written to it, as a write-only register: the values are then the writes logged, never a memory read.
 
-<details><summary>All 35 reply fields</summary>
+<details><summary>All 34 reply fields</summary>
 
 - `addr` (string)
 - `already_stored` (boolean)
@@ -734,7 +734,6 @@ The second call's:
 - `installed` (boolean)
 - `length` (integer)
 - `lines_ahead` (integer)
-- `mine` (boolean)
 - `mode` (string)
 - `pending` (boolean)
 - `pointer` (object)
@@ -1222,8 +1221,8 @@ running machine.
 Refused: an empty `ref` without `all`; a `ref` matching none (`unknown_ref`, naming the
 refs held); `space` for a kind other than `watch`.
 
-Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed` (removing an io
-tap), `note`.
+Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed` (removing a
+count or a capture watch), `note`.
 
 Reference: REFERENCE.md, Breakpoints and watches.
 ```

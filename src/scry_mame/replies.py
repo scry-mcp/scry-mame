@@ -588,6 +588,7 @@ class PaletteReply(MameConsoleAccount, total=False):
     first: int
     highlights: bool
     image: Required[dict[str, Any]]
+    indirect: Annotated[list[Any], When("a device with indirect entries")]
     indirect_entries: Required[int]
     lines_ahead: int
     palette: str
@@ -832,7 +833,8 @@ class RunToReply(MameEnvelope, tool_replies.DisarmFields, total=False):
     stop_seq: int
     stored: bool
     target_disarmed: Annotated[
-        bool, When("the target was left armed or the interrupt went unanswered")]
+        bool, When("the target was left armed, or the interrupt at the time limit was answered "
+                   "late or never")]
     verdict: Required[str]
     watch_hit: dict[str, Any]
     watches: list[Any]
@@ -1131,7 +1133,6 @@ class WatchAddReply(MameEnvelope, total=False):
     installed: bool
     length: int
     lines_ahead: int
-    mine: bool
     mode: str
     pending: bool
     pointer: dict[str, Any]
@@ -1174,7 +1175,7 @@ class CommentWriteReply(MameEnvelope, tool_replies.CommentWriteFields, total=Fal
 class DeclarationClearReply(MameEnvelope, total=False):
     declarations_cleared: Required[int]
     disarmed: Required[list[Any]]
-    tallies_removed: Annotated[list[Any], When("removing an io tap")]
+    tallies_removed: Annotated[list[Any], When("removing a count or a capture watch")]
     while_running: Required[bool]
 
 

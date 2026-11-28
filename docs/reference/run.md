@@ -229,8 +229,9 @@ within `seconds`; a `control` or `disarm_watches` is refused there (`bad_argumen
 
 Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
 `cpu`, `hits_in_run`; a run to a ref or an anchor), `target_disarmed` (the target was left
-armed or the interrupt went unanswered), `frames` (a screen with no anchor), the
-stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when the listing runs on).
+armed, or the interrupt at the time limit was answered late or never), `frames` (a screen
+with no anchor), the stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when
+the listing runs on).
 INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
 Reference: REFERENCE.md, Running and stopping.
@@ -1067,12 +1068,14 @@ The server never watches a run with no end: `trace` covers one bounded window. A
 Run as `run_for` does with MAME's tracer on one cpu, then return the addresses it executed,
 joined to symbols. Window: `milliseconds` or `frames` (at most 5026 frames or
 98143 ms; `noloop`, 1648 and 32920). `dest`: an absolute
-new path. `noloop=True`: exact `count`s, not which addresses ran. Needs a stopped machine.
+new path. `noloop=True` logs every instruction: the `count`s are exact; the list of
+addresses is exact either way. Needs a stopped machine.
 
 Reply: `run_for`'s, plus `trace` (`path`, `set_path`, `instructions`, `addresses`,
 `unplaced`, `symbols` (first 64)); `reads` when it ran by milliseconds,
 `watch_hit` when a watch cut the run and `regpoint_hit` when a registerpoint was the newest
-stop. Refused: `dest` existing, `no_channel`, `readback_refused`.
+stop. Refused: `dest` or its set file existing, `no_channel`, `readback_refused`,
+`host_failed`.
 
 Reference: REFERENCE.md, Running and stopping.
 ```

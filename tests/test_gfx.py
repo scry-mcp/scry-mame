@@ -31,7 +31,7 @@ from lua_support import _channel, _ChannelSession  # noqa: E402
 from mcp.types import CallToolResult
 from scry_core import pens as scry_pens  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
-from scry_core import png, raster  # noqa: E402
+from scry_core import png, raster, reply_schema  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core.file_names import written_as  # noqa: E402
 from session_doubles import refused  # noqa: E402
@@ -154,6 +154,25 @@ def test_every_picture_a_view_writes_is_listed_among_the_sessions_captures(
 
 
 # ------------------------------------------------------------------ palette
+
+def test_a_device_with_indirect_entries_names_them_in_its_reply(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """A device may point each pen at another index: the reply carries that list, and the model
+    declares it, so a client that holds the published schema keeps it. The answer is the
+    captured circus palette with only its two indirect fields set, as a device with indirect
+    entries prints them."""
+    ses = _channel(monkeypatch, tmp_path)
+    seq = mstate.STATE.lua_seq + 1
+    captured = (FIX / "palette-circus.txt").read_bytes()
+    line = captured.replace(b"indirect=0", b"indirect=2").replace(b" ind=\n", b" ind=3,1\n")
+    assert b"indirect=2" in line and b"ind=3,1" in line
+    ses.answers[seq] = re.sub(rb"MAME_MCP_LUA_END#\d+", b"MAME_MCP_LUA_END#%d" % seq, line)
+    out = s.palette()
+    assert out["status"] == "ok", out
+    assert out["indirect_entries"] == 2 and out["indirect"] == [3, 1]
+    reply_schema.check("palette", out)
+
 
 def test_palette_reads_the_live_pens_as_a_table_and_a_labelled_swatch(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,

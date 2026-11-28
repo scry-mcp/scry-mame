@@ -405,8 +405,9 @@ def run_to(ref: str = "", *, control: str = "", screen: str = "",
 
     Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
     `cpu`, `hits_in_run`; a run to a ref or an anchor), `target_disarmed` (the target was left
-    armed or the interrupt went unanswered), `frames` (a screen with no anchor), the
-    stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when the listing runs on).
+    armed, or the interrupt at the time limit was answered late or never), `frames` (a screen
+    with no anchor), the stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when
+    the listing runs on).
     INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
     Reference: REFERENCE.md, Running and stopping.
@@ -448,12 +449,14 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
     """Run as `run_for` does with MAME's tracer on one cpu, then return the addresses it executed,
     joined to symbols. Window: `milliseconds` or `frames` (at most {TRACE_FRAMES_MAX} frames or
     {TRACE_MS_MAX} ms; `noloop`, {NOLOOP_FRAMES_MAX} and {NOLOOP_MS_MAX}). `dest`: an absolute
-    new path. `noloop=True`: exact `count`s, not which addresses ran. Needs a stopped machine.
+    new path. `noloop=True` logs every instruction: the `count`s are exact; the list of
+    addresses is exact either way. Needs a stopped machine.
 
     Reply: `run_for`'s, plus `trace` (`path`, `set_path`, `instructions`, `addresses`,
     `unplaced`, `symbols` (first {TRACE_SYMBOLS_SHOWN})); `reads` when it ran by milliseconds,
     `watch_hit` when a watch cut the run and `regpoint_hit` when a registerpoint was the newest
-    stop. Refused: `dest` existing, `no_channel`, `readback_refused`.
+    stop. Refused: `dest` or its set file existing, `no_channel`, `readback_refused`,
+    `host_failed`.
 
     Reference: REFERENCE.md, Running and stopping.
     """
@@ -525,7 +528,7 @@ def breakpoint_at(ref: str,
 
     Refused: a `seg:off`; a `condition` the console refuses or too long (`command_chars`); an
     unknown cpu (`unknown_ref`); an address another declaration holds; one ref under the other
-    role; a control past the {TEMPS} temps.
+    role or another condition; a control past the {TEMPS} temps.
 
     Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr` (once
     `ref` resolves), `entry` (once armed).
@@ -565,8 +568,8 @@ def declaration_clear(kind: Annotated[str, vocab.enum(folds.KINDS)], ref: str = 
     Refused: an empty `ref` without `all`; a `ref` matching none (`unknown_ref`, naming the
     refs held); `space` for a kind other than `watch`.
 
-    Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed` (removing an io
-    tap), `note`.
+    Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed` (removing a
+    count or a capture watch), `note`.
 
     Reference: REFERENCE.md, Breakpoints and watches.
     """
@@ -585,7 +588,7 @@ def regpoint_add(condition: str, cpu: str = "") -> dict[str, Any]:
     program ("who puts this value in this register"). Stored, re-armed at `start`.
 
     `condition`: console grammar, bare numbers hex (`d1==0x7fff`); compares, never assigns.
-    `cpu`: only the visible one; another is refused naming `cpu_focus`.
+    `cpu`: only the visible one; another is refused naming `cpu_focus` (`needs_call`).
 
     Refused: a condition the console refuses (`bad_argument`) or too long (`command_chars`,
     `limit_chars`); one equal to another registerpoint's (`ambiguous_ref`); a debugger with no
@@ -637,7 +640,8 @@ def comment_write(method: Annotated[str, vocab.enum(tuple(folds.COMMENT))], ref:
     {COMMENT_LOAD}
 
     `add`, `delete` and `load` need the machine stopped. Refused: an argument the method
-    does not take, a misshapen `ref` or `text`, an unknown `ref` (`unknown_ref`), a `save`
+    does not take, a misshapen `ref` or `text`, a bare hex `ref` naming no symbol or a
+    `delete` `ref` matching no comment (`unknown_ref`), a `save`
     `dest` that is the declaration store's file (compared without regard to case, on any
     volume), an unwritable store (`host_failed`, `held_in_memory`).
 
@@ -1103,8 +1107,9 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
     path it is written to, else the session's scratch; `seconds` bounds the read.
 
     Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha` (not fully
-    opaque), `indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such
-    device, several, none. `bad_argument`: past the last pen.
+    opaque), `indirect_entries`, `indirect` (a device with indirect entries), `image`.
+    `unknown_ref`, `ambiguous_ref`, `no_channel`: no such device, several, none. `bad_argument`:
+    past the last pen.
 
     Reference: REFERENCE.md, Input and the screen.
     """

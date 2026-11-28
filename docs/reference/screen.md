@@ -151,7 +151,7 @@ The summary's `pens` are palette entries: this palette has 2048, and the reply l
 - `indirect_entries`: How many entries MAME's second, indirect colour table holds for this device.
 - `image`: The PNG: its `path`, `bytes`, `sha256`, `width`, `height` and `scale`, whether it is `indexed`, and `inline` or the reason in `not_inlined`.
 
-<details><summary>All 29 reply fields</summary>
+<details><summary>All 30 reply fields</summary>
 
 - `console_reruns` (integer)
 - `cpu` (string)
@@ -174,6 +174,7 @@ The summary's `pens` are palette entries: this palette has 2048, and the reply l
 - `first` (integer)
 - `highlights` (boolean)
 - `image` (object)
+- `indirect` (array)
 - `indirect_entries` (integer)
 - `lines_ahead` (integer)
 - `palette` (string)
@@ -223,8 +224,9 @@ route to the colours of a write-only RAMDAC.
 path it is written to, else the session's scratch; `seconds` bounds the read.
 
 Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha` (not fully
-opaque), `indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such
-device, several, none. `bad_argument`: past the last pen.
+opaque), `indirect_entries`, `indirect` (a device with indirect entries), `image`.
+`unknown_ref`, `ambiguous_ref`, `no_channel`: no such device, several, none. `bad_argument`:
+past the last pen.
 
 Reference: REFERENCE.md, Input and the screen.
 ```
