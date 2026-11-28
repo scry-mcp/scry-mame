@@ -8,9 +8,10 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
-from scry_core import demo, knowledge_tool, reference
+from scry_core import knowledge_tool, reference
 from scry_core.knowledge import KINDS, sealed
 from scry_core.knowledge.base import Base, dictionaries
 
@@ -105,15 +106,21 @@ def test_a_document_citing_an_entry_no_dictionary_holds_is_caught(
     assert _unheld(cited_ids()["docs/reference/x.md"]) == {"ay8910:register:0x99"}
 
 
+def _example(record: dict[str, Any]) -> dict[str, Any]:
+    """`record` as the reference stores an example, its reply whole: the recorder abridges a
+    long list with "…", and a knowledge reply is shown whole."""
+    reply = {k: v for k, v in record["reply"].items() if k not in reference.LEFT_OUT}
+    return {"from": f"{record['section']}: {record['label']}", "call": dict(record["args"]),
+            "reply": reply}
+
+
 def test_the_reference_example_is_the_server_s_reply_over_its_dictionaries() -> None:
     """`tests/knowledge_example.py` answers the ask in a process of its own; the committed
-    example is that reply as `scry_core.reference` spells it."""
+    example is that reply, whole, as `scry_core.reference` spells it."""
     run = subprocess.run([sys.executable, str(ROOT / "tests" / "knowledge_example.py")],
                          capture_output=True, text=True, check=False, cwd=ROOT)
     assert run.returncode == 0, run.stderr
-    picked = reference.examples_from([json.loads(run.stdout)], {"knowledge_find"},
-                                     demo.Normaliser(ROOT, Path.home().resolve(), {}, marks={
-                                         str(ROOT): demo.placeholder(ROOT)}))
+    picked = _example(json.loads(run.stdout))
+    assert picked["reply"]["entries"][0]["rows"], "the example has no rows"
     committed = json.loads((ROOT / "docs/reference/examples.json").read_text(encoding="utf-8"))
-    assert picked["knowledge_find"]["reply"]["entries"][0]["rows"], "the example has no rows"
-    assert committed["knowledge_find"] == picked["knowledge_find"]
+    assert committed["knowledge_find"] == picked

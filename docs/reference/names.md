@@ -264,7 +264,77 @@ One entry matches, so `entries` answers it whole: the NMI vector, what the Z80 d
             {"document": "Zilog Z80 CPU user manual", "lines": "1082-1084"}
           ]
         },
-        "... 7 more"
+        {
+          "n": "7",
+          "on": "does",
+          "of": "doc",
+          "text": "The NMI response stores the Program Counter in the external stack and jumps to address 0066h.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "905-906"}
+          ],
+          "verdicts": {"mame": "as documented"}
+        },
+        {
+          "n": "8",
+          "on": "is",
+          "of": "doc",
+          "text": "The service routine for the nonmaskable interrupt must begin at address 0066h if this interrupt is used.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "906-908"}
+          ]
+        },
+        {
+          "n": "9",
+          "on": "does",
+          "of": "doc",
+          "text": "Accepting an NMI resets IFF1; the manual says this prevents further interrupts until the programmer re-enables them.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "1051-1052"}
+          ],
+          "verdicts": {"mame": "as documented"}
+        },
+        {
+          "n": "10",
+          "on": "is",
+          "of": "doc",
+          "text": "The CPU response to an NMI is similar to a normal memory read; the contents of the data bus are ignored.",
+          "cites": [
+            {"document": "Zilog Z80 CPU user manual", "lines": "904-905"}
+          ]
+        },
+        {
+          "n": "111",
+          "on": "when",
+          "of": "mame",
+          "vs": "differs",
+          "row": "2",
+          "text": "MAME marks an NMI pending when the line goes from clear to asserted, but only if total_cycles() is not zero.",
+          "cites": [
+            {"file": "src/devices/cpu/z80/z80.cpp", "lines": "798-801"}
+          ]
+        },
+        {
+          "n": "112",
+          "on": "place",
+          "of": "mame",
+          "vs": "place",
+          "text": "check_interrupts runs take_nmi when the NMI-pending flag is set.",
+          "cites": [
+            {"file": "src/devices/cpu/z80/z80.lst", "lines": "1019-1020"}
+          ]
+        },
+        {
+          "n": "113",
+          "on": "does",
+          "of": "mame",
+          "vs": "extra",
+          "text": "take_nmi calls leave_halt, increments R, has a `+ 5` step, copies PC to WZ, sets NMI pending to 0; if HAS_LDAIR_QUIRK and the after-LD A,I flag are set, sets pv_val.",
+          "cites": [
+            {"file": "src/devices/cpu/z80/z80.lst", "lines": "892-895"},
+            {"file": "src/devices/cpu/z80/z80.lst", "lines": "897-898"},
+            {"file": "src/devices/cpu/z80/z80.lst", "lines": "901-902"}
+          ]
+        }
       ],
       "aliases": ["non-maskable interrupt"],
       "sources": [
