@@ -137,6 +137,10 @@ site can list them:
 8. `### Related tools`: links to the tools a reader reaches for next.
 9. The contract the client receives: the tool's own description, whole, as text in a closed
    `<details>`. It is the contract, so it is never reworded here.
+10. `### Built on`: one generated sentence naming the emulator facility the tool uses (a
+    debugger command, Lua, a save state, a capture) and whether MAME ships it or our build adds
+    it. It comes from the server's declaration for that tool (`src/scry_mame/standing.py`),
+    never from `asks.json`.
 
 Every part is generated: the registry gives the signature, the types, the fields and the
 contract; `asks.json` gives each sentence, and a sentence over its limit is refused. A tool

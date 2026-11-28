@@ -101,6 +101,10 @@ Reference: REFERENCE.md, Saved states.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the state files.
 <!-- scry-reference:end state_list -->
 
 <!-- scry-reference:begin state_write -->
@@ -341,4 +345,8 @@ Reference: REFERENCE.md, Saved states.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own save states.
 <!-- scry-reference:end state_write -->

@@ -232,6 +232,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end palette -->
 
 <!-- scry-reference:begin screen_view -->
@@ -506,6 +510,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end screen_view -->
 
 <!-- scry-reference:begin screen_signature -->
@@ -673,6 +681,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end screen_signature -->
 
 <!-- scry-reference:begin gfx_view -->
@@ -923,6 +935,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end gfx_view -->
 
 <!-- scry-reference:begin gfx_locate -->
@@ -1198,6 +1214,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end gfx_locate -->
 
 <!-- scry-reference:begin gfx_sweep -->
@@ -1447,6 +1467,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end gfx_sweep -->
 
 <!-- scry-reference:begin gfx_draft -->
@@ -1609,6 +1633,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it writes the draft from what the session proved.
 <!-- scry-reference:end gfx_draft -->
 
 <!-- scry-reference:begin gfx_blits -->
@@ -1902,6 +1930,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end gfx_blits -->
 
 <!-- scry-reference:begin gfx_blit_source -->
@@ -2160,4 +2192,8 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end gfx_blit_source -->

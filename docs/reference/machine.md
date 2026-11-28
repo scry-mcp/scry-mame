@@ -140,6 +140,10 @@ Reference: REFERENCE.md, The session.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end cpu_info -->
 
 <!-- scry-reference:begin machine_map -->
@@ -413,6 +417,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own `-listxml` and MAME's own debugger commands.
 <!-- scry-reference:end machine_map -->
 
 <!-- scry-reference:begin log -->
@@ -534,6 +542,10 @@ Reference: REFERENCE.md, The log.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own the log MAME writes.
 <!-- scry-reference:end log -->
 
 <!-- scry-reference:begin log_wait -->
@@ -667,4 +679,8 @@ Reference: REFERENCE.md, The log.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own the log MAME writes.
 <!-- scry-reference:end log_wait -->

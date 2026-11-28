@@ -233,6 +233,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end input -->
 
 <!-- scry-reference:begin lua -->
@@ -427,6 +431,10 @@ Reference: REFERENCE.md, The console.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end lua -->
 
 <!-- scry-reference:begin throttle -->
@@ -599,4 +607,8 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end throttle -->

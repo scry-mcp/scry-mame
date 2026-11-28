@@ -225,6 +225,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the manifest.
 <!-- scry-reference:end gfx_load -->
 
 <!-- scry-reference:begin gfx_film -->
@@ -592,6 +596,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end gfx_film -->
 
 <!-- scry-reference:begin palette_log -->
@@ -793,4 +801,8 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end palette_log -->

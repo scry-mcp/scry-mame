@@ -148,4 +148,8 @@ Reference: REFERENCE.md, Names for addresses.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the symbol table `start` loaded.
 <!-- scry-reference:end symbols_find -->

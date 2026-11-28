@@ -203,6 +203,10 @@ Reference: REFERENCE.md, Media files.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end series_capture -->
 
 <!-- scry-reference:begin record -->
@@ -416,6 +420,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own AVI writer.
 <!-- scry-reference:end record -->
 
 <!-- scry-reference:begin audio_record -->
@@ -631,6 +639,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own WAV writer.
 <!-- scry-reference:end audio_record -->
 
 <!-- scry-reference:begin snapshot -->
@@ -735,6 +747,10 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own screen snapshots.
 <!-- scry-reference:end snapshot -->
 
 <!-- scry-reference:begin captures -->
@@ -843,4 +859,8 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the files the session wrote.
 <!-- scry-reference:end captures -->

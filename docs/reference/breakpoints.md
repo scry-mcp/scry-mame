@@ -285,6 +285,10 @@ Reference: REFERENCE.md, Breakpoints and watches.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end breakpoint_at -->
 
 <!-- scry-reference:begin regpoint_add -->
@@ -520,6 +524,10 @@ Reference: REFERENCE.md, Breakpoints and watches.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end regpoint_add -->
 
 <!-- scry-reference:begin watch_add -->
@@ -894,6 +902,10 @@ Reference: REFERENCE.md, Breakpoints and watches.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end watch_add -->
 
 <!-- scry-reference:begin declaration_list -->
@@ -1097,6 +1109,10 @@ Reference: REFERENCE.md, Breakpoints and watches.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end declaration_list -->
 
 <!-- scry-reference:begin declaration_clear -->
@@ -1228,4 +1244,8 @@ Reference: REFERENCE.md, Breakpoints and watches.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end declaration_clear -->

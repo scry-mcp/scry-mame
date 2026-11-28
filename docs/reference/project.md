@@ -197,4 +197,8 @@ Reference: REFERENCE.md, The `.scry/` folder.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it writes the files the session keeps.
 <!-- scry-reference:end promote -->

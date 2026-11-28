@@ -205,4 +205,8 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end scan -->

@@ -137,6 +137,10 @@ Reference: REFERENCE.md, Breakpoints and watches.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the comment file.
 <!-- scry-reference:end comment_list -->
 
 <!-- scry-reference:begin comment_write -->
@@ -324,4 +328,8 @@ Reference: REFERENCE.md, Breakpoints and watches.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it writes the comment file.
 <!-- scry-reference:end comment_write -->

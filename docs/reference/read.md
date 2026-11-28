@@ -119,6 +119,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end read_memory -->
 
 <!-- scry-reference:begin read_block -->
@@ -317,6 +321,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end read_block -->
 
 <!-- scry-reference:begin registers -->
@@ -442,6 +450,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end registers -->
 
 <!-- scry-reference:begin disassemble -->
@@ -573,6 +585,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end disassemble -->
 
 <!-- scry-reference:begin find -->
@@ -706,6 +722,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end find -->
 
 <!-- scry-reference:begin history -->
@@ -813,6 +833,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end history -->
 
 <!-- scry-reference:begin memdump -->
@@ -931,6 +955,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end memdump -->
 
 <!-- scry-reference:begin screen_map_find -->
@@ -1094,6 +1122,10 @@ Reference: REFERENCE.md, Screen maps.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console.
 <!-- scry-reference:end screen_map_find -->
 
 <!-- scry-reference:begin screen_map_write -->
@@ -1331,4 +1363,8 @@ Reference: REFERENCE.md, Screen maps.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it writes the screen map file.
 <!-- scry-reference:end screen_map_write -->

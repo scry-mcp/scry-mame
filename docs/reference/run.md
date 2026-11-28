@@ -238,6 +238,10 @@ Reference: REFERENCE.md, Running and stopping.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end run_to -->
 
 <!-- scry-reference:begin run_for -->
@@ -419,6 +423,10 @@ Reference: REFERENCE.md, Running and stopping.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end run_for -->
 
 <!-- scry-reference:begin step -->
@@ -582,6 +590,10 @@ Reference: REFERENCE.md, Running and stopping.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end step -->
 
 <!-- scry-reference:begin resume -->
@@ -730,6 +742,10 @@ Reference: REFERENCE.md, Running and stopping.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end resume -->
 
 <!-- scry-reference:begin stop -->
@@ -855,6 +871,10 @@ Reference: REFERENCE.md, Running and stopping.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end stop -->
 
 <!-- scry-reference:begin trace -->
@@ -1081,6 +1101,10 @@ Reference: REFERENCE.md, Running and stopping.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end trace -->
 
 <!-- scry-reference:begin screen_wait -->
@@ -1300,4 +1324,8 @@ Reference: REFERENCE.md, Input and the screen.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own Lua console and MAME's own debugger commands.
 <!-- scry-reference:end screen_wait -->

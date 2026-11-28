@@ -298,4 +298,8 @@ Reference: REFERENCE.md, Knowledge base.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the knowledge base.
 <!-- scry-reference:end knowledge_find -->

@@ -99,6 +99,7 @@ from scry_mame import (
     running,  # noqa: E402
     savestates,  # noqa: E402
     sequence,  # noqa: E402
+    standing,  # noqa: E402
     summaries,  # noqa: E402
     watches,  # noqa: E402
 )
@@ -1839,7 +1840,8 @@ sequence.GATE.check_folds(folds.METHODS)
 #: (`tests/test_reference_pages.py`).
 REFERENCE = reference.Registry(server=mcp, models=mame_replies.MODELS, roster=ROSTER,
                                envelope=mame_replies.MameEnvelope,
-                               root=Path(__file__).resolve().parents[2])
+                               root=Path(__file__).resolve().parents[2],
+                               emulator="MAME", standing=standing.STANDS_ON)
 
 
 #: The end on a signal: the machine killed, which removes its scratch too, the process left.

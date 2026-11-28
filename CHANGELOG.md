@@ -4,6 +4,10 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Pins scry-core 0.125.0: every reference entry, and its page on the site, ends with one
+  generated line saying what the tool uses from MAME (the debugger, the Lua console, a writer of
+  MAME's own, or the gdbstub patch our build carries) and whether MAME ships it, so a reader
+  learns how each answer is reached.
 - Pins scry-core 0.124.3: a registerpoint stop's `note` says what this emulator does with a held
   condition, that it tests the condition after every instruction and so stops again at once
   while it holds.

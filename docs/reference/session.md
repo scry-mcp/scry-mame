@@ -365,6 +365,10 @@ names: Name the numbers a reply shows: a port, interrupt, address or key gets it
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own gdbstub.
 <!-- scry-reference:end start -->
 
 <!-- scry-reference:begin status -->
@@ -544,6 +548,10 @@ Reference: REFERENCE.md, The session.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the session's own process.
 <!-- scry-reference:end status -->
 
 <!-- scry-reference:begin window -->
@@ -660,6 +668,10 @@ Reference: REFERENCE.md, The session.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it reads the window MAME opened.
 <!-- scry-reference:end window -->
 
 <!-- scry-reference:begin close -->
@@ -804,6 +816,10 @@ Reference: REFERENCE.md, The session.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end close -->
 
 <!-- scry-reference:begin cpu_focus -->
@@ -945,6 +961,10 @@ Reference: REFERENCE.md, The session.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end cpu_focus -->
 
 <!-- scry-reference:begin rom_check -->
@@ -1061,4 +1081,8 @@ Reference: REFERENCE.md, The session.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end rom_check -->

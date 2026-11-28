@@ -206,6 +206,10 @@ Reference: REFERENCE.md, Media files.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it compares the files the session wrote.
 <!-- scry-reference:end image_compare -->
 
 <!-- scry-reference:begin audio_compare -->
@@ -378,4 +382,8 @@ Reference: REFERENCE.md, Media files.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it compares the files the session wrote.
 <!-- scry-reference:end audio_compare -->

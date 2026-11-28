@@ -144,6 +144,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end write -->
 
 <!-- scry-reference:begin set_register -->
@@ -260,6 +264,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands and the gdbstub's thread patch, which our build adds to MAME.
 <!-- scry-reference:end set_register -->
 
 <!-- scry-reference:begin reset -->
@@ -416,6 +424,10 @@ Reference: REFERENCE.md, Reading and writing.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end reset -->
 
 <!-- scry-reference:begin debug -->
@@ -569,4 +581,8 @@ Reference: REFERENCE.md, The console.
 ```
 
 </details>
+
+### Built on
+
+It stands on MAME's own debugger commands.
 <!-- scry-reference:end debug -->

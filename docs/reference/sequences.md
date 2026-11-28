@@ -326,6 +326,10 @@ summaries: True (of the call, never of a step) makes each step but the last a co
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: nothing of its own: it runs the tools it lists.
 <!-- scry-reference:end perform -->
 
 <!-- scry-reference:begin drive -->
@@ -588,6 +592,10 @@ summaries: True (of the call, never of a step) makes each step but the last a co
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: nothing of its own: it runs the steps it lists.
 <!-- scry-reference:end drive -->
 
 <!-- scry-reference:begin perform_export -->
@@ -734,4 +742,8 @@ Reference: REFERENCE.md, From a session to a test that replays itself.
 ```
 
 </details>
+
+### Built on
+
+It stands on nothing in the emulator: it writes the call list to a file.
 <!-- scry-reference:end perform_export -->
