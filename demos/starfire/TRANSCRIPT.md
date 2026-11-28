@@ -7,7 +7,7 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
 ```json
 {
   "shared": true,
-  "background": false,
+  "background": true,
   "display": "<host>",
   "system": "starfire",
   "reference_rom": "./tmp/demos/starfire/starfire.ref",
@@ -31,7 +31,6 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "pid": "<volatile>",
   "stub_port": "<volatile>",
   "scratch_dir": "<volatile>",
-  "bundle": "~/.local/state/scry/apps/Scry MAME.app",
   "state_dir": "./tmp/demos/starfire/starfire-states",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
@@ -51,7 +50,7 @@ Every call of the run with its reply, in order: 28 calls. `<volatile>` stands fo
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:7)", "Cocktail"],
-  "background": false,
+  "background": true,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
@@ -1862,16 +1861,13 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "close: quit, reap failed, no exit code",
+  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
   "status": "ok",
   "closed": true,
-  "stdout_tail": "<volatile>",
-  "errorlog_tail": "e] MAME_MCP_INPUT#1 release frame=183 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#2 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=214\n\n[luaengine] MAME_MCP_INPUT#2 release frame=218 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#3 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=249\n\n[luaengine] MAME_MCP_INPUT#3 release frame=253 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#4 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=284\n\n[luaengine] MAME_MCP_INPUT#4 release frame=288 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#5 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=314\n\n[luaengine] MAME_MCP_INPUT#5 release frame=318 port_held=000000f9\n\n[luaengine] MAME_MCP_RECORD#6 armed frame=319 vblank=true\n\n[luaengine] MAME_MCP_RECORD#6 begin frame=320 recording=true\n\n[luaengine] MAME_MCP_RECORD#6 end frame=409\n\n[luaengine] MAME_MCP_RECORD#7 armed frame=314 vblank=false\n\n[luaengine] MAME_MCP_RECORD#7 begin frame=314 recording=true\n\n[luaengine] MAME_MCP_RECORD#7 end frame=463\n\n[luaengine] MAME_MCP_INPUT#8 set name=\"1 Player Start\" player=0 mask=00000002 defvalue=00000000 port_before=000000f8 frame=467\n\n[luaengine] MAME_MCP_INPUT#8 release frame=471 port_held=000000fa\n\n[luaengine] MAME_MCP_RECORD#9 armed frame=472 vblank=true\n\n[luaengine] MAME_MCP_RECORD#9 begin frame=473 recording=true\n\n[luaengine] MAME_MCP_RECORD#9 end frame=892\n\n",
+  "omitted": ["stdout_tail", "errorlog_tail"],
+  "how": "<volatile>",
   "ended_by": "quit",
-  "exit_code": {
-    "available": false,
-    "why": "the emulator was launched as an app, so this server is not its parent and nothing here reaps it: its exit status is not known"
-  },
+  "exit_code": 0,
   "cfg_written": true,
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,

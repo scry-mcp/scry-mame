@@ -7,7 +7,7 @@ Every call of the run with its reply, in order: 35 calls. `<volatile>` stands fo
 ```json
 {
   "shared": true,
-  "background": false,
+  "background": true,
   "display": "<host>",
   "system": "gridlee",
   "reference_rom": "./tmp/demos/gridlee/gridlee.ref",
@@ -31,7 +31,6 @@ Every call of the run with its reply, in order: 35 calls. `<volatile>` stands fo
   "pid": "<volatile>",
   "stub_port": "<volatile>",
   "scratch_dir": "<volatile>",
-  "bundle": "~/.local/state/scry/apps/Scry MAME.app",
   "state_dir": "./tmp/demos/gridlee/gridlee-states",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
@@ -51,7 +50,7 @@ Every call of the run with its reply, in order: 35 calls. `<volatile>` stands fo
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (16:15)", "Cocktail"],
-  "background": false,
+  "background": true,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
@@ -2511,16 +2510,13 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "close: quit, reap failed, no exit code",
+  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
   "status": "ok",
   "closed": true,
-  "stdout_tail": "<volatile>",
-  "errorlog_tail": "port_before=000000cf frame=1009\n\n[luaengine] MAME_MCP_INPUT#11 release frame=1013 port_held=000000ce\n\n[luaengine] MAME_MCP_RECORD#12 armed frame=1014 vblank=true\n\n[:] coin counter on\n[luaengine] MAME_MCP_RECORD#12 begin frame=1015 recording=true\n\n[:maincpu] ':maincpu' (FE4A): unmapped program memory read from 9020 & FF\n[:] coin counter off\n[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF\n[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF\n[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF\n[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF\n[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF\n[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF\n[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF\n[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF\n[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF\n[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF\n[luaengine] MAME_MCP_RECORD#12 end frame=1164\n\n[luaengine] MAME_MCP_INPUT#13 set name=\"1 Player Start\" player=0 mask=00000004 defvalue=00000004 port_before=000000cf frame=1167\n\n[luaengine] MAME_MCP_INPUT#13 release frame=1171 port_held=000000cb\n\n[luaengine] MAME_MCP_RECORD#14 armed frame=1172 vblank=true\n\n[luaengine] MAME_MCP_RECORD#14 begin frame=1173 recording=true\n\n[luaengine] MAME_MCP_RECORD#14 end frame=1322\n\n",
+  "omitted": ["stdout_tail", "errorlog_tail"],
+  "how": "<volatile>",
   "ended_by": "quit",
-  "exit_code": {
-    "available": false,
-    "why": "the emulator was launched as an app, so this server is not its parent and nothing here reaps it: its exit status is not known"
-  },
+  "exit_code": 0,
   "cfg_written": true,
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,

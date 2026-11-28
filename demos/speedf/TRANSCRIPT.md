@@ -7,7 +7,7 @@ Every call of the run with its reply, in order: 7 calls. `<volatile>` stands for
 ```json
 {
   "shared": true,
-  "background": false,
+  "background": true,
   "display": "<host>",
   "profile": "<host>",
   "inipath": "<host>",
@@ -26,7 +26,6 @@ Every call of the run with its reply, in order: 7 calls. `<volatile>` stands for
   "pid": "<volatile>",
   "stub_port": "<volatile>",
   "scratch_dir": "<volatile>",
-  "bundle": "~/.local/state/scry/apps/Scry MAME.app",
   "state_dir": "./tmp/demos/speedf/speedf-states",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
@@ -46,7 +45,7 @@ Every call of the run with its reply, in order: 7 calls. `<volatile>` stands for
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:5)", "Cocktail"],
-  "background": false,
+  "background": true,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
@@ -399,16 +398,13 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "close: quit, reap failed, no exit code",
+  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
   "status": "ok",
   "closed": true,
-  "stdout_tail": "<volatile>",
-  "errorlog_tail": "﻿[:screen] :screen: Deprecated legacy Old Style screen configured (set_vblank_time), please use set_raw instead.\nSoft reset\n[:] ':maincpu' (FA039): unhandled RAM access 000f7006 0000 ff00\n[:] [SFSND] init\n[:] [SFSND] play phr=40 ch=0 vol=0C\n[:] [SFSND] play phr=41 ch=0 vol=0C\n[:] [SFSND] play phr=42 ch=0 vol=0C\n[:] [SFSND] play phr=43 ch=0 vol=0C\n[:] [SFSND] play phr=44 ch=0 vol=0C\n[:] [SFSND] play phr=37 ch=3 vol=0F\n[:] [SFSND] play phr=45 ch=0 vol=0C\n[:] [SFSND] play phr=43 ch=0 vol=0C\n[:] [SFSND] play phr=46 ch=0 vol=0C\n[luaengine] MAME_MCP_RECORD#1 armed frame=923 vblank=false\n\n[luaengine] MAME_MCP_RECORD#1 begin frame=923 recording=true\n\n[:] [SFSND] play phr=12 ch=2 vol=0F\n[:] [SFSND] play phr=48 ch=0 vol=0C\n[:] [SFSND] play phr=3E ch=1 vol=0F\n[:] [SFSND] play phr=1D ch=2 vol=0F\n[:] [SFSND] play phr=12 ch=2 vol=0F\n[:] [SFSND] play phr=04 ch=2 vol=0F\n[:] [SFSND] play phr=1D ch=2 vol=0F\n[:] [SFSND] play phr=12 ch=2 vol=0F\n[:] [SFSND] play phr=3F ch=1 vol=0F\n[:] [SFSND] play phr=3C ch=1 vol=0F\n[luaengine] MAME_MCP_RECORD#1 end frame=1102\n\n",
+  "omitted": ["stdout_tail", "errorlog_tail"],
+  "how": "<volatile>",
   "ended_by": "quit",
-  "exit_code": {
-    "available": false,
-    "why": "the emulator was launched as an app, so this server is not its parent and nothing here reaps it: its exit status is not known"
-  },
+  "exit_code": 0,
   "cfg_written": true,
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,

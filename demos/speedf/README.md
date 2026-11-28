@@ -59,11 +59,11 @@ Ask:
 Call:
 
 ```text
-start(shared=true, background=false, display="<host>", profile="<host>", inipath="<host>",
+start(shared=true, background=true, display="<host>", profile="<host>", inipath="<host>",
     state_dir="<host>")
 ```
 
-Reply, 3 of 39 fields:
+Reply, 3 of 38 fields:
 
 ```json
 {
@@ -88,7 +88,6 @@ A start profile is a saved set of `start` arguments; the call adds only this run
   "pid": "<volatile>",
   "stub_port": "<volatile>",
   "scratch_dir": "<volatile>",
-  "bundle": "~/.local/state/scry/apps/Scry MAME.app",
   "state_dir": "./tmp/demos/speedf/speedf-states",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
@@ -108,7 +107,7 @@ A start profile is a saved set of `start` arguments; the call adds only this run
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:5)", "Cocktail"],
-  "background": false,
+  "background": true,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
