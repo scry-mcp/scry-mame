@@ -1526,7 +1526,7 @@ The one format written is the recorded pick, marked `human`: `not_proved` says t
   },
   "report": {
     "path": "./tmp/demos/tour/gridlee-gfx-draft-report.json",
-    "sha256": "65b69eb2078b4578cfc071c2d3f6fc75014b6d825e9a28910ebfe958ca5d2cf0"
+    "sha256": "f9ebfb3bc5a0cd52f14c89d301a93ab81dd4ec28918273278768ac5bd4151b42"
   },
   "formats": {"tiles_8x16x4": "human"},
   "asset_names": [],
