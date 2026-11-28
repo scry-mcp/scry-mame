@@ -6053,8 +6053,13 @@
           "n": "5",
           "on": "read",
           "of": "doc",
-          "text": "If the preload value is changed by the CPU, the counter does not recognize it straight away.",
+          "text": "If the preload value is changed by the CPU, the counter will not recognize the new value until it receives the next start counter command.",
           "quotes": [
+            {
+              "ref": "datasheet:MC68681.raw.txt",
+              "lines": "1119",
+              "sha": "eb19d5943e7a764aa6b0e6f70e9240a8a41d7476ea2eff785d6e3980b0c29490"
+            },
             {
               "ref": "datasheet:MC68681.raw.txt",
               "lines": "1123-1124",
