@@ -115,7 +115,7 @@ Four frames between 557 and 581 were kept, three of them different pictures, and
 - `lost`: Frames asked for that the emulator skipped drawing, as `[first, last]` ranges. They have no picture and are left out.
 - `verdict`: How the run ended, as `run_for` reports it: `ELAPSED` when every frame ran.
 
-<details><summary>All 29 reply fields</summary>
+<details><summary>All 31 reply fields</summary>
 
 - `console_reruns` (integer)
 - `cpu` (string)
@@ -145,7 +145,9 @@ Four frames between 557 and 581 were kept, three of them different pictures, and
 - `lost` (array)
 - `manifest` (string)
 - `polls` (integer)
+- `regpoint_hit` (object)
 - `verdict` (string)
+- `watch_hit` (object)
 
 </details>
 
@@ -194,7 +196,8 @@ Frames by `run_for`'s counter, all ahead: `at_frames` or `first`, `last`, `step`
 directory, kept after `close`. Needs a stopped machine; `seconds` bounds the read.
 
 Reply: `manifest`, `count`, `first`, `last`, `crop`, `distinct`, `lost`, `kept_after_close`,
-`run_for`'s fields. Refused: `bad_argument`, `cut_by_other_stop`.
+`run_for`'s fields, `watch_hit` when a watch cut the capture and `regpoint_hit` when a
+registerpoint was the newest stop. Refused: `bad_argument`, `cut_by_other_stop`.
 
 Reference: REFERENCE.md, Media files.
 ```

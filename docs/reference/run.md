@@ -989,7 +989,7 @@ In two frames, 628 to 630, the main cpu ran through 192 distinct addresses under
 - `verdict`: How the run ended, as in `run_for`: `ELAPSED`, the window ran out as asked; `TIMEOUT`, the wait gave up; `OTHER_STOP`, a breakpoint or a watch stopped it first.
 - `frame_after`: The frame counter after the run, with `frame_before`, the clock and `cycles` as `run_for` returns them.
 
-<details><summary>All 18 reply fields</summary>
+<details><summary>All 21 reply fields</summary>
 
 - `emulated_after_s` (number or object)
 - `emulated_before_s` (number or object)
@@ -1004,10 +1004,13 @@ In two frames, 628 to 630, the main cpu ran through 192 distinct addresses under
 - `path` (string)
 - `pc` (string or object)
 - `polls` (integer)
+- `reads` (integer)
+- `regpoint_hit` (object)
 - `regs` (object)
 - `stop_seq` (integer)
 - `trace` (object)
 - `verdict` (string)
+- `watch_hit` (object)
 - `watches` (array)
 
 </details>
@@ -1053,7 +1056,7 @@ The server never watches a run with no end: `trace` covers one bounded window. A
 ### Related tools
 
 - [`run_for`](#run_for)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 - [`history`](read.md#history)
 - [`disassemble`](read.md#disassemble)
 - [`captures`](captures.md#captures)
@@ -1067,8 +1070,9 @@ joined to symbols. Window: `milliseconds` or `frames` (at most 5026 frames or
 new path. `noloop=True`: exact `count`s, not which addresses ran. Needs a stopped machine.
 
 Reply: `run_for`'s, plus `trace` (`path`, `set_path`, `instructions`, `addresses`,
-`unplaced`, `symbols` (first 64)). Refused: `dest` existing,
-`no_channel`, `readback_refused`.
+`unplaced`, `symbols` (first 64)); `reads` when it ran by milliseconds,
+`watch_hit` when a watch cut the run and `regpoint_hit` when a registerpoint was the newest
+stop. Refused: `dest` existing, `no_channel`, `readback_refused`.
 
 Reference: REFERENCE.md, Running and stopping.
 ```

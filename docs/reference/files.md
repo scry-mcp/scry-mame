@@ -106,7 +106,7 @@ Reply, 7 of 12 fields:
 - `transitions`: For `region`: each change as `[frame, value]`, the first `limit` of them; `transitions_total` counts them all.
 - `path`: For `region`: a JSON file written beside the manifest, with every transition and each frame's value.
 
-<details><summary>All 32 reply fields</summary>
+<details><summary>All 33 reply fields</summary>
 
 - `a` (object or string)
 - `b` (object or string)
@@ -134,6 +134,7 @@ Reply, 7 of 12 fields:
 - `only_in_b` (array)
 - `pairs` (integer)
 - `path` (string)
+- `series` (string)
 - `shift` (array)
 - `start` (array or object)
 - `tolerance` (integer)

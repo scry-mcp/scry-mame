@@ -50,7 +50,8 @@ _ANSWERS_WHILE_RUNNING = roster.answers_while_running(
 ROSTER = roster.Roster(families=(
     ("Session", ("start", "status", "window", "close", "cpu_focus", "rom_check")),
     ("Machine", ("cpu_info", "machine_map", "log", "log_wait")),
-    ("Names", ("symbols_find", "knowledge_find")),
+    ("Symbols", ("symbols_find",)),
+    ("Knowledge", ("knowledge_find",)),
     ("Run", ("run_to", "run_for", "step", "resume", "stop", "trace", "screen_wait")),
     ("Breakpoints", ("breakpoint_at", "regpoint_add", "watch_add", "declaration_list",
                       "declaration_clear")),
@@ -58,16 +59,16 @@ ROSTER = roster.Roster(families=(
               "memdump", "screen_map_find", "screen_map_write")),
     ("Screen", ("palette", "screen_view", "screen_signature", "gfx_view",
                 "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_blits", "gfx_blit_source")),
-    ("Timeline", ("gfx_load", "gfx_film", "palette_log")),
-    ("Scan", ("scan",)),
     ("Write", ("write", "set_register", "reset", "debug")),
+    ("Scan", ("scan",)),
+    ("Project", ("promote",)),
     ("Comments", ("comment_list", "comment_write")),
-    ("Lua", ("input", "lua", "throttle")),
     ("States", ("state_list", "state_write")),
     ("Captures", ("series_capture", "record", "audio_record", "snapshot", "captures")),
     ("Files", tuple(media_tools.TOOLS)),
     ("Sequences", ("perform", "drive", "perform_export")),
-    ("Project", ("promote",)),
+    ("Timeline", ("gfx_load", "gfx_film", "palette_log")),
+    ("Lua", ("input", "lua", "throttle")),
 ), answering=(*_ANSWERS_WHILE_RUNNING, *media_tools.TOOLS))
 
 mcp = envelope.Envelope(

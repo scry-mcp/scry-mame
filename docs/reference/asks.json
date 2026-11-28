@@ -2,7 +2,8 @@
  "families": {
   "Session": "Starting a MAME session, asking what state it is in, finding its window, choosing a cpu and ending it.",
   "Machine": "What the emulated machine is made of, how the debugger holds each cpu, and what MAME writes to its logs.",
-  "Names": "Look up a name or an address in your program's symbol table, and ask the knowledge base what a number is called.",
+  "Symbols": "Look up a name or an address in your program's symbol table.",
+  "Knowledge": "Ask the knowledge base what a number is called, and what MAME does about it.",
   "Run": "The tools that let the program run and stop it again.",
   "Breakpoints": "Breakpoints and watches the server saves by name and sets again in later sessions.",
   "Read": "Reading what the stopped program holds: memory, registers, code, and which of its screens is showing.",

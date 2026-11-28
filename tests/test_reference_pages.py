@@ -4,9 +4,10 @@ import re
 from pathlib import Path
 
 import pytest
-from scry_core import example, install, reference
+from scry_core import example, install, reference, roster
 
 from scry_mame import server
+from scry_mame.mcp import ROSTER
 
 
 def test_the_reference_pages_agree_with_the_registry() -> None:
@@ -22,8 +23,16 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_the_knowledge_base_has_the_section_the_site_links_and_the_tool_names() -> None:
     headings = re.findall(r"^## (.+)$", (ROOT / "REFERENCE.md").read_text(encoding="utf-8"), re.M)
     assert "Knowledge base" in headings, headings
-    page = (ROOT / "docs" / "reference" / "names.md").read_text(encoding="utf-8")
+    page = (ROOT / "docs" / "reference" / "knowledge.md").read_text(encoding="utf-8")
     assert "Reference: REFERENCE.md, Knowledge base." in page
+
+
+def test_the_rosters_shared_families_follow_the_shared_order() -> None:
+    """One canonical order, declared by `SHARED_FAMILIES`: a reader meets the same families
+    first, in the same sequence, on both servers."""
+    shared = list(dict.fromkeys(roster.SHARED_FAMILIES.values()))
+    held = [family for family, _ in ROSTER.families if family in set(shared)]
+    assert held == [family for family in shared if family in set(held)], held
 
 
 README = Path(__file__).resolve().parents[1] / "README.md"

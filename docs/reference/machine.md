@@ -389,7 +389,7 @@ The address map covers the devices that execute, the ones MAME gives a debugger.
 - [`read_block`](read.md#read_block)
 - [`read_memory`](read.md#read_memory)
 - [`rom_check`](session.md#rom_check)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 
 <details><summary>The contract your client receives</summary>
 

@@ -261,7 +261,7 @@ The condition is evaluated once before the breakpoint is set, because the debugg
 - [`declaration_clear`](#declaration_clear)
 - [`regpoint_add`](#regpoint_add)
 - [`watch_add`](#watch_add)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 
 <details><summary>The contract your client receives</summary>
 

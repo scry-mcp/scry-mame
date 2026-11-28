@@ -290,7 +290,7 @@ One address shows one comment. An `add` where one exists replaces its text and k
 
 - [`comment_list`](#comment_list)
 - [`disassemble`](read.md#disassemble)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 - [`declaration_list`](breakpoints.md#declaration_list)
 
 <details><summary>The contract your client receives</summary>

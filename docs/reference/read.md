@@ -102,7 +102,7 @@ Memory the board can only write to reads back as zeros, with no error, because i
 
 - [`memdump`](#memdump)
 - [`read_block`](#read_block)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 - [`write`](write.md#write)
 - [`watch_add`](breakpoints.md#watch_add)
 
@@ -295,7 +295,7 @@ Past a block's end MAME answers zeros without complaint, which is why a read tha
 
 - [`read_memory`](#read_memory)
 - [`machine_map`](machine.md#machine_map)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 - [`watch_add`](breakpoints.md#watch_add)
 - [`lua`](lua.md#lua)
 
@@ -552,7 +552,7 @@ A word MAME cannot decode is marked by MAME itself: `dc.w ...; ILLEGAL`.
 
 - [`history`](#history)
 - [`step`](run.md#step)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 - [`comment_write`](comments.md#comment_write)
 - [`read_memory`](#read_memory)
 - [`breakpoint_at`](breakpoints.md#breakpoint_at)
@@ -685,7 +685,7 @@ There is no search of the whole address space, because the symbol file does not 
 - [`scan`](scan.md#scan)
 - [`read_memory`](#read_memory)
 - [`memdump`](#memdump)
-- [`symbols_find`](names.md#symbols_find)
+- [`symbols_find`](symbols.md#symbols_find)
 - [`watch_add`](breakpoints.md#watch_add)
 
 <details><summary>The contract your client receives</summary>

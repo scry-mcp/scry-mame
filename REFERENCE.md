@@ -13,21 +13,22 @@ A path in an example that starts with `./` stands for the folder of your clone, 
 <!-- scry-reference:begin index -->
 - [Session](docs/reference/session.md): Starting a MAME session, asking what state it is in, finding its window, choosing a cpu and ending it. [`start`](docs/reference/session.md#start), [`status`](docs/reference/session.md#status), [`window`](docs/reference/session.md#window), [`close`](docs/reference/session.md#close), [`cpu_focus`](docs/reference/session.md#cpu_focus), [`rom_check`](docs/reference/session.md#rom_check)
 - [Machine](docs/reference/machine.md): What the emulated machine is made of, how the debugger holds each cpu, and what MAME writes to its logs. [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
-- [Names](docs/reference/names.md): Look up a name or an address in your program's symbol table, and ask the knowledge base what a number is called. [`symbols_find`](docs/reference/names.md#symbols_find), [`knowledge_find`](docs/reference/names.md#knowledge_find)
+- [Symbols](docs/reference/symbols.md): Look up a name or an address in your program's symbol table. [`symbols_find`](docs/reference/symbols.md#symbols_find)
+- [Knowledge](docs/reference/knowledge.md): Ask the knowledge base what a number is called, and what MAME does about it. [`knowledge_find`](docs/reference/knowledge.md#knowledge_find)
 - [Run](docs/reference/run.md): The tools that let the program run and stop it again. [`run_to`](docs/reference/run.md#run_to), [`run_for`](docs/reference/run.md#run_for), [`step`](docs/reference/run.md#step), [`resume`](docs/reference/run.md#resume), [`stop`](docs/reference/run.md#stop), [`trace`](docs/reference/run.md#trace), [`screen_wait`](docs/reference/run.md#screen_wait)
 - [Breakpoints](docs/reference/breakpoints.md): Breakpoints and watches the server saves by name and sets again in later sessions. [`breakpoint_at`](docs/reference/breakpoints.md#breakpoint_at), [`regpoint_add`](docs/reference/breakpoints.md#regpoint_add), [`watch_add`](docs/reference/breakpoints.md#watch_add), [`declaration_list`](docs/reference/breakpoints.md#declaration_list), [`declaration_clear`](docs/reference/breakpoints.md#declaration_clear)
 - [Read](docs/reference/read.md): Reading what the stopped program holds: memory, registers, code, and which of its screens is showing. [`read_memory`](docs/reference/read.md#read_memory), [`read_block`](docs/reference/read.md#read_block), [`registers`](docs/reference/read.md#registers), [`disassemble`](docs/reference/read.md#disassemble), [`find`](docs/reference/read.md#find), [`history`](docs/reference/read.md#history), [`memdump`](docs/reference/read.md#memdump), [`screen_map_find`](docs/reference/read.md#screen_map_find), [`screen_map_write`](docs/reference/read.md#screen_map_write)
 - [Screen](docs/reference/screen.md): Seeing a board's graphics as data: the palette entry behind each pixel, tiles decoded from ROM or memory, and the draws a board makes. [`palette`](docs/reference/screen.md#palette), [`screen_view`](docs/reference/screen.md#screen_view), [`screen_signature`](docs/reference/screen.md#screen_signature), [`gfx_view`](docs/reference/screen.md#gfx_view), [`gfx_locate`](docs/reference/screen.md#gfx_locate), [`gfx_sweep`](docs/reference/screen.md#gfx_sweep), [`gfx_draft`](docs/reference/screen.md#gfx_draft), [`gfx_blits`](docs/reference/screen.md#gfx_blits), [`gfx_blit_source`](docs/reference/screen.md#gfx_blit_source)
-- [Timeline](docs/reference/timeline.md): MAME's tools that load a project's graphics manifest and show, frame by frame, when a write happened and which code set a colour. [`gfx_load`](docs/reference/timeline.md#gfx_load), [`gfx_film`](docs/reference/timeline.md#gfx_film), [`palette_log`](docs/reference/timeline.md#palette_log)
-- [Scan](docs/reference/scan.md): Finding the address of a value nobody has named yet. [`scan`](docs/reference/scan.md#scan)
 - [Write](docs/reference/write.md): Changing the machine: memory, a register, a reset, and any line the debugger console takes. [`write`](docs/reference/write.md#write), [`set_register`](docs/reference/write.md#set_register), [`reset`](docs/reference/write.md#reset), [`debug`](docs/reference/write.md#debug)
+- [Scan](docs/reference/scan.md): Finding the address of a value nobody has named yet. [`scan`](docs/reference/scan.md#scan)
+- [Project](docs/reference/project.md): Saving what a session learned into the repository's `.scry/` folder, after a review. [`promote`](docs/reference/project.md#promote)
 - [Comments](docs/reference/comments.md): Notes on addresses of the program, saved with the breakpoints and shown in the disassembly. [`comment_list`](docs/reference/comments.md#comment_list), [`comment_write`](docs/reference/comments.md#comment_write)
-- [Lua](docs/reference/lua.md): Pressing the board's inputs, running Lua inside MAME, and choosing whether the machine runs at real speed. [`input`](docs/reference/lua.md#input), [`lua`](docs/reference/lua.md#lua), [`throttle`](docs/reference/lua.md#throttle)
 - [States](docs/reference/states.md): Saved states: the whole emulated machine written to a file, listed, and loaded back. [`state_list`](docs/reference/states.md#state_list), [`state_write`](docs/reference/states.md#state_write)
 - [Captures](docs/reference/captures.md): Saving the screen and the sound to files: a still, a series of frames, a video, a recording, and the list of them. [`series_capture`](docs/reference/captures.md#series_capture), [`record`](docs/reference/captures.md#record), [`audio_record`](docs/reference/captures.md#audio_record), [`snapshot`](docs/reference/captures.md#snapshot), [`captures`](docs/reference/captures.md#captures)
 - [Files](docs/reference/files.md): Comparing pictures and recordings on disk, in numbers, with no machine running. [`image_compare`](docs/reference/files.md#image_compare), [`audio_compare`](docs/reference/files.md#audio_compare)
 - [Sequences](docs/reference/sequences.md): Running several calls as one: a list of steps, an input with its check, and a session written as a replay script. [`perform`](docs/reference/sequences.md#perform), [`drive`](docs/reference/sequences.md#drive), [`perform_export`](docs/reference/sequences.md#perform_export)
-- [Project](docs/reference/project.md): Saving what a session learned into the repository's `.scry/` folder, after a review. [`promote`](docs/reference/project.md#promote)
+- [Timeline](docs/reference/timeline.md): MAME's tools that load a project's graphics manifest and show, frame by frame, when a write happened and which code set a colour. [`gfx_load`](docs/reference/timeline.md#gfx_load), [`gfx_film`](docs/reference/timeline.md#gfx_film), [`palette_log`](docs/reference/timeline.md#palette_log)
+- [Lua](docs/reference/lua.md): Pressing the board's inputs, running Lua inside MAME, and choosing whether the machine runs at real speed. [`input`](docs/reference/lua.md#input), [`lua`](docs/reference/lua.md#lua), [`throttle`](docs/reference/lua.md#throttle)
 <!-- scry-reference:end index -->
 
 ## The session
@@ -184,7 +185,7 @@ An address argument, `ref` in most tools, is a `0x` number or a symbol of your p
 - **A reply spells a number so the argument takes it back**: an address or a block offset as `0x0070001e`, eight digits; a value as `0x` text at its width.
 - **Two tools have their own grammar.** A condition or a `debug` line reaches MAME's console as typed, where a bare number is hex. In a `lua` script it is decimal.
 
-The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakpoints.md), [Read](docs/reference/read.md).
+The tools: [Symbols](docs/reference/symbols.md), [Breakpoints](docs/reference/breakpoints.md), [Read](docs/reference/read.md).
 
 ## Knowledge base
 
@@ -202,7 +203,7 @@ A reply names a number where the server knows one: `NMI (0x66)`, with the name i
 - **A running machine adds what it says about itself.** `knowledge_find` lists its `input` fields, its `device` tags and the `memory` its map names. Ask a device by its tag, with `kind=device key=:ymsnd` or `device=:ymsnd`.
 - **A disassembled line's note** is one `{line, note}` in `line_notes` for each line whose instruction states an operand the base names. The stop's `instruction` carries `note`. Your own comments stay apart, and a register operand is never guessed.
 
-The tool: [Names](docs/reference/names.md).
+The tool: [Knowledge](docs/reference/knowledge.md).
 
 ## Breakpoints and watches
 

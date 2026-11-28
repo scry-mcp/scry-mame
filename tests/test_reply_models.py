@@ -7,6 +7,7 @@ from typing import get_type_hints
 
 import pytest
 from scry_core import reply_schema, roster  # noqa: E402
+from scry_core.instruction import StopInstruction  # noqa: E402
 
 from scry_mame import replies  # noqa: E402
 from scry_mame import server as s  # noqa: E402
@@ -21,6 +22,16 @@ def test_every_tool_publishes_each_field_as_its_value_or_unavailable() -> None:
         assert "summary" in schema["properties"], t.name
         for field in reply_schema.own_fields(replies.MODELS[t.name]):
             assert "anyOf" in schema["properties"][field], (t.name, field)
+
+
+def test_the_stop_and_trace_instruction_is_the_one_shared_shape() -> None:
+    """Both servers answer `StopInstruction`, so a reader that learned one reply reads the other."""
+    hinted = {name: get_type_hints(model).get("instruction")
+              for name, model in replies.MODELS.items()}
+    carried = {name: hint for name, hint in hinted.items() if hint is not None}
+    assert {"stop", "trace"} <= set(carried), sorted(carried)
+    wrong = {name: hint for name, hint in carried.items() if hint is not StopInstruction}
+    assert not wrong, wrong
 
 
 def test_a_real_tools_reply_with_a_field_its_model_does_not_name_fails() -> None:
