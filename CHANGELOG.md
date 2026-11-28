@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Pins scry-core 0.124.3: a registerpoint stop's `note` says what this emulator does with a held
+  condition, that it tests the condition after every instruction and so stops again at once
+  while it holds.
 - Pins scry-core 0.124.2: a disassembled line carries its vector's note on the 68000 and the
   V30, not only on the 6809, because the lookup asks the base in the spelling it keys a vector
   under.

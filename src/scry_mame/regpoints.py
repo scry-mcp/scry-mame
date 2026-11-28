@@ -326,10 +326,12 @@ def stop_cause(ses: gs.Session, since: list[str],
                None)
     if own is not None:
         decl = next((d for d in _declared() if d.owner == own), None)
+        # MAME's debugger tests the condition after every instruction, so one that holds
+        # stops again at once, and the note says so.
         return (f"registerpoint {own[0]!r}" + (arming.inherited(decl) if decl is not None
                                               else ""),
                 regpoint.hit(**dec.owner_fields(own), condition=STATE.regpoints[own]["condition"],
-                             pc=pc, index=index))
+                             pc=pc, index=index, note=regpoint.STILL_ARMED))
     try:
         row = next((r for r in rp_held(ses) if r["index"] == index), None)
     except (gs.SessionError, st.Invalid) as e:
