@@ -30387,24 +30387,24 @@
   },
   "z80scc:register:0x100:read": {
    "doc": {
-    "seal": "34329d324fccaea8a613642827e89a7158cbfdb282b79d33d34084a9773105f1",
-    "by": "W1-BASE closing reader mame 02",
-    "writer": "W1-BASE writer",
+    "seal": "b3eca528208ca999c362ae7d4bf63c6bd9dacdc261f75fac243f71025643047d",
+    "by": "W1b reader",
+    "writer": "W1b writer",
     "rows": {
      "1": {
       "digest": "fa401fb31b61c5069220aae6de70d19559568d4548a80c976e82a13620c03ae6",
       "by": "slice mame-sup2-05 reader"
      },
      "2": {
-      "digest": "209906ce1dd912fb4290e17870051b1f356aad1a881058d46877d72b298f755b",
-      "by": "W1-BASE closing reader mame 02"
+      "digest": "6cdc8a35ed5f06475fe32192625973076880d4d9cbd2080fd448b3fc49bde677",
+      "by": "W1b reader"
      }
     }
    },
    "mame": {
-    "seal": "dc44268e8d09ebb702797cf975786d353f5d08d37edb4341e60fb5325f39c19b",
-    "by": "W1-BASE closing reader mame 02",
-    "writer": "W1-BASE writer",
+    "seal": "8eac2bba2218033903a7e4ffadbcc6ff420a6b9e1e7032ea3c2eaf2ddfab048e",
+    "by": "W1b reader",
+    "writer": "W1b writer",
     "rows": {
      "3": {
       "digest": "a9df01c5a2ca077a21d8cabd7a8cb9e6d903b1aea32a7ecd9fa78758e677a5e6",
@@ -30579,9 +30579,9 @@
   },
   "z80scc:register:0x103:read": {
    "doc": {
-    "seal": "eb617d2f7b5dad8a099173c3be54d1c7ebdf3a7e0387015de2048e01654e6aa0",
-    "by": "W1-BASE closing reader mame 02",
-    "writer": "W1-BASE writer",
+    "seal": "ff6c00f75942d8db53d273449cef144dc47132c6367425e903c42f15f2f99e70",
+    "by": "W1b reader",
+    "writer": "W1b writer",
     "rows": {
      "1": {
       "digest": "a62a59aca86f56452610febe932f91932a921c33e39afa53b434a809b58d1494",
@@ -30592,8 +30592,8 @@
       "by": "slice mame-sup2-05 reader"
      },
      "4": {
-      "digest": "036cd00197b2eabfefffc235520939c17cb19a572813b171f7d14e1a4a2ef6fe",
-      "by": "W1-BASE closing reader mame 02"
+      "digest": "182a79e81a816f1035d4bdbefb188a1c8e4bdf69c6f03df92907260824a8613b",
+      "by": "W1b reader"
      }
     }
    },
@@ -30611,9 +30611,9 @@
   },
   "z80scc:register:0x103:write": {
    "doc": {
-    "seal": "cd4433989afb2a2f16b3a9dac18a38423e3882b07b70ba90adc9e994efc09056",
-    "by": "slice mame-sup2-05 reader",
-    "writer": "slice mame-sup2-05 writer",
+    "seal": "72a52e22757fc8564d0985a3d62d8d57bab7c55d364f20e5314a1f27053b1f73",
+    "by": "W1b reader",
+    "writer": "W1b writer",
     "rows": {
      "1": {
       "digest": "0e9eb9141fe7624b7d01ded46bea858081f7e4487e76a34c02cf08efaedeef3d",
@@ -30624,8 +30624,8 @@
       "by": "slice mame-sup2-05 reader"
      },
      "4": {
-      "digest": "466d65122b6e736db632f76ef1d6292739c04d6c43291932d0cd8a935c5a4a8e",
-      "by": "slice mame-sup2-05 reader"
+      "digest": "5f40e22c0e156e4ead8a64e99814fceecc41dcb9790df12ce6901c4df63f08d5",
+      "by": "W1b reader"
      }
     }
    },
@@ -36168,6 +36168,108 @@
     "by": "W1-BASE closing reader mame 01",
     "writer": "W1-BASE writer",
     "rows": {}
+   }
+  },
+  {
+   "id": "z80scc:register:0x100:read",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "W1b writer",
+   "why": "row 2 states a clause whose line 981 ab_dc read owns, so it keeps only what 979-980 say",
+   "was": {
+    "seal": "34329d324fccaea8a613642827e89a7158cbfdb282b79d33d34084a9773105f1",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
+    "rows": {
+     "1": {
+      "digest": "fa401fb31b61c5069220aae6de70d19559568d4548a80c976e82a13620c03ae6",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "2": {
+      "digest": "209906ce1dd912fb4290e17870051b1f356aad1a881058d46877d72b298f755b",
+      "by": "W1-BASE closing reader mame 02"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x100:read",
+   "part": "mame",
+   "rows": [],
+   "by": "W1b writer",
+   "why": "its verdict on doc row 2 is judged again",
+   "was": {
+    "seal": "dc44268e8d09ebb702797cf975786d353f5d08d37edb4341e60fb5325f39c19b",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
+    "rows": {
+     "3": {
+      "digest": "a9df01c5a2ca077a21d8cabd7a8cb9e6d903b1aea32a7ecd9fa78758e677a5e6",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "4": {
+      "digest": "149514b0b8a55f76bc4dbcb260453bebd779c97584f33f2aa27c36035bfa2121",
+      "by": "slice mame-sup2-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x103:read",
+   "part": "doc",
+   "rows": [
+    "4"
+   ],
+   "by": "W1b writer",
+   "why": "row 4's quote widens to line 1507 and the official region moves with it",
+   "was": {
+    "seal": "eb617d2f7b5dad8a099173c3be54d1c7ebdf3a7e0387015de2048e01654e6aa0",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
+    "rows": {
+     "1": {
+      "digest": "a62a59aca86f56452610febe932f91932a921c33e39afa53b434a809b58d1494",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "2": {
+      "digest": "492b64e2476531f9bbe540018eeef1a2d48c591c6587b55b58a2d43f3c3fe49c",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "4": {
+      "digest": "036cd00197b2eabfefffc235520939c17cb19a572813b171f7d14e1a4a2ef6fe",
+      "by": "W1-BASE closing reader mame 02"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x103:write",
+   "part": "doc",
+   "rows": [
+    "4"
+   ],
+   "by": "W1b writer",
+   "why": "row 4 re-anchors at 1508 as the official region gives line 1507 up",
+   "was": {
+    "seal": "cd4433989afb2a2f16b3a9dac18a38423e3882b07b70ba90adc9e994efc09056",
+    "by": "slice mame-sup2-05 reader",
+    "writer": "slice mame-sup2-05 writer",
+    "rows": {
+     "1": {
+      "digest": "0e9eb9141fe7624b7d01ded46bea858081f7e4487e76a34c02cf08efaedeef3d",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "2": {
+      "digest": "1c7cba7ada4d3834dfcd325d18b25d71a4aeb5462a455b9d3c10265b3f12f81b",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "4": {
+      "digest": "466d65122b6e736db632f76ef1d6292739c04d6c43291932d0cd8a935c5a4a8e",
+      "by": "slice mame-sup2-05 reader"
+     }
+    }
    }
   }
  ]

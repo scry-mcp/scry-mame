@@ -71,7 +71,7 @@
      "n": "2",
      "on": "read",
      "of": "doc",
-     "text": "When the Z85X30 is selected, /RD enables its bus drivers.",
+     "text": "/RD indicates a read operation.",
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",
@@ -552,7 +552,7 @@
     },
     {
      "ref": "datasheet:SCC-UserManual-1992.raw.txt",
-     "lines": "1504-1506"
+     "lines": "1504-1507"
     },
     {
      "ref": "mame:src/devices/machine/z80scc.cpp",
@@ -609,8 +609,8 @@
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",
-       "lines": "1504-1506",
-       "sha": "1b9db154c75f0f7af348c8a548b9052adfc2b1ca30fa7802e672ababb5ac7a95"
+       "lines": "1504-1507",
+       "sha": "5017b1511f412b6899925e83f7c1a89e00d1d4d3a86a965cd045be70ebf05f49"
       }
      ]
     }
@@ -635,7 +635,7 @@
     },
     {
      "ref": "datasheet:SCC-UserManual-1992.raw.txt",
-     "lines": "1507-1509"
+     "lines": "1508-1509"
     },
     {
      "ref": "mame:src/devices/machine/z80scc.cpp",
@@ -688,12 +688,12 @@
      "n": "4",
      "on": "is",
      "of": "doc",
-     "text": "Once the pointer bits are set, the desired channel is selected by A//B during the actual read or write of the register.",
+     "text": "During the actual read or write of the register, A//B selects the desired channel.",
      "quotes": [
       {
        "ref": "datasheet:SCC-UserManual-1992.raw.txt",
-       "lines": "1507-1509",
-       "sha": "322f2fb1db5ff995c666a8c50d65bfb724d1b9b91a70a30cb0611fcbe4e620fb"
+       "lines": "1508-1509",
+       "sha": "c96b59127b398b822aef1e89098e6d77fe64fcb4e29fbdefdd9da3abb67e4b42"
       }
      ]
     }
