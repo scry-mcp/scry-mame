@@ -675,7 +675,7 @@
      "n": "1",
      "on": "is",
      "of": "doc",
-     "text": "ENTER HUNT is a function of the command instruction.",
+     "text": "The command is ENTER HUNT.",
      "quotes": [
       {
        "ref": "datasheet:8251A.raw.txt",

@@ -237,12 +237,12 @@
     {
      "ref": "mame:src/devices/machine/i8255.cpp",
      "lines": "781",
-     "as": "decode"
+     "as": "structure"
     },
     {
      "ref": "mame:src/devices/machine/i8255.cpp",
      "lines": "785",
-     "as": "decode"
+     "as": "log"
     },
     {
      "ref": "mame:src/devices/machine/i8255.cpp",
@@ -493,12 +493,12 @@
     {
      "ref": "mame:src/devices/machine/i8255.cpp",
      "lines": "781",
-     "as": "decode"
+     "as": "structure"
     },
     {
      "ref": "mame:src/devices/machine/i8255.cpp",
      "lines": "785",
-     "as": "decode"
+     "as": "log"
     },
     {
      "ref": "mame:src/devices/machine/i8255.cpp",

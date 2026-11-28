@@ -1208,9 +1208,9 @@
     }
    },
    "mame": {
-    "seal": "75b916de09ce5349293936d1ef5f0b117b72c9d40bad14cb0adaa191f415ca55",
-    "by": "slice mame-snd1-01 reader",
-    "writer": "slice mame-snd1-01 writer",
+    "seal": "97a9a98543fd87ed79ce7917f4df6e4cd58f38a206f8ec885fe213a4e8ca6bab",
+    "by": "W1-BASE closing reader mame 03",
+    "writer": "W1-BASE writer",
     "rows": {
      "30": {
       "digest": "3a090fcbe948bb1ded6cf0da2bc5c87eae1f61fa21aaebbf9cb0433c4481f59e",
@@ -6200,13 +6200,13 @@
   },
   "i8251:command:0xA0..0xBF": {
    "doc": {
-    "seal": "1a858640eab85f2bd2da756c9d34c75e5c1db4182f9698e60af595363923bb10",
-    "by": "slice mame-sup1-01 reader",
-    "writer": "slice mame-sup1-01 writer",
+    "seal": "9ff1273ce4978250e5173fef56469c7a8da6aae4cbf45ea8accc8f76887a517e",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
-      "digest": "1d423c819a43479f8ece802279aaea24caf98669038f997edc39fadb2d507d35",
-      "by": "slice mame-sup1-01 reader"
+      "digest": "5abe30a970a5d264927b5659b8a434742f34207e7dc22194e1de97925249f427",
+      "by": "W1-BASE closing reader mame 01"
      },
      "2": {
       "digest": "2d42075ace13db298a94c2d2023f4e172c1a09628114607237b590fb83e4a34c",
@@ -6544,9 +6544,9 @@
     }
    },
    "mame": {
-    "seal": "d5056d5e9bab7f03d408b95a584e07cf215cbb1a3ea37af8e0d564859b995959",
-    "by": "slice mame-sup1-01 reader",
-    "writer": "slice mame-sup1-01 writer",
+    "seal": "894105a3e074f5383f4be2fad4690d90d35bb537f9c40feaf88c117bed3e8e01",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
     "rows": {}
    }
   },
@@ -6583,9 +6583,9 @@
     }
    },
    "mame": {
-    "seal": "a0e3041f864d42052d53911e7dfe8af7590ff615fbdc3c887e6f6623881279ff",
-    "by": "slice mame-sup1-01 reader",
-    "writer": "slice mame-sup1-01 writer",
+    "seal": "996ba4a894fa8d61c302fd1ca9511134bbf915da892c1f723923816aea5e78ae",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
     "rows": {
      "107": {
       "digest": "958eef89b8ce16083a8a8e0f1aa30bea7d93898adcddea175abe6d0cf19cc1c9",
@@ -10249,9 +10249,9 @@
     }
    },
    "mame": {
-    "seal": "dadf208f7882f7a919f0c7074f0c40eb1132995815f0b609087986c35cf93ec9",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
+    "seal": "5160066f65566b1c94554bc64e5b97fab5a87fc25c2c7e22a0dedc52c51657e9",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {}
    }
   },
@@ -10276,9 +10276,9 @@
     }
    },
    "mame": {
-    "seal": "3649b54178ededf9c3b1b12bdcb61ee3485aa71af630e43af0cab22c84486f74",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
+    "seal": "1ffb73b34c589da7b8fcecbf995cba9aa78bdeec6e371afdd51ddca9c55d6e30",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {}
    }
   },
@@ -10477,9 +10477,9 @@
   },
   "mc68681:register:0x09:write": {
    "doc": {
-    "seal": "18502146ea531e6edc764b79516583ade9ec184117e851b34c5efcb9221bf54e",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
+    "seal": "bce02606db06158330a4109346d51a0ce8957c40727b6abafe4ffd4ce0356a30",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "6492c2c2a95b07ed1c61d3c05df2154ec702a8317634e74ea76e61e3df20f19b",
@@ -10490,8 +10490,8 @@
       "by": "P0 unsealed reader"
      },
      "3": {
-      "digest": "dba28b33af97f0b9129818fe108a0640e2eabd7ca7720c73af9244c167bf3b38",
-      "by": "P0 unsealed reader"
+      "digest": "8b4de40b2522bec902e1d1c4a6ab679da1d0aca0831c929beb9308aae94403f7",
+      "by": "W1-BASE closing reader mame 01"
      },
      "4": {
       "digest": "ba30658ff93f9a02e5f0008d606958030731279c7eb8979e8963bef5ccdb8fda",
@@ -10508,9 +10508,9 @@
     }
    },
    "mame": {
-    "seal": "d15a6be9c6d8c55b9c2b2251106ecbfaf2304a45fa3c18136d31bf8238dcf9ad",
-    "by": "P0 unsealed reader",
-    "writer": "slice mame-sup1-03 writer",
+    "seal": "39ba897c9af37cfc165c52111fab80d3bb2041f29acc6966591e3370d08d0fa2",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "101": {
       "digest": "28fa6ce8ed170b28ee46bbefcf2ebb7f570858574926f17d8eaf3f6dfa1611fb",
@@ -10557,17 +10557,17 @@
   },
   "mc68681:register:0x0A:write": {
    "doc": {
-    "seal": "48ce01f567300c6b334241d3ca935a22277bbc4ff5e09135546c7f9a2cf63428",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
+    "seal": "77dddc2f4e41a29844948df13534ab6a17173c41ee638e74762344ce09a4455e",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "a4179c239e57f45596b1c634bc1ef6a226247e436c1201020b12fc66a1019f82",
       "by": "slice mame-sup1-03 reader"
      },
      "2": {
-      "digest": "471ae675cf4375bd796ebde5506435996f0a7ecb086cf3edfa6f10435db5eb0d",
-      "by": "slice mame-sup1-03 reader"
+      "digest": "de2e08ee5cd1cb39be0250b5562375e49d5af6e75acb4375c8f62078e8a2f6d2",
+      "by": "W1-BASE closing reader mame 01"
      },
      "3": {
       "digest": "956915cfaeec67bd0f7f389f0746134404cc54a999d3ace054afa40a1ae13740",
@@ -10584,9 +10584,9 @@
     }
    },
    "mame": {
-    "seal": "a92c24ca8e8261de50f3d908c751b9ce335bfd88062961d8642f41eee7839277",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
+    "seal": "e870c92ddc664448638a378fb81e075ec4a591036ad0c04182276dc3a352138d",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {}
    }
   },
@@ -10737,9 +10737,9 @@
     }
    },
    "mame": {
-    "seal": "30b9c7c57e543162cc3cf8be0e0898c82f1837f0aba0456e5a71be1d26a1cd06",
-    "by": "slice mame-sup1-03 reader",
-    "writer": "slice mame-sup1-03 writer",
+    "seal": "8bfea765dcd5d9521e2e46815268eec2f3f86a8461ccff827b20ac7f4d2f3d21",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "101": {
       "digest": "ae28318e8a55428381198c99e75daaa3c933ae5e8c02a227c04081487646743a",
@@ -10750,9 +10750,9 @@
   },
   "mc68681:register:0x0E:read": {
    "doc": {
-    "seal": "97bf297e11419172918a35c0badd0fa804757226857f7e78b9a9a99bd5b6d87d",
-    "by": "slice mame-sup1-04 reader",
-    "writer": "slice mame-sup1-04 writer",
+    "seal": "ddbcef5ae5dffcf869fece963c8651f02475f50d5230a54d8112f929cfa1f218",
+    "by": "W1-BASE closing reader mame 05",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "2fa1d3a0e0f0a5a6381e18c900e088251bf1500d7d0f11176c0e46697ad00797",
@@ -10771,8 +10771,8 @@
       "by": "slice mame-sup1-04 reader"
      },
      "5": {
-      "digest": "8dadb724c7105ab273512f7d9986193a0f94e675cbdf36ee0dc78a8a1b19f1ff",
-      "by": "slice mame-sup1-04 reader"
+      "digest": "1ad08080ecff5dc8d78b3e67a8144be572d97c738e1db533e03d04ac33e33617",
+      "by": "W1-BASE closing reader mame 05"
      },
      "6": {
       "digest": "9e28b3fa02af7308120fa34c4c4c2b212b699e7bb51ffd37b31fcf3ba935e4cd",
@@ -10781,9 +10781,9 @@
     }
    },
    "mame": {
-    "seal": "72317ff744836b7c35cbfcd6c95afaea0ac4553a3cb53fdb9c9902a0defbfda8",
-    "by": "slice mame-sup1-04 reader",
-    "writer": "slice mame-sup1-04 writer",
+    "seal": "9e210fb0bdb48fbed64d8166c19f54075da83fe19b3219d54446e071a0fe9541",
+    "by": "W1-BASE closing reader mame 05",
+    "writer": "W1-BASE writer",
     "rows": {
      "101": {
       "digest": "811d082a1671b7d78c4afac13683d8ebbd4ead9ecb315e2001ce5f615319fdf6",
@@ -12581,9 +12581,9 @@
     }
    },
    "mame": {
-    "seal": "ffe7215812262bb29b741d8a1f4e3c9a5edae86f6f27366d68cb8b8363678af8",
-    "by": "slice mame-sup1-02 reader",
-    "writer": "slice mame-sup1-02 writer",
+    "seal": "0457e032aeb7365fde96f04885d6a11f9a95b9753a5a7c168a905382938c7d1b",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "101": {
       "digest": "b16eb7add5a824e0a59ab965420b9a19e395d434575545a5ad365e43414f7ec8",
@@ -21294,28 +21294,28 @@
   },
   "ym2151:register:0x18": {
    "doc": {
-    "seal": "d710cf6787825152a1d105d4795824dfc1dadf3af83167623b0c98ffb6c8e31d",
-    "by": "slice mame-snd2-01 reader",
-    "writer": "slice mame-snd2-01 writer",
+    "seal": "ba4f6674352e9077c711a33ee66a29934ce4703a1b191f951e7deca3300274bb",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "a4d6ffd5fdcc2d25a30c9671e070febca06bdadebb6454301131d9e27b21b8bc",
       "by": "slice mame-snd2-01 reader"
      },
      "2": {
-      "digest": "93258193beb19d4c7b5d1d64be3e35912dfe919c5ab27881f830e7c484f01011",
-      "by": "slice mame-snd2-01 reader"
+      "digest": "f9e367b568c17755ff1370feb339c065e3efdd9e42b7b39310b04637379684fe",
+      "by": "W1-BASE closing reader mame 01"
      }
     }
    },
    "mame": {
-    "seal": "4c1dde5d1d95c0d9c9d3d103fc424fc9ff3735c6a99083ac306d67d2ca83841a",
-    "by": "slice mame-snd2-01 reader",
-    "writer": "slice mame-snd2-01 writer",
+    "seal": "a2dad7bf2e953287d382cf1302aa15b623c9a0d5a0cbfe49d078f2ae6c4f060a",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "3": {
-      "digest": "6461310a1151d7698876025ab2bb4748252758bbf1407ade4a2ebb6ca4e58ed6",
-      "by": "slice mame-snd2-01 reader"
+      "digest": "ec196277ca2afda3f30f9b4851aa23e77fcae2fe905dded809f1152bb34da997",
+      "by": "W1-BASE closing reader mame 01"
      }
     }
    }
@@ -23338,9 +23338,9 @@
   },
   "ym2608:register:0x109..0x10A": {
    "doc": {
-    "seal": "551058e30dd809b1787a2509d1f3876afe3270ddb0408eb9c302fc9278dd93de",
-    "by": "slice mame-snd3-03 reader",
-    "writer": "slice mame-snd3-03 writer",
+    "seal": "dcfd745584cee4edf9d2b5b3e28cd4c365fe677d87e58e09e5406990c14f3945",
+    "by": "W1-BASE closing reader mame 01",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "d102f9116365bd37f2649973cc3f161e07860f2caad3e6b94781e6780752d5f2",
@@ -23355,8 +23355,8 @@
       "by": "slice mame-snd3-03 reader"
      },
      "4": {
-      "digest": "72acd9c2b10254e0bc874960f0b5228d1157bb5b3349405f03f52610d6e03a4f",
-      "by": "slice mame-snd3-03 reader"
+      "digest": "3da234d32a210afd1f6bdb0b9e6a558704455c3259debe3846682090b54da2e1",
+      "by": "W1-BASE closing reader mame 01"
      }
     }
    },
@@ -25263,9 +25263,9 @@
     }
    },
    "mame": {
-    "seal": "8f79ca67a4a80aebc12f1168c5095a23a261519b010533232cc113a87a3ffeee",
-    "by": "slice mame-snd3-05 reader",
-    "writer": "slice mame-snd3-05 writer",
+    "seal": "d1e6504cb4a00bf17f41b76fc5dcdd1a9658380309f82ea73a2d6ef95134ff6c",
+    "by": "W1-BASE closing reader mame 03",
+    "writer": "W1-BASE writer",
     "rows": {
      "7": {
       "digest": "c053f8a4109bb10f4a047259b50a57ccf93773459a8ec8990703c27f3bb4730b",
@@ -25342,9 +25342,9 @@
     }
    },
    "mame": {
-    "seal": "8d5380fcfa0c2d3f92efbabd5ef069106947e24c2762016fcaec9974620b21e8",
-    "by": "slice mame-snd3-05 reader",
-    "writer": "slice mame-snd3-05 writer",
+    "seal": "0b9b1524b42bbfae8b6260c57eec36ed8c7f45e9f8cece5224fdd8e5e59fe6cd",
+    "by": "W1-BASE closing reader mame 03",
+    "writer": "W1-BASE writer",
     "rows": {
      "8": {
       "digest": "e257460a29e093ce49725ea9b58821b4167e452e0671ac16fce7eeb2da471e0c",
@@ -29598,9 +29598,9 @@
   },
   "z80scc:register:0x09:write": {
    "doc": {
-    "seal": "6a71dc1b74b2d9c533560fccd9c7ed3b73d92d873613440d0bb2325d12fd1b69",
-    "by": "S2 mame reader",
-    "writer": "W2 mame writer",
+    "seal": "215ac03d81f9e43d8782bd1e0ba7a366eae5ae298b25b80ae49b8c6798370aab",
+    "by": "W1-BASE closing reader mame 04",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "32355e3e9232961d787df0f464979dd7e92f524edc05d7b0bd92b0fb7cdd2872",
@@ -29647,8 +29647,8 @@
       "by": "slice mame-sup2-03 reader"
      },
      "2": {
-      "digest": "dac0da47dd68098fb998d5fb6c7125c099ce7a2c641c106665db9deac1bc0126",
-      "by": "slice mame-sup2-03 reader"
+      "digest": "ef549d799de6be49986488d4c13d6bf87cd0f468ab62e2f3aca82b1d05322987",
+      "by": "W1-BASE closing reader mame 04"
      },
      "20": {
       "digest": "e25a1bcf38eb63f58237d210bf825f05d5ac1e050d3a7befacfa78d58d0c75b3",
@@ -29701,9 +29701,9 @@
     }
    },
    "mame": {
-    "seal": "3c1330cd875e05fd7c1d211c1d010879b077dcac50ae6cfd20379ceb02091553",
-    "by": "slice mame-sup2-03 reader",
-    "writer": "slice mame-sup2-03 writer",
+    "seal": "b5ff02a1f29f1b387e7d4758ddc19aeaa14863cc915e0869678716c1ba3855b2",
+    "by": "W1-BASE closing reader mame 04",
+    "writer": "W1-BASE writer",
     "rows": {
      "25": {
       "digest": "24e7501400326e460310bbc7c9110b5155a764b63fbe8271db8bb9467c1e06c0",
@@ -30267,9 +30267,9 @@
   },
   "z80scc:register:0x0F:write": {
    "doc": {
-    "seal": "b633fe0b8c8b374f468e7b60ca5550563487b5ff2a947bc7a85be339eb5d1be8",
-    "by": "slice mame-sup2-04 reader",
-    "writer": "slice mame-sup2-04 writer",
+    "seal": "98a7e92ea6f7b712a7366f81445d4dd0bdad4af91bc91d7e2c387ea34cc6d789",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "44ac281865a16769bebf52c6c7eb86ffa51c40468e49e40f803713c1c0d4193c",
@@ -30284,8 +30284,8 @@
       "by": "slice mame-sup2-04 reader"
      },
      "12": {
-      "digest": "5e715391686061916d582ff5e8dda4bbd3afae2c28e794c6cd7833fdf34319c8",
-      "by": "slice mame-sup2-04 reader"
+      "digest": "76910a7d640c4700930d45a9b6128e0c4749b056d0b1c5813a6c782886f30dcb",
+      "by": "W1-BASE closing reader mame 02"
      },
      "13": {
       "digest": "5ab1d9d90930d07ff98cc074d6474f2c10b20f34ab6da863d9e1903d64fe4204",
@@ -30350,9 +30350,9 @@
     }
    },
    "mame": {
-    "seal": "c81b65927eff84bd2ad2b51048f5f590f077e6b14678f6faef22525ddd404427",
-    "by": "slice mame-sup2-04 reader",
-    "writer": "slice mame-sup2-04 writer",
+    "seal": "c74fe40351d7ae50cbdb05dd942f791a5628f07c124f6417a58b88bf38b12e2c",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
     "rows": {
      "20": {
       "digest": "8773179d7a2ccc9c09fad125329a2337598199360659c66b82c7f2728969d19c",
@@ -30387,24 +30387,24 @@
   },
   "z80scc:register:0x100:read": {
    "doc": {
-    "seal": "8b6224fc7ea693929cb4ef4a8c893a9be722334bf43eb07ee57c9eb3a1fff983",
-    "by": "slice mame-sup2-05 reader",
-    "writer": "slice mame-sup2-05 writer",
+    "seal": "34329d324fccaea8a613642827e89a7158cbfdb282b79d33d34084a9773105f1",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "fa401fb31b61c5069220aae6de70d19559568d4548a80c976e82a13620c03ae6",
       "by": "slice mame-sup2-05 reader"
      },
      "2": {
-      "digest": "f85c7bee513f8c315ec37f60e50aa5e8abdebecdabcf1c11cabfa74d4ce96881",
-      "by": "slice mame-sup2-05 reader"
+      "digest": "209906ce1dd912fb4290e17870051b1f356aad1a881058d46877d72b298f755b",
+      "by": "W1-BASE closing reader mame 02"
      }
     }
    },
    "mame": {
-    "seal": "d7160e71391cb0fd672122821a92d89bd71e094719760c7ae47047403fc946b6",
-    "by": "slice mame-sup2-05 reader",
-    "writer": "slice mame-sup2-05 writer",
+    "seal": "dc44268e8d09ebb702797cf975786d353f5d08d37edb4341e60fb5325f39c19b",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
     "rows": {
      "3": {
       "digest": "a9df01c5a2ca077a21d8cabd7a8cb9e6d903b1aea32a7ecd9fa78758e677a5e6",
@@ -30579,9 +30579,9 @@
   },
   "z80scc:register:0x103:read": {
    "doc": {
-    "seal": "95697a3cc6cddef61bba9feb4d00ba203139e91429825b8fddae2403197aa970",
-    "by": "slice mame-sup2-05 reader",
-    "writer": "slice mame-sup2-05 writer",
+    "seal": "eb617d2f7b5dad8a099173c3be54d1c7ebdf3a7e0387015de2048e01654e6aa0",
+    "by": "W1-BASE closing reader mame 02",
+    "writer": "W1-BASE writer",
     "rows": {
      "1": {
       "digest": "a62a59aca86f56452610febe932f91932a921c33e39afa53b434a809b58d1494",
@@ -30592,8 +30592,8 @@
       "by": "slice mame-sup2-05 reader"
      },
      "4": {
-      "digest": "d67d7e91cebabf1452c29f3e7b55fecc34ef24a2c68ce8ab5af47b5dba9d479f",
-      "by": "slice mame-sup2-05 reader"
+      "digest": "036cd00197b2eabfefffc235520939c17cb19a572813b171f7d14e1a4a2ef6fe",
+      "by": "W1-BASE closing reader mame 02"
      }
     }
    },
@@ -30834,13 +30834,13 @@
     }
    },
    "mame": {
-    "seal": "ce96668f8891cc3e0ceb77d94101279fcd5ba9c38e71b3ac81a2857d21331825",
-    "by": "slice mame-sup2-05 reader",
-    "writer": "slice mame-sup2-05 writer",
+    "seal": "c7afc98e376861bb55fbe9cb658ec6c4afad6b0ce6fa52350f9d3ff231fb0fc1",
+    "by": "W1-BASE closing reader mame 04",
+    "writer": "W1-BASE writer",
     "rows": {
      "4": {
-      "digest": "cb1f494d43eaddee7e68f966e1d56a51df29c4765ce2ab71d827e467b2c8d655",
-      "by": "slice mame-sup2-05 reader"
+      "digest": "a6f935a921971c8f264d48ccfb88cbd8fbab50859fe4d5decced58ff721a9f63",
+      "by": "W1-BASE closing reader mame 04"
      }
     }
    }
@@ -35253,6 +35253,870 @@
      "101": {
       "digest": "abd56b813f39f41344e72e0fddaabc81187209bc698ac9682a3f706333e75240",
       "by": "slice mame-e2-video-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2608:register:0x109..0x10A",
+   "part": "doc",
+   "rows": [
+    "4"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the sentence read a power of two into an OCR figure",
+   "was": {
+    "seal": "551058e30dd809b1787a2509d1f3876afe3270ddb0408eb9c302fc9278dd93de",
+    "by": "slice mame-snd3-03 reader",
+    "writer": "slice mame-snd3-03 writer",
+    "rows": {
+     "1": {
+      "digest": "d102f9116365bd37f2649973cc3f161e07860f2caad3e6b94781e6780752d5f2",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "2": {
+      "digest": "0217348603ac9763c24f4454867a07f298150c59b124b7dd2346b9bf636b2695",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "3": {
+      "digest": "39664b566301575934dde7133d67656d0a3324ce19bdd2c8d9ed05a0084123bf",
+      "by": "slice mame-snd3-03 reader"
+     },
+     "4": {
+      "digest": "72acd9c2b10254e0bc874960f0b5228d1157bb5b3349405f03f52610d6e03a4f",
+      "by": "slice mame-snd3-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2151:register:0x18",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the capture does carry Figure 2.16, so the sentence denied it",
+   "was": {
+    "seal": "d710cf6787825152a1d105d4795824dfc1dadf3af83167623b0c98ffb6c8e31d",
+    "by": "slice mame-snd2-01 reader",
+    "writer": "slice mame-snd2-01 writer",
+    "rows": {
+     "1": {
+      "digest": "a4d6ffd5fdcc2d25a30c9671e070febca06bdadebb6454301131d9e27b21b8bc",
+      "by": "slice mame-snd2-01 reader"
+     },
+     "2": {
+      "digest": "93258193beb19d4c7b5d1d64be3e35912dfe919c5ab27881f830e7c484f01011",
+      "by": "slice mame-snd2-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "i8251:command:0xA0..0xBF",
+   "part": "doc",
+   "rows": [
+    "1"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the row said more than its line: the line names the command, the figure caption is another entry's",
+   "was": {
+    "seal": "1a858640eab85f2bd2da756c9d34c75e5c1db4182f9698e60af595363923bb10",
+    "by": "slice mame-sup1-01 reader",
+    "writer": "slice mame-sup1-01 writer",
+    "rows": {
+     "1": {
+      "digest": "1d423c819a43479f8ece802279aaea24caf98669038f997edc39fadb2d507d35",
+      "by": "slice mame-sup1-01 reader"
+     },
+     "2": {
+      "digest": "2d42075ace13db298a94c2d2023f4e172c1a09628114607237b590fb83e4a34c",
+      "by": "slice mame-sup1-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "pia6821:register:0x02:read",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a bare brace at 260 which opens the else branch; it is a structure line",
+   "was": {
+    "seal": "ffe7215812262bb29b741d8a1f4e3c9a5edae86f6f27366d68cb8b8363678af8",
+    "by": "slice mame-sup1-02 reader",
+    "writer": "slice mame-sup1-02 writer",
+    "rows": {
+     "101": {
+      "digest": "b16eb7add5a824e0a59ab965420b9a19e395d434575545a5ad365e43414f7ec8",
+      "by": "slice mame-sup1-02 reader"
+     },
+     "102": {
+      "digest": "0a6a2bc8392be57ef228eeaae49c865a57f8af03d07248884a1e7f5e6efde6c5",
+      "by": "slice mame-sup1-02 reader"
+     },
+     "103": {
+      "digest": "5dcbe6ac608890a6e3d311906986a3a54bd6b71a4a0183cd4f947d5a994e3418",
+      "by": "slice mame-sup1-02 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x09:write",
+   "part": "doc",
+   "rows": [
+    "3"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the ACR[7] 0/1 mapping is on line 1704 of the same section and was not quoted",
+   "was": {
+    "seal": "18502146ea531e6edc764b79516583ade9ec184117e851b34c5efcb9221bf54e",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "6492c2c2a95b07ed1c61d3c05df2154ec702a8317634e74ea76e61e3df20f19b",
+      "by": "P0 unsealed reader"
+     },
+     "2": {
+      "digest": "96d957326dd7f65255cb124e88fc7f4ac1d6852e31557cc7c59ee9321645b2a7",
+      "by": "P0 unsealed reader"
+     },
+     "3": {
+      "digest": "dba28b33af97f0b9129818fe108a0640e2eabd7ca7720c73af9244c167bf3b38",
+      "by": "P0 unsealed reader"
+     },
+     "4": {
+      "digest": "ba30658ff93f9a02e5f0008d606958030731279c7eb8979e8963bef5ccdb8fda",
+      "by": "P0 unsealed reader"
+     },
+     "5": {
+      "digest": "0a27552883d36c4a31b560d81b9d813995107c6e028d42afcd863cd6b9335755",
+      "by": "P0 unsealed reader"
+     },
+     "6": {
+      "digest": "c90ca48ba29916eaaf54d61e0cd62a8f14a5a78bd41eee9dd9269c3bd65245f9",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0A:write",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the specific commands named are in another entry's region; the sentence now says what the line says",
+   "was": {
+    "seal": "48ce01f567300c6b334241d3ca935a22277bbc4ff5e09135546c7f9a2cf63428",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "1": {
+      "digest": "a4179c239e57f45596b1c634bc1ef6a226247e436c1201020b12fc66a1019f82",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "2": {
+      "digest": "471ae675cf4375bd796ebde5506435996f0a7ecb086cf3edfa6f10435db5eb0d",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "3": {
+      "digest": "956915cfaeec67bd0f7f389f0746134404cc54a999d3ace054afa40a1ae13740",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "4": {
+      "digest": "aa2c5b208b51f961e923cb6ef455c088847d53424dea010222550d175057102f",
+      "by": "slice mame-sup1-03 reader"
+     },
+     "5": {
+      "digest": "4598332a2fa214ac186ccf8ed20537686cb6d3cd14d58d122acc8e54571efe4a",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x100:read",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the sentence moved the chip-select condition onto the read indication",
+   "was": {
+    "seal": "8b6224fc7ea693929cb4ef4a8c893a9be722334bf43eb07ee57c9eb3a1fff983",
+    "by": "slice mame-sup2-05 reader",
+    "writer": "slice mame-sup2-05 writer",
+    "rows": {
+     "1": {
+      "digest": "fa401fb31b61c5069220aae6de70d19559568d4548a80c976e82a13620c03ae6",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "2": {
+      "digest": "f85c7bee513f8c315ec37f60e50aa5e8abdebecdabcf1c11cabfa74d4ce96881",
+      "by": "slice mame-sup2-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x103:read",
+   "part": "doc",
+   "rows": [
+    "4"
+   ],
+   "by": "W1-BASE correector",
+   "why": "the sentence dropped the D//C low condition",
+   "was": {
+    "seal": "95697a3cc6cddef61bba9feb4d00ba203139e91429825b8fddae2403197aa970",
+    "by": "slice mame-sup2-05 reader",
+    "writer": "slice mame-sup2-05 writer",
+    "rows": {
+     "1": {
+      "digest": "a62a59aca86f56452610febe932f91932a921c33e39afa53b434a809b58d1494",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "2": {
+      "digest": "492b64e2476531f9bbe540018eeef1a2d48c591c6587b55b58a2d43f3c3fe49c",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "4": {
+      "digest": "d67d7e91cebabf1452c29f3e7b55fecc34ef24a2c68ce8ab5af47b5dba9d479f",
+      "by": "slice mame-sup2-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x107:read",
+   "part": "mame",
+   "rows": [
+    "4"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the autovector branch returns the default vector, not RR2",
+   "was": {
+    "seal": "ce96668f8891cc3e0ceb77d94101279fcd5ba9c38e71b3ac81a2857d21331825",
+    "by": "slice mame-sup2-05 reader",
+    "writer": "slice mame-sup2-05 writer",
+    "rows": {
+     "4": {
+      "digest": "cb1f494d43eaddee7e68f966e1d56a51df29c4765ce2ab71d827e467b2c8d655",
+      "by": "slice mame-sup2-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x0F:write",
+   "part": "doc",
+   "rows": [
+    "12"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the sentence read DCD into the /OCO line the capture names",
+   "was": {
+    "seal": "b633fe0b8c8b374f468e7b60ca5550563487b5ff2a947bc7a85be339eb5d1be8",
+    "by": "slice mame-sup2-04 reader",
+    "writer": "slice mame-sup2-04 writer",
+    "rows": {
+     "1": {
+      "digest": "44ac281865a16769bebf52c6c7eb86ffa51c40468e49e40f803713c1c0d4193c",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "10": {
+      "digest": "840d3c962297f46f0cf973e7b952833511503950dc6fa36e82d2d050e6e951a6",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "11": {
+      "digest": "ddf21fc45e7e86a163e5a654b66c6ce3944966fdb6bbff58c07c372f13d01bd4",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "12": {
+      "digest": "5e715391686061916d582ff5e8dda4bbd3afae2c28e794c6cd7833fdf34319c8",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "13": {
+      "digest": "5ab1d9d90930d07ff98cc074d6474f2c10b20f34ab6da863d9e1903d64fe4204",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "14": {
+      "digest": "8376746a31239bbafbb4b329e806d01523044c60e15a215af81b85131cab430c",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "15": {
+      "digest": "b416c9da2e4fcab524e0f293a8d0faa7ac3a4dda1bbd9dc89df5cb71a936c3d5",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "16": {
+      "digest": "a7d69020edf240f5fbd3e99fdc93be2ccb067a4c8c167571e062630f308c5243",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "17": {
+      "digest": "15d625d07298f6c9a0e3f3d7111fe11d98cc4677b75bfdaa07828752b113e97b",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "18": {
+      "digest": "fff3417ab7885b9ec6af8eb2250d575019dd1ac1fced97948a7d6cd6cf1e4bc1",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "19": {
+      "digest": "efef3413a915821a944e704641555b0943cd3867633be6eba7b04eae1ce40ff2",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "2": {
+      "digest": "4dc3df49f2233eccbdace7b93b6cfd8a4a89c2f5ae4652f25d21268e0eb2b5a4",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "3": {
+      "digest": "290d29dc9212b8520e9c84940ebbf0d63dd0329dcd004a92b018a6f959f5da0a",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "4": {
+      "digest": "e6de5312cca55602d3bdd96b50e30fb96716dd2c5e74167e3268d0acf5858f2c",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "5": {
+      "digest": "9af156d8de40e8f7d1ed303597276e81fd02cdfc099986e4ec4b21c9cad46958",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "6": {
+      "digest": "61d4c7b6a4d2dda12c58322b4070a41192ec00330b5286510189af867f4a63a7",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "7": {
+      "digest": "3d085f67fe879bcf65d5a3f51365cd2153e70bbe4e30850bfe4da9fc8917cc1a",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "8": {
+      "digest": "de1ec0c1984c129a71d10759ae0ad2422b195849abcd1d6aeaf97a25964939c0",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "9": {
+      "digest": "034d3f2a412452bfcb2ab209c48d7785b10a75bc236b0d90e6b870c1838cb3c8",
+      "by": "slice mame-sup2-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x05:read",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a brace, an else keyword or a comment, which is a structure line",
+   "was": {
+    "seal": "dadf208f7882f7a919f0c7074f0c40eb1132995815f0b609087986c35cf93ec9",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {}
+   }
+  },
+  {
+   "id": "mc68681:register:0x05:write",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a brace, an else keyword or a comment, which is a structure line",
+   "was": {
+    "seal": "3649b54178ededf9c3b1b12bdcb61ee3485aa71af630e43af0cab22c84486f74",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {}
+   }
+  },
+  {
+   "id": "mc68681:register:0x0D:read",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a brace, an else keyword or a comment, which is a structure line",
+   "was": {
+    "seal": "30b9c7c57e543162cc3cf8be0e0898c82f1837f0aba0456e5a71be1d26a1cd06",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "101": {
+      "digest": "ae28318e8a55428381198c99e75daaa3c933ae5e8c02a227c04081487646743a",
+      "by": "slice mame-sup1-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0E:read",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a brace, an else keyword or a comment, which is a structure line",
+   "was": {
+    "seal": "72317ff744836b7c35cbfcd6c95afaea0ac4553a3cb53fdb9c9902a0defbfda8",
+    "by": "slice mame-sup1-04 reader",
+    "writer": "slice mame-sup1-04 writer",
+    "rows": {
+     "101": {
+      "digest": "811d082a1671b7d78c4afac13683d8ebbd4ead9ecb315e2001ce5f615319fdf6",
+      "by": "slice mame-sup1-04 reader"
+     },
+     "108": {
+      "digest": "d6d9e4814922b18d9e2229d2c48ed7477146ee06391010b4cc52042e4afc9f75",
+      "by": "slice mame-sup1-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "i8255:command:0x80..0xFF",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a brace and a LOG line; they are structure and log",
+   "was": {
+    "seal": "a0e3041f864d42052d53911e7dfe8af7590ff615fbdc3c887e6f6623881279ff",
+    "by": "slice mame-sup1-01 reader",
+    "writer": "slice mame-sup1-01 writer",
+    "rows": {
+     "107": {
+      "digest": "958eef89b8ce16083a8a8e0f1aa30bea7d93898adcddea175abe6d0cf19cc1c9",
+      "by": "slice mame-sup1-01 reader"
+     },
+     "108": {
+      "digest": "80abbf5f5e6c1f2d610230aa7ce4d84f54e5e4e8ddedc3bb43089f7d426779af",
+      "by": "slice mame-sup1-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "i8255:command:0x00..0x7F",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a brace and a LOG line; they are structure and log",
+   "was": {
+    "seal": "d5056d5e9bab7f03d408b95a584e07cf215cbb1a3ea37af8e0d564859b995959",
+    "by": "slice mame-sup1-01 reader",
+    "writer": "slice mame-sup1-01 writer",
+    "rows": {}
+   }
+  },
+  {
+   "id": "ym2151:register:0x18",
+   "part": "mame",
+   "rows": [
+    "3"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the 8-bit width comes from the lfo_rate accessor at ymfm_opm.h:188, now quoted",
+   "was": {
+    "seal": "4c1dde5d1d95c0d9c9d3d103fc424fc9ff3735c6a99083ac306d67d2ca83841a",
+    "by": "slice mame-snd2-01 reader",
+    "writer": "slice mame-snd2-01 writer",
+    "rows": {
+     "3": {
+      "digest": "6461310a1151d7698876025ab2bb4748252758bbf1407ade4a2ebb6ca4e58ed6",
+      "by": "slice mame-snd2-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ay8910:device:ay8910",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a bare brace at 1374, a structure line",
+   "was": {
+    "seal": "75b916de09ce5349293936d1ef5f0b117b72c9d40bad14cb0adaa191f415ca55",
+    "by": "slice mame-snd1-01 reader",
+    "writer": "slice mame-snd1-01 writer",
+    "rows": {
+     "30": {
+      "digest": "3a090fcbe948bb1ded6cf0da2bc5c87eae1f61fa21aaebbf9cb0433c4481f59e",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "31": {
+      "digest": "5c942d3c396676c8e5901c636445b24cec0ada9d4178115e187bea742c9641d4",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "32": {
+      "digest": "1d664e347b6ccb0bf974dad1956ebf6b204fc24a7ac9d05ba42ee11d3f91a16f",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "33": {
+      "digest": "7fb5bbd6fbe3fc91fb4e55a0be7e068a7bf840cc45019b14893e85f498e60568",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "34": {
+      "digest": "d18c3e53369c41d4f5e43dad2c1d253e76651d3497b01667571f599b2ea237ee",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "35": {
+      "digest": "ad0431dd93798f3d9693db84b0e18033eeabc8cbb198631a2f7f79d0d69ed996",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "36": {
+      "digest": "2021d6629d9b4d7276b340e85903e2800c1a4c26229be22df43d599c9194b104",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "37": {
+      "digest": "e873e67a7fdc9081cac979b11467ce00411ae778b2f9c072727eb7898cb86c20",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "38": {
+      "digest": "47bb745efb5dc5fd7b4c1edce497f8e9e30199e5ac04108cfa29b69be357f756",
+      "by": "slice mame-snd1-01 reader"
+     },
+     "39": {
+      "digest": "c60b13a58e537218c5e2a018048dff78533a26f863a580de81afd3116c4d20ed",
+      "by": "slice mame-snd1-01 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2610:register:0x101",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a comment block at 228-230, a structure line",
+   "was": {
+    "seal": "8f79ca67a4a80aebc12f1168c5095a23a261519b010533232cc113a87a3ffeee",
+    "by": "slice mame-snd3-05 reader",
+    "writer": "slice mame-snd3-05 writer",
+    "rows": {
+     "7": {
+      "digest": "c053f8a4109bb10f4a047259b50a57ccf93773459a8ec8990703c27f3bb4730b",
+      "by": "slice mame-snd3-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "ym2610:register:0x108..0x10D",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the decode closure cited a comment block at 228-230, a structure line",
+   "was": {
+    "seal": "8d5380fcfa0c2d3f92efbabd5ef069106947e24c2762016fcaec9974620b21e8",
+    "by": "slice mame-snd3-05 reader",
+    "writer": "slice mame-snd3-05 writer",
+    "rows": {
+     "8": {
+      "digest": "e257460a29e093ce49725ea9b58821b4167e452e0671ac16fce7eeb2da471e0c",
+      "by": "slice mame-snd3-05 reader"
+     },
+     "9": {
+      "digest": "bb949ef0523b22c683a839f666da452d4b2540c7ce541721b426e83aa985dee4",
+      "by": "slice mame-snd3-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x09:write",
+   "part": "doc",
+   "rows": [
+    "2"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the line says accessed, not written",
+   "was": {
+    "seal": "6a71dc1b74b2d9c533560fccd9c7ed3b73d92d873613440d0bb2325d12fd1b69",
+    "by": "S2 mame reader",
+    "writer": "W2 mame writer",
+    "rows": {
+     "1": {
+      "digest": "32355e3e9232961d787df0f464979dd7e92f524edc05d7b0bd92b0fb7cdd2872",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "10": {
+      "digest": "a7bcda89e1dccdbdf8cc7fb4d6b5430ecb3948ca5e83c199d73b184bff11a5ec",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "11": {
+      "digest": "542b8b9c01a395e96ca9ff837d64a62ba87e8eb10a400aa7aed94461fba5b5cd",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "12": {
+      "digest": "5daaa264539d14178ccdab94a7b95297847d0a83eed2ff5be2d39664fb66c527",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "13": {
+      "digest": "7da4baf9dc959e834b3447f65e8c339e05dc3415c6aef4c989a4727679170ac0",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "14": {
+      "digest": "7ba9881c57243f7819f573b02b8d56892798d2e517c5eb670839b481027d31de",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "15": {
+      "digest": "e5941450ca2062b083d153e4f699272eaf449cfb5880df550281ea151bc89816",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "16": {
+      "digest": "f8d7dd59bfb61839fdbf2a3972e8eb993b93139987cd6a0adb8e917c6d5f7709",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "17": {
+      "digest": "02dd73fe634716e50af8a956fb08934470094f25b5570b00bb747d1d6c22c318",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "18": {
+      "digest": "30fd23b494a1175f2ce95a70845ba23534a32f08b82a65da741900fa7afbb537",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "19": {
+      "digest": "ba1569e4baef8c9a7b22ae2491d52dc49805e0aee412af960703454bf9824443",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "2": {
+      "digest": "dac0da47dd68098fb998d5fb6c7125c099ce7a2c641c106665db9deac1bc0126",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "20": {
+      "digest": "e25a1bcf38eb63f58237d210bf825f05d5ac1e050d3a7befacfa78d58d0c75b3",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "21": {
+      "digest": "c40be8eefb58ae856fdeadf6a998334b39515737e0e8f20cbcba4bdb19181b38",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "22": {
+      "digest": "6f8bac8f261d108fd98ebcdd4df96ebf7e6a57c7d6750cbe16a30eef042670da",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "23": {
+      "digest": "c873c0089ebbee67e347b46a8fe19d66978f0dce535c28e19f5d6ba3330e74f3",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "24": {
+      "digest": "7ca12716f6dc15fe24a0162eeaefa87c7c8079b845ca259a6b0d1ab391961bf8",
+      "by": "S2 mame reader"
+     },
+     "3": {
+      "digest": "982494c8e22bab52cb7ff13cf06ced69fb2d0d77da18bc74c808a7fa2232a71d",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "4": {
+      "digest": "37003723ad0f3b2fc0ece844f644b59de1608812da0ea3899c227f0d7f4af4fa",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "5": {
+      "digest": "3fdf463794b1264c4a48ad2f6622b2f8e117bf38a778fdb02e5f25d174232784",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "6": {
+      "digest": "42a5d33db732de7ebcb684aa8eedc995090b19b16d0a0ab24abedb6a4e291bca",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "7": {
+      "digest": "4a9d7e4679fd578c0deea53fe64a9d608f00c45388640ba27168644e596d2b81",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "8": {
+      "digest": "e00a666e590183137ff46a2e3a8edb177db655887aed4c3a601636b90ca0a273",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "9": {
+      "digest": "ba11fbe90b0646515c972cff140f32779cdb9a5bbf89acdb45786f295764f720",
+      "by": "slice mame-sup2-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0E:read",
+   "part": "doc",
+   "rows": [
+    "5"
+   ],
+   "by": "W1-BASE corrector",
+   "why": "the sentence dropped the until-the-next-start-counter clause",
+   "was": {
+    "seal": "97bf297e11419172918a35c0badd0fa804757226857f7e78b9a9a99bd5b6d87d",
+    "by": "slice mame-sup1-04 reader",
+    "writer": "slice mame-sup1-04 writer",
+    "rows": {
+     "1": {
+      "digest": "2fa1d3a0e0f0a5a6381e18c900e088251bf1500d7d0f11176c0e46697ad00797",
+      "by": "slice mame-sup1-04 reader"
+     },
+     "2": {
+      "digest": "47bd6b21463c840fd57d908dc2749a62edf884453b1d4efd33dd98f5586e00d9",
+      "by": "slice mame-sup1-04 reader"
+     },
+     "3": {
+      "digest": "d0e5c1a308b3e822a65d82f9efc885efa6e968e75275c24cd22cae7ddcd93fb1",
+      "by": "slice mame-sup1-04 reader"
+     },
+     "4": {
+      "digest": "a5f67d41c6759050b59a53aa2b93da7bfd8e8316545ac349268ccecdc86e2374",
+      "by": "slice mame-sup1-04 reader"
+     },
+     "5": {
+      "digest": "8dadb724c7105ab273512f7d9986193a0f94e675cbdf36ee0dc78a8a1b19f1ff",
+      "by": "slice mame-sup1-04 reader"
+     },
+     "6": {
+      "digest": "9e28b3fa02af7308120fa34c4c4c2b212b699e7bb51ffd37b31fcf3ba935e4cd",
+      "by": "slice mame-sup1-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x09:write",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the fault is in the doc rows these parts judge, not in their own rows",
+   "was": {
+    "seal": "d15a6be9c6d8c55b9c2b2251106ecbfaf2304a45fa3c18136d31bf8238dcf9ad",
+    "by": "P0 unsealed reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {
+     "101": {
+      "digest": "28fa6ce8ed170b28ee46bbefcf2ebb7f570858574926f17d8eaf3f6dfa1611fb",
+      "by": "P0 unsealed reader"
+     },
+     "102": {
+      "digest": "1432b81c217e7d79d14dd00ba4f1765aaf25911003e099f968cc48decfeea427",
+      "by": "P0 unsealed reader"
+     },
+     "103": {
+      "digest": "d59344670c82231ba7bdbeb796a1a0fedf07877a6ffb083f0669073644b7f4d4",
+      "by": "P0 unsealed reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0A:write",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the fault is in the doc rows these parts judge, not in their own rows",
+   "was": {
+    "seal": "a92c24ca8e8261de50f3d908c751b9ce335bfd88062961d8642f41eee7839277",
+    "by": "slice mame-sup1-03 reader",
+    "writer": "slice mame-sup1-03 writer",
+    "rows": {}
+   }
+  },
+  {
+   "id": "z80scc:register:0x0F:write",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the fault is in the doc row this part judges",
+   "was": {
+    "seal": "c81b65927eff84bd2ad2b51048f5f590f077e6b14678f6faef22525ddd404427",
+    "by": "slice mame-sup2-04 reader",
+    "writer": "slice mame-sup2-04 writer",
+    "rows": {
+     "20": {
+      "digest": "8773179d7a2ccc9c09fad125329a2337598199360659c66b82c7f2728969d19c",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "21": {
+      "digest": "9f03383888034cea0bdf69dd8b506c2f95f335dcb44a9d7f263fb845e03c4c55",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "22": {
+      "digest": "c3c9270b3ee50f54a7bf058dcadd12671f58e16aba131f81874d18929007601b",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "23": {
+      "digest": "d22c1a060861ead9796efa4de7e2241c0ad0ed5fe8448171daa599c6264c6742",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "24": {
+      "digest": "88b5be01f216365482dc437e82230b25a06b65011a2f6925a4167d82b12e70ba",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "25": {
+      "digest": "f291965f37f897be1993451c7db3dda3dc7c2820f6da73db31148e19c5741b34",
+      "by": "slice mame-sup2-04 reader"
+     },
+     "26": {
+      "digest": "8b683c5af9b2519e1103f9240fe5dddd242514f9889dac7bb6ca153b791f1481",
+      "by": "slice mame-sup2-04 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x100:read",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the fault is in the doc rows this part judges",
+   "was": {
+    "seal": "d7160e71391cb0fd672122821a92d89bd71e094719760c7ae47047403fc946b6",
+    "by": "slice mame-sup2-05 reader",
+    "writer": "slice mame-sup2-05 writer",
+    "rows": {
+     "3": {
+      "digest": "a9df01c5a2ca077a21d8cabd7a8cb9e6d903b1aea32a7ecd9fa78758e677a5e6",
+      "by": "slice mame-sup2-05 reader"
+     },
+     "4": {
+      "digest": "149514b0b8a55f76bc4dbcb260453bebd779c97584f33f2aa27c36035bfa2121",
+      "by": "slice mame-sup2-05 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "z80scc:register:0x09:write",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the fault is in the doc rows this part judges",
+   "was": {
+    "seal": "3c1330cd875e05fd7c1d211c1d010879b077dcac50ae6cfd20379ceb02091553",
+    "by": "slice mame-sup2-03 reader",
+    "writer": "slice mame-sup2-03 writer",
+    "rows": {
+     "25": {
+      "digest": "24e7501400326e460310bbc7c9110b5155a764b63fbe8271db8bb9467c1e06c0",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "26": {
+      "digest": "3f932fd47e7f1962367255f3064f524b2cd8ba32299816e5765dc4dea14a42b8",
+      "by": "slice mame-sup2-03 reader"
+     },
+     "27": {
+      "digest": "9ca12eba5ecc1ce20bc229f4d7c963389bc20f7f2b40c42e3b01d1d5e3754730",
+      "by": "slice mame-sup2-03 reader"
+     }
+    }
+   }
+  },
+  {
+   "id": "mc68681:register:0x0E:read",
+   "part": "mame",
+   "rows": [],
+   "by": "W1-BASE corrector",
+   "why": "the doc row it judges was worded again",
+   "was": {
+    "seal": "adc0e6e5296fb6bece111b1f46af6f23779fe87e30303c9140918d3ad48d519f",
+    "by": "W1-BASE closing reader mame 04",
+    "writer": "W1-BASE writer",
+    "rows": {
+     "101": {
+      "digest": "811d082a1671b7d78c4afac13683d8ebbd4ead9ecb315e2001ce5f615319fdf6",
+      "by": "slice mame-sup1-04 reader"
+     },
+     "108": {
+      "digest": "d6d9e4814922b18d9e2229d2c48ed7477146ee06391010b4cc52042e4afc9f75",
+      "by": "slice mame-sup1-04 reader"
      }
     }
    }
