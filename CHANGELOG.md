@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Pins scry-core 0.124.1: `knowledge_find` and `image_compare` name in their descriptions the
+  `kinds` a `no_channel` refusal carries and the `series` a `control_silent` refusal names, so a
+  client reads each field's condition instead of inferring it.
 - Pins scry-core 0.124.0: `stop`'s instruction declares the fields a platform that decodes the
   instruction itself answers (`note_live`, `bytes_from`, `code_bits`, `flow`), a `knowledge_find`
   refusal declares `kinds`, and an `image_compare` refusal declares `series`.
