@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Pins scry-core 0.124.2: a disassembled line carries its vector's note on the 68000 and the
+  V30, not only on the 6809, because the lookup asks the base in the spelling it keys a vector
+  under.
 - Pins scry-core 0.124.1: `knowledge_find` and `image_compare` name in their descriptions the
   `kinds` a `no_channel` refusal carries and the `series` a `control_silent` refusal names, so a
   client reads each field's condition instead of inferring it.
