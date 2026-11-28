@@ -921,7 +921,9 @@ class SeriesCaptureReply(MameConsoleAccount, total=False):
     lost: Required[list[Any]]
     manifest: Required[str]
     polls: int
+    regpoint_hit: Annotated[dict[str, Any], When("a registerpoint was the newest stop")]
     verdict: str
+    watch_hit: Annotated[dict[str, Any], When("a watch cut the capture")]
 
 
 class SetRegisterReply(MameEnvelope, total=False):
@@ -1103,10 +1105,13 @@ class TraceReply(MameEnvelope, total=False):
     path: str
     pc: str | dict[str, Any]
     polls: int
+    reads: Annotated[int, When("by milliseconds")]
+    regpoint_hit: Annotated[dict[str, Any], When("a registerpoint was the newest stop")]
     regs: dict[str, Any]
     stop_seq: int
     trace: Required[dict[str, Any]]
     verdict: str
+    watch_hit: Annotated[dict[str, Any], When("a watch cut the run")]
     watches: list[Any]
 
 

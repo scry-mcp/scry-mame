@@ -451,8 +451,9 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
     new path. `noloop=True`: exact `count`s, not which addresses ran. Needs a stopped machine.
 
     Reply: `run_for`'s, plus `trace` (`path`, `set_path`, `instructions`, `addresses`,
-    `unplaced`, `symbols` (first {TRACE_SYMBOLS_SHOWN})). Refused: `dest` existing,
-    `no_channel`, `readback_refused`.
+    `unplaced`, `symbols` (first {TRACE_SYMBOLS_SHOWN})); `reads` when it ran by milliseconds,
+    `watch_hit` when a watch cut the run and `regpoint_hit` when a registerpoint was the newest
+    stop. Refused: `dest` existing, `no_channel`, `readback_refused`.
 
     Reference: REFERENCE.md, Running and stopping.
     """
@@ -1065,7 +1066,8 @@ def series_capture(at_frames: list[int] | None = None, first: int | None = None,
     directory, kept after `close`. Needs a stopped machine; `seconds` bounds the read.
 
     Reply: `manifest`, `count`, `first`, `last`, `crop`, `distinct`, `lost`, `kept_after_close`,
-    `run_for`'s fields. Refused: `bad_argument`, `cut_by_other_stop`.
+    `run_for`'s fields, `watch_hit` when a watch cut the capture and `regpoint_hit` when a
+    registerpoint was the newest stop. Refused: `bad_argument`, `cut_by_other_stop`.
 
     Reference: REFERENCE.md, Media files.
     """

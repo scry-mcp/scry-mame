@@ -3,20 +3,23 @@
 from __future__ import annotations
 
 import ast
+import asyncio
 import re
 import tempfile
 from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import media_tools
+from scry_core import media_tools, png, reply_schema, series
 from scry_core import reply_contract as contract  # noqa: E402
 from scry_core.host_program import absolute as _abs
+from scry_core.knowledge import KINDS  # noqa: E402
 from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import SessionFields, use_table  # noqa: E402
 
 import scry_mame
 from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import naming as mnaming  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
 
@@ -25,7 +28,7 @@ SOURCES = sorted(PACKAGE.glob("*.py"))
 
 
 def _tools() -> list[str]:
-    """Every tool the server registers, read off its source, not a hand-kept list."""
+    """Every tool the server declares, read off its source, for the scans that match names."""
     tree = ast.parse((PACKAGE / "server.py").read_text())
     names = [
         node.name for node in tree.body
@@ -35,6 +38,13 @@ def _tools() -> list[str]:
     ]
     assert len(names) > 20, "the walk found almost no tools, so it examined nothing"
     return names + list(media_tools.TOOLS)
+
+
+def _served_tools() -> list[str]:
+    """Every tool the MCP layer serves, which is the roster the calls below walk."""
+    names = [t.name for t in asyncio.run(s.mcp.list_tools())]
+    assert len(names) > 20, "the MCP layer served almost no tools, so it examined nothing"
+    return names
 
 
 _ARGS: dict[str, dict[str, Any]] = {
@@ -109,20 +119,71 @@ def _no_session(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(mstate.STATE, "found_stop_last", {})
 
 
-@pytest.mark.parametrize("name", _tools())
+@pytest.mark.parametrize("name", _served_tools())
 def test_every_tool_answers_the_contract_with_no_machine(
     name: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """With no machine, every tool answers the one envelope: a refusal, or `ok` for status/close."""
     _no_session(monkeypatch)
     reply = getattr(s, name)(**_ARGS.get(name, {}))
+    # The reply a tool answers is the shape its own model publishes, context fields included.
+    reply_schema.check(name, reply)
     if name in ("status", "close"):
         assert reply["status"] == "ok" and "code" not in reply and "message" not in reply, reply
         return
     # start, the media tools and the export refuse their argument; a map save refuses the empty map
-    expected = {"screen_map_write": "needs_call", "promote": "bad_argument"}.get(name)
+    expected = {"screen_map_write": "needs_call", "promote": "bad_argument",
+                # asks nothing of a machine: with nothing to look up, its own judge refuses
+                "knowledge_find": "bad_argument"}.get(name)
     contract.check_refusal(name, reply, expected or ("bad_argument" if name in (
         "start", "perform_export") or name in media_tools.TOOLS else "no_session"))
+
+
+def test_a_kind_the_base_lacks_answers_the_reply_model(
+    monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The `no_channel` refusal names the kinds the base holds, and the model declares them."""
+    _no_session(monkeypatch)
+    base = mnaming.base()
+    absent = [k for k in KINDS if k not in base.kinds() and k not in mnaming.Live.kinds]
+    assert absent, "the base holds every kind, so this case would examine nothing"
+    for kind in absent:
+        reply = s.knowledge_find(kind=kind)
+        contract.check_refusal("knowledge_find", reply, "no_channel")
+        assert reply["kinds"] == list(base.kinds()), reply
+        reply_schema.check("knowledge_find", reply)
+
+
+def _frame(lit: set[tuple[int, int]]) -> png.Raster:
+    """A black 3x2 picture with the pixels in `lit` white."""
+    width, height = 3, 2
+    px = bytearray(bytes((0, 0, 0)) * (width * height))
+    for x, y in lit:
+        at = (y * width + x) * 3
+        px[at:at + 3] = bytes((255, 255, 255))
+    return png.Raster(width, height, bytes(px))
+
+
+def _manifest(folder: Path, frames: dict[int, png.Raster]) -> str:
+    """The `scry-series/1` manifest of `frames` in `folder`, as `image_compare` takes it."""
+    folder.mkdir()
+    for n, picture in frames.items():
+        (folder / series.frame_name(n)).write_bytes(png.encode(picture))
+    return str(series.write_manifest(folder, "test", "frame_number", None,
+                                     sorted(frames))["manifest"])
+
+
+def test_a_series_that_cannot_differ_answers_the_reply_model(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The `control_silent` refusal names the series that never changed, as its model says."""
+    _no_session(monkeypatch)
+    a = _manifest(tmp_path / "a", {1: _frame(set()), 2: _frame(set())})
+    b = _manifest(tmp_path / "b", {1: _frame(set()), 2: _frame({(0, 0)})})
+    reply = s.image_compare(method="series", a=a, b=b)
+    contract.check_refusal("image_compare", reply, "control_silent")
+    assert reply["series"] == "a", reply
+    reply_schema.check("image_compare", reply)
 
 
 class _Running(SessionFields):
@@ -169,6 +230,7 @@ def test_every_reader_refuses_a_running_machine_with_the_contract(
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
     monkeypatch.setattr(mstate.STATE, "found_stop_last", {})
     reply = getattr(s, name)(**_ARGS.get(name, {}))
+    reply_schema.check(name, reply)
     contract.check_refusal(name, reply, "not_stopped")
     assert "last_stop" in reply and "answers_while_running" in reply, reply
 
