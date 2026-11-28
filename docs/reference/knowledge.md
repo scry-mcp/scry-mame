@@ -271,7 +271,7 @@ What a number is called on the machine and what the base knows of it: a port, ve
 DOS or BIOS call, IRQ, memory address, input, device, register or command. One match, or an
 `id`, answers the entry: its `rows`, the document's first with each emulator's `verdicts`,
 then the emulators' notes (`vs`); `id=<id>#<n>`: a row, with URLs. More: a list. No session
-is needed except for a device by tag, inputs and memory.
+except for a tag, inputs or memory.
 
 `id`: an entry's id. `kind`: `vector`, `call`, `error`, `port`, `irq`, `memory`, `input`,
 `device`, `register` or `command`; empty searches all. `key`: the number as a reply prints it,
@@ -290,7 +290,7 @@ session (`no_session`).
 
 Reply: `query`, `scope`, `entries_total`, `entries`, `truncated`, `examined`, `served`,
 `held_back`; nothing matched: no entry, `nearest` and a `note`: it stays a number.
-`unconfirmed` lists ids held back.
+`unconfirmed` lists ids held back. `kinds` on `no_channel`.
 
 Scopes: acia6850, aica, am9517a, ay8910, c140, c219, c352, c6280, chip, es5505, es5506, hd44780, i8251, i8255, ins8250, k007232, k054539, m68000, m6809, mc146818, mc6845, mc68681, msm5205, nes_apu, okim6295, pia6821, pic8259, pit8253, pokey, ppu2c0x, qsound, rf5c68, saa1099, scsp, sega315_5124, sega315_5313, sn76496, tms9928a, upd1990a, upd7759, v30, v9938, x1010, ym2151, ym2203, ym2608, ym2610, ym2612, ym3526, ym3812, ymf262, ymf278b, z80, z80scc, z80sio.
 
